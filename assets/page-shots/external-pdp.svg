@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 460" role="img" aria-label="外投商详 · External PDP (placeholder)">
+  <rect width="340" height="460" fill="#F5F6F7"/>
+  <rect x="8" y="8" width="324" height="444" rx="24" fill="#FFFFFF"/>
+  <!-- app bar -->
+  <path d="M8,32 a24,24 0 0 1 24,-24 h276 a24,24 0 0 1 24,24 v46 h-324 Z" fill="#E1251B"/>
+  <circle cx="34" cy="43" r="11" fill="#fff" opacity="0.92"/>
+  <path d="M30 43l3 3 6-6" fill="none" stroke="#E1251B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="54" y="37" width="96" height="12" rx="6" fill="#fff" opacity="0.95"/>
+  <rect x="196" y="32" width="124" height="22" rx="11" fill="#fff" opacity="0.28"/>
+  <!-- category chips -->
+  <rect x="26" y="98" width="72" height="24" rx="12" fill="#FDE8E7"/>
+  <rect x="106" y="98" width="60" height="24" rx="12" fill="#EEF0F2"/>
+  <rect x="174" y="98" width="60" height="24" rx="12" fill="#EEF0F2"/>
+  
+    <rect x="26" y="138" width="288" height="140" rx="9" fill="#EEF0F2"/>
+    <rect x="26" y="292" width="210" height="11" rx="5" fill="#E3E6E9"/>
+    <rect x="26" y="312" width="150" height="11" rx="5" fill="#EEF0F2"/>
+    <rect x="26" y="334" width="96" height="18" rx="5" fill="#FDE8E7"/>
+    <rect x="26" y="372" width="86" height="22" rx="6" fill="#EEF0F2"/>
+    <rect x="120" y="372" width="86" height="22" rx="6" fill="#EEF0F2"/>
+    <rect x="214" y="372" width="86" height="22" rx="6" fill="#EEF0F2"/>
+  <!-- tab bar -->
+  <path d="M8,410 h324 v18 a24,24 0 0 1 -24,24 h-276 a24,24 0 0 1 -24,-24 Z" fill="#fff"/>
+  <rect x="8" y="410" width="324" height="1" fill="#E7E9EC"/>
+  <circle cx="52" cy="431" r="5" fill="#E1251B"/><circle cx="130" cy="431" r="5" fill="#E3E6E9"/>
+  <circle cx="210" cy="431" r="5" fill="#E3E6E9"/><circle cx="288" cy="431" r="5" fill="#E3E6E9"/>
+  <!-- screen border -->
+  <rect x="8" y="8" width="324" height="444" rx="24" fill="none" stroke="#E7E9EC" stroke-width="1.5"/>
+  <!-- placeholder badge -->
+  <g transform="translate(170 236)">
+    <rect x="-98" y="-27" width="196" height="54" rx="10" fill="#111418" opacity="0.82"/>
+    <text x="0" y="-5" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',system-ui,sans-serif" font-size="15" font-weight="700" fill="#fff">外投商详</text>
+    <text x="0" y="15" text-anchor="middle" font-family="ui-monospace,'SF Mono',Menlo,monospace" font-size="9.5" letter-spacing="0.04em" fill="#C7CBD1">PLACEHOLDER · External PDP</text>
+  </g>
+</svg>

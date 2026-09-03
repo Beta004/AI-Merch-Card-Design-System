@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>变更记录 · Changelog · 商卡设计系统</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="从基础奠基到 MVP1.0，一条时间线回顾商卡设计系统平台每个版本的里程碑与亮点。">
+<link rel="stylesheet" href="../assets/tokens.css">
+<style>
+  /* =====================================================
+     Changelog 变更记录 — Utilities layer.
+     A version-timeline narrative (v0.1 → v1.0) of how the
+     design system was built, rendered bilingually inside
+     #cl-root (data-global-i18n="off", re-rendered on the
+     joybuy:languagechange event). Chrome uses the --accent
+     family only; brand red stays on the product cards. */
+
+  .cl-crumb { font-size: 12px; color: var(--ink-5); margin-bottom: 16px; }
+  .cl-crumb a { color: var(--ink-4); text-decoration: none; }
+  .cl-crumb a:hover { color: var(--accent); }
+  .cl-crumb .sep { margin: 0 6px; color: var(--ink-5); }
+
+  .cl-head { padding: 8px 0 24px; border-bottom: 1px solid var(--outline); margin-bottom: 34px; }
+  .cl-head__title { margin: 0 0 14px; font-size: 40px; font-weight: 700; letter-spacing: -.015em; color: var(--ink); line-height: 1.15; }
+  .cl-head__subtitle { margin: 0; max-width: 780px; font-size: 14px; color: var(--ink-4); line-height: 1.75; }
+  .cl-head__meta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-top: 20px; }
+  .cl-stat { display: inline-flex; align-items: baseline; gap: 7px; font-size: 12px; color: var(--ink-4); background: var(--surface-2); border: 1px solid var(--outline); padding: 5px 12px; border-radius: var(--r-pill); }
+  .cl-stat b { font-size: 14px; font-weight: 800; color: var(--ink); font-family: var(--f-mono); }
+
+  /* ---- Timeline rail ---- */
+  .cl-timeline { position: relative; padding-left: 44px; }
+  .cl-timeline::before { content: ""; position: absolute; left: 15px; top: 6px; bottom: 30px; width: 2px; border-radius: 2px; background: linear-gradient(180deg, var(--accent), var(--outline) 20%, var(--outline)); }
+
+  .cl-entry { position: relative; margin-bottom: 22px; }
+  .cl-entry:last-child { margin-bottom: 0; }
+  .cl-entry__marker { position: absolute; left: 7px; top: 22px; width: 18px; height: 18px; border-radius: 50%; background: var(--surface); border: 2px solid var(--outline); box-sizing: border-box; }
+  .cl-entry__marker::after { content: ""; position: absolute; inset: 4px; border-radius: 50%; background: var(--ink-5); opacity: .45; }
+  .cl-entry--current .cl-entry__marker { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-50); }
+  .cl-entry--current .cl-entry__marker::after { background: var(--accent); opacity: 1; }
+
+  .cl-card { border: 1px solid var(--outline); border-radius: var(--r-lg); background: var(--surface); padding: 20px 22px 22px; transition: border-color .14s ease, box-shadow .14s ease; }
+  .cl-card:hover { border-color: var(--accent); box-shadow: var(--shadow-1); }
+  .cl-entry--current .cl-card { border-color: var(--accent); box-shadow: var(--shadow-1); }
+
+  .cl-card__head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .cl-ver { font-family: var(--f-mono); font-size: 13px; font-weight: 800; letter-spacing: .02em; color: var(--accent-600); background: var(--accent-50); border: 1px solid var(--accent-100); padding: 3px 11px; border-radius: var(--r-pill); }
+  .cl-date { font-family: var(--f-mono); font-size: 12px; color: var(--ink-5); }
+  .cl-layer { font-family: var(--f-mono); font-size: 11px; color: var(--ink-5); letter-spacing: .02em; }
+  .cl-card__head-spacer { flex: 1 1 auto; }
+  .cl-status { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 3px 11px; border-radius: var(--r-pill); border: 1px solid var(--outline); background: var(--surface-2); color: var(--ink-4); }
+  .cl-status--current { color: var(--accent-600); background: var(--accent-50); border-color: var(--accent-100); }
+
+  .cl-card__title { margin: 13px 0 6px; font-size: 18px; font-weight: 700; letter-spacing: -.01em; color: var(--ink); }
+  .cl-card__summary { margin: 0 0 16px; max-width: 660px; font-size: 13.5px; color: var(--ink-4); line-height: 1.72; }
+
+  .cl-hls { display: flex; flex-direction: column; gap: 2px; }
+  .cl-hl { display: flex; align-items: flex-start; gap: 11px; padding: 5px 0; font-size: 13px; color: var(--ink-3); line-height: 1.55; text-decoration: none; border-radius: var(--r-sm); }
+  .cl-hl__tick { flex: 0 0 auto; margin-top: 1px; font-family: var(--f-mono); font-size: 12px; font-weight: 700; color: var(--accent); }
+  .cl-hl__text { flex: 1 1 auto; }
+  .cl-hl__go { flex: 0 0 auto; color: var(--accent); font-weight: 700; opacity: 0; transform: translateX(-3px); transition: opacity .13s ease, transform .13s ease; }
+  a.cl-hl:hover .cl-hl__text { color: var(--accent); }
+  a.cl-hl:hover .cl-hl__go { opacity: 1; transform: translateX(0); }
+  a.cl-hl:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .cl-foot { margin-top: 30px; padding: 22px 0; border-top: 1px solid var(--outline); display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--ink-5); }
+  .cl-foot a { color: var(--ink-4); text-decoration: none; }
+  .cl-foot a:hover { color: var(--accent); }
+
+  @media (max-width: 900px) { .cl-head__title { font-size: 30px; } }
+  @media (max-width: 560px) {
+    .cl-timeline { padding-left: 30px; }
+    .cl-timeline::before { left: 9px; }
+    .cl-entry__marker { left: 1px; }
+    .cl-card { padding: 17px 16px 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="site">
+
+  <aside id="site-nav" class="site-nav" data-active="changelog"></aside>
+
+  <main class="site-main">
+    <div class="site-main__inner">
+      <!-- Rendered bilingually by JS, kept out of the global text-node
+           translator (self-managed language, re-rendered on change). -->
+      <div id="cl-root" data-global-i18n="off"></div>
+    </div>
+  </main>
+
+</div>
+
+<script src="../assets/nav.js"></script>
+<script>
+/* Changelog — self-managed bilingual version-timeline render. */
+(function () {
+  var root = document.getElementById('cl-root');
+  if (!root) return;
+
+  function lang() {
+    if (window.JoybuySite && typeof window.JoybuySite.getLanguage === 'function') return window.JoybuySite.getLanguage();
+    return document.documentElement.lang === 'en' ? 'en' : 'zh';
+  }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+  var COPY = {
+    crumbHome:   { zh: '概览', en: 'Overview' },
+    crumbSelf:   { zh: '变更记录', en: 'Changelog' },
+    title:       { zh: '变更记录', en: 'Changelog' },
+    subtitle:    { zh: '一条时间线，回顾商卡设计系统平台从「基础奠基」到 MVP1.0 的每一步：每个版本做了什么、上线了哪些内容、以及它把设计系统推向了哪里。',
+                   en: 'One timeline tracing the Product Card Design System from its foundations to MVP1.0 — what each release did, what shipped, and where it moved the system.' },
+    statReleases:{ zh: '个版本', en: 'releases' },
+    statLayers:  { zh: '层信息架构', en: 'IA layers' },
+    statCurrent: { zh: '当前版本', en: 'current' },
+    shipped:     { zh: '已发布', en: 'Shipped' },
+    current:     { zh: '当前', en: 'Current' },
+    footNote:    { zh: '版本号用于叙述里程碑顺序，非逐日提交记录。', en: 'Version numbers narrate milestone order, not per-commit history.' },
+    footLink:    { zh: '← 回到选型指南', en: '← Back to Decision Guide' }
+  };
+  function t(k) { return (COPY[k] && COPY[k][lang()]) || k; }
+
+  /* Newest first. Each entry: version, date, IA layer, milestone title,
+     summary, and highlights (some linking to the page that shipped). */
+  var VERSIONS = [
+    {
+      ver: 'v1.0', date: '2026-08-31', current: true,
+      layer: { zh: '工具 · 收尾打磨', en: 'Utilities · Polish' },
+      title: { zh: 'MVP1.0 — 变更记录上线，全站收尾', en: 'MVP1.0 — Changelog ships, site finalized' },
+      summary: { zh: '补齐工具层最后一块拼图：本变更记录页。随后完成全站一致性、链接与响应式审计，并跑通全量冒烟回归，正式定格 MVP1.0。',
+                 en: 'The final piece of the Utilities layer — this changelog. Followed by a full-site consistency, link and responsive audit plus a green smoke regression, sealing MVP1.0.' },
+      hls: [
+        { zh: '新增「变更记录」版本时间线（本页）', en: 'New "Changelog" version timeline (this page)' },
+        { zh: '选型指南升级：进度反馈 · 也可考虑 · 真链接无障碍 · 出现在页面名', en: 'Decision Guide upgraded: progress feedback, "also consider", real-link a11y, inline used-in names', href: 'decision-guide.html' },
+        { zh: '全站一致性 / 链接 / 响应式 / 入口审计并修复', en: 'Full-site consistency / link / responsive / entry-point audit + fixes' },
+        { zh: '五层信息架构全部上线，工具层不再有「即将上线」', en: 'All five IA layers live — no more "Soon" in Utilities' }
+      ]
+    },
+    {
+      ver: 'v0.5', date: '2026-08-30',
+      layer: { zh: '工具 · Utilities', en: 'Utilities' },
+      title: { zh: '选型指南 — 帮你选对商卡', en: 'Decision Guide — pick the right card' },
+      summary: { zh: '工具层开工。回答几个问题即可定位到合适的商卡类型，配合一张 7 卡对比矩阵与一组选型口诀，把「该用哪张卡」从经验变成可查。',
+                 en: 'The Utilities layer opens. Answer a few questions to land on the right card type, backed by a 7-card comparison matrix and quick rules — turning "which card?" from lore into a lookup.' },
+      hls: [
+        { zh: '交互式选卡助手（q1–q4 决策流）', en: 'Interactive card finder (q1–q4 decision flow)', href: 'decision-guide.html' },
+        { zh: '7 卡对比矩阵：布局 / 槽位 / 变体 / 场景 / 出现在', en: '7-card matrix: layout / slots / variants / scene / used-in' },
+        { zh: '7 条「if → then」选型口诀', en: 'Seven "if → then" quick rules' }
+      ]
+    },
+    {
+      ver: 'v0.4', date: '2026-08-29',
+      layer: { zh: '页面 · Pages', en: 'Pages' },
+      title: { zh: '页面总览 & 全卡「出现在」重做', en: 'Pages overview & "Used In" rework' },
+      summary: { zh: '把 7 个 Figma 页面框架收成单一「页面总览」，首页推荐流作为站内实现并入。同时把全 7 张商卡的「出现在」从静态标签改为数据驱动的页面卡片网格 + Figma 弹层。',
+                 en: 'Seven Figma page frames gathered into one Pages overview, with the in-house home feed merged in. Every card\'s "Used In" moved from static tags to a data-driven page grid with a Figma lightbox.' },
+      hls: [
+        { zh: '页面总览：7 个 Figma 框架 + 首页流并入', en: 'Pages overview: 7 Figma frames + home feed', href: '../pages/index.html' },
+        { zh: '新增 pages-data.js —— 页面与「出现在」的单一数据源', en: 'New pages-data.js — single source for pages & "used-in"' },
+        { zh: '全 7 卡「出现在」= 页面卡片网格 + Figma lightbox', en: 'All 7 cards\' "Used In" = page grid + Figma lightbox', href: '../organisms/vertical-card.html' }
+      ]
+    },
+    {
+      ver: 'v0.3', date: '2026-08-26',
+      layer: { zh: '商卡 · Product Cards', en: 'Product Cards' },
+      title: { zh: '7 张商卡详情页 — 六段式模板', en: '7 product-card detail pages — six-section template' },
+      summary: { zh: '设计系统的核心层。7 种商卡各一页，统一的六段式结构（概览 / 骨架 / 类型 / 数据契约 / 出现在 / 取舍）+ 实时字段模拟器 + Figma 源图嵌入，全部共享同一份 card-data.js。',
+                 en: 'The core layer. One page per card type in a shared six-section structure (Overview / Structure / Types / Data / Used-In / When), a live field simulator and embedded Figma — all off one card-data.js.' },
+      hls: [
+        { zh: '7 种商卡：通用双列 / 横向 / 小图 / 横滑 / 活动 / 预约 / 小图动态', en: '7 cards: vertical / horizontal / mini / scroll / campaign / booking / small-dynamic', href: '../organisms/index.html' },
+        { zh: '黄金模板 = 通用横向卡：吸顶锚点条 + 右侧预览栏 + Figma 嵌入', en: 'Golden template = horizontal card: sticky tabs + preview rail + Figma embed', href: '../organisms/horizontal-card.html' },
+        { zh: '每卡 4 变体 + 实时字段模拟器 + 空值折叠数据契约', en: 'Four variants each + live field simulator + null-collapsing data contract' }
+      ]
+    },
+    {
+      ver: 'v0.2', date: '2026-08-21',
+      layer: { zh: '原子组件 · Atoms', en: 'Atoms' },
+      title: { zh: '原子组件浏览器', en: 'Atomic component browser' },
+      summary: { zh: '19 个原子 × 105 个变体，全部走 Figma 源图导出的扁平变体浏览器。原子层刻意不做详情页 —— 只呈现结构名、变体图与命名，作为商卡的构件字典。',
+                 en: '19 atoms × 105 variants as a flat, Figma-sourced variant browser. The atoms layer deliberately skips detail pages — just structure names, variant art and naming, a parts dictionary for the cards.' },
+      hls: [
+        { zh: '19 原子 × 105 变体，全部 Figma 源图', en: '19 atoms × 105 variants, all Figma-sourced', href: '../atoms/index.html' },
+        { zh: '扁平变体浏览器（原子层不做详情页 —— 信息架构决策）', en: 'Flat variant browser (no detail pages — an IA decision)' }
+      ]
+    },
+    {
+      ver: 'v0.1', date: '2026-08-18',
+      layer: { zh: '基础 · Foundations', en: 'Foundations' },
+      title: { zh: '基础奠基 — Tokens / 字体 / 图标', en: 'Foundations — Tokens / Type / Icons' },
+      summary: { zh: '一切的地基。设计 Tokens、字体阶梯与图标库三页确立了 Joybuy 红 #E1251B 与 TDesign 密度基调，并搭起全站共享外壳：五层左栏导航 + 全局头部（明暗主题 + 中英切换）。',
+                 en: 'The bedrock. Design tokens, a type scale and an icon library set the Joybuy red #E1251B and TDesign density baseline, and stand up the shared shell: five-layer sidebar + global header (theme + language).' },
+      hls: [
+        { zh: '设计 Tokens：20 色 + 字体 + 圆角 + 阴影 + 布局', en: 'Design tokens: 20 colors + type + radius + shadow + layout', href: '../foundations/tokens.html' },
+        { zh: '字体与文案：2 家族 · 11 阶梯 · 商卡槽位索引', en: 'Typography: 2 families · 11 steps · card-slot index', href: '../foundations/typography.html' },
+        { zh: '图标库：18 家族 · 105 图标 · 搜索与复制', en: 'Iconography: 18 families · 105 icons · search & copy', href: '../foundations/iconography.html' }
+      ]
+    }
+  ];
+
+  function highlightHTML(h, lg) {
+    var inner =
+      '<span class="cl-hl__tick" aria-hidden="true">✓</span>' +
+      '<span class="cl-hl__text">' + esc(h[lg]) + '</span>' +
+      (h.href ? '<span class="cl-hl__go" aria-hidden="true">→</span>' : '');
+    return h.href
+      ? '<a class="cl-hl" href="' + esc(h.href) + '">' + inner + '</a>'
+      : '<div class="cl-hl">' + inner + '</div>';
+  }
+
+  function entryHTML(v, lg) {
+    var statusText = v.current ? t('current') : t('shipped');
+    return '' +
+      '<article class="cl-entry' + (v.current ? ' cl-entry--current' : '') + '">' +
+        '<span class="cl-entry__marker" aria-hidden="true"></span>' +
+        '<div class="cl-card">' +
+          '<div class="cl-card__head">' +
+            '<span class="cl-ver">' + esc(v.ver) + '</span>' +
+            '<span class="cl-date">' + esc(v.date) + '</span>' +
+            '<span class="cl-layer">· ' + esc(v.layer[lg]) + '</span>' +
+            '<span class="cl-card__head-spacer"></span>' +
+            '<span class="cl-status' + (v.current ? ' cl-status--current' : '') + '">' + esc(statusText) + '</span>' +
+          '</div>' +
+          '<h2 class="cl-card__title">' + esc(v.title[lg]) + '</h2>' +
+          '<p class="cl-card__summary">' + esc(v.summary[lg]) + '</p>' +
+          '<div class="cl-hls">' + v.hls.map(function (h) { return highlightHTML(h, lg); }).join('') + '</div>' +
+        '</div>' +
+      '</article>';
+  }
+
+  function render() {
+    var lg = lang();
+    root.innerHTML =
+      '<nav class="cl-crumb"><a href="../index.html">' + esc(t('crumbHome')) + '</a><span class="sep">/</span><span>' + esc(t('crumbSelf')) + '</span></nav>' +
+      '<header class="cl-head">' +
+        '<h1 class="cl-head__title">' + esc(t('title')) + '</h1>' +
+        '<p class="cl-head__subtitle">' + esc(t('subtitle')) + '</p>' +
+        '<div class="cl-head__meta">' +
+          '<span class="cl-stat"><b>' + VERSIONS.length + '</b><span>' + esc(t('statReleases')) + '</span></span>' +
+          '<span class="cl-stat"><b>5</b><span>' + esc(t('statLayers')) + '</span></span>' +
+          '<span class="cl-stat"><b>v1.0</b><span>' + esc(t('statCurrent')) + '</span></span>' +
+        '</div>' +
+      '</header>' +
+      '<div class="cl-timeline">' + VERSIONS.map(function (v) { return entryHTML(v, lg); }).join('') + '</div>' +
+      '<div class="cl-foot"><a href="decision-guide.html">' + esc(t('footLink')) + '</a><span>Last updated 2026-08-31</span></div>';
+  }
+
+  window.addEventListener('joybuy:languagechange', render);
+  render();
+})();
+</script>
+</body>
+</html>

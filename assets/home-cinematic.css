@@ -1,0 +1,373 @@
+/* Joybuy Product Card DS · Cinematic hero
+ * viny-inspired 3D arc — 14 real product cards fly past a horizon.
+ * Isolated file: unlink from index.html + swap hero markup to revert.
+ * -------------------------------------------------------------- */
+
+/* ---------- Section shell ---------- */
+.home-hero-cinematic {
+  --hero-bg:       #0a0a0c;
+  --hero-fg:       #ffffff;
+  --hero-muted:    rgba(255,255,255,.62);
+  --hero-soft:     rgba(255,255,255,.42);
+  --hero-border:   rgba(255,255,255,.12);
+  --hero-accent:   var(--joybuy-red, #E1251B);
+
+  position: relative;
+  isolation: isolate;
+  /* break out of the max-width inner container into a full-bleed dark canvas */
+  margin-left:  calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  width: 100vw;
+  /* eat the body top-padding so hero starts at viewport top; nav pill floats over */
+  margin-top: calc(-1 * var(--home-header-bottom));
+  min-height: 100svh;
+  padding: calc(var(--home-header-bottom) + 40px) clamp(20px, 4vw, 56px) 96px;
+  background: var(--hero-bg);
+  color: var(--hero-fg);
+  overflow: hidden;
+  border-bottom-left-radius: clamp(28px, 3.4vw, 48px);
+  border-bottom-right-radius: clamp(28px, 3.4vw, 48px);
+  text-align: center;
+  contain: paint;
+}
+
+/* Nav pill: while user is on the cinematic hero, dim the pill to a glass chip
+ * (JS toggles body.home-in-cinematic when hero is in the viewport). */
+body.home-page.home-in-cinematic .global-header {
+  background: rgba(20, 20, 26, .55);
+  border-color: rgba(255,255,255,.09);
+  box-shadow: 0 14px 44px rgba(0,0,0,.34);
+  color: #fff;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+body.home-page.home-in-cinematic .global-header,
+body.home-page.home-in-cinematic .home-global-nav a,
+body.home-page.home-in-cinematic .global-header__brand-copy small,
+body.home-page.home-in-cinematic .global-header__brand-copy strong,
+body.home-page.home-in-cinematic .global-language button {
+  color: rgba(255,255,255,.86);
+  border-color: rgba(255,255,255,.14);
+}
+body.home-page.home-in-cinematic .home-global-nav a:hover,
+body.home-page.home-in-cinematic .home-global-nav a.is-active {
+  color: #fff;
+  background: rgba(255,255,255,.08);
+}
+body.home-page.home-in-cinematic .home-global-nav__cta {
+  background: #fff; color: #0a0a0c;
+}
+
+/* ---------- 3D arc backdrop ---------- */
+.home-hero-cinematic__arc {
+  position: absolute; inset: 0;
+  container-type: inline-size;
+  pointer-events: none;
+  z-index: 0;
+}
+.home-hero-cinematic__stage {
+  position: absolute; inset: 0;
+  perspective: 30cqw;
+  perspective-origin: 50% 55%;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform .4s cubic-bezier(.22,1,.36,1);
+}
+.home-hero-cinematic__plane {
+  position: absolute;
+  top: 55%; left: 0; right: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+
+/* Individual card in flight — the raw PNG floats, no wrapper */
+.hcc-card {
+  position: absolute;
+  left: 50%; top: 0;
+  /* individual `translate` stacks separately from `transform`,
+     so the keyframe's translate3d/rotateY doesn't clobber this self-centering */
+  translate: -50% -50%;
+  width: auto;
+  height: auto;
+  max-width: 22cqw;
+  max-height: 28cqw;
+  min-width: 110px;
+  /* drop-shadow (not box-shadow) follows the PNG's alpha, so cards with rounded/transparent
+     corners still get a natural shadow — this is what makes them read against the dark bg */
+  filter:
+    drop-shadow(0 22px 44px rgba(0,0,0,.5))
+    drop-shadow(0 6px 14px rgba(0,0,0,.32));
+  will-change: transform, opacity;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  animation-duration: 24s;
+  animation-timing-function: linear;   /* linear + dense keyframes = smooth continuous motion */
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.hcc-card--r { animation-name: hcc-fly-r; }
+.hcc-card--l { animation-name: hcc-fly-l; }
+
+/* Decelerating arc — 21 evenly-spaced keyframes at 5% intervals.
+   Curve: distance-from-start = 1 - (1-t)^2.4, so cards travel fast when far,
+   slow as they approach the camera. With linear timing between dense frames,
+   the eye reads it as one continuous accelerating→decelerating motion,
+   with only the faintest micro-kinks at frame boundaries (that's the
+   "小停顿" — should be barely perceptible, not a visible pulse). */
+@keyframes hcc-fly-r {
+    0%   { transform: translate3d(-12cqw,    0, -262cqw)     rotateY(-5deg);    opacity: 0; }
+    5%   { transform: translate3d(-5.22cqw,  0, -229.2cqw)   rotateY(-6.15deg); opacity: .5; }
+   10%   { transform: translate3d(0.65cqw,   0, -200.7cqw)   rotateY(-7.30deg); opacity: 1; }
+   15%   { transform: translate3d(5.90cqw,   0, -175.4cqw)   rotateY(-8.45deg); }
+   20%   { transform: translate3d(10.40cqw,  0, -153.5cqw)   rotateY(-9.60deg); }
+   25%   { transform: translate3d(14.34cqw,  0, -134.5cqw)   rotateY(-10.75deg); }
+   30%   { transform: translate3d(17.91cqw,  0, -117.1cqw)   rotateY(-11.90deg); }
+   35%   { transform: translate3d(21.28cqw,  0, -101.0cqw)   rotateY(-13.05deg); }
+   40%   { transform: translate3d(24.37cqw,  0, -85.9cqw)    rotateY(-14.20deg); }
+   45%   { transform: translate3d(27.18cqw,  0, -72.4cqw)    rotateY(-15.35deg); }
+   50%   { transform: translate3d(29.58cqw,  0, -60.9cqw)    rotateY(-16.50deg); }
+   55%   { transform: translate3d(32.11cqw,  0, -48.5cqw)    rotateY(-17.65deg); }
+   60%   { transform: translate3d(34.19cqw,  0, -38.4cqw)    rotateY(-18.80deg); }
+   65%   { transform: translate3d(36.45cqw,  0, -27.4cqw)    rotateY(-19.95deg); }
+   70%   { transform: translate3d(38.44cqw,  0, -17.7cqw)    rotateY(-21.10deg); }
+   75%   { transform: translate3d(40.21cqw,  0,  -9.2cqw)    rotateY(-22.25deg); }
+   80%   { transform: translate3d(41.68cqw,  0,  -2.05cqw)   rotateY(-23.40deg); opacity: 1; }
+   85%   { transform: translate3d(42.83cqw,  0,   3.54cqw)   rotateY(-24.55deg); opacity: .88; }
+   90%   { transform: translate3d(43.75cqw,  0,   7.99cqw)   rotateY(-25.70deg); opacity: .55; }
+   95%   { transform: translate3d(44.53cqw,  0,  11.79cqw)   rotateY(-26.85deg); opacity: .2; }
+  100%   { transform: translate3d(45cqw,     0,  14cqw)      rotateY(-28deg);    opacity: 0; }
+}
+@keyframes hcc-fly-l {
+    0%   { transform: translate3d(12cqw,     0, -262cqw)     rotateY(5deg);     opacity: 0; }
+    5%   { transform: translate3d(5.22cqw,   0, -229.2cqw)   rotateY(6.15deg);  opacity: .5; }
+   10%   { transform: translate3d(-0.65cqw,  0, -200.7cqw)   rotateY(7.30deg);  opacity: 1; }
+   15%   { transform: translate3d(-5.90cqw,  0, -175.4cqw)   rotateY(8.45deg); }
+   20%   { transform: translate3d(-10.40cqw, 0, -153.5cqw)   rotateY(9.60deg); }
+   25%   { transform: translate3d(-14.34cqw, 0, -134.5cqw)   rotateY(10.75deg); }
+   30%   { transform: translate3d(-17.91cqw, 0, -117.1cqw)   rotateY(11.90deg); }
+   35%   { transform: translate3d(-21.28cqw, 0, -101.0cqw)   rotateY(13.05deg); }
+   40%   { transform: translate3d(-24.37cqw, 0, -85.9cqw)    rotateY(14.20deg); }
+   45%   { transform: translate3d(-27.18cqw, 0, -72.4cqw)    rotateY(15.35deg); }
+   50%   { transform: translate3d(-29.58cqw, 0, -60.9cqw)    rotateY(16.50deg); }
+   55%   { transform: translate3d(-32.11cqw, 0, -48.5cqw)    rotateY(17.65deg); }
+   60%   { transform: translate3d(-34.19cqw, 0, -38.4cqw)    rotateY(18.80deg); }
+   65%   { transform: translate3d(-36.45cqw, 0, -27.4cqw)    rotateY(19.95deg); }
+   70%   { transform: translate3d(-38.44cqw, 0, -17.7cqw)    rotateY(21.10deg); }
+   75%   { transform: translate3d(-40.21cqw, 0,  -9.2cqw)    rotateY(22.25deg); }
+   80%   { transform: translate3d(-41.68cqw, 0,  -2.05cqw)   rotateY(23.40deg); opacity: 1; }
+   85%   { transform: translate3d(-42.83cqw, 0,   3.54cqw)   rotateY(24.55deg); opacity: .88; }
+   90%   { transform: translate3d(-43.75cqw, 0,   7.99cqw)   rotateY(25.70deg); opacity: .55; }
+   95%   { transform: translate3d(-44.53cqw, 0,  11.79cqw)   rotateY(26.85deg); opacity: .2; }
+  100%   { transform: translate3d(-45cqw,    0,  14cqw)      rotateY(28deg);    opacity: 0; }
+}
+
+/* Radial vignette so cards fade into the dark surround */
+.home-hero-cinematic__vignette {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 55%,
+    transparent 0%,
+    rgba(10,10,12,.35) 55%,
+    rgba(10,10,12,.85) 92%,
+    rgba(10,10,12,1) 100%);
+  z-index: 1;
+}
+
+/* Subtle light halo behind the title, adds depth */
+.home-hero-cinematic__halo {
+  position: absolute;
+  top: 8%; left: 50%;
+  width: 62%;
+  height: 32%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center,
+    rgba(255, 255, 255, .06) 0%,
+    rgba(225, 37, 27, .04) 42%,
+    transparent 70%);
+  filter: blur(48px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ---------- Content stack ---------- */
+.home-hero-cinematic__content {
+  position: relative; z-index: 3;
+  max-width: 1080px;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.home-hero-cinematic__kicker {
+  display: inline-flex; align-items: center; gap: 10px;
+  color: rgba(255,255,255,.72);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+.home-hero-cinematic__kicker::before {
+  content: ''; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--hero-accent);
+  box-shadow: 0 0 12px rgba(225,37,27,.6);
+}
+.home-hero-cinematic__title {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(46px, 6.4vw, 88px);
+  font-weight: 640;
+  letter-spacing: -.045em;
+  line-height: .98;
+  text-wrap: balance;
+}
+.home-hero-cinematic__title > span {
+  display: block;
+}
+.home-hero-cinematic__title em {
+  color: rgba(255,255,255,.5);
+  font-style: normal;
+  font-weight: inherit;
+}
+
+/* the gap where cards fly past the horizon */
+.home-hero-cinematic__gap {
+  flex: 0 0 clamp(240px, 34vh, 380px);
+}
+
+.home-hero-cinematic__lede {
+  max-width: 460px;
+  margin: 0;
+  color: var(--hero-muted);
+  font-size: 14px;
+  line-height: 1.72;
+  text-wrap: balance;
+}
+.home-hero-cinematic__actions {
+  display: inline-flex; gap: 12px;
+  margin-top: 26px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.home-hero-cinematic__cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  min-height: 50px;
+  padding: 0 28px;
+  border-radius: 999px;
+  background: var(--joybuy-red);
+  color: #fff;
+  font-size: 14.5px; font-weight: 680;
+  letter-spacing: -.005em;
+  transition: transform .22s cubic-bezier(.22,1,.36,1), box-shadow .24s ease, background-color .18s ease;
+  box-shadow:
+    0 12px 30px rgba(225,37,27,.36),
+    inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.home-hero-cinematic__cta:hover {
+  transform: translateY(-2px) scale(1.02);
+  background: var(--joybuy-red-600, #C81E15);
+  box-shadow:
+    0 18px 44px rgba(225,37,27,.48),
+    inset 0 0 0 1px rgba(255,255,255,.08);
+}
+.home-hero-cinematic__cta:active { transform: translateY(0) scale(1); }
+.home-hero-cinematic__cta svg {
+  width: 16px; height: 16px;
+  transition: transform .22s ease;
+}
+.home-hero-cinematic__cta:hover svg { transform: translate(2px, -2px); }
+
+.home-hero-cinematic__ghost {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 50px; padding: 0 22px;
+  color: rgba(255,255,255,.84);
+  font-size: 14px; font-weight: 560;
+  border-radius: 999px;
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(255,255,255,.14);
+  transition: background .18s, border-color .18s, transform .18s;
+}
+.home-hero-cinematic__ghost:hover {
+  background: rgba(255,255,255,.07);
+  border-color: rgba(255,255,255,.28);
+  transform: translateY(-2px);
+}
+.home-hero-cinematic__ghost kbd {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 20px; height: 20px;
+  padding: 0 5px;
+  margin-left: 4px;
+  border-radius: 5px;
+  background: rgba(255,255,255,.09);
+  color: rgba(255,255,255,.7);
+  font: 500 11px/1 var(--f-mono);
+}
+
+.home-hero-cinematic__facts {
+  margin: 40px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  gap: clamp(24px, 4vw, 44px);
+  color: rgba(255,255,255,.52);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .04em;
+}
+.home-hero-cinematic__facts li {
+  display: flex; align-items: baseline; gap: 8px;
+}
+.home-hero-cinematic__facts strong {
+  color: #fff;
+  font: 700 22px var(--f-mono);
+}
+
+/* ---------- Reduced motion: freeze cards at pretty positions ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .hcc-card {
+    animation: none !important;
+    opacity: 1 !important;
+    transition: none !important;
+  }
+  .hcc-card--r-1 { transform: translate3d( 8cqw, 0, -180cqw) rotateY(-8deg); }
+  .hcc-card--r-2 { transform: translate3d(20cqw, 0, -120cqw) rotateY(-12deg); }
+  .hcc-card--r-3 { transform: translate3d(30cqw, 0,  -70cqw) rotateY(-15deg); }
+  .hcc-card--r-4 { transform: translate3d(38cqw, 0,  -34cqw) rotateY(-18deg); }
+  .hcc-card--r-5 { transform: translate3d(43cqw, 0,  -12cqw) rotateY(-22deg); opacity: .8 !important; }
+  .hcc-card--r-6, .hcc-card--r-7 { display: none; }
+  .hcc-card--l-1 { transform: translate3d(-8cqw, 0, -180cqw) rotateY(8deg); }
+  .hcc-card--l-2 { transform: translate3d(-20cqw,0, -120cqw) rotateY(12deg); }
+  .hcc-card--l-3 { transform: translate3d(-30cqw,0,  -70cqw) rotateY(15deg); }
+  .hcc-card--l-4 { transform: translate3d(-38cqw,0,  -34cqw) rotateY(18deg); }
+  .hcc-card--l-5 { transform: translate3d(-43cqw,0,  -12cqw) rotateY(22deg); opacity: .8 !important; }
+  .hcc-card--l-6, .hcc-card--l-7 { display: none; }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1180px) {
+  .home-hero-cinematic__title { font-size: clamp(42px, 6.6vw, 76px); }
+  .hcc-card { min-width: 128px; max-width: 220px; }
+}
+@media (max-width: 900px) {
+  .home-hero-cinematic { padding: calc(var(--home-header-bottom) + 30px) 20px 76px; min-height: 92svh; }
+  .home-hero-cinematic__title { font-size: clamp(40px, 9.4vw, 60px); }
+  .home-hero-cinematic__gap { flex-basis: clamp(220px, 32vh, 320px); }
+  .home-hero-cinematic__facts { gap: 28px; }
+  .home-hero-cinematic__kicker { margin-bottom: 22px; }
+  .hcc-card { min-width: 110px; }
+}
+@media (max-width: 640px) {
+  .home-hero-cinematic { padding: calc(var(--home-header-bottom) + 20px) 16px 60px; }
+  .home-hero-cinematic__title { font-size: clamp(34px, 12.5vw, 52px); }
+  .home-hero-cinematic__lede { font-size: 13px; }
+  .home-hero-cinematic__actions { flex-direction: column; width: 100%; max-width: 300px; }
+  .home-hero-cinematic__cta,
+  .home-hero-cinematic__ghost { width: 100%; justify-content: center; }
+  .home-hero-cinematic__facts { flex-wrap: wrap; justify-content: center; gap: 18px; margin-top: 32px; }
+  .home-hero-cinematic__facts strong { font-size: 18px; }
+  .hcc-card { min-width: 96px; }
+}

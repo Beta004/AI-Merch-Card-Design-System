@@ -1,0 +1,1354 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>Home Feed · Sections · 商卡设计系统</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Universal Horizontal Product Card — image on the left, content stack on the right. Used in cart, wishlist, order list and search suggestions.">
+<link rel="stylesheet" href="../assets/tokens.css">
+<style>
+  /* ============ Page head chrome (matches vertical-card.html) ============ */
+  .crumb {
+    font-size: 12.5px; color: var(--ink-4);
+    margin-bottom: 18px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .crumb a { color: var(--ink-4); transition: color .12s ease; }
+  .crumb a:hover { color: var(--accent); }
+  .crumb .sep { color: var(--outline-strong); }
+  .crumb .curr { color: var(--ink-2); font-weight: 600; }
+
+  .head { margin-bottom: 4px; }
+  .head__eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 700; letter-spacing: .14em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .head__title {
+    margin: 0 0 10px;
+    font-size: 33px; font-weight: 700; letter-spacing: -.02em;
+    color: var(--ink); line-height: 1.16;
+  }
+  .head__title-en {
+    font-size: 14.5px; color: var(--ink-4);
+    line-height: 1.5; margin-bottom: 0;
+  }
+  /* Meta strip — quiet arco-clean tags with airy spacing, balanced like a
+     TDesign component header. Chip visuals come from the shared .chip. */
+  .head__metas {
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px; margin-bottom: 0;
+  }
+  /* ============ TDesign-style anchor tab bar (sticky + scroll-spy) ============ */
+  .doc-tabs {
+    position: sticky; top: 0; z-index: 20;
+    /* Break out of .site-main__inner to span the whole main column,
+       edge-to-edge from the nav border to the TOC border. */
+    margin: 20px calc(-1 * var(--page-pad-x)) 32px;
+    background: rgba(255, 255, 255, .86);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--outline);
+  }
+  .doc-tabs__inner {
+    max-width: calc(var(--content-max) + 2 * var(--page-pad-x));
+    margin: 0 auto;
+    padding: 0 var(--page-pad-x);
+    display: flex; gap: 2px;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .doc-tabs__inner::-webkit-scrollbar { display: none; }
+  .doc-tabs__link {
+    position: relative;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 14px 14px 13px;
+    font-size: 13.5px; font-weight: 500;
+    color: var(--ink-4);
+    white-space: nowrap; text-decoration: none;
+    transition: color .15s ease;
+  }
+  .doc-tabs__link::after {
+    content: ''; position: absolute;
+    left: 12px; right: 12px; bottom: -1px; height: 2px;
+    background: var(--accent); border-radius: 2px 2px 0 0;
+    transform: scaleX(0); transform-origin: center;
+    transition: transform .22s cubic-bezier(.4, 0, .2, 1);
+  }
+  .doc-tabs__link:hover { color: var(--ink-2); }
+  .doc-tabs__link.is-active { color: var(--accent); font-weight: 600; }
+  .doc-tabs__link.is-active::after { transform: scaleX(1); }
+  .doc-tabs__link-idx {
+    font-family: var(--f-mono);
+    font-size: 11px; font-weight: 500; color: var(--ink-5);
+    letter-spacing: 0;
+  }
+  .doc-tabs__link.is-active .doc-tabs__link-idx { color: var(--accent); opacity: .7; }
+  /* ============ Figma embed ============ */
+  .figma-wrap {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+  .figma-wrap iframe { display: block; width: 100%; height: 540px; border: 0; }
+  .figma-hint {
+    padding: 10px 14px;
+    background: var(--surface-2);
+    font-size: 11.5px; color: var(--ink-4);
+    border-top: 1px solid var(--outline);
+  }
+
+  /* ============ Right panel · variant preview stack ============
+     NOTE: distinct class from the main-column .types-stack grid to avoid collision. */
+  .side-preview {
+    padding: 20px 16px;
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+  }
+  .side-preview__head {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 11px; font-weight: 700; letter-spacing: .08em;
+    color: var(--ink-4); text-transform: uppercase;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--outline);
+    margin-bottom: 16px;
+  }
+  .side-preview__lang {
+    display: inline-flex; padding: 2px;
+    border: 1px solid var(--outline); border-radius: var(--r-pill);
+    background: var(--surface); letter-spacing: 0;
+  }
+  .side-preview__lang button {
+    all: unset; cursor: pointer;
+    padding: 3px 8px; border-radius: var(--r-pill);
+    font-size: 10px; font-weight: 700;
+    color: var(--ink-4); transition: background .12s ease, color .12s ease;
+    text-transform: none;
+  }
+  .side-preview__lang button.is-active { background: var(--ink); color: #fff; }
+  .side-preview__items { display: flex; flex-direction: column; gap: 20px; }
+  .side-preview__item { display: flex; flex-direction: column; gap: 8px; }
+  .side-preview__item-label {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 11px;
+  }
+  .side-preview__item-label > span:first-child { color: var(--ink); font-weight: 700; }
+  .side-preview__item-tag {
+    color: var(--ink-5); font-size: 10px;
+    background: var(--surface-2);
+    padding: 1px 6px; border-radius: 3px; font-weight: 500;
+  }
+  .side-preview__stage {
+    background: #f7f7f8;
+    border-radius: var(--r-sm);
+    padding: 14px;
+    display: flex; justify-content: center;
+    overflow: hidden;
+  }
+  /* zoom shrinks the real (wide) card to fit the narrow rail; collapses layout box too */
+  .side-preview__scale { width: 320px; zoom: .6; }
+
+  /* ============ Horizontal card component ============
+     Layout: left = 130×130 image · right = 8-slot content column.
+     Overall card width: 100% of container (typically 328–392px on mobile,
+     up to full-width in cart/list pages). */
+  .hcard {
+    display: grid;
+    grid-template-columns: var(--product-image-horizontal) 1fr;
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-sm);
+    padding: 12px;
+    position: relative;
+    max-width: 392px;
+  }
+  .hcard--dim { opacity: .55; }
+  .hcard--dim .hcard__image::after {
+    content: ""; position: absolute; inset: 0;
+    background: rgba(255,255,255,.55);
+  }
+
+  /* Image (1:1) with tag-like favorite and optional out-of-stock cover */
+  .hcard__image {
+    position: relative;
+    width: var(--product-image-horizontal);
+    height: var(--product-image-horizontal);
+    border-radius: var(--r-xs);
+    overflow: hidden;
+    background: var(--surface-2);
+    flex-shrink: 0;
+  }
+  .hcard__image > img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    padding: 10px;
+    display: block;
+  }
+  .hcard__oos {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.75);
+  }
+  .hcard__oos img { height: 44px; width: auto; }
+
+  /* Body: 8 stackable slots */
+  .hcard__body {
+    display: flex; flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .hcard__body [data-field][data-empty] { display: none; }
+
+  /* Slot 1 · Highlight (SVG chip) */
+  .hcard__highlight {
+    align-self: flex-start;
+    line-height: 0;
+  }
+  .hcard__highlight[data-empty] { display: none; }
+  .hcard__highlight img { display: block; height: 14px; width: auto; }
+
+  /* Slot 2 · Brand */
+  .hcard__brand {
+    font-size: 12px; font-weight: 700;
+    color: var(--ink); line-height: 16px;
+  }
+
+  /* Slot 3 · Title (2-line clamp) */
+  .hcard__title {
+    margin: 0;
+    font-size: 13px; font-weight: 500;
+    color: var(--ink-2); line-height: 18px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Slot 4 · Rating · sold */
+  .hcard__meta {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--ink-3);
+  }
+  .hcard__meta-star {
+    display: inline-flex; align-items: center; gap: 2px;
+    color: var(--ink); font-weight: 700;
+  }
+  .hcard__meta-star::before {
+    content: "";
+    display: inline-block;
+    width: 12px; height: 12px;
+    background: url('../assets/figma-atoms/rating-sold/star.svg') center/contain no-repeat;
+    flex-shrink: 0;
+  }
+  .hcard__meta-sep {
+    display: inline-block;
+    width: 1px; height: 8px;
+    background: var(--outline-strong);
+  }
+
+  /* Slot 5 · Promotion (red) */
+  .hcard__promotion {
+    font-size: 11px; font-weight: 500;
+    color: var(--joybuy-red); line-height: 16px;
+  }
+
+  /* Slot 6 · Prices (stacked: sale on top, RRP below) */
+  .hcard__prices {
+    display: flex; flex-direction: column;
+    gap: 0;
+    margin-top: 2px;
+  }
+  .hcard__sale-price {
+    font-size: 18px; font-weight: 900;
+    color: var(--ink); line-height: 22px;
+    font-variant-numeric: tabular-nums;
+  }
+  .hcard__price-was {
+    font-size: 11px; color: var(--ink-5); line-height: 14px;
+  }
+  .hcard__original-price {
+    text-decoration: line-through;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Slot 7 · Fulfillment (with truck icon) */
+  .hcard__fulfillment {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 500;
+    color: var(--ink-3);
+    align-self: flex-start;
+  }
+  .hcard__fulfillment::before {
+    content: "";
+    display: inline-block;
+    width: 14px; height: 14px;
+    background: url('../assets/figma-atoms/fulfillment-time/joybuy.svg') left center/contain no-repeat;
+    flex-shrink: 0;
+  }
+
+  /* Slot 8 · Seller + cart button */
+  .hcard__foot {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .hcard__seller {
+    font-size: 11px; color: var(--ink-4);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    flex: 1; min-width: 0;
+  }
+  .hcard__cart {
+    all: unset; cursor: pointer;
+    width: 28px; height: 28px;
+    flex-shrink: 0;
+  }
+  .hcard__cart img { width: 100%; height: 100%; display: block; }
+
+  /* ============ Demo area ============ */
+  .demo {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 32px;
+    align-items: flex-start;
+  }
+  .demo__stage {
+    background: linear-gradient(180deg, #f8f8f9 0%, #f2f2f3 100%);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 32px 24px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .demo__controls-title {
+    font-size: 11px; font-weight: 700; letter-spacing: .08em;
+    color: var(--ink-4); text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .demo__controls-hint {
+    font-size: 12px; color: var(--ink-4); line-height: 1.6;
+  }
+  .lang-toggle {
+    display: inline-flex; padding: 3px;
+    border: 1px solid var(--outline); border-radius: var(--r-pill);
+    background: var(--surface);
+  }
+  .lang-toggle__btn {
+    all: unset; cursor: pointer;
+    padding: 5px 14px; border-radius: var(--r-pill);
+    font-size: 12px; font-weight: 600;
+    color: var(--ink-4); transition: background .12s ease, color .12s ease;
+  }
+  .lang-toggle__btn.is-active {
+    background: var(--ink); color: #fff;
+  }
+  .chip-strip {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .chip-btn {
+    all: unset; cursor: pointer;
+    padding: 6px 12px; border-radius: var(--r-pill);
+    font-size: 12px; font-weight: 600;
+    color: var(--ink-3); background: var(--surface);
+    border: 1px solid var(--outline);
+    transition: all .12s ease;
+  }
+  .chip-btn:hover { border-color: var(--outline-strong); }
+  .chip-btn.is-active {
+    color: var(--accent); background: var(--accent-50);
+    border-color: var(--accent-100);
+  }
+
+  /* ============ 02 Structure — schematic + rule table ============ */
+  .anatomy-wrap {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 32px;
+    align-items: flex-start;
+  }
+  .schematic-frame {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 20px;
+  }
+  .schematic-hcard {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px dashed var(--outline-strong);
+    border-radius: var(--r-xs);
+    padding: 8px;
+  }
+  .schematic-hcard__image {
+    aspect-ratio: 1 / 1;
+    background: var(--surface-2);
+    border: 1px dashed var(--outline-strong);
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: var(--ink-4);
+  }
+  .schematic-hcard__slots {
+    display: flex; flex-direction: column;
+    gap: 4px;
+  }
+  .schematic-slot {
+    background: var(--surface-2);
+    border: 1px dashed var(--outline);
+    border-radius: 3px;
+    padding: 4px 6px;
+    font-size: 10px; color: var(--ink-3);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .schematic-slot__idx {
+    display: inline-flex; width: 16px; height: 16px;
+    align-items: center; justify-content: center;
+    font-family: var(--f-mono); font-size: 9px; font-weight: 600;
+    color: #fff; background: var(--joybuy-red);
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+  .schematic-caption {
+    margin-top: 12px;
+    font-size: 11px; color: var(--ink-4); line-height: 1.55;
+  }
+
+  /* Anatomy grid: 8 cells, one per slot */
+  .anatomy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 900px) { .anatomy-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .anatomy-grid { grid-template-columns: 1fr; } }
+  .anatomy-cell {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-sm);
+    padding: 12px;
+    display: flex; flex-direction: column; gap: 8px;
+    min-height: 120px;
+  }
+  .anatomy-cell__head {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--ink-3);
+  }
+  .anatomy-cell__idx {
+    display: inline-flex; width: 20px; height: 20px;
+    align-items: center; justify-content: center;
+    font-family: var(--f-mono); font-size: 10px; font-weight: 700;
+    color: #fff; background: var(--joybuy-red);
+    border-radius: 999px;
+  }
+  .anatomy-cell__slot {
+    font-weight: 700; color: var(--ink);
+    font-family: var(--f-mono); font-size: 11px;
+  }
+  .anatomy-cell__stage {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface-2);
+    border-radius: 4px;
+    padding: 6px;
+    min-height: 40px;
+  }
+  .anatomy-cell__stage img {
+    max-width: 100%; max-height: 40px;
+    height: auto; width: auto;
+  }
+  .anatomy-cell__atom {
+    font-size: 11px; color: var(--ink-4);
+    line-height: 1.5;
+  }
+  .anatomy-cell__atom a { color: var(--joybuy-red); }
+
+  /* ============ 03 Types (variant showcase) ============ */
+  .types-stack {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+  }
+  .type-block {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 16px;
+  }
+  .type-block__label {
+    font-size: 11px; font-weight: 700;
+    color: var(--joybuy-red);
+    letter-spacing: .06em; text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .type-block__hint {
+    font-size: 12px; color: var(--ink-4);
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .type-block__stage {
+    background: linear-gradient(180deg, #f8f8f9 0%, #f2f2f3 100%);
+    border-radius: var(--r-sm);
+    padding: 16px;
+  }
+
+  /* ============ 05 Used-in cards ============ */
+  .usedin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .usedin-card {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .usedin-card__title {
+    font-size: 14px; font-weight: 700; color: var(--ink);
+  }
+  .usedin-card__desc {
+    font-size: 12px; color: var(--ink-4); line-height: 1.55;
+  }
+  .usedin-card__tag {
+    align-self: flex-start;
+    font-size: 10px; font-weight: 600;
+    padding: 2px 8px; border-radius: 999px;
+    background: var(--joybuy-red-50); color: var(--joybuy-red);
+    letter-spacing: .04em;
+  }
+
+  /* ============ 06 When to use — comparison table ============ */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 20px;
+  }
+  .compare__col-title {
+    font-size: 13px; font-weight: 700;
+    color: var(--ink); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .compare__col-title::before {
+    content: "";
+    display: inline-block;
+    width: 8px; height: 8px; border-radius: 2px;
+  }
+  .compare__col--h .compare__col-title::before { background: var(--joybuy-red); }
+  .compare__col--v .compare__col-title::before { background: var(--ink-4); }
+  .compare__list {
+    list-style: none; padding: 0; margin: 0;
+    font-size: 12.5px; color: var(--ink-3); line-height: 1.7;
+  }
+  .compare__list li { padding-left: 16px; position: relative; }
+  .compare__list li::before {
+    content: "·"; position: absolute; left: 6px; color: var(--ink-5);
+    font-weight: 700;
+  }
+</style>
+<style>
+  /* ============================================================
+     FEED (Section-layer) additions — home-feed golden template
+     Reuses tokens + chrome from the head <style>; adds only the
+     card mini (.tvcard, cloned from vertical-card) and feed
+     composition primitives (.feed__*, .feed-hero, .feed-schema).
+     ============================================================ */
+
+  /* ---- real product card mini (verbatim from vertical-card) ---- */
+  .tvcard {
+    width: 130px;
+    background: var(--surface);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    display: flex; flex-direction: column;
+    font-family: var(--f-sans);
+  }
+  .tvcard__img {
+    aspect-ratio: 1/1;
+    background: #f5f5f5;
+    display: flex; align-items: center; justify-content: center;
+    padding: 10px;
+    position: relative;
+  }
+  .tvcard__img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .tvcard__fav {
+    position: absolute; top: 4px; right: 4px;
+    width: 26px; height: 26px;
+    background: transparent;
+    display: flex; align-items: center; justify-content: center;
+    overflow: visible;
+  }
+  .tvcard__fav svg { width: 9px; height: 9px; stroke: var(--ink-2); stroke-width: 2; fill: none; }
+  .tvcard__fav img { width: 44px; height: 44px; display: block; flex-shrink: 0; }
+  .tvcard__colors { display: flex; gap: 3px; padding: 6px 8px 0; }
+  .tvcard__color-dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid rgba(0,0,0,.08); }
+  .tvcard__body { padding: 5px 8px 8px; display: flex; flex-direction: column; gap: 2px; }
+  .tvcard__hi { align-self: flex-start; line-height: 0; margin-bottom: 1px; }
+  .tvcard__hi img { display: block; height: 10px; width: auto; }
+  .tvcard__brand { font-size: 10px; font-weight: 700; color: var(--ink); line-height: 1.15; }
+  .tvcard__title {
+    margin: 0; font-size: 9px; color: var(--ink-2); line-height: 1.3;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .tvcard__price-row { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; margin-top: 2px; }
+  .tvcard__price { font-size: 12px; font-weight: 800; color: var(--joybuy-red); letter-spacing: -.01em; }
+  .tvcard__oprice { font-size: 9px; color: var(--ink-5); text-decoration: line-through; }
+  .tvcard__price-was { font-size: 9px; color: var(--ink-5); }
+  .tvcard__bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 2px; }
+  .tvcard__seller { font-size: 9px; color: var(--ink-4); }
+  .tvcard__cart--img { width: 20px; height: 20px; display: block; }
+  .tvcard__oos--img { height: 14px; width: auto; display: block; }
+  .tvcard--dim { opacity: .85; }
+  .tvcard--dim .tvcard__price { color: var(--ink-2); }
+
+  /* ---- feed composition primitives ---- */
+  /* In a feed, cards flex to fill their grid cell (responsive) rather
+     than the fixed 130px used in the isolated variant showcase. */
+  .feed__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .feed__grid + .feed__grid { margin-top: 10px; }
+  .feed__grid .tvcard { width: 100%; }
+
+  .feed__rail {
+    margin: 12px 0;
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: 12px;
+    padding: 12px 0 12px 12px;
+  }
+  .feed__rail-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-right: 12px; margin-bottom: 10px;
+  }
+  .feed__rail-head > span:first-child { font-size: 13px; font-weight: 800; color: var(--ink); }
+  .feed__rail-more { font-size: 11px; color: var(--joybuy-red); font-weight: 600; }
+  .feed__rail-track {
+    display: flex; gap: 10px; overflow-x: auto;
+    padding-right: 12px; scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .feed__rail-track::-webkit-scrollbar { display: none; }
+  .feed__rail-cell { flex: 0 0 auto; scroll-snap-align: start; }
+  .feed__rail-cell .tvcard { width: var(--product-image-horizontal-scroll); }
+
+  .feed__campaign {
+    margin: 12px 0;
+    background: linear-gradient(105deg, var(--joybuy-red) 0%, #b81d14 100%);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+    color: #fff; position: relative; overflow: hidden;
+  }
+  .feed__campaign::after {
+    content: ""; position: absolute; right: -30px; top: -30px;
+    width: 120px; height: 120px; border-radius: 50%;
+    background: rgba(255,255,255,.08);
+  }
+  .feed__campaign-badge {
+    position: absolute; top: 10px; left: 14px;
+    font-size: 9px; font-weight: 800; letter-spacing: .1em;
+    color: rgba(255,255,255,.75);
+  }
+  .feed__campaign-copy { flex: 1; min-width: 0; margin-top: 8px; z-index: 1; }
+  .feed__campaign-title { font-size: 16px; font-weight: 800; line-height: 1.15; }
+  .feed__campaign-sub { font-size: 11px; opacity: .9; margin-top: 3px; }
+  .feed__campaign-thumbs { display: flex; z-index: 1; }
+  .feed__campaign-thumb {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: #fff; overflow: hidden; margin-left: -8px;
+    border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .feed__campaign-thumb img { width: 82%; height: 82%; object-fit: contain; }
+  .feed__campaign-cta {
+    all: unset; cursor: pointer; z-index: 1; white-space: nowrap;
+    background: #fff; color: var(--joybuy-red);
+    font-size: 12px; font-weight: 800;
+    padding: 8px 14px; border-radius: 999px;
+  }
+
+  .feed--channel { border-radius: 16px; overflow: hidden; border: 1px solid var(--outline); }
+  .feed__channel-head {
+    background: linear-gradient(120deg, #2b2b3a 0%, #4a3550 55%, var(--joybuy-red) 130%);
+    padding: 14px 16px; color: #fff;
+  }
+  .feed__channel-title { font-size: 15px; font-weight: 800; display: block; }
+  .feed__channel-sub { font-size: 11px; opacity: .82; margin-top: 2px; display: block; }
+  .feed--channel .feed__grid { padding: 12px; background: #f5eef3; margin: 0; }
+
+  /* ---- hero device frame (the "money shot") ---- */
+  .feed-demobar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin: 14px 0 10px;
+  }
+  .feed-demobar__label {
+    font-size: 11px; font-weight: 700; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--ink-4);
+  }
+  .feed-hero {
+    max-width: 420px; margin: 0 auto;
+    background: #f1f2f4;
+    border: 1px solid var(--outline);
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px -18px rgba(0,0,0,.35), 0 2px 8px rgba(0,0,0,.06);
+  }
+  .feed-hero__statusbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 18px 4px; font-size: 11px; font-weight: 700; color: var(--ink);
+    background: var(--surface);
+  }
+  .feed-hero__seg {
+    display: flex; gap: 4px; padding: 6px 12px 10px;
+    background: var(--surface); border-bottom: 1px solid var(--outline);
+  }
+  .feed-hero__seg button {
+    all: unset; cursor: default;
+    font-size: 12px; font-weight: 700; color: var(--ink-4);
+    padding: 5px 10px; border-radius: 999px;
+  }
+  .feed-hero__seg button.is-active { color: var(--joybuy-red); background: #fdeceb; }
+  .feed-hero__body { padding: 12px; }
+  .feed-cap {
+    font-size: 12px; color: var(--ink-4); line-height: 1.6;
+    max-width: 620px; margin: 12px auto 0; text-align: center;
+  }
+
+  /* ---- structure schematic ---- */
+  .feed-schema {
+    margin: 18px 0 8px;
+    background: linear-gradient(180deg, #f8f8f9 0%, #f2f2f3 100%);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 18px; max-width: 460px;
+  }
+  .feed-schema__row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; position: relative; }
+  .feed-schema__row--full { grid-template-columns: 1fr; }
+  .feed-schema__box {
+    height: 46px; border: 1.5px dashed var(--ink-6, #c9ccd1); border-radius: 8px;
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--ink-4); font-weight: 600;
+  }
+  .feed-schema__box--rail { border-style: solid; border-color: var(--outline); color: var(--ink-2); letter-spacing: .04em; }
+  .feed-schema__box--camp {
+    border: none; color: #fff; font-weight: 800; letter-spacing: .04em;
+    background: linear-gradient(105deg, var(--joybuy-red), #b81d14);
+  }
+  .feed-schema__note {
+    grid-column: 1 / -1; font-size: 11px; color: var(--joybuy-red);
+    font-weight: 700; margin-top: 2px;
+  }
+
+  .subhead {
+    font-size: 14px; font-weight: 800; color: var(--ink);
+    margin: 26px 0 10px; letter-spacing: -.01em;
+  }
+  .slot-tag {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    padding: 2px 9px; border-radius: 999px; white-space: nowrap;
+  }
+  .slot-tag--algo { background: #e8f0fe; color: #1b57c4; }
+  .slot-tag--ops  { background: #fdeceb; color: var(--accent); }
+  .slot-tag--ad   { background: #fff3e0; color: #b5651d; }
+  .contract-note {
+    margin-top: 14px; padding: 12px 14px;
+    background: var(--surface-2); border-left: 3px solid var(--accent);
+    border-radius: var(--r-sm); font-size: 12.5px; color: var(--ink-3); line-height: 1.6;
+  }
+
+  /* ---- figma placeholder (no node-id for Sections yet) ---- */
+  .figma-wrap--placeholder { padding: 0; border: none; box-shadow: none; }
+  .figma-placeholder {
+    border: 2px dashed var(--outline); border-radius: var(--r-md);
+    background: repeating-linear-gradient(135deg, #fafafb, #fafafb 10px, #f4f4f6 10px, #f4f4f6 20px);
+    padding: 40px 24px; text-align: center;
+  }
+  .figma-placeholder__mark {
+    width: 42px; height: 42px; margin: 0 auto 12px; border-radius: 12px;
+    background: var(--surface); border: 1px solid var(--outline);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; color: var(--ink-4); font-weight: 300;
+  }
+  .figma-placeholder__title { font-size: 14px; font-weight: 700; color: var(--ink-3); }
+  .figma-placeholder__hint { font-size: 12px; color: var(--ink-4); margin-top: 6px; }
+</style>
+</head>
+<body>
+<div class="site site--with-toc" style="--toc-w: 300px;">
+
+  <aside id="site-nav" class="site-nav" data-active="sections/home-feed"></aside>
+
+  <main class="site-main">
+    <div class="site-main__inner">
+
+      <!-- Breadcrumb -->
+      <nav class="crumb">
+        <a href="../index.html">概览</a>
+        <span class="sep">/</span>
+        <span>Sections · 楼层</span>
+        <span class="sep">/</span>
+        <span class="curr">Home Feed · 首页推荐流</span>
+      </nav>
+
+      <!-- Header -->
+      <header class="head">
+        <span class="head__eyebrow">
+          <span style="width: 6px; height: 6px; background: var(--joybuy-red); border-radius: 50%;"></span>
+          Sections · Home Feed
+        </span>
+        <h1 class="head__title">首页推荐流楼层</h1>
+        <div class="head__title-en">Home Feed Section · 双列瀑布 · 算法推荐流 · 混排运营</div>
+        <div class="head__metas">
+          <span class="chip">v0.1</span>
+          <span class="chip chip--red">MVP4 · Now</span>
+          <span class="chip">编排型楼层</span>
+          <span class="chip">首页 / 频道 / 店铺</span>
+        </div>
+      </header>
+
+      </div><!-- /head -->
+
+      <!-- Anchor tab bar · full-bleed sticky, spans the main column -->
+      <nav class="doc-tabs">
+        <div class="doc-tabs__inner">
+        <a class="doc-tabs__link is-active" href="#s-overview"  data-tab="s-overview"><span class="doc-tabs__link-idx">01</span>概览</a>
+        <a class="doc-tabs__link"           href="#s-structure" data-tab="s-structure"><span class="doc-tabs__link-idx">02</span>编排结构</a>
+        <a class="doc-tabs__link"           href="#s-types"     data-tab="s-types"><span class="doc-tabs__link-idx">03</span>楼层变体</a>
+        <a class="doc-tabs__link"           href="#s-data"      data-tab="s-data"><span class="doc-tabs__link-idx">04</span>数据与排序</a>
+        <a class="doc-tabs__link"           href="#s-used"      data-tab="s-used"><span class="doc-tabs__link-idx">05</span>落位页面</a>
+        <a class="doc-tabs__link"           href="#s-when"      data-tab="s-when"><span class="doc-tabs__link-idx">06</span>何时用</a>
+        <a class="doc-tabs__link"           href="#s-figma"     data-tab="s-figma"><span class="doc-tabs__link-idx">＋</span>Figma</a>
+      </div>
+      </nav>
+
+      <div class="site-main__inner">
+
+      <!-- ============== 01 Overview ============== -->
+      <section class="section" id="s-overview">
+        <div class="section__head">
+          <span class="section__index">01</span>
+          <h2 class="section__title">Overview · 概览</h2>
+        </div>
+        <p class="section__lede">
+          楼层（Section）是把多张<strong>商卡</strong>按规则编排成的"信息流模块"。它<strong>不定义卡片长什么样</strong>——那是
+          <a href="../organisms/index.html">商卡层</a>的职责——只定义<strong>哪些卡、按什么顺序、以什么节奏穿插运营内容</strong>。
+          首页推荐流是最典型的编排型楼层：双列瀑布无限下拉，算法推荐为主，按固定节奏插入横滑 rail 与运营强插。
+        </p>
+
+        <div class="feed-demobar">
+          <span class="feed-demobar__label">实时预览 · Live preview</span>
+          <div class="lang-toggle" id="lang-toggle">
+            <button class="lang-toggle__btn is-active" data-lang="en">EN</button>
+            <button class="lang-toggle__btn" data-lang="zh">中文</button>
+          </div>
+        </div>
+
+        <div class="feed-hero">
+          <div class="feed-hero__statusbar">
+            <span>9:41</span>
+            <span class="feed-hero__title" id="hero-title">Home</span>
+            <span>· · ·</span>
+          </div>
+          <div class="feed-hero__seg" id="hero-seg">
+            <button class="is-active" data-seg="rec">Recommended</button>
+            <button data-seg="near">Nearby</button>
+            <button data-seg="live">Live</button>
+          </div>
+          <div class="feed-hero__body" id="feed-hero"></div>
+        </div>
+        <p class="feed-cap">
+          ↑ 一个真实的首页推荐流：<strong>双列瀑布</strong> + 每两行插入<strong>横滑 rail</strong> + 运营<strong>强插带</strong>，
+          全部用真实商卡（复用 <code>card-data.js</code>）渲染。切换语言，看槽位内容如何联动。
+        </p>
+      </section>
+
+      <!-- ============== 02 Structure ============== -->
+      <section class="section" id="s-structure">
+        <div class="section__head">
+          <span class="section__index">02</span>
+          <h2 class="section__title">Structure · 编排结构</h2>
+        </div>
+        <p class="section__lede">
+          楼层的骨架不是单卡，而是<strong>网格 + 插槽 + 节奏</strong>三件事。双列瀑布是主网格；横滑 rail 与运营强插是按节奏插入的<strong>整行插槽</strong>，不参与双列。
+        </p>
+
+        <div class="feed-schema">
+          <div class="feed-schema__row">
+            <div class="feed-schema__box">卡</div><div class="feed-schema__box">卡</div>
+            <div class="feed-schema__note">① 双列瀑布主网格 · 卡片等宽等节奏</div>
+          </div>
+          <div class="feed-schema__row">
+            <div class="feed-schema__box">卡</div><div class="feed-schema__box">卡</div>
+          </div>
+          <div class="feed-schema__row feed-schema__row--full">
+            <div class="feed-schema__box feed-schema__box--rail">◧ &nbsp; ◧ &nbsp; ◧ &nbsp; →</div>
+            <div class="feed-schema__note">② 每 2 行插入横滑 rail 插槽（整行占满）</div>
+          </div>
+          <div class="feed-schema__row">
+            <div class="feed-schema__box">卡</div><div class="feed-schema__box">卡</div>
+          </div>
+          <div class="feed-schema__row feed-schema__row--full">
+            <div class="feed-schema__box feed-schema__box--camp">运营强插带 · Campaign</div>
+            <div class="feed-schema__note">③ 每 3–4 屏插入运营强插（单次 ≤ 1 屏高）</div>
+          </div>
+        </div>
+
+        <h3 class="subhead">响应式断点 · Responsive grid</h3>
+        <table class="table">
+          <thead>
+            <tr><th>视口</th><th>列数</th><th>卡片宽</th><th>列间距 gap</th><th>典型设备</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>≤ 375px</td><td>2 列</td><td>~166px</td><td>8px</td><td>iPhone SE / mini</td></tr>
+            <tr><td>376 – 768px</td><td>2 列</td><td>flexible</td><td>10px</td><td>主流手机</td></tr>
+            <tr><td>769 – 1024px</td><td>3 列</td><td>~220px</td><td>12px</td><td>平板竖屏</td></tr>
+            <tr><td>&gt; 1024px</td><td>4 列</td><td>~240px</td><td>16px</td><td>平板横屏 / Web</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="subhead">插入节奏 · Insertion rhythm</h3>
+        <table class="table">
+          <thead>
+            <tr><th>插槽</th><th>节奏</th><th>约束</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="slot-tag slot-tag--ops">横滑 rail</span></td><td>每 2 行插 1 次</td><td>整行占满，不参与双列瀑布</td></tr>
+            <tr><td><span class="slot-tag slot-tag--ops">运营强插</span></td><td>每 3–4 屏插 1 次</td><td>单次高度 ≤ 1 屏，连续两屏不重复</td></tr>
+            <tr><td><span class="slot-tag slot-tag--ad">广告位</span></td><td>密度 ≤ 每 10 卡 1 个</td><td>必须标注 <code>sponsored</code> highlight</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ============== 03 Types ============== -->
+      <section class="section" id="s-types">
+        <div class="section__head">
+          <span class="section__index">03</span>
+          <h2 class="section__title">Types · 楼层变体</h2>
+        </div>
+        <p class="section__lede">
+          同一份编排契约，靠开关 rail / campaign / 频道皮肤，切换出 4 种常用形态。右侧预览栏可对照缩略图。
+        </p>
+
+        <div class="types-stack" style="margin-top: 20px;">
+          <div class="type-block">
+            <div class="type-block__label">Pure Feed · 纯瀑布</div>
+            <div class="type-block__hint">只有双列瀑布、无插入。最干净，用于店铺"猜你喜欢"或轻量频道。</div>
+            <div class="type-block__stage" id="type-pure"></div>
+          </div>
+          <div class="type-block">
+            <div class="type-block__label">With Rail · 混排横滑</div>
+            <div class="type-block__hint">瀑布中插入横滑 rail（"为你精选"）。首页默认形态。</div>
+            <div class="type-block__stage" id="type-rail"></div>
+          </div>
+          <div class="type-block">
+            <div class="type-block__label">With Campaign · 带运营强插</div>
+            <div class="type-block__hint">插入 Joybuy 红运营强插带，承接大促、会员日。</div>
+            <div class="type-block__stage" id="type-campaign"></div>
+          </div>
+          <div class="type-block">
+            <div class="type-block__label">Channel · 频道换肤</div>
+            <div class="type-block__hint">整层换上频道主题皮肤（美妆 / 3C），瀑布内容按频道过滤。</div>
+            <div class="type-block__stage" id="type-channel"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== 04 Data & Ranking ============== -->
+      <section class="section" id="s-data">
+        <div class="section__head">
+          <span class="section__index">04</span>
+          <h2 class="section__title">Data &amp; Ranking · 数据与排序</h2>
+        </div>
+        <p class="section__lede">
+          楼层消费的是<strong>编排契约 <code>FeedModule</code></strong>，而不是单卡的 <code>Product</code> 契约。它描述"谁在什么位置"，卡片内部字段仍由
+          <a href="../organisms/vertical-card.html">商卡层</a>负责。
+        </p>
+
+        <table class="table" style="margin-top: 16px;">
+          <thead>
+            <tr><th>字段</th><th>类型 · 示例</th><th>说明</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>moduleId</code></td><td>string · <code>home-rec-feed</code></td><td>楼层唯一标识 · 埋点与配置的 key</td></tr>
+            <tr><td><code>items[]</code></td><td>FeedItem[]</td><td>有序卡片流 · 下拉分页追加</td></tr>
+            <tr><td><code>FeedItem.slotType</code></td><td>enum · <span class="slot-tag slot-tag--algo">algo</span> <span class="slot-tag slot-tag--ops">ops</span> <span class="slot-tag slot-tag--ad">ad</span></td><td>卡片来源：算法推荐 / 运营配置 / 广告</td></tr>
+            <tr><td><code>FeedItem.cardType</code></td><td>enum · <code>vertical</code> / <code>horizontal-scroll</code> / <code>campaign</code></td><td>该位用哪种商卡渲染</td></tr>
+            <tr><td><code>FeedItem.productId</code></td><td>string · <code>sku_88213</code></td><td>指向 SKU（cardType=vertical 时）· 卡内字段由此拉取</td></tr>
+            <tr><td><code>ranking</code></td><td>object · <code>{score, reason}</code></td><td>算法排序分 + 可解释理由（如"为你精选"）</td></tr>
+            <tr><td><code>adDensityCap</code></td><td>number · <code>0.1</code></td><td>广告位密度上限 · 每 10 卡 ≤ 1 个</td></tr>
+            <tr><td><code>dedupWindow</code></td><td>number · <code>20</code></td><td>去重窗口 · N 卡内不重复同 SKU / 同店</td></tr>
+            <tr><td><code>insertRhythm</code></td><td>object · <code>{rail: 2, campaign: 8}</code></td><td>每 N 行插 rail · 每 N 卡插 campaign</td></tr>
+          </tbody>
+        </table>
+
+        <div class="contract-note">
+          <strong>两套契约正交：</strong>商卡的 <code>Product</code> 契约管"长什么样"，楼层的 <code>FeedModule</code> 契约管"谁在什么位置、按什么节奏"。
+          换算法、调节奏、插运营，都只改 <code>FeedModule</code>，不动任何一张商卡。
+        </div>
+      </section>
+
+      <!-- ============== 05 Used In ============== -->
+      <section class="section" id="s-used">
+        <div class="section__head">
+          <span class="section__index">05</span>
+          <h2 class="section__title">Used In · 落位页面</h2>
+        </div>
+        <p class="section__lede">
+          同一套推荐流编排，换 <code>items</code> 来源与频道皮肤后，落位到不同页面。
+        </p>
+
+        <div class="usedin-grid" style="margin-top: 20px;">
+          <div class="usedin-card">
+            <span class="usedin-card__tag">HOME</span>
+            <div class="usedin-card__title">首页推荐 · Home Tab</div>
+            <div class="usedin-card__desc">默认落位。无明确 query，全站算法推荐，无限下拉。rail + 运营强插按固定节奏插入。</div>
+          </div>
+          <div class="usedin-card">
+            <span class="usedin-card__tag">CHANNEL</span>
+            <div class="usedin-card__title">频道页 · Channel</div>
+            <div class="usedin-card__desc">3C / 美妆等垂直频道。同结构 + 频道换肤，<code>items</code> 限定该频道类目。</div>
+          </div>
+          <div class="usedin-card">
+            <span class="usedin-card__tag">STORE</span>
+            <div class="usedin-card__title">店铺页 · Store</div>
+            <div class="usedin-card__desc">店内"猜你喜欢"。多用 Pure Feed 变体，<code>items</code> 限定本店 SKU，不插跨店广告。</div>
+          </div>
+          <div class="usedin-card">
+            <span class="usedin-card__tag">FALLBACK</span>
+            <div class="usedin-card__title">搜索兜底 · No-result</div>
+            <div class="usedin-card__desc">搜索无匹配时用推荐流兜底，避免空页。ranking 带"猜你想找"理由。</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== 06 When to Use ============== -->
+      <section class="section" id="s-when">
+        <div class="section__head">
+          <span class="section__index">06</span>
+          <h2 class="section__title">When to Use · 何时用</h2>
+        </div>
+        <p class="section__lede">
+          选楼层先想：用户此刻是在"逛"还是在"找"。推荐流服务于"逛"，搜索结果楼层服务于"找"。
+        </p>
+
+        <div class="compare" style="margin-top: 20px;">
+          <div class="compare__col compare__col--v">
+            <div class="compare__col-title">选 Home Feed 当</div>
+            <ul class="compare__list">
+              <li>用户没有明确 query，处于"逛"的状态</li>
+              <li>需要算法推荐驱动的无限信息流</li>
+              <li>要在流里混排运营强插 / 横滑 rail / 广告</li>
+              <li>以视觉浏览、激发兴趣为主要目标</li>
+              <li>双列瀑布能容纳更多 SKU、更快下拉</li>
+            </ul>
+          </div>
+          <div class="compare__col compare__col--h">
+            <div class="compare__col-title">选 Search / Channel 当</div>
+            <ul class="compare__list">
+              <li>有明确 query 或类目约束</li>
+              <li>结果需可预期、可排序、可筛选</li>
+              <li>用户在逐条比较、决策，而非随便逛</li>
+              <li>不应混插与意图无关的运营内容</li>
+              <li>更适合横向卡的"逐条信息全"</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="dodont" style="margin-top: 24px;">
+          <div class="dodont__col dodont__col--do">
+            <div style="font-size: 12px; font-weight: 700; color: var(--success); margin-bottom: 8px;">DO</div>
+            <ul class="compare__list">
+              <li>双列瀑布保持等宽等节奏，卡片形态统一</li>
+              <li>rail / 运营强插按固定节奏插入，可预期</li>
+              <li>广告位统一标注 <code>sponsored</code> highlight</li>
+            </ul>
+          </div>
+          <div class="dodont__col" style="border-left: 3px solid var(--joybuy-red);">
+            <div style="font-size: 12px; font-weight: 700; color: var(--joybuy-red); margin-bottom: 8px;">DON'T</div>
+            <ul class="compare__list">
+              <li>别在一个楼层里混超过 2 种商卡形态 · 打乱瀑布节奏</li>
+              <li>别让运营强插连续两屏都出现 · 挤占推荐内容</li>
+              <li>别在推荐流里做需要精确筛选的场景 · 那是搜索楼层的活</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 07 · Figma ============ -->
+      <section class="section" id="s-figma">
+        <div class="section__eyebrow">07 / FIGMA</div>
+        <h2 class="section__title">Figma 源组件</h2>
+        <p class="section__lead">
+          楼层编排说明 frame 尚未在设计源文件中建立。提供 <strong>Figma node-id</strong> 后，将在此嵌入 App Business Components 的「Home feed / 楼层」结构说明，与 7 张商卡详情页保持一致的接入方式。
+        </p>
+        <div class="figma-wrap figma-wrap--placeholder">
+          <div class="figma-placeholder">
+            <div class="figma-placeholder__mark">＋</div>
+            <div class="figma-placeholder__title">楼层说明 frame · 待接入</div>
+            <div class="figma-placeholder__hint">提供 <code>node-id</code> 后填入 iframe（<code>embed_host=share</code> 公开分享链，无需 token）。</div>
+          </div>
+          <!-- TODO(figma): 待用户提供 Sections/Home feed 的 Figma node-id 后，将上面的 .figma-placeholder 替换为：
+               <iframe title="Figma · Home feed" loading="lazy" allowfullscreen
+                 src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fdesign%2FeInnhKDnBhPIyPprZADdnO%2FApp-Business-Components%3Fnode-id%3D<NODE-ID>"></iframe>
+               并加一行 <div class="figma-hint">node-id ... </div> -->
+        </div>
+      </section>
+
+    </div><!-- /.site-main__inner -->
+  </main>
+
+  <!-- ============ Right rail · variant preview ============ -->
+  <aside class="site-toc">
+    <div class="side-preview">
+      <div class="side-preview__head">
+        <span>Variants Preview</span>
+        <span class="side-preview__lang" id="sp-lang">
+          <button data-sp-lang="en" class="is-active">EN</button>
+          <button data-sp-lang="zh">中</button>
+        </span>
+      </div>
+      <div class="side-preview__items">
+        <div class="side-preview__item">
+          <div class="side-preview__item-label"><span>Pure Feed</span><span class="side-preview__item-tag">纯瀑布</span></div>
+          <div class="side-preview__stage"><div class="side-preview__scale" id="sp-1"></div></div>
+        </div>
+        <div class="side-preview__item">
+          <div class="side-preview__item-label"><span>With Rail</span><span class="side-preview__item-tag">混排横滑</span></div>
+          <div class="side-preview__stage"><div class="side-preview__scale" id="sp-2"></div></div>
+        </div>
+        <div class="side-preview__item">
+          <div class="side-preview__item-label"><span>With Campaign</span><span class="side-preview__item-tag">运营强插</span></div>
+          <div class="side-preview__stage"><div class="side-preview__scale" id="sp-3"></div></div>
+        </div>
+        <div class="side-preview__item">
+          <div class="side-preview__item-label"><span>Channel</span><span class="side-preview__item-tag">频道换肤</span></div>
+          <div class="side-preview__stage"><div class="side-preview__scale" id="sp-4"></div></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div><!-- /.site -->
+
+<script src="../assets/card-data.js"></script>
+<script src="../assets/nav.js"></script>
+<script>
+(function () {
+  var D = window.CARD_DATA;
+  if (!D) return;
+  var cardLang = 'en';
+
+  var HIGHLIGHT_ENUM = new Set([
+    'best-before','best-seller','blockbuster','clearance',
+    'hot-deal','new','plus-price','sponsored','top-deal'
+  ]);
+  var HIGHLIGHT_LABEL = {
+    'best-before':'Best before', 'best-seller':'Best seller', 'blockbuster':'Blockbuster',
+    'clearance':'Clearance', 'hot-deal':'Hot deal', 'new':'New',
+    'plus-price':'Plus price', 'sponsored':'Sponsored', 'top-deal':'Top deal'
+  };
+
+  var HERO_CHROME = {
+    en: { title: 'Home', rec: 'Recommended', near: 'Nearby', live: 'Live' },
+    zh: { title: '首页',  rec: '推荐',        near: '附近',   live: '直播' }
+  };
+
+  // Real product card mini — cloned verbatim from vertical-card.tvcardHTML.
+  // Asset paths are ../assets/* which resolve correctly from sections/ (depth 1).
+  function tvcardHTML(cfg) {
+    var list = D.catalog[cfg.catKey];
+    if (!list || !list[cfg.presetIdx]) return '';
+    var p = list[cfg.presetIdx];
+    var t = p[cardLang];
+    var img = D.productImages[p.img] || '';
+    var html = '<div class="tvcard' + (cfg.dim ? ' tvcard--dim' : '') + '">';
+    html += '<div class="tvcard__img">';
+    html += (img ? '<img src="' + img + '" alt="' + p.brand + '">' : '');
+    html += '<span class="tvcard__fav"><img src="../assets/figma-atoms/tag-like/tag-like.svg" alt="Favorite"></span>';
+    html += '</div>';
+    if (cfg.showColors && p.colors && p.colors.length) {
+      html += '<div class="tvcard__colors">';
+      p.colors.slice(0, 4).forEach(function (c) { html += '<span class="tvcard__color-dot" style="background:' + c + '"></span>'; });
+      if (p.extraColors > 0 || p.colors.length > 4) {
+        html += '<span class="tvcard__color-dot" style="background:#eee;font-size:6px;display:flex;align-items:center;justify-content:center;color:#666;">+</span>';
+      }
+      html += '</div>';
+    }
+    html += '<div class="tvcard__body">';
+    if (cfg.showHi && t.highlight && HIGHLIGHT_ENUM.has(t.highlight)) {
+      html += '<span class="tvcard__hi"><img src="../assets/figma-atoms/product-highlights/' + t.highlight + '.svg" alt="' + (HIGHLIGHT_LABEL[t.highlight] || t.highlight) + '"></span>';
+    }
+    if (cfg.minimal) {
+      html += '<p class="tvcard__title" style="font-weight:600;color:var(--ink);">' + t.title + '</p>';
+      html += '<div class="tvcard__price-row"><span class="tvcard__price">' + p.salePrice + '</span></div>';
+    } else {
+      html += '<div class="tvcard__brand">' + p.brand + '</div>';
+      html += '<p class="tvcard__title">' + t.title + '</p>';
+      html += '<div class="tvcard__price-row">';
+      html += '<span class="tvcard__price">' + p.salePrice + '</span>';
+      if (p.originalPrice) html += '<span class="tvcard__price-was">RRP: <span class="tvcard__oprice">' + p.originalPrice + '</span></span>';
+      html += '</div>';
+      if (cfg.showBottom !== false) {
+        html += '<div class="tvcard__bottom">';
+        html += '<span class="tvcard__seller">' + t.seller + '</span>';
+        if (cfg.oos) {
+          html += '<img class="tvcard__oos--img" src="../assets/figma-atoms/stock/out-of-stock.svg" alt="Out of stock">';
+        } else {
+          html += '<img class="tvcard__cart--img" src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Add to cart">';
+        }
+        html += '</div>';
+      }
+    }
+    html += '</div></div>';
+    return html;
+  }
+
+  // ---- feed composition primitives ----
+  function cell(cfg) { return '<div class="feed__cell">' + tvcardHTML(cfg) + '</div>'; }
+  function gridHTML(cfgs) { return '<div class="feed__grid">' + cfgs.map(cell).join('') + '</div>'; }
+
+  function railHTML(titleEn, titleZh, cfgs) {
+    var title = cardLang === 'zh' ? titleZh : titleEn;
+    var more = cardLang === 'zh' ? '查看全部 ›' : 'See all ›';
+    var track = cfgs.map(function (c) { return '<div class="feed__rail-cell">' + tvcardHTML(c) + '</div>'; }).join('');
+    return '<div class="feed__rail"><div class="feed__rail-head"><span>' + title + '</span>' +
+           '<span class="feed__rail-more">' + more + '</span></div>' +
+           '<div class="feed__rail-track">' + track + '</div></div>';
+  }
+
+  function campaignHTML(o) {
+    var title = cardLang === 'zh' ? o.zh : o.en;
+    var sub = cardLang === 'zh' ? o.zhSub : o.enSub;
+    var cta = cardLang === 'zh' ? '立即抢' : 'Shop now';
+    var badge = cardLang === 'zh' ? '运营强插' : 'CAMPAIGN';
+    var thumbs = (o.imgs || []).map(function (k) {
+      return '<span class="feed__campaign-thumb"><img src="' + (D.productImages[k] || '') + '" alt=""></span>';
+    }).join('');
+    return '<div class="feed__campaign"><span class="feed__campaign-badge">' + badge + '</span>' +
+           '<div class="feed__campaign-copy"><div class="feed__campaign-title">' + title + '</div>' +
+           '<div class="feed__campaign-sub">' + sub + '</div></div>' +
+           '<div class="feed__campaign-thumbs">' + thumbs + '</div>' +
+           '<button class="feed__campaign-cta">' + cta + '</button></div>';
+  }
+
+  function channelHTML(titleEn, titleZh, subEn, subZh, cfgs) {
+    var title = cardLang === 'zh' ? titleZh : titleEn;
+    var sub = cardLang === 'zh' ? subZh : subEn;
+    return '<div class="feed feed--channel"><div class="feed__channel-head">' +
+           '<span class="feed__channel-title">' + title + '</span>' +
+           '<span class="feed__channel-sub">' + sub + '</span></div>' +
+           gridHTML(cfgs) + '</div>';
+  }
+
+  // ---- renderers ----
+  function renderHeroChrome() {
+    var c = HERO_CHROME[cardLang];
+    var titleEl = document.getElementById('hero-title');
+    if (titleEl) titleEl.textContent = c.title;
+    var seg = document.getElementById('hero-seg');
+    if (seg) seg.querySelectorAll('button').forEach(function (b) {
+      var k = b.getAttribute('data-seg');
+      if (c[k]) b.textContent = c[k];
+    });
+  }
+
+  function renderHero() {
+    var host = document.getElementById('feed-hero');
+    if (!host) return;
+    var h = '';
+    h += gridHTML([{ catKey:'beauty', presetIdx:0, showHi:true }, { catKey:'3c', presetIdx:0, showHi:true }]);
+    h += gridHTML([{ catKey:'fashion', presetIdx:0, showHi:true }, { catKey:'food', presetIdx:0, showHi:true }]);
+    h += railHTML('Digital picks for you', '为你精选 · 手机数码',
+      [{ catKey:'3c', presetIdx:0 }, { catKey:'3c', presetIdx:1 }, { catKey:'appliance', presetIdx:0 }, { catKey:'food', presetIdx:1 }]);
+    h += gridHTML([{ catKey:'beauty', presetIdx:1, showHi:true }, { catKey:'fashion', presetIdx:1, showHi:true }]);
+    h += campaignHTML({ en:"Members' Day", enSub:'£8 off every £50 · today only', zh:'会员日', zhSub:'全场满 £50 减 £8 · 仅限今日', imgs:['diptyque','haagen'] });
+    h += gridHTML([{ catKey:'beauty', presetIdx:2, showHi:true }, { catKey:'beauty', presetIdx:3, showHi:true }]);
+    h += gridHTML([{ catKey:'food', presetIdx:1, showHi:true }, { catKey:'3c', presetIdx:1, showHi:true }]);
+    host.innerHTML = h;
+  }
+
+  function renderTypeBlocks() {
+    var pure = document.getElementById('type-pure');
+    if (pure) pure.innerHTML = gridHTML([
+      { catKey:'beauty', presetIdx:0, showHi:true }, { catKey:'3c', presetIdx:0, showHi:true },
+      { catKey:'fashion', presetIdx:0, showHi:true }, { catKey:'food', presetIdx:0, showHi:true }
+    ]);
+    var rail = document.getElementById('type-rail');
+    if (rail) rail.innerHTML =
+      gridHTML([{ catKey:'beauty', presetIdx:1, showHi:true }, { catKey:'food', presetIdx:1, showHi:true }]) +
+      railHTML('Trending now', '正在热销', [{ catKey:'3c', presetIdx:0 }, { catKey:'3c', presetIdx:1 }, { catKey:'appliance', presetIdx:0 }]);
+    var camp = document.getElementById('type-campaign');
+    if (camp) camp.innerHTML =
+      gridHTML([{ catKey:'beauty', presetIdx:2, showHi:true }, { catKey:'fashion', presetIdx:1, showHi:true }]) +
+      campaignHTML({ en:'Flash Sale', enSub:'Up to 40% off beauty', zh:'限时闪购', zhSub:'美妆低至 6 折', imgs:['aesop','loreal'] });
+    var chan = document.getElementById('type-channel');
+    if (chan) chan.innerHTML = channelHTML('Beauty Channel', '美妆频道', 'Themed skin for beauty', '为你换上美妆主题皮肤',
+      [{ catKey:'beauty', presetIdx:0, showHi:true }, { catKey:'beauty', presetIdx:1, showHi:true },
+       { catKey:'beauty', presetIdx:2, showHi:true }, { catKey:'beauty', presetIdx:3, showHi:true }]);
+  }
+
+  function renderPreviewStack() {
+    var s1 = document.getElementById('sp-1');
+    if (s1) s1.innerHTML = gridHTML([
+      { catKey:'beauty', presetIdx:0, showHi:true }, { catKey:'3c', presetIdx:0, showHi:true },
+      { catKey:'fashion', presetIdx:0, showHi:true }, { catKey:'food', presetIdx:0, showHi:true }
+    ]);
+    var s2 = document.getElementById('sp-2');
+    if (s2) s2.innerHTML =
+      gridHTML([{ catKey:'beauty', presetIdx:1, showHi:true }, { catKey:'food', presetIdx:1, showHi:true }]) +
+      railHTML('Picks', '精选', [{ catKey:'3c', presetIdx:0 }, { catKey:'3c', presetIdx:1 }, { catKey:'appliance', presetIdx:0 }]);
+    var s3 = document.getElementById('sp-3');
+    if (s3) s3.innerHTML =
+      gridHTML([{ catKey:'beauty', presetIdx:2, showHi:true }, { catKey:'fashion', presetIdx:1, showHi:true }]) +
+      campaignHTML({ en:'Members', enSub:'£8 off £50', zh:'会员日', zhSub:'满 50 减 8', imgs:['diptyque','haagen'] });
+    var s4 = document.getElementById('sp-4');
+    if (s4) s4.innerHTML = channelHTML('Beauty', '美妆频道', 'Themed', '主题皮肤',
+      [{ catKey:'beauty', presetIdx:0, showHi:true }, { catKey:'beauty', presetIdx:1, showHi:true }]);
+  }
+
+  function renderAll() {
+    renderHeroChrome();
+    renderHero();
+    renderTypeBlocks();
+    renderPreviewStack();
+  }
+
+  function setCardLang(lang) {
+    if (lang !== 'en' && lang !== 'zh') return;
+    cardLang = lang;
+    document.querySelectorAll('.lang-toggle__btn').forEach(function (b) { b.classList.toggle('is-active', b.dataset.lang === lang); });
+    document.querySelectorAll('#sp-lang [data-sp-lang]').forEach(function (b) { b.classList.toggle('is-active', b.dataset.spLang === lang); });
+    renderAll();
+  }
+
+  var lt = document.getElementById('lang-toggle');
+  if (lt) lt.addEventListener('click', function (e) { var b = e.target.closest('[data-lang]'); if (b) setCardLang(b.dataset.lang); });
+  var sp = document.getElementById('sp-lang');
+  if (sp) sp.addEventListener('click', function (e) { var b = e.target.closest('[data-sp-lang]'); if (b) setCardLang(b.dataset.spLang); });
+
+  // ---- scroll-spy (verbatim mechanism from the golden template) ----
+  var tabLinks = document.querySelectorAll('.doc-tabs__link[data-tab]');
+  var tabSections = Array.prototype.map.call(tabLinks, function (a) { return document.getElementById(a.dataset.tab); }).filter(Boolean);
+  function updateTabs() {
+    var y = window.scrollY + 160;
+    var current = tabSections[0] ? tabSections[0].id : null;
+    for (var i = 0; i < tabSections.length; i++) { if (tabSections[i].offsetTop <= y) current = tabSections[i].id; }
+    tabLinks.forEach(function (a) { a.classList.toggle('is-active', a.dataset.tab === current); });
+  }
+  window.addEventListener('scroll', updateTabs, { passive: true });
+
+  renderAll();
+  updateTabs();
+})();
+</script>
+</body>
+</html>

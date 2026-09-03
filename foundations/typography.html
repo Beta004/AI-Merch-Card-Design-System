@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>字体与文案 · Typography · Foundations · 商卡设计系统</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="字体族、字号阶梯、字重、行距、以及在商卡中的应用规范。">
+<link rel="stylesheet" href="../assets/tokens.css">
+<style>
+  /* Page chrome */
+  .crumb {
+    font-size: 12.5px; color: var(--ink-4);
+    margin-bottom: 18px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .crumb a { color: var(--ink-4); transition: color .12s ease; }
+  .crumb a:hover { color: var(--accent); }
+  .crumb .sep { color: var(--outline-strong); }
+  .crumb .curr { color: var(--ink-2); font-weight: 600; }
+
+  .head { margin-bottom: 4px; }
+  .head__eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 700; letter-spacing: .14em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .head__title {
+    margin: 0 0 10px;
+    font-size: 33px; font-weight: 700; letter-spacing: -.02em;
+    color: var(--ink); line-height: 1.16;
+  }
+  .head__title-en {
+    font-size: 14.5px; color: var(--ink-4);
+    line-height: 1.5; margin-bottom: 0;
+  }
+  /* Meta strip — quiet arco-clean tags with airy spacing, balanced like a
+     TDesign component header. Chip visuals come from the shared .chip. */
+  .head__metas {
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px; margin-bottom: 0;
+  }
+  /* Anchor tabs */
+  .doc-tabs {
+    position: sticky; top: 0; z-index: 20;
+    /* Break out of .site-main__inner to span the whole main column,
+       edge-to-edge from the nav border to the TOC border. */
+    margin: 20px calc(-1 * var(--page-pad-x)) 32px;
+    background: rgba(255, 255, 255, .86);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--outline);
+  }
+  .doc-tabs__inner {
+    max-width: calc(var(--content-max) + 2 * var(--page-pad-x));
+    margin: 0 auto;
+    padding: 0 var(--page-pad-x);
+    display: flex; gap: 2px;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .doc-tabs__inner::-webkit-scrollbar { display: none; }
+  .doc-tabs__link {
+    position: relative;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 14px 14px 13px;
+    font-size: 13.5px; font-weight: 500;
+    color: var(--ink-4);
+    white-space: nowrap; text-decoration: none;
+    transition: color .15s ease;
+  }
+  .doc-tabs__link::after {
+    content: ''; position: absolute;
+    left: 12px; right: 12px; bottom: -1px; height: 2px;
+    background: var(--accent); border-radius: 2px 2px 0 0;
+    transform: scaleX(0); transform-origin: center;
+    transition: transform .22s cubic-bezier(.4, 0, .2, 1);
+  }
+  .doc-tabs__link:hover { color: var(--ink-2); }
+  .doc-tabs__link.is-active { color: var(--accent); font-weight: 600; }
+  .doc-tabs__link.is-active::after { transform: scaleX(1); }
+  .doc-tabs__link-idx {
+    font-family: var(--f-mono);
+    font-size: 11px; font-weight: 500; color: var(--ink-5);
+    letter-spacing: 0;
+  }
+  .doc-tabs__link.is-active .doc-tabs__link-idx { color: var(--accent); opacity: .7; }
+  /* ============ Family showcase ============ */
+  .family-card {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 24px 28px;
+    margin-top: 20px;
+  }
+  .family-card + .family-card { margin-top: 16px; }
+  .family-card__label {
+    font-family: var(--f-mono); font-size: 11px; font-weight: 700;
+    color: var(--accent);
+    letter-spacing: .06em; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .family-card__meta {
+    font-size: 12px; color: var(--ink-4);
+    margin-bottom: 20px;
+    font-family: var(--f-mono);
+    line-height: 1.7;
+    word-break: break-all;
+  }
+  .family-card__preview {
+    display: flex; flex-direction: column; gap: 6px;
+    padding-top: 20px;
+    border-top: 1px solid var(--outline);
+  }
+  .family-preview-row {
+    display: flex; align-items: baseline; gap: 20px;
+    padding: 8px 0;
+  }
+  .family-preview-row__size {
+    flex-shrink: 0;
+    width: 60px;
+    font-family: var(--f-mono);
+    font-size: 11px; color: var(--ink-5);
+  }
+  .family-preview-row__sample {
+    color: var(--ink);
+    letter-spacing: -.005em;
+    line-height: 1.2;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .family-preview-row--sans .family-preview-row__sample { font-family: var(--f-sans); }
+  .family-preview-row--mono .family-preview-row__sample { font-family: var(--f-mono); }
+
+  /* ============ Type scale table ============ */
+  .type-scale {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 8px 0;
+    margin-top: 20px;
+  }
+  .type-row {
+    display: grid;
+    grid-template-columns: 120px 100px 1fr;
+    gap: 20px;
+    padding: 16px 24px;
+    align-items: baseline;
+    border-bottom: 1px solid var(--outline);
+  }
+  .type-row:last-child { border-bottom: none; }
+  .type-row__label {
+    font-family: var(--f-mono); font-size: 11px; font-weight: 700;
+    color: var(--ink);
+    letter-spacing: .03em;
+  }
+  .type-row__spec {
+    font-family: var(--f-mono); font-size: 11px;
+    color: var(--ink-4);
+  }
+  .type-row__sample {
+    color: var(--ink);
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @media (max-width: 720px) {
+    .type-row { grid-template-columns: 1fr; gap: 4px; padding: 12px 16px; }
+    .type-row__sample { white-space: normal; }
+  }
+
+  /* ============ Weight cards ============ */
+  .weight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .weight-card {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 20px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .weight-card__number {
+    font-size: 40px;
+    color: var(--ink);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.02em;
+  }
+  .weight-card__number--400 { font-weight: 400; }
+  .weight-card__number--500 { font-weight: 500; }
+  .weight-card__number--600 { font-weight: 600; }
+  .weight-card__number--700 { font-weight: 700; }
+  .weight-card__number--900 { font-weight: 900; }
+  .weight-card__key {
+    font-family: var(--f-mono); font-size: 11px;
+    color: var(--ink-4);
+    margin-top: 6px;
+  }
+  .weight-card__meta {
+    font-size: 12px; color: var(--ink-3);
+    line-height: 1.6;
+  }
+
+  /* ============ Line-height rows ============ */
+  .lh-row {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 20px 24px;
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 24px;
+    align-items: flex-start;
+  }
+  .lh-row__label {
+    font-family: var(--f-mono); font-size: 11px; font-weight: 700;
+    color: var(--accent);
+    letter-spacing: .06em;
+  }
+  .lh-row__label small {
+    display: block;
+    font-size: 10px; color: var(--ink-4); font-weight: 500;
+    margin-top: 4px;
+    letter-spacing: 0;
+  }
+  .lh-row__sample {
+    color: var(--ink-2);
+    font-size: 13px;
+  }
+  .lh-row__sample--115 { line-height: 1.15; }
+  .lh-row__sample--135 { line-height: 1.35; }
+  .lh-row__sample--155 { line-height: 1.55; }
+  .lh-row__sample--170 { line-height: 1.7; }
+
+  /* ============ Usage playground ============ */
+  .usage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .usage-card {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 20px 24px;
+  }
+  .usage-card__label {
+    font-family: var(--f-mono); font-size: 11px; font-weight: 700;
+    color: var(--accent);
+    letter-spacing: .06em; text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .usage-card__hint {
+    font-size: 12px; color: var(--ink-4);
+    margin-bottom: 16px;
+    line-height: 1.55;
+  }
+  .usage-card__stage {
+    background: linear-gradient(180deg, #f8f8f9 0%, #f2f2f3 100%);
+    border-radius: var(--r-sm);
+    padding: 20px;
+    display: flex; flex-direction: column; gap: 6px;
+    min-height: 96px;
+  }
+  .usage-code {
+    display: block;
+    margin-top: 12px;
+    font-family: var(--f-mono); font-size: 11px;
+    color: var(--ink-4);
+    background: var(--surface-2);
+    padding: 8px 10px;
+    border-radius: var(--r-xs);
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  /* Individual sample specs used inside usage cards */
+  .s-brand { font-size: 14px; font-weight: 700; color: var(--ink); line-height: 20px; }
+  .s-title { font-size: 13px; font-weight: 500; color: var(--ink-2); line-height: 18px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .s-price {
+    font-size: 20px; font-weight: 900; color: var(--ink);
+    line-height: 24px; font-variant-numeric: tabular-nums;
+  }
+  .s-price-was { font-size: 11px; color: var(--ink-5); text-decoration: line-through; margin-left: 6px; }
+  .s-promo { font-size: 11px; font-weight: 500; color: var(--accent); }
+  .s-meta { font-size: 11px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+  .s-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .12em; color: var(--accent); text-transform: uppercase; }
+  .s-fulfillment { font-size: 11px; font-weight: 500; color: var(--ink-3); }
+
+  /* ============ Reference table ============ */
+  .ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+  .ref-table th, .ref-table td {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 12.5px;
+    border-bottom: 1px solid var(--outline);
+  }
+  .ref-table th {
+    background: var(--surface-2);
+    font-weight: 700; color: var(--ink);
+    font-size: 11.5px;
+    letter-spacing: .02em;
+  }
+  .ref-table td { color: var(--ink-2); vertical-align: baseline; }
+  .ref-table tr:last-child td { border-bottom: none; }
+  .ref-table code {
+    background: var(--surface-2);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+  }
+</style>
+</head>
+<body>
+<div class="site" style="grid-template-columns: var(--nav-w) 1fr;">
+
+  <aside id="site-nav" class="site-nav" data-active="foundations/typography"></aside>
+
+  <main class="site-main">
+    <div class="site-main__inner">
+
+      <!-- Breadcrumb -->
+      <nav class="crumb">
+        <a href="../index.html">概览</a>
+        <span class="sep">/</span>
+        <span>Foundations · 基础</span>
+        <span class="sep">/</span>
+        <span class="curr">Typography</span>
+      </nav>
+
+      <!-- Header -->
+      <header class="head">
+        <span class="head__eyebrow">
+          <span style="width: 6px; height: 6px; background: var(--joybuy-red); border-radius: 50%;"></span>
+          Foundations · Typography
+        </span>
+        <h1 class="head__title">字体与文案</h1>
+        <div class="head__title-en">Typography · font family · scale · weight · line-height · usage in cards</div>
+        <div class="head__metas">
+          <span class="chip">v0.1</span>
+          <span class="chip chip--red">MVP · Now</span>
+          <span class="chip">2 家族</span>
+          <span class="chip">10 阶梯</span>
+          <span class="chip">4 字重</span>
+        </div>
+      </header>
+
+      </div><!-- /head -->
+
+      <!-- Anchor tab bar · full-bleed sticky, spans the main column -->
+      <nav class="doc-tabs">
+        <div class="doc-tabs__inner">
+        <a class="doc-tabs__link is-active" href="#s-overview"><span class="doc-tabs__link-idx">01</span>概览</a>
+        <a class="doc-tabs__link"           href="#s-family"><span class="doc-tabs__link-idx">02</span>字体族</a>
+        <a class="doc-tabs__link"           href="#s-scale"><span class="doc-tabs__link-idx">03</span>字号阶梯</a>
+        <a class="doc-tabs__link"           href="#s-weight"><span class="doc-tabs__link-idx">04</span>字重</a>
+        <a class="doc-tabs__link"           href="#s-lh"><span class="doc-tabs__link-idx">05</span>行距</a>
+        <a class="doc-tabs__link"           href="#s-usage"><span class="doc-tabs__link-idx">06</span>应用</a>
+      </div>
+      </nav>
+
+      <div class="site-main__inner">
+
+      <!-- ============== 01 Overview ============== -->
+      <section class="section" id="s-overview">
+        <div class="section__head">
+          <span class="section__index">01</span>
+          <h2 class="section__title">Overview · 概览</h2>
+        </div>
+        <p class="section__lede">
+          Joybuy 字体系统由两个 token 家族撑起：<code>--f-sans</code> 承担全站正文与展示型文本，<code>--f-mono</code> 只用在价格、代码、SKU 编号这类需要等宽/数字对齐的场合。
+          禁用衬线体和斜体—任何斜体只会出现在被划掉的 RRP 中，是删除线的视觉附属，而不是"强调"手法。
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 20px;">
+          <div class="card">
+            <div style="font-family: var(--f-mono); font-size: 11px; font-weight: 700; color: var(--joybuy-red); letter-spacing: .06em; margin-bottom: 6px;">FAMILIES</div>
+            <div style="font-size: 24px; font-weight: 700; color: var(--ink); margin-bottom: 4px;">2</div>
+            <div style="font-size: 12px; color: var(--ink-4);">Sans · Mono，均用系统栈，不加载外部 web font。</div>
+          </div>
+          <div class="card">
+            <div style="font-family: var(--f-mono); font-size: 11px; font-weight: 700; color: var(--joybuy-red); letter-spacing: .06em; margin-bottom: 6px;">SCALE</div>
+            <div style="font-size: 24px; font-weight: 700; color: var(--ink); margin-bottom: 4px;">10 阶</div>
+            <div style="font-size: 12px; color: var(--ink-4);">32 / 22 / 20 / 18 / 15 / 14 / 13 / 12 / 11 / 10 px — 商卡里只用 10~20px。</div>
+          </div>
+          <div class="card">
+            <div style="font-family: var(--f-mono); font-size: 11px; font-weight: 700; color: var(--joybuy-red); letter-spacing: .06em; margin-bottom: 6px;">WEIGHTS</div>
+            <div style="font-size: 24px; font-weight: 700; color: var(--ink); margin-bottom: 4px;">4 档</div>
+            <div style="font-size: 12px; color: var(--ink-4);">400 / 500 / 700 / 900，跳过 600 保持层次拉开。</div>
+          </div>
+          <div class="card">
+            <div style="font-family: var(--f-mono); font-size: 11px; font-weight: 700; color: var(--joybuy-red); letter-spacing: .06em; margin-bottom: 6px;">RULE</div>
+            <div style="font-size: 24px; font-weight: 700; color: var(--ink); margin-bottom: 4px;">禁用斜体</div>
+            <div style="font-size: 12px; color: var(--ink-4);">保留划线体（RRP）之外，不做任何强调型的 italic。</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== 02 Family ============== -->
+      <section class="section" id="s-family">
+        <div class="section__head">
+          <span class="section__index">02</span>
+          <h2 class="section__title">Family · 字体族</h2>
+        </div>
+        <p class="section__lede">
+          两个家族通过 CSS 变量分发，无需 <code>@font-face</code>，加载零成本。默认走中文系统字体，苹方、汉仪都会命中。
+        </p>
+
+        <div class="family-card">
+          <div class="family-card__label">--f-sans · Sans</div>
+          <div class="family-card__meta">"PingFang SC", "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif</div>
+          <div class="family-card__preview">
+            <div class="family-preview-row family-preview-row--sans">
+              <span class="family-preview-row__size">48/700</span>
+              <div class="family-preview-row__sample" style="font-size: 48px; font-weight: 700;">京东全球售 Joybuy</div>
+            </div>
+            <div class="family-preview-row family-preview-row--sans">
+              <span class="family-preview-row__size">32/700</span>
+              <div class="family-preview-row__sample" style="font-size: 32px; font-weight: 700;">通用双列-商品卡片组件</div>
+            </div>
+            <div class="family-preview-row family-preview-row--sans">
+              <span class="family-preview-row__size">22/700</span>
+              <div class="family-preview-row__sample" style="font-size: 22px; font-weight: 700;">Baies Scented Candle 190g</div>
+            </div>
+            <div class="family-preview-row family-preview-row--sans">
+              <span class="family-preview-row__size">15/500</span>
+              <div class="family-preview-row__sample" style="font-size: 15px; font-weight: 500;">图像置左、内容右侧堆叠的商品卡片。The quick brown fox.</div>
+            </div>
+            <div class="family-preview-row family-preview-row--sans">
+              <span class="family-preview-row__size">13/500</span>
+              <div class="family-preview-row__sample" style="font-size: 13px; font-weight: 500;">用户在快速浏览、比价（首页 / 类目页 / 搜索结果）</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="family-card">
+          <div class="family-card__label">--f-mono · Mono</div>
+          <div class="family-card__meta">"SF Mono", ui-monospace, Menlo, Consolas, "Roboto Mono", monospace</div>
+          <div class="family-card__preview">
+            <div class="family-preview-row family-preview-row--mono">
+              <span class="family-preview-row__size">40/900</span>
+              <div class="family-preview-row__sample" style="font-size: 40px; font-weight: 900;">£1,299.00</div>
+            </div>
+            <div class="family-preview-row family-preview-row--mono">
+              <span class="family-preview-row__size">24/700</span>
+              <div class="family-preview-row__sample" style="font-size: 24px; font-weight: 700;">SKU-BJ-9012-Red</div>
+            </div>
+            <div class="family-preview-row family-preview-row--mono">
+              <span class="family-preview-row__size">14/500</span>
+              <div class="family-preview-row__sample" style="font-size: 14px; font-weight: 500;">const price = { sale: '£58', rrp: '£70' }</div>
+            </div>
+            <div class="family-preview-row family-preview-row--mono">
+              <span class="family-preview-row__size">11/700</span>
+              <div class="family-preview-row__sample" style="font-size: 11px; font-weight: 700; letter-spacing: .04em;">FOUNDATIONS · TOKENS</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== 03 Scale ============== -->
+      <section class="section" id="s-scale">
+        <div class="section__head">
+          <span class="section__index">03</span>
+          <h2 class="section__title">Scale · 字号阶梯</h2>
+        </div>
+        <p class="section__lede">
+          10 档字号，按视觉层次而非等比数列排布。商卡通常只用 10-20px 区间；页面标题、章节标题在文档层用到 20+。
+          <code>letter-spacing</code> 遵循苹方规则：字号越大越紧（负字距），字号越小越松（正字距）。
+        </p>
+
+        <div class="type-scale">
+          <div class="type-row">
+            <span class="type-row__label">display</span>
+            <span class="type-row__spec">32 / 700 / -.015</span>
+            <div class="type-row__sample" style="font-size: 32px; font-weight: 700; letter-spacing: -.015em;">Joybuy 商卡设计系统</div>
+          </div>
+          <div class="type-row">
+            <span class="type-row__label">h1</span>
+            <span class="type-row__spec">22 / 700 / -.005</span>
+            <div class="type-row__sample" style="font-size: 22px; font-weight: 700; letter-spacing: -.005em;">通用横向-商品卡片组件</div>
+          </div>
+          <div class="type-row">
+            <span class="type-row__label">h2</span>
+            <span class="type-row__spec">20 / 700 / -.005</span>
+            <div class="type-row__sample" style="font-size: 20px; font-weight: 700; letter-spacing: -.005em;">Structure · 骨架</div>
+          </div>
+          <div class="type-row">
+            <span class="type-row__label">price · lg</span>
+            <span class="type-row__spec">18 / 900 / 0 · mono</span>
+            <div class="type-row__sample" style="font-size: 18px; font-weight: 900; font-family: var(--f-mono); font-variant-numeric: tabular-nums;">£58.00</div>
+          </div>
+          <div class="type-row">
+            <span class="type-row__label">price · md</span>
+            <span class="type-row__spec">15 / 900 / 0 · mono</span>
+            <div class="type-row__sample" style="font-size: 15px; font-weight: 900; font-family: var(--f-mono); font-variant-numeric: tabular-nums;">£58</div>
+          </div>
+          <div class="type-row">
+            <span class="type-row__label">brand</span>
+            <span class="type-row__spec">14 / 700 / 0</span>
+            <div class="type-row__sample" style="font-size: 14px; font-weight: 700;">Diptyque</div>
+          </div>
+          <div class="type-row">
+            <span class="type-row__label">body</span>
+            <span class="type-row__spec">13 / 500 / 0</span>
+            <div class="type-row__sample" style="font-size: 13px; font-weight: 500;">Baies Scented Candle 190g — a room-freshening classic.</div>
+          </div>
+          <div class="type-row">
+            <span class="type-row__label">title · card</span>
+            <span class="type-row__spec">12 / 500 / 0</span>
+            <div class="type-row__sample" style="font-size: 12px; font-weight: 500;">Mini 商卡里的标题使用 12/500，2 line clamp。</div>
+          </div>
+          <div class="type-row">
+            <span class="type-row__label">meta</span>
+            <span class="type-row__spec">11 / 500 / 0</span>
+            <div class="type-row__sample" style="font-size: 11px; font-weight: 500;">30k+ sold · Delivered tomorrow · Sold by Diptyque</div>
+          </div>
+          <div class="type-row">
+            <span class="type-row__label">caption</span>
+            <span class="type-row__spec">10 / 500 / 0</span>
+            <div class="type-row__sample" style="font-size: 10px; font-weight: 500;">RRP: £70.00 · fulfillment badge 内文</div>
+          </div>
+          <div class="type-row">
+            <span class="type-row__label">eyebrow</span>
+            <span class="type-row__spec">11 / 700 / .12 · mono</span>
+            <div class="type-row__sample" style="font-size: 11px; font-weight: 700; letter-spacing: .12em; font-family: var(--f-mono); text-transform: uppercase;">Foundations · Typography</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== 04 Weight ============== -->
+      <section class="section" id="s-weight">
+        <div class="section__head">
+          <span class="section__index">04</span>
+          <h2 class="section__title">Weight · 字重</h2>
+        </div>
+        <p class="section__lede">
+          只用 4 档字重—— 400 正文、500 半强调、700 强调标题、900 只留给价格数字。
+          刻意跳过 300 与 600，避免字重梯度密到肉眼分辨困难。字重上下差 ≥ 200，用户扫视就能捕获层次。
+        </p>
+
+        <div class="weight-grid">
+          <div class="weight-card">
+            <div class="weight-card__number weight-card__number--400">Aa 甲</div>
+            <div class="weight-card__key">400 · Regular</div>
+            <div class="weight-card__meta">正文长段落。商卡里几乎不用，页面级说明才出现。</div>
+          </div>
+          <div class="weight-card">
+            <div class="weight-card__number weight-card__number--500">Aa 甲</div>
+            <div class="weight-card__key">500 · Medium</div>
+            <div class="weight-card__meta">商卡里默认的标题、副文本、促销文案的字重。</div>
+          </div>
+          <div class="weight-card">
+            <div class="weight-card__number weight-card__number--700">Aa 甲</div>
+            <div class="weight-card__key">700 · Bold</div>
+            <div class="weight-card__meta">品牌名 · 页面标题 · rating 数字 · 章节标题。</div>
+          </div>
+          <div class="weight-card">
+            <div class="weight-card__number weight-card__number--900">Aa 甲</div>
+            <div class="weight-card__key">900 · Black</div>
+            <div class="weight-card__meta">只给价格数字。绝不用在其他任何 UI 文本上。</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== 05 Line-height ============== -->
+      <section class="section" id="s-lh">
+        <div class="section__head">
+          <span class="section__index">05</span>
+          <h2 class="section__title">Line-height · 行距</h2>
+        </div>
+        <p class="section__lede">
+          行距系统按"文本密度"分 4 档。价格与标题走紧凑 1.15；商卡里的多行标题 1.35~1.4；正文 1.55~1.7。
+        </p>
+
+        <div class="lh-row">
+          <div class="lh-row__label">1.15
+            <small>价格 · 展示标题</small>
+          </div>
+          <div class="lh-row__sample lh-row__sample--115" style="font-size: 20px; font-weight: 900; color: var(--ink); font-variant-numeric: tabular-nums;">£58.00<br>£1,299.00<br>£999,999.99</div>
+        </div>
+        <div class="lh-row">
+          <div class="lh-row__label">1.35
+            <small>卡片标题 · 章节小标</small>
+          </div>
+          <div class="lh-row__sample lh-row__sample--135" style="font-size: 13px; font-weight: 500;">
+            Diptyque Baies Scented Candle 190g — a room-freshening classic loved by design editors.<br>
+            Baies is the signature Diptyque fragrance released in 1961.
+          </div>
+        </div>
+        <div class="lh-row">
+          <div class="lh-row__label">1.55
+            <small>规则说明 · 表格单元</small>
+          </div>
+          <div class="lh-row__sample lh-row__sample--155">
+            商卡里 rating · sold 组合展示评分（<b>4.9</b>）与已售件数（30k+），
+            无衬线数字使用 <code>font-variant-numeric: tabular-nums</code> 保证等宽对齐。
+          </div>
+        </div>
+        <div class="lh-row">
+          <div class="lh-row__label">1.7
+            <small>文档段落 · 页面正文</small>
+          </div>
+          <div class="lh-row__sample lh-row__sample--170">
+            这里收纳 Joybuy 站内所有商品卡片：从最小原子（价格、图片、按钮）一路往上，
+            到楼层与页面里被组装的商卡实例。目标是让设计师、产品、工程师在同一份规范上对齐，减少沟通与走查成本。
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== 06 Usage in cards ============== -->
+      <section class="section" id="s-usage">
+        <div class="section__head">
+          <span class="section__index">06</span>
+          <h2 class="section__title">Usage · 商卡里的应用</h2>
+        </div>
+        <p class="section__lede">
+          在商卡里，字号 × 字重 × 颜色 × 行距的组合被高度收敛。以下 6 种是"看到就一眼认出"的用途型样式。
+        </p>
+
+        <div class="usage-grid">
+          <div class="usage-card">
+            <div class="usage-card__label">Brand · 品牌</div>
+            <div class="usage-card__hint">商卡顶部品牌行 · 强化认知，字重最亮眼。</div>
+            <div class="usage-card__stage">
+              <span class="s-brand">Diptyque</span>
+              <span class="s-brand">DYSON</span>
+              <span class="s-brand">Apple</span>
+            </div>
+            <code class="usage-code">font: 700 14px/20px var(--f-sans); color: var(--ink);</code>
+          </div>
+
+          <div class="usage-card">
+            <div class="usage-card__label">Title · 标题</div>
+            <div class="usage-card__hint">2 line clamp，超出省略。中英文混排时依赖 line-height 18px 稳态。</div>
+            <div class="usage-card__stage">
+              <p class="s-title" style="margin: 0;">Baies Scented Candle 190g — a room-freshening classic loved by design editors around the world.</p>
+            </div>
+            <code class="usage-code">font: 500 13px/18px var(--f-sans); color: var(--ink-2);
+-webkit-line-clamp: 2; -webkit-box-orient: vertical;</code>
+          </div>
+
+          <div class="usage-card">
+            <div class="usage-card__label">Price · 售价</div>
+            <div class="usage-card__hint">Mono 家族 + 900 字重 + tabular-nums · 与旁边的 RRP 划线灰字并排。</div>
+            <div class="usage-card__stage">
+              <div>
+                <span class="s-price">£58.00</span>
+                <span class="s-price-was">£70.00</span>
+              </div>
+              <div>
+                <span class="s-price">¥1,299</span>
+                <span class="s-price-was">¥1,599</span>
+              </div>
+            </div>
+            <code class="usage-code">font: 900 20px/24px var(--f-mono); font-variant-numeric: tabular-nums;</code>
+          </div>
+
+          <div class="usage-card">
+            <div class="usage-card__label">Promotion · 促销</div>
+            <div class="usage-card__hint">仅红色文本，禁止用背景色块——避免和 highlight SVG 抢戏。</div>
+            <div class="usage-card__stage">
+              <span class="s-promo">Complimentary gift wrap</span>
+              <span class="s-promo">Save £12 · Ends in 48h</span>
+              <span class="s-promo">Free delivery for Plus members</span>
+            </div>
+            <code class="usage-code">font: 500 11px/16px var(--f-sans); color: var(--joybuy-red);</code>
+          </div>
+
+          <div class="usage-card">
+            <div class="usage-card__label">Meta · 评分·履约</div>
+            <div class="usage-card__hint">灰字 · 数字仍走 tabular-nums · 与图标组合展示。</div>
+            <div class="usage-card__stage">
+              <span class="s-meta">4.9 · 30k+ sold · Delivered tomorrow</span>
+              <span class="s-fulfillment">🚚 Standard delivery · 2-3 working days</span>
+            </div>
+            <code class="usage-code">font: 500 11px/16px var(--f-sans); color: var(--ink-3);
+font-variant-numeric: tabular-nums;</code>
+          </div>
+
+          <div class="usage-card">
+            <div class="usage-card__label">Eyebrow · 页眉</div>
+            <div class="usage-card__hint">文档页顶部小标签 · Mono 家族 · 大字距 · 全大写。</div>
+            <div class="usage-card__stage">
+              <span class="s-eyebrow">Foundations · Typography</span>
+              <span class="s-eyebrow">Organisms · Universal Horizontal</span>
+            </div>
+            <code class="usage-code">font: 700 11px/16px var(--f-mono); letter-spacing: .12em;
+text-transform: uppercase; color: var(--joybuy-red);</code>
+          </div>
+        </div>
+
+        <h3 style="margin: 40px 0 12px; font-size: 15px; font-weight: 700; color: var(--ink);">Component ⇄ Style 索引</h3>
+        <p style="font-size: 13px; color: var(--ink-4); line-height: 1.7; margin-bottom: 16px;">
+          下表对应「[[reference_card_structure_type]]」结构里各个商卡槽位使用的排版规格，方便按图索骥。
+        </p>
+        <table class="ref-table">
+          <thead>
+            <tr>
+              <th>商卡槽位</th>
+              <th>字号 / 字重 / 行距</th>
+              <th>颜色</th>
+              <th>Family</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Brand</td>
+              <td><code>14 / 700 / 20</code></td>
+              <td>var(--ink)</td>
+              <td>sans</td>
+            </tr>
+            <tr>
+              <td>Title (2-line)</td>
+              <td><code>13 / 500 / 18</code></td>
+              <td>var(--ink-2)</td>
+              <td>sans</td>
+            </tr>
+            <tr>
+              <td>Title (Mini)</td>
+              <td><code>12 / 500 / 16</code></td>
+              <td>var(--ink)</td>
+              <td>sans</td>
+            </tr>
+            <tr>
+              <td>Sale Price (lg)</td>
+              <td><code>18 / 900 / 22</code></td>
+              <td>var(--ink)</td>
+              <td>mono</td>
+            </tr>
+            <tr>
+              <td>Sale Price (Mini)</td>
+              <td><code>15 / 900 / 18</code></td>
+              <td>var(--ink)</td>
+              <td>mono</td>
+            </tr>
+            <tr>
+              <td>RRP · Was Price</td>
+              <td><code>11 / 500 / 14</code></td>
+              <td>var(--ink-5)</td>
+              <td>mono · line-through</td>
+            </tr>
+            <tr>
+              <td>Rating</td>
+              <td><code>11 / 700 / 14</code></td>
+              <td>var(--ink)</td>
+              <td>sans · tabular-nums</td>
+            </tr>
+            <tr>
+              <td>Sold count</td>
+              <td><code>11 / 500 / 14</code></td>
+              <td>var(--ink-3)</td>
+              <td>sans</td>
+            </tr>
+            <tr>
+              <td>Promotion</td>
+              <td><code>11 / 500 / 16</code></td>
+              <td>var(--joybuy-red)</td>
+              <td>sans</td>
+            </tr>
+            <tr>
+              <td>Fulfillment</td>
+              <td><code>11 / 500 / 14</code></td>
+              <td>var(--ink-3)</td>
+              <td>sans</td>
+            </tr>
+            <tr>
+              <td>Seller</td>
+              <td><code>11 / 500 / 14</code></td>
+              <td>var(--ink-4)</td>
+              <td>sans</td>
+            </tr>
+            <tr>
+              <td>Eyebrow</td>
+              <td><code>11 / 700 / 16 · letter-spacing .12em</code></td>
+              <td>var(--joybuy-red)</td>
+              <td>mono · uppercase</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script src="../assets/nav.js"></script>
+</body>
+</html>

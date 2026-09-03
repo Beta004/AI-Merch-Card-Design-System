@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>商卡设计系统 · 概览 · Joybuy</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Joybuy 商品卡片设计系统，从原子组件、信息规则到场景化商卡，为设计、产品与研发提供统一的商品表达语言。">
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/home.css">
+</head>
+<body class="home-page">
+<div class="site">
+  <main class="site-main">
+    <div class="site-main__inner home" data-global-i18n="off">
+      <section class="home-hero">
+        <div class="home-hero__copy">
+          <span class="home-kicker" data-home="hero.kicker">Joybuy · 商品卡片设计系统</span>
+          <h1 class="home-hero__title"><span data-home="hero.title1">让每一种商品场景，</span><br><em data-home="hero.title2">都有合适的商卡表达。</em></h1>
+          <p class="home-hero__lede" data-home="hero.lede">从原子组件、信息规则到场景化商卡，让设计、产品和研发使用同一套商品表达语言。</p>
+          <div class="home-hero__actions">
+            <a class="home-button home-button--primary" href="organisms/index.html"><span data-home="hero.cards">浏览全部商卡</span><span aria-hidden="true">→</span></a>
+            <a class="home-button" href="atoms/index.html"><span data-home="hero.atoms">查看原子组件</span><span aria-hidden="true">⌘</span></a>
+          </div>
+          <ul class="home-facts" aria-label="系统规模">
+            <li><strong>7</strong><span data-home="hero.factCards">类商卡</span></li>
+            <li><strong>19</strong><span data-home="hero.factAtoms">组原子组件</span></li>
+            <li><strong>7</strong><span data-home="hero.factPages">个真实页面场景</span></li>
+          </ul>
+        </div>
+        <div class="hero-card-stack" role="group" aria-label="双列、横向与横滑商品卡结构叠层预览" data-home-aria="hero.visualAria">
+          <span class="hero-card-stack__plane hero-card-stack__plane--left" aria-hidden="true"></span>
+          <span class="hero-card-stack__plane hero-card-stack__plane--top" aria-hidden="true"></span>
+          <span class="hero-card-stack__plane hero-card-stack__plane--bottom" aria-hidden="true"></span>
+
+          <a class="skeleton-card skeleton-card--vertical" href="organisms/vertical-card.html" aria-label="通用双列商品卡" data-home-aria="hero.verticalAria">
+            <span class="skeleton-card__image"><i class="skeleton-card__heart"></i></span>
+            <span class="skeleton-card__badge"></span>
+            <span class="skeleton-card__line skeleton-card__line--strong"></span>
+            <span class="skeleton-card__line skeleton-card__line--short"></span>
+            <span class="skeleton-card__price"></span>
+            <span class="skeleton-card__meta"></span>
+            <span class="skeleton-card__action">+</span>
+          </a>
+
+          <a class="skeleton-card skeleton-card--horizontal" href="organisms/horizontal-card.html" aria-label="通用横向商品卡" data-home-aria="hero.horizontalAria">
+            <span class="skeleton-card__image"><i class="skeleton-card__heart"></i></span>
+            <span class="skeleton-card__content">
+              <span class="skeleton-card__badge"></span>
+              <span class="skeleton-card__line skeleton-card__line--strong"></span>
+              <span class="skeleton-card__line skeleton-card__line--short"></span>
+              <span class="skeleton-card__price"></span>
+              <span class="skeleton-card__meta"></span>
+            </span>
+            <span class="skeleton-card__action">+</span>
+          </a>
+
+          <a class="skeleton-rail" href="organisms/horizontal-scroll.html" aria-label="横滑商品卡" data-home-aria="hero.scrollAria">
+            <span class="skeleton-rail__head"><i></i><b></b><em>→</em></span>
+            <span class="skeleton-rail__cards">
+              <i><b></b><small></small><strong></strong></i>
+              <i><b></b><small></small><strong></strong></i>
+              <i><b></b><small></small><strong></strong></i>
+            </span>
+          </a>
+        </div>
+      </section>
+
+      <section class="home-statement"><h2 data-home-html="statement">从基础规范到业务页面，<strong>不是一组孤立模板，</strong><br>而是一套可复用、可追溯的商品表达系统。</h2></section>
+
+      <section id="capabilities" class="home-section card-catalog home-anchor">
+        <header class="card-catalog__head">
+          <div>
+            <span class="home-kicker" data-home="cap.kicker">01 · 系统组件</span>
+            <h2 data-home="cap.title">7 类商卡，覆盖不同浏览与决策场景。</h2>
+            <p data-home="cap.desc">每一种商卡都来自明确的业务场景，而不是为了制造更多变体。</p>
+          </div>
+          <a class="section-link" href="organisms/index.html">
+            <span data-home="cap.viewAll">查看全部商卡</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        </header>
+        <div class="card-catalog__grid">
+          <a class="catalog-item" href="organisms/vertical-card.html">
+            <span class="catalog-item__preview"><img src="assets/card-previews/universal-2-column.png" alt="通用双列商品卡"></span>
+            <span class="catalog-item__body">
+              <b data-home="card.vertical">通用双列</b>
+              <p data-home="preview.vertical">适合首页、类目等高密度浏览场景，以商品图片建立第一视觉层级。</p>
+            </span>
+          </a>
+          <a class="catalog-item" href="organisms/horizontal-card.html">
+            <span class="catalog-item__preview"><img src="assets/card-previews/universal-horizontal.png" alt="通用横向商品卡"></span>
+            <span class="catalog-item__body">
+              <b data-home="card.horizontal">通用横向</b>
+              <p data-home="preview.horizontal">适合搜索与列表决策，让图片、价格和关键状态保持并行可读。</p>
+            </span>
+          </a>
+          <a class="catalog-item" href="organisms/horizontal-mini.html">
+            <span class="catalog-item__preview"><img src="assets/card-previews/universal-horizontal-mini.png" alt="横向小图商品卡"></span>
+            <span class="catalog-item__body">
+              <b data-home="card.mini">横向小图</b>
+              <p data-home="preview.mini">适合空间紧凑的推荐位，用更小图片保留核心商品信息与行动入口。</p>
+            </span>
+          </a>
+          <a class="catalog-item" href="organisms/horizontal-scroll.html">
+            <span class="catalog-item__preview"><img src="assets/card-previews/horizontal-scroll.png" alt="横滑商品卡"></span>
+            <span class="catalog-item__body">
+              <b data-home="card.scroll">横滑商卡</b>
+              <p data-home="preview.scroll">适合一行多卡的连续探索，通过稳定宽度与露出提示下一项内容。</p>
+            </span>
+          </a>
+          <a class="catalog-item" href="organisms/campaign-card.html">
+            <span class="catalog-item__preview"><img src="assets/card-previews/campaign.png" alt="活动商品卡"></span>
+            <span class="catalog-item__body">
+              <b data-home="card.campaign">活动商卡</b>
+              <p data-home="preview.campaign">适合主题营销与促销会场，在商卡结构中承载更强的活动氛围。</p>
+            </span>
+          </a>
+          <a class="catalog-item" href="organisms/booking-card.html">
+            <span class="catalog-item__preview"><img src="assets/card-previews/booking.png" alt="预约商品卡"></span>
+            <span class="catalog-item__body">
+              <b data-home="card.booking">预约商卡</b>
+              <p data-home="preview.booking">适合新品预约与限时状态，突出时间、状态和明确的后续行动。</p>
+            </span>
+          </a>
+          <a class="catalog-item" href="organisms/small-dynamic.html">
+            <span class="catalog-item__preview"><img src="assets/card-previews/small-image-dynamic.png" alt="小图动态商品卡"></span>
+            <span class="catalog-item__body">
+              <b data-home="card.dynamic">小图动态</b>
+              <p data-home="preview.dynamic">适合信息流中的轻量动态内容，在有限高度中平衡商品与媒体表达。</p>
+            </span>
+          </a>
+        </div>
+      </section>
+
+      <section id="scenarios" class="home-section scenario home-anchor">
+        <span class="home-kicker" data-home="scene.kicker">场景适配</span>
+        <h2 data-home="scene.title">同一套商品信息，在不同任务里选择不同表达。</h2>
+        <p class="scenario__lead" data-home="scene.desc">商卡不是越完整越好。浏览密度、决策深度和业务状态共同决定图片比例、信息层级与交互方式。</p>
+        <div class="scenario-rail">
+          <a href="organisms/vertical-card.html"><span><img src="assets/card-previews/universal-2-column.png" alt="首页双列商卡"></span><b data-home="scene.home">首页双列浏览</b><small data-home="scene.homeDesc">图片主导 · 高密度发现商品</small></a>
+          <a href="organisms/horizontal-card.html"><span><img src="assets/card-previews/universal-horizontal.png" alt="搜索横向商卡"></span><b data-home="scene.search">搜索单列决策</b><small data-home="scene.searchDesc">信息并行 · 快速比较与加购</small></a>
+          <a href="organisms/horizontal-scroll.html"><span><img src="assets/card-previews/horizontal-scroll.png" alt="横滑推荐商卡"></span><b data-home="scene.scroll">一行多卡推荐</b><small data-home="scene.scrollDesc">横向探索 · 提升商品曝光量</small></a>
+          <a href="organisms/booking-card.html"><span><img src="assets/card-previews/booking.png" alt="预约商卡"></span><b data-home="scene.booking">预约与限时状态</b><small data-home="scene.bookingDesc">强化时间、状态与转化动作</small></a>
+        </div>
+      </section>
+
+      <section class="home-section">
+        <header class="home-section__head"><div><span class="home-kicker" data-home="flow.kicker">系统关系</span><h2 data-home="flow.title">每张商卡，都能追溯到基础规则和业务场景。</h2></div><p data-home="flow.desc">平台把设计规范、组件资产和业务落位连接起来，减少设计与开发之间的信息损耗。</p></header>
+        <div class="system-flow">
+          <article><code>01</code><div><b data-home="flow.foundation">基础规范</b><span data-home="flow.foundationDesc">颜色、字体、间距、圆角与图标规则</span></div></article>
+          <article><code>02</code><div><b data-home="flow.atoms">原子组件</b><span data-home="flow.atomsDesc">图片、标题、价格、促销、状态与交互</span></div></article>
+          <article><code>03</code><div><b data-home="flow.cards">商卡结构</b><span data-home="flow.cardsDesc">双列、横向、横滑、活动与预约等类型</span></div></article>
+          <article><code>04</code><div><b data-home="flow.pages">业务页面</b><span data-home="flow.pagesDesc">首页、搜索、类目、购物车与活动会场</span></div></article>
+        </div>
+      </section>
+
+      <section id="pages" class="home-section page-showcase home-anchor">
+        <header class="page-showcase__head">
+          <span class="home-kicker" data-home="pages.kicker">真实页面</span>
+          <h2 data-home="pages.title">不只看组件，也看它在业务页面中如何落位。</h2>
+          <p data-home="pages.intro">从真实页面理解商卡如何参与发现、比较与转化，再进入对应场景查看完整规则。</p>
+          <a class="section-link" href="pages/index.html"><span data-home="pages.all">浏览全部页面</span> <span aria-hidden="true">→</span></a>
+        </header>
+        <div class="page-grid">
+          <a href="pages/index.html#page-home-feeds"><span class="page-grid__visual"><img src="assets/page-shots/home-feeds.svg" alt="首页信息流页面"></span><span class="page-grid__copy"><b data-home="pages.home">首页信息流</b><small data-home="pages.homeDesc">双列商卡与横滑楼层共同组织发现路径。</small></span></a>
+          <a href="pages/index.html#page-search-store"><span class="page-grid__visual"><img src="assets/page-shots/search-store.svg" alt="搜索与店铺页面"></span><span class="page-grid__copy"><b data-home="pages.search">搜索与店铺</b><small data-home="pages.searchDesc">依据浏览模式切换双列或横向信息结构。</small></span></a>
+          <a href="pages/index.html#page-campaign-home"><span class="page-grid__visual"><img src="assets/page-shots/campaign-home.svg" alt="活动会场页面"></span><span class="page-grid__copy"><b data-home="pages.campaign">活动会场</b><small data-home="pages.campaignDesc">用主题、倒计时和促销状态强化转化。</small></span></a>
+        </div>
+      </section>
+
+      <section id="tasks" class="home-section task-panel home-anchor">
+        <span class="home-kicker" data-home="task.kicker">从你的任务开始</span><h2 data-home="task.title">你现在想解决什么问题？</h2>
+        <div class="task-grid">
+          <a href="utilities/decision-guide.html"><i>01</i><b data-home="task.choose">我要选商卡</b><span data-home="task.chooseDesc">根据业务场景、信息密度和用户任务快速选择。</span><strong data-home="task.start">开始使用 →</strong></a>
+          <a href="atoms/index.html"><i>02</i><b data-home="task.spec">我要查规范</b><span data-home="task.specDesc">查看原子、结构、字段、状态和异常兜底规则。</span><strong data-home="task.start">开始使用 →</strong></a>
+          <a href="organisms/index.html"><i>03</i><b data-home="task.component">我要找组件</b><span data-home="task.componentDesc">定位对应商卡详情与 Figma 主组件，开始设计交付。</span><strong data-home="task.start">开始使用 →</strong></a>
+        </div>
+      </section>
+
+      <footer class="home-footer"><span>Joybuy · Product Card Design System · v1.0</span><span data-home="footer">设计、产品与研发共享的商品表达语言</span></footer>
+    </div>
+  </main>
+</div>
+<script src="assets/nav.js"></script>
+<script src="assets/home.js"></script>
+</body>
+</html>

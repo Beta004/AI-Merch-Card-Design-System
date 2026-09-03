@@ -1,0 +1,1453 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>Horizontal Card · Product Cards · 商卡设计系统</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Universal Horizontal Product Card — image on the left, content stack on the right. Used in cart, wishlist, order list and search suggestions.">
+<link rel="stylesheet" href="../assets/tokens.css">
+<style>
+  /* ============ Page head chrome (matches vertical-card.html) ============ */
+  .crumb {
+    font-size: 12.5px; color: var(--ink-4);
+    margin-bottom: 18px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .crumb a { color: var(--ink-4); transition: color .12s ease; }
+  .crumb a:hover { color: var(--accent); }
+  .crumb .sep { color: var(--outline-strong); }
+  .crumb .curr { color: var(--ink-2); font-weight: 600; }
+
+  .head { margin-bottom: 4px; }
+  .head__eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 700; letter-spacing: .14em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .head__title {
+    margin: 0 0 10px;
+    font-size: 33px; font-weight: 700; letter-spacing: -.02em;
+    color: var(--ink); line-height: 1.16;
+  }
+  .head__title-en {
+    font-size: 14.5px; color: var(--ink-4);
+    line-height: 1.5; margin-bottom: 0;
+  }
+  /* Meta strip — quiet arco-clean tags with airy spacing, balanced like a
+     TDesign component header. Chip visuals come from the shared .chip. */
+  .head__metas {
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px; margin-bottom: 0;
+  }
+  /* ============ TDesign-style anchor tab bar (sticky + scroll-spy) ============ */
+  .doc-tabs {
+    position: sticky; top: 0; z-index: 20;
+    /* Break out of .site-main__inner to span the whole main column,
+       edge-to-edge from the nav border to the TOC border. */
+    margin: 20px calc(-1 * var(--page-pad-x)) 32px;
+    background: rgba(255, 255, 255, .86);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--outline);
+  }
+  .doc-tabs__inner {
+    max-width: calc(var(--content-max) + 2 * var(--page-pad-x));
+    margin: 0 auto;
+    padding: 0 var(--page-pad-x);
+    display: flex; gap: 2px;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .doc-tabs__inner::-webkit-scrollbar { display: none; }
+  .doc-tabs__link {
+    position: relative;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 14px 14px 13px;
+    font-size: 13.5px; font-weight: 500;
+    color: var(--ink-4);
+    white-space: nowrap; text-decoration: none;
+    transition: color .15s ease;
+  }
+  .doc-tabs__link::after {
+    content: ''; position: absolute;
+    left: 12px; right: 12px; bottom: -1px; height: 2px;
+    background: var(--accent); border-radius: 2px 2px 0 0;
+    transform: scaleX(0); transform-origin: center;
+    transition: transform .22s cubic-bezier(.4, 0, .2, 1);
+  }
+  .doc-tabs__link:hover { color: var(--ink-2); }
+  .doc-tabs__link.is-active { color: var(--accent); font-weight: 600; }
+  .doc-tabs__link.is-active::after { transform: scaleX(1); }
+  .doc-tabs__link-idx {
+    font-family: var(--f-mono);
+    font-size: 11px; font-weight: 500; color: var(--ink-5);
+    letter-spacing: 0;
+  }
+  .doc-tabs__link.is-active .doc-tabs__link-idx { color: var(--accent); opacity: .7; }
+  /* ============ Figma embed ============ */
+  .figma-wrap {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+  .figma-wrap iframe { display: block; width: 100%; height: 540px; border: 0; }
+  .figma-hint {
+    padding: 10px 14px;
+    background: var(--surface-2);
+    font-size: 11.5px; color: var(--ink-4);
+    border-top: 1px solid var(--outline);
+  }
+
+  /* ============ Right panel · variant preview stack ============
+     NOTE: distinct class from the main-column .types-stack grid to avoid collision. */
+  .side-preview {
+    padding: 20px 16px;
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+  }
+  .side-preview__head {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 11px; font-weight: 700; letter-spacing: .08em;
+    color: var(--ink-4); text-transform: uppercase;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--outline);
+    margin-bottom: 16px;
+  }
+  .side-preview__lang {
+    display: inline-flex; padding: 2px;
+    border: 1px solid var(--outline); border-radius: var(--r-pill);
+    background: var(--surface); letter-spacing: 0;
+  }
+  .side-preview__lang button {
+    all: unset; cursor: pointer;
+    padding: 3px 8px; border-radius: var(--r-pill);
+    font-size: 10px; font-weight: 700;
+    color: var(--ink-4); transition: background .12s ease, color .12s ease;
+    text-transform: none;
+  }
+  .side-preview__lang button.is-active { background: var(--ink); color: #fff; }
+  .side-preview__items { display: flex; flex-direction: column; gap: 20px; }
+  .side-preview__item { display: flex; flex-direction: column; gap: 8px; }
+  .side-preview__item-label {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 11px;
+  }
+  .side-preview__item-label > span:first-child { color: var(--ink); font-weight: 700; }
+  .side-preview__item-tag {
+    color: var(--ink-5); font-size: 10px;
+    background: var(--surface-2);
+    padding: 1px 6px; border-radius: 3px; font-weight: 500;
+  }
+  .side-preview__stage {
+    background: #f7f7f8;
+    border-radius: var(--r-sm);
+    padding: 14px;
+    display: flex; justify-content: center;
+    overflow: hidden;
+  }
+  /* zoom shrinks the real (wide) card to fit the narrow rail; collapses layout box too */
+  .side-preview__scale { width: 320px; zoom: .6; }
+
+  /* ============ Horizontal card component ============
+     Layout: left = 130×130 image · right = 8-slot content column.
+     Overall card width: 100% of container (typically 328–392px on mobile,
+     up to full-width in cart/list pages). */
+  .hcard {
+    display: grid;
+    grid-template-columns: var(--product-image-horizontal) 1fr;
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-sm);
+    padding: 12px;
+    position: relative;
+    max-width: 392px;
+  }
+  .hcard--dim { opacity: .55; }
+  .hcard--dim .hcard__image::after {
+    content: ""; position: absolute; inset: 0;
+    background: rgba(255,255,255,.55);
+  }
+
+  /* Image (1:1) with tag-like favorite and optional out-of-stock cover */
+  .hcard__image {
+    position: relative;
+    width: var(--product-image-horizontal);
+    height: var(--product-image-horizontal);
+    border-radius: var(--r-xs);
+    overflow: hidden;
+    background: var(--surface-2);
+    flex-shrink: 0;
+  }
+  .hcard__image > img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    padding: 10px;
+    display: block;
+  }
+  .hcard__oos {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.75);
+  }
+  .hcard__oos img { height: 44px; width: auto; }
+
+  /* Body: 8 stackable slots */
+  .hcard__body {
+    display: flex; flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .hcard__body [data-field][data-empty] { display: none; }
+
+  /* Slot 1 · Highlight (SVG chip) */
+  .hcard__highlight {
+    align-self: flex-start;
+    line-height: 0;
+  }
+  .hcard__highlight[data-empty] { display: none; }
+  .hcard__highlight img { display: block; height: 14px; width: auto; }
+
+  /* Slot 2 · Brand */
+  .hcard__brand {
+    font-size: 12px; font-weight: 700;
+    color: var(--ink); line-height: 16px;
+  }
+
+  /* Slot 3 · Title (2-line clamp) */
+  .hcard__title {
+    margin: 0;
+    font-size: 13px; font-weight: 500;
+    color: var(--ink-2); line-height: 18px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Slot 4 · Rating · sold */
+  .hcard__meta {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--ink-3);
+  }
+  .hcard__meta-star {
+    display: inline-flex; align-items: center; gap: 2px;
+    color: var(--ink); font-weight: 700;
+  }
+  .hcard__meta-star::before {
+    content: "";
+    display: inline-block;
+    width: 12px; height: 12px;
+    background: url('../assets/figma-atoms/rating-sold/star.svg') center/contain no-repeat;
+    flex-shrink: 0;
+  }
+  .hcard__meta-sep {
+    display: inline-block;
+    width: 1px; height: 8px;
+    background: var(--outline-strong);
+  }
+
+  /* Slot 5 · Promotion (red) */
+  .hcard__promotion {
+    font-size: 11px; font-weight: 500;
+    color: var(--joybuy-red); line-height: 16px;
+  }
+
+  /* Slot 6 · Prices (stacked: sale on top, RRP below) */
+  .hcard__prices {
+    display: flex; flex-direction: column;
+    gap: 0;
+    margin-top: 2px;
+  }
+  .hcard__sale-price {
+    font-size: 18px; font-weight: 900;
+    color: var(--ink); line-height: 22px;
+    font-variant-numeric: tabular-nums;
+  }
+  .hcard__price-was {
+    font-size: 11px; color: var(--ink-5); line-height: 14px;
+  }
+  .hcard__original-price {
+    text-decoration: line-through;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Slot 7 · Fulfillment (with truck icon) */
+  .hcard__fulfillment {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 500;
+    color: var(--ink-3);
+    align-self: flex-start;
+  }
+  .hcard__fulfillment::before {
+    content: "";
+    display: inline-block;
+    width: 14px; height: 14px;
+    background: url('../assets/figma-atoms/fulfillment-time/joybuy.svg') left center/contain no-repeat;
+    flex-shrink: 0;
+  }
+
+  /* Slot 8 · Seller + cart button */
+  .hcard__foot {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .hcard__seller {
+    font-size: 11px; color: var(--ink-4);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    flex: 1; min-width: 0;
+  }
+  .hcard__cart {
+    all: unset; cursor: pointer;
+    width: 28px; height: 28px;
+    flex-shrink: 0;
+  }
+  .hcard__cart img { width: 100%; height: 100%; display: block; }
+
+  /* ============ Demo area ============ */
+  .demo {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 32px;
+    align-items: flex-start;
+  }
+  .demo__stage {
+    background: linear-gradient(180deg, #f8f8f9 0%, #f2f2f3 100%);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 32px 24px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .demo__controls-title {
+    font-size: 11px; font-weight: 700; letter-spacing: .08em;
+    color: var(--ink-4); text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .demo__controls-hint {
+    font-size: 12px; color: var(--ink-4); line-height: 1.6;
+  }
+  .lang-toggle {
+    display: inline-flex; padding: 3px;
+    border: 1px solid var(--outline); border-radius: var(--r-pill);
+    background: var(--surface);
+  }
+  .lang-toggle__btn {
+    all: unset; cursor: pointer;
+    padding: 5px 14px; border-radius: var(--r-pill);
+    font-size: 12px; font-weight: 600;
+    color: var(--ink-4); transition: background .12s ease, color .12s ease;
+  }
+  .lang-toggle__btn.is-active {
+    background: var(--ink); color: #fff;
+  }
+  .chip-strip {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .chip-btn {
+    all: unset; cursor: pointer;
+    padding: 6px 12px; border-radius: var(--r-pill);
+    font-size: 12px; font-weight: 600;
+    color: var(--ink-3); background: var(--surface);
+    border: 1px solid var(--outline);
+    transition: all .12s ease;
+  }
+  .chip-btn:hover { border-color: var(--outline-strong); }
+  .chip-btn.is-active {
+    color: var(--accent); background: var(--accent-50);
+    border-color: var(--accent-100);
+  }
+
+  /* ============ 02 Structure — schematic + rule table ============ */
+  .anatomy-wrap {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 32px;
+    align-items: flex-start;
+  }
+  .schematic-frame {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 20px;
+  }
+  .schematic-hcard {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px dashed var(--outline-strong);
+    border-radius: var(--r-xs);
+    padding: 8px;
+  }
+  .schematic-hcard__image {
+    aspect-ratio: 1 / 1;
+    background: var(--surface-2);
+    border: 1px dashed var(--outline-strong);
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: var(--ink-4);
+  }
+  .schematic-hcard__slots {
+    display: flex; flex-direction: column;
+    gap: 4px;
+  }
+  .schematic-slot {
+    background: var(--surface-2);
+    border: 1px dashed var(--outline);
+    border-radius: 3px;
+    padding: 4px 6px;
+    font-size: 10px; color: var(--ink-3);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .schematic-slot__idx {
+    display: inline-flex; width: 16px; height: 16px;
+    align-items: center; justify-content: center;
+    font-family: var(--f-mono); font-size: 9px; font-weight: 600;
+    color: #fff; background: var(--joybuy-red);
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+  .schematic-caption {
+    margin-top: 12px;
+    font-size: 11px; color: var(--ink-4); line-height: 1.55;
+  }
+
+  /* Anatomy grid: 8 cells, one per slot */
+  .anatomy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 900px) { .anatomy-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .anatomy-grid { grid-template-columns: 1fr; } }
+  .anatomy-cell {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-sm);
+    padding: 12px;
+    display: flex; flex-direction: column; gap: 8px;
+    min-height: 120px;
+  }
+  .anatomy-cell__head {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--ink-3);
+  }
+  .anatomy-cell__idx {
+    display: inline-flex; width: 20px; height: 20px;
+    align-items: center; justify-content: center;
+    font-family: var(--f-mono); font-size: 10px; font-weight: 700;
+    color: #fff; background: var(--joybuy-red);
+    border-radius: 999px;
+  }
+  .anatomy-cell__slot {
+    font-weight: 700; color: var(--ink);
+    font-family: var(--f-mono); font-size: 11px;
+  }
+  .anatomy-cell__stage {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface-2);
+    border-radius: 4px;
+    padding: 6px;
+    min-height: 40px;
+  }
+  .anatomy-cell__stage img {
+    max-width: 100%; max-height: 40px;
+    height: auto; width: auto;
+  }
+  .anatomy-cell__atom {
+    font-size: 11px; color: var(--ink-4);
+    line-height: 1.5;
+  }
+  .anatomy-cell__atom a { color: var(--joybuy-red); }
+
+  /* ============ 03 Types (variant showcase) ============ */
+  .types-stack {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+  }
+  .type-block {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 16px;
+  }
+  .type-block__label {
+    font-size: 11px; font-weight: 700;
+    color: var(--joybuy-red);
+    letter-spacing: .06em; text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .type-block__hint {
+    font-size: 12px; color: var(--ink-4);
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .type-block__stage {
+    background: linear-gradient(180deg, #f8f8f9 0%, #f2f2f3 100%);
+    border-radius: var(--r-sm);
+    padding: 16px;
+  }
+
+  /* ===== Used In · 出现在 — compact page cards + Figma lightbox ===== */
+  .uin-summary { font-size: 13px; color: var(--ink-4); margin: 2px 0 15px; }
+  .uin-summary b { color: var(--ink-2); font-weight: 800; font-family: var(--f-mono); }
+  .uin-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(198px, 1fr)); }
+  .uin-card {
+    display: flex; flex-direction: column; text-align: left; width: 100%; padding: 0;
+    font: inherit; color: inherit; cursor: pointer;
+    background: var(--surface); border: 1px solid var(--outline);
+    border-radius: var(--r-md); overflow: hidden;
+    transition: border-color .14s ease, box-shadow .14s ease, transform .14s ease;
+  }
+  .uin-card:hover { border-color: var(--outline-strong); box-shadow: var(--shadow-2); transform: translateY(-2px); }
+  .uin-card:focus-visible { outline: none; border-color: var(--accent); box-shadow: var(--shadow-focus); }
+  .uin-card__thumb {
+    position: relative; aspect-ratio: 4 / 3; background: var(--surface-2);
+    border-bottom: 1px solid var(--outline); overflow: hidden;
+  }
+  .uin-card__thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+  .uin-card__idx {
+    position: absolute; top: 8px; left: 8px; z-index: 2;
+    font-family: var(--f-mono); font-size: 11px; font-weight: 700; color: #fff;
+    background: rgba(17,20,24,.60); padding: 2px 7px; border-radius: var(--r-pill);
+  }
+  .uin-card__open {
+    position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; justify-content: center;
+    gap: 7px; font-size: 12.5px; font-weight: 600; color: #fff;
+    background: rgba(17,20,24,0); opacity: 0;
+    transition: opacity .14s ease, background .14s ease;
+  }
+  .uin-card:hover .uin-card__open, .uin-card:focus-visible .uin-card__open { opacity: 1; background: rgba(17,20,24,.44); }
+  .uin-card__open svg { width: 15px; height: 15px; }
+  .uin-card__body { padding: 11px 13px 13px; display: flex; flex-direction: column; gap: 5px; }
+  .uin-card__name { font-size: 14px; font-weight: 700; color: var(--ink); letter-spacing: -.01em; line-height: 1.3; }
+  .uin-card__meta { display: flex; align-items: center; gap: 7px; font-size: 11.5px; color: var(--ink-4); flex-wrap: wrap; }
+  .uin-card__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex: 0 0 auto; }
+  .uin-card__co { font-size: 11px; color: var(--ink-5); }
+
+  /* Lightbox */
+  .uframe { position: fixed; inset: 0; z-index: 200; display: none; }
+  .uframe.is-open { display: block; }
+  .uframe__backdrop { position: absolute; inset: 0; background: rgba(10,12,15,.58); }
+  .uframe__panel {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: min(1040px, 94vw); height: min(88vh, 860px);
+    display: flex; flex-direction: column; overflow: hidden;
+    background: var(--surface); border: 1px solid var(--outline);
+    border-radius: var(--r-lg); box-shadow: var(--shadow-2);
+  }
+  .uframe__head { display: flex; align-items: flex-start; gap: 14px; padding: 15px 18px; border-bottom: 1px solid var(--outline); }
+  .uframe__titles { min-width: 0; flex: 1 1 auto; }
+  .uframe__title { font-size: 16px; font-weight: 700; color: var(--ink); letter-spacing: -.01em; }
+  .uframe__sub { font-size: 12px; color: var(--ink-5); margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .uframe__actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+  .uframe__open {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--accent);
+    border: 1px solid var(--accent-100); background: var(--accent-50); padding: 6px 12px; border-radius: var(--r-pill);
+    transition: background .13s ease, border-color .13s ease;
+  }
+  .uframe__open:hover { background: var(--accent-100); border-color: var(--accent); }
+  .uframe__open svg { width: 13px; height: 13px; }
+  .uframe__close {
+    width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--outline); background: var(--surface); border-radius: var(--r-sm);
+    color: var(--ink-3); cursor: pointer; font-size: 15px; line-height: 1;
+  }
+  .uframe__close:hover { border-color: var(--outline-strong); color: var(--ink); }
+  .uframe__body { position: relative; flex: 1 1 auto; background: var(--surface-2); }
+  .uframe__body iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .uframe__foot { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 11px 18px; border-top: 1px solid var(--outline); font-size: 12px; color: var(--ink-5); }
+  .uframe__foot-label { font-weight: 600; color: var(--ink-4); }
+  .uframe__chip {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--ink-2);
+    background: var(--surface-2); border: 1px solid var(--outline); padding: 4px 10px; border-radius: var(--r-pill);
+    text-decoration: none;
+  }
+  a.uframe__chip:hover { border-color: var(--accent); color: var(--accent); }
+  .uframe__chip--self { color: var(--accent); border-color: var(--accent-100); background: var(--accent-50); cursor: default; }
+  .uframe__chip--inhouse { border-style: dashed; color: var(--accent); border-color: var(--accent-100); background: var(--accent-50); }
+  @media (max-width: 560px) {
+    .uframe__panel { width: 96vw; height: 90vh; }
+    .uframe__head { flex-wrap: wrap; }
+  }
+
+  /* ============ 06 When to use — comparison table ============ */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 20px;
+  }
+  .compare__col-title {
+    font-size: 13px; font-weight: 700;
+    color: var(--ink); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .compare__col-title::before {
+    content: "";
+    display: inline-block;
+    width: 8px; height: 8px; border-radius: 2px;
+  }
+  .compare__col--h .compare__col-title::before { background: var(--joybuy-red); }
+  .compare__col--v .compare__col-title::before { background: var(--ink-4); }
+  .compare__list {
+    list-style: none; padding: 0; margin: 0;
+    font-size: 12.5px; color: var(--ink-3); line-height: 1.7;
+  }
+  .compare__list li { padding-left: 16px; position: relative; }
+  .compare__list li::before {
+    content: "·"; position: absolute; left: 6px; color: var(--ink-5);
+    font-weight: 700;
+  }
+</style>
+<link rel="stylesheet" href="../assets/card-detail-template.css">
+  <link rel="stylesheet" href="../assets/card-preview-alignment.css">
+</head>
+<body>
+<div class="site site--card-detail">
+
+  <aside id="site-nav" class="site-nav" data-active="organisms/horizontal-card"></aside>
+
+  <main class="site-main">
+    <div class="site-main__inner">
+
+      <!-- Breadcrumb -->
+      <nav class="crumb">
+        <a href="../index.html">概览</a>
+        <span class="sep">/</span>
+        <span>Product Cards · 商卡</span>
+        <span class="sep">/</span>
+        <span class="curr">Horizontal Card</span>
+      </nav>
+
+      <!-- Header -->
+      <header class="head">
+        <span class="head__eyebrow">
+          <span style="width: 6px; height: 6px; background: var(--joybuy-red); border-radius: 50%;"></span>
+          Product Cards · Universal Horizontal
+        </span>
+        <h1 class="head__title">通用横向-商品卡片组件</h1>
+        <div class="head__title-en">Universal Horizontal Product Card · full-width · 130 px image</div>
+        <div class="head__metas">
+          <span class="chip">v0.1</span>
+          <span class="chip chip--red">MVP · Now</span>
+          <span class="chip">8 槽位</span>
+          <span class="chip">购物车 / 收藏 / 订单 / 搜索建议</span>
+        </div>
+      </header>
+
+      </div><!-- /head -->
+
+      <!-- Anchor tab bar · full-bleed sticky, spans the main column -->
+      <nav class="doc-tabs">
+        <div class="doc-tabs__inner">
+        <a class="doc-tabs__link is-active" href="#s-overview"  data-tab="s-overview"><span class="doc-tabs__link-idx">01</span>概览</a>
+        <a class="doc-tabs__link"           href="#s-structure" data-tab="s-structure"><span class="doc-tabs__link-idx">02</span>骨架</a>
+        <a class="doc-tabs__link"           href="#s-types"     data-tab="s-types"><span class="doc-tabs__link-idx">03</span>类型</a>
+        <a class="doc-tabs__link"           href="#s-data"      data-tab="s-data"><span class="doc-tabs__link-idx">04</span>数据契约</a>
+        <a class="doc-tabs__link"           href="#s-used"      data-tab="s-used"><span class="doc-tabs__link-idx">05</span>出现在</a>
+        <a class="doc-tabs__link"           href="#s-when"      data-tab="s-when"><span class="doc-tabs__link-idx">06</span>何时使用</a>
+        <a class="doc-tabs__link"           href="#s-figma"     data-tab="s-figma"><span class="doc-tabs__link-idx">＋</span>Figma</a>
+      </div>
+      </nav>
+
+      <div class="site-main__inner">
+
+      <!-- ============== 01 Overview ============== -->
+      <section class="section" id="s-overview">
+        <div class="section__head">
+          <span class="section__index">01</span>
+          <h2 class="section__title">Overview · 概览</h2>
+        </div>
+        <p class="section__lede">
+          图像置左、内容右侧堆叠的商品卡片。适合列表流场景，1 行显示 1 张卡，
+          最常出现在购物车、收藏夹、订单列表、搜索建议下拉。相比双列版信息层次更紧凑，商品图片使用 130×130 规格。
+        </p>
+
+        <div class="demo" style="margin-top: 8px;">
+          <div class="demo__stage">
+            <!-- Preview: 3 cards stacked to show a real list context -->
+            <div class="hcard" id="hcard-preview">
+              <div class="hcard__image">
+                <img id="hcard-img" src="" alt="">
+                <button class="hcard__favorite" type="button" aria-label="Add to wishlist">
+                  <img src="../assets/figma-atoms/tag-like/tag-like.svg" alt="">
+                </button>
+              </div>
+              <div class="hcard__body">
+                <span class="hcard__highlight" data-field="highlight"><img src="../assets/figma-atoms/product-highlights/best-seller.svg" alt="Best seller"></span>
+                <div class="hcard__brand" data-field="brand">Diptyque</div>
+                <p class="hcard__title" data-field="title">Baies Scented Candle 190g</p>
+                <div class="hcard__meta">
+                  <span class="hcard__meta-star"><span data-field="rating">4.9</span></span>
+                  <span class="hcard__meta-sep"></span>
+                  <span data-field="sold">30k+ sold</span>
+                </div>
+                <div class="hcard__promotion" data-field="promotion">Complimentary gift wrap</div>
+                <div class="hcard__prices">
+                  <span class="hcard__sale-price" data-field="salePrice">£58.00</span>
+                  <span class="hcard__price-was">RRP: <span class="hcard__original-price" data-field="originalPrice">£70.00</span></span>
+                </div>
+                <div class="hcard__discount" data-field="discount">Save 17% on RRP</div>
+                <div class="hcard__offer" data-field="offer">Complimentary gift wrap</div>
+                <div class="hcard__per-unit" data-field="perUnit">£30.53 per 100g</div>
+                <div class="hcard__deposit" data-field="deposit"></div>
+                <div class="hcard__fulfillment" data-field="fulfillment">Delivered tomorrow</div>
+                <div class="hcard__foot">
+                  <span class="hcard__seller" data-field="seller">Sold by Diptyque Paris</span>
+                  <span id="hcard-action"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="demo__controls">
+            <div class="demo__controls-block">
+              <div class="demo__controls-title">语言 · Language</div>
+              <div class="lang-toggle" id="lang-toggle">
+                <button class="lang-toggle__btn is-active" data-lang="en">EN</button>
+                <button class="lang-toggle__btn" data-lang="zh">中文</button>
+              </div>
+            </div>
+            <div class="demo__controls-block">
+              <div class="demo__controls-title">变体 · Variant</div>
+              <div class="chip-strip" id="variant-strip"></div>
+            </div>
+            <div class="demo__controls-block">
+              <div class="demo__controls-title">分类 · Category</div>
+              <div class="chip-strip" id="cat-strip"></div>
+            </div>
+            <div class="demo__controls-block">
+              <div class="demo__controls-title">预设 · Preset</div>
+              <div class="chip-strip" id="preset-strip"></div>
+            </div>
+            <div class="demo__controls-hint">三个选项对应 Figma 母组件的 Default、AiBot_SKUProperty 与 Variant3；分类和预设只替换 SKU 数据。</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== 02 Structure ============== -->
+      <section class="section" id="s-structure">
+        <div class="section__head">
+          <span class="section__index">02</span>
+          <h2 class="section__title">Structure · 骨架</h2>
+        </div>
+        <p class="section__lede">
+          Figma 母组件包含 16 个槽位，文档按 8 个信息组归并展示；图像左对齐固定 130×130，内容区在右侧垂直堆叠。
+          非必填字段值为空时整行不渲染，也不留 gap 空隙。
+        </p>
+
+        <div class="anatomy-wrap" style="margin-top: 24px;">
+          <!-- Left: schematic frame -->
+          <div class="schematic-frame">
+            <div class="schematic-hcard">
+              <div class="schematic-hcard__image">image · 1:1</div>
+              <div class="schematic-hcard__slots">
+                <div class="schematic-slot"><span class="schematic-slot__idx">1</span>highlight (opt.)</div>
+                <div class="schematic-slot"><span class="schematic-slot__idx">2</span>brand</div>
+                <div class="schematic-slot"><span class="schematic-slot__idx">3</span>title · 2 line clamp</div>
+                <div class="schematic-slot"><span class="schematic-slot__idx">4</span>rating · sold</div>
+                <div class="schematic-slot"><span class="schematic-slot__idx">5</span>promotion (opt.)</div>
+                <div class="schematic-slot"><span class="schematic-slot__idx">6</span>salePrice / RRP</div>
+                <div class="schematic-slot"><span class="schematic-slot__idx">7</span>fulfillment</div>
+                <div class="schematic-slot"><span class="schematic-slot__idx">8</span>seller · cart</div>
+              </div>
+            </div>
+            <p class="schematic-caption">
+              图像使用 <a href="../atoms/index.html#atom-main-image">Product Image · 130px</a> 规格；内容区跟随可用宽度伸缩，卡片内至少留 12px padding。
+            </p>
+          </div>
+
+          <!-- Right: 8-cell anatomy grid -->
+          <div class="anatomy-grid">
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">1</span><span class="anatomy-cell__slot">highlight</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/product-highlights/hot-deal.svg" alt="Product Highlights atom">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-product-highlights">Product Highlights</a> · 9 变体</div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">2</span><span class="anatomy-cell__slot">brand</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/title/1.svg" alt="Title Row 1">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-title">Title Row 1</a> · 单行 14/700</div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">3</span><span class="anatomy-cell__slot">title</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/title/2.svg" alt="Title Row 2">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-title">Title Row 2</a> · 2 行 clamp 13/500</div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">4</span><span class="anatomy-cell__slot">rating · sold</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/rating-sold/rate-sold.svg" alt="Rating &amp; Sold">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-rating-sold">Rating &amp; Sold</a> · ★ + 已售</div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">5</span><span class="anatomy-cell__slot">promotion</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/individual-promotion/campaign-lightning-offers.svg" alt="Individual Promotion">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-individual-promotion">Individual Promotion</a> · 6 变体</div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">6</span><span class="anatomy-cell__slot">prices</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/price/sale-save-was.svg" alt="Price with RRP">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-price">Price</a> + <a href="../atoms/index.html#atom-price-second-line">Second Line</a></div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">7</span><span class="anatomy-cell__slot">fulfillment</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/fulfillment-time/joybuy.svg" alt="Fulfillment time">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-fulfillment-time">Fulfillment Time</a> · 卡车 + 灰字</div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">8</span><span class="anatomy-cell__slot">seller · cart</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Add to Cart">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-btn-cart">Btn Add to Cart</a> · 32×32</div>
+            </div>
+          </div>
+        </div>
+
+        <table class="table" style="margin-top: 32px;">
+          <thead>
+            <tr><th>#</th><th>字段</th><th>必填</th><th>规则</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td><code>highlight</code></td><td>否</td><td>enum → Figma SVG 标签，缺失整行不渲染</td></tr>
+            <tr><td>2</td><td><code>brand</code></td><td>是</td><td>单行 · 12/700 · 黑色 · 与标题共用 line 16</td></tr>
+            <tr><td>3</td><td><code>title</code></td><td>是</td><td>13/500 · 2 line clamp · 超出省略</td></tr>
+            <tr><td>4</td><td><code>rating</code>, <code>sold</code></td><td>否</td><td>Rating &amp; Sold 原子 · 星形 SVG + tabular-nums</td></tr>
+            <tr><td>5</td><td><code>promotion</code></td><td>否</td><td>红字营销标 · 空则整行折叠</td></tr>
+            <tr><td>6</td><td><code>salePrice</code>, <code>originalPrice</code></td><td>salePrice 必填</td><td>18/900 售价 · 下一行 RRP 划线灰字</td></tr>
+            <tr><td>7</td><td><code>fulfillment</code></td><td>是</td><td>灰字履约信息 · 前置 Figma 卡车图标 · 高度对齐</td></tr>
+            <tr><td>8</td><td><code>seller</code></td><td>是</td><td>灰字 · 尾部椭圆截断 · 右侧固定 28×28 加购按钮</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ============== 03 Types ============== -->
+      <section class="section" id="s-types">
+        <div class="section__head">
+          <span class="section__index">03</span>
+          <h2 class="section__title">Types · 类型</h2>
+        </div>
+        <p class="section__lede">Figma 母组件包含默认、商品属性与极端情况三个变体。</p>
+
+        <div class="types-stack" style="margin-top: 20px;">
+          <div class="type-block">
+            <div class="type-block__label">Default</div>
+            <div class="type-block__hint">完整信息 · 用在购物车、订单列表这类需要看清品牌/价格/履约的场景。</div>
+            <div class="type-block__stage" id="type-default"></div>
+          </div>
+
+          <div class="type-block">
+            <div class="type-block__label">Product Properties · 商品属性</div>
+            <div class="type-block__hint">对应 <code>AiBot_SKUProperty</code>，显示规格、颜色和评论信息。</div>
+            <div class="type-block__stage" id="type-properties"></div>
+          </div>
+
+          <div class="type-block">
+            <div class="type-block__label">Extreme Condition · 极端情况</div>
+            <div class="type-block__hint">对应 Figma 的 <code>Variant3</code> 示例：清仓、临期、缺货与 Notify 操作同时出现。</div>
+            <div class="type-block__stage" id="type-extreme"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== 04 Data Contract ============== -->
+      <section class="section" id="s-data">
+        <div class="section__head">
+          <span class="section__index">04</span>
+          <h2 class="section__title">Data Contract · 数据契约</h2>
+        </div>
+        <p class="section__lede">
+          与双列卡共享 <code>Product</code> 类型，本卡片默认省略 <code>colors</code> / <code>perUnit</code> / <code>deposit</code>，
+          其余字段与 <a href="./vertical-card.html">Vertical Card</a> 完全一致。
+        </p>
+
+        <table class="table" style="margin-top: 16px;">
+          <thead>
+            <tr><th>字段</th><th>类型 · 示例</th><th>来源</th><th>空值处理</th><th>i18n</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>img</code></td><td>string · <code>diptyque</code></td><td>SKU 图库</td><td>骨架图</td><td>-</td></tr>
+            <tr><td><code>brand</code></td><td>string · <code>Diptyque</code></td><td>SKU · brand</td><td>不渲染</td><td>en / zh</td></tr>
+            <tr><td><code>title</code></td><td>string · 2-line clamp</td><td>SKU · name</td><td>不渲染</td><td>en / zh</td></tr>
+            <tr><td><code>highlight</code></td><td>enum · best-seller / hot-deal / top-deal / blockbuster / new / clearance / plus-price / sponsored / best-before</td><td>运营 CMS</td><td>不渲染</td><td>enum key，标签图跟 Figma SVG</td></tr>
+            <tr><td><code>rating</code>, <code>sold</code></td><td>number · <code>4.9</code>, string · <code>30k+ sold</code></td><td>用户评价</td><td>不渲染</td><td>数字复用，unit i18n</td></tr>
+            <tr><td><code>promotion</code></td><td>string · <code>Complimentary gift wrap</code></td><td>运营 CMS</td><td>不渲染</td><td>en / zh</td></tr>
+            <tr><td><code>salePrice</code>, <code>originalPrice</code></td><td>string · <code>£58.00</code></td><td>定价服务</td><td>salePrice 必填 · originalPrice 空则不渲染 RRP 行</td><td>货币符号 i18n</td></tr>
+            <tr><td><code>fulfillment</code></td><td>string · <code>Delivered tomorrow</code></td><td>物流服务</td><td>不渲染</td><td>en / zh</td></tr>
+            <tr><td><code>seller</code></td><td>string · <code>Sold by Diptyque Paris</code></td><td>SKU · seller</td><td>不渲染</td><td>en / zh</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ============== 05 Used In ============== -->
+      <section class="section" id="s-used">
+        <div class="section__head">
+          <span class="section__index">05</span>
+          <h2 class="section__title">Used In · 出现在</h2>
+        </div>
+        <p class="section__lede">
+          这张卡片在多个真实业务页面中复用。点击任意页面卡片，在弹层里查看它在 Figma 中的真实落位；页面清单与「页面总览」共用同一数据源。 · Reused across several real app pages. Click any page card to view where this card lands inside the Figma frame — the list shares one data source with the Pages Overview.
+        </p>
+
+        <!-- Data-driven (PAGES_DATA.pagesForCard) · self-managed cardLang · i18n-excluded -->
+        <div id="usedin-host" class="usedin" data-global-i18n="off" data-card-key="horizontal-card"></div>
+      </section>
+
+      <!-- ============== 06 When to Use ============== -->
+      <section class="section" id="s-when">
+        <div class="section__head">
+          <span class="section__index">06</span>
+          <h2 class="section__title">When to Use · 何时使用</h2>
+        </div>
+        <p class="section__lede">
+          横向和双列在信息量上几乎一致，区别是场景。选卡片先想：这个列表让用户滚动多快、每个 SKU 需要点几次操作。
+        </p>
+
+        <div class="compare" style="margin-top: 20px;">
+          <div class="compare__col compare__col--h">
+            <div class="compare__col-title">选 Horizontal 当</div>
+            <ul class="compare__list">
+              <li>列表长度可预期（购物车 20+ 件 / 订单页 8 条内）</li>
+              <li>用户会逐条操作（改数量、删除、再购、评价）</li>
+              <li>需要看清品牌 · 卖家 · 履约这类完整信息</li>
+              <li>屏幕宽度不够 2 列并排（&lt; 360px 视口）</li>
+              <li>信息主导 &gt; 视觉冲击</li>
+            </ul>
+          </div>
+          <div class="compare__col compare__col--v">
+            <div class="compare__col-title">选 <a href="./vertical-card.html" style="color: inherit;">Vertical</a> 当</div>
+            <ul class="compare__list">
+              <li>用户在快速浏览、比价（首页 / 类目页 / 搜索结果）</li>
+              <li>图像本身是决策依据（美妆、时尚、家居）</li>
+              <li>需要单屏容纳更多 SKU（&gt; 4 张/屏）</li>
+              <li>列表可以横向流动 · 横滑楼层</li>
+              <li>视觉冲击 &gt; 一次信息全</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="dodont" style="margin-top: 24px;">
+          <div class="dodont__col dodont__col--do">
+            <div style="font-size: 12px; font-weight: 700; color: var(--success); margin-bottom: 8px;">DO</div>
+            <ul class="compare__list">
+              <li>购物车、收藏夹、订单列表统一用横向卡</li>
+              <li>横向卡在同一页面保持宽度一致，商品图片统一使用 130×130 规格</li>
+              <li>搜索联想 / 快速跳转需要更小结构时，改用 Horizontal Mini，而不是压缩本组件</li>
+            </ul>
+          </div>
+          <div class="dodont__col" style="border-left: 3px solid var(--joybuy-red);">
+            <div style="font-size: 12px; font-weight: 700; color: var(--joybuy-red); margin-bottom: 8px;">DON'T</div>
+            <ul class="compare__list">
+              <li>别在首页信息流里穿插横向卡 · 打乱双列节奏</li>
+              <li>别在横向卡里塞颜色球（<code>colors</code>）· 图像已经很小，看不清</li>
+              <li>别同时打开全部可选槽位 · 按场景保留必要信息，避免信息拥挤</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 07 · Figma ============ -->
+      <section class="section" id="s-figma">
+        <div class="section__eyebrow">07 / FIGMA</div>
+        <h2 class="section__title">Figma 源组件</h2>
+        <p class="section__lead">直接嵌入 <strong>App Business Components</strong> 中「Horizontal card」结构说明 frame。以设计源文件为唯一事实来源，本页所有槽位命名与之对齐。</p>
+        <div class="figma-wrap">
+          <iframe
+            title="Figma · Horizontal card"
+            loading="lazy"
+            allowfullscreen
+            src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fdesign%2FeInnhKDnBhPIyPprZADdnO%2FApp-Business-Components%3Fnode-id%3D22236-148505"></iframe>
+          <div class="figma-hint">node-id 22236-148505 · 若空白请确认已登录并对该文件有「知道链接的人可查看」权限。</div>
+        </div>
+      </section>
+
+    </div><!-- /.site-main__inner -->
+  </main>
+
+  <!-- ============ Right rail · variant preview ============ -->
+  <aside class="site-toc">
+    <div class="side-preview">
+      <div class="side-preview__head">
+        <span>Types Preview</span>
+        <span class="side-preview__lang" id="sp-lang">
+          <button data-sp-lang="en" class="is-active">EN</button>
+          <button data-sp-lang="zh">中</button>
+        </span>
+      </div>
+      <div class="side-preview__items">
+        <div class="side-preview__item">
+          <div class="side-preview__item-label"><span>Default</span><span class="side-preview__item-tag">购物车 / 订单</span></div>
+          <div class="side-preview__stage"><div class="side-preview__scale" id="sp-1"></div></div>
+        </div>
+        <div class="side-preview__item">
+          <div class="side-preview__item-label"><span>Product Properties</span><span class="side-preview__item-tag">AiBot</span></div>
+          <div class="side-preview__stage"><div class="side-preview__scale" id="sp-2"></div></div>
+        </div>
+        <div class="side-preview__item">
+          <div class="side-preview__item-label"><span>Extreme Condition</span><span class="side-preview__item-tag">Variant3</span></div>
+          <div class="side-preview__stage"><div class="side-preview__scale" id="sp-3"></div></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div><!-- /.site -->
+
+<script src="../assets/card-data.js"></script>
+<script src="../assets/pages-data.js"></script>
+<script src="../assets/nav.js"></script>
+<script>
+  /* ================ Interactive preview state ================ */
+  const D = window.CARD_DATA;
+  const CATS = [
+    { key:'3c',        label:'3C 数码' },
+    { key:'appliance', label:'家电' },
+    { key:'beauty',    label:'美妆' },
+    { key:'fashion',   label:'时尚' },
+    { key:'food',      label:'食品' }
+  ];
+
+  // Same enum as vertical-card.html
+  const HIGHLIGHT_ENUM = new Set([
+    'best-before','best-seller','blockbuster','clearance',
+    'hot-deal','new','plus-price','sponsored','top-deal'
+  ]);
+  const HIGHLIGHT_LABEL = {
+    'best-before':'Best before', 'best-seller':'Best seller', 'blockbuster':'Blockbuster',
+    'clearance':'Clearance', 'hot-deal':'Hot deal', 'new':'New',
+    'plus-price':'Plus price', 'sponsored':'Sponsored', 'top-deal':'Top deal'
+  };
+
+  let cardLang = 'en';
+  let currentCat = 'beauty';
+  let currentPreset = 0;
+  let currentVariant = 'default';
+
+  const PRODUCT_PROPERTIES = {
+    '3c':        { en:'128GB · Starlight', zh:'128GB · 星光色' },
+    appliance:   { en:'9kg · White', zh:'9kg · 白色' },
+    beauty:      { en:'190g · Baies', zh:'190g · 浆果香' },
+    fashion:     { en:'Size M · Black', zh:'M 码 · 黑色' },
+    food:        { en:'460ml · Strawberry', zh:'460ml · 草莓味' }
+  };
+
+  function productProperties(catKey) {
+    const value = PRODUCT_PROPERTIES[catKey] || PRODUCT_PROPERTIES.beauty;
+    return value[cardLang];
+  }
+
+  function setField(name, value) {
+    document.querySelectorAll('.hcard [data-field="'+name+'"]').forEach(el => {
+      if (name === 'highlight') {
+        if (value && HIGHLIGHT_ENUM.has(value)) {
+          el.innerHTML = '<img src="../assets/figma-atoms/product-highlights/'+value+'.svg" alt="'+(HIGHLIGHT_LABEL[value]||value)+'">';
+          el.removeAttribute('data-empty');
+        } else {
+          el.innerHTML = '';
+          el.setAttribute('data-empty', '1');
+        }
+        return;
+      }
+      el.textContent = value || '';
+      if (!value) el.setAttribute('data-empty', '1'); else el.removeAttribute('data-empty');
+    });
+  }
+
+  function renderPreview() {
+    const p = D.catalog[currentCat][currentPreset];
+    const t = p[cardLang];
+    setField('brand', p.brand);
+    setField('title', t.title);
+    const isProperties = currentVariant === 'properties';
+    const isExtreme = currentVariant === 'extreme';
+    setField('highlight', isExtreme ? 'clearance' : t.highlight);
+    setField('rating', p.rating);
+    setField('sold', isProperties ? (cardLang === 'zh' ? '189 条评论' : '189 Reviews') : (isExtreme ? (cardLang === 'zh' ? '缺货' : 'Out of stock') : t.sold));
+    setField('salePrice', isExtreme ? '£350.00' : p.salePrice);
+    setField('originalPrice', isExtreme ? '' : p.originalPrice);
+    setField('promotion', isProperties ? productProperties(currentCat) : (isExtreme ? (cardLang === 'zh' ? '最佳食用期：12/12/25' : 'Best before: 12/12/25') : (t.highlight ? 'Lightning offers' : '')));
+    setField('discount', isExtreme ? '' : t.discount);
+    setField('offer', isExtreme ? '' : t.promotion);
+    setField('perUnit', t.perUnit);
+    setField('deposit', t.deposit);
+    setField('fulfillment', t.fulfillment);
+    setField('seller', t.seller);
+
+    document.querySelectorAll('.hcard .hcard__price-was').forEach(el => {
+      const inner = el.querySelector('.hcard__original-price');
+      el.style.display = (inner && inner.textContent) ? '' : 'none';
+    });
+
+    const img = document.getElementById('hcard-img');
+    const src = D.productImages[p.img] || '';
+    if (img) { img.src = src; img.alt = p.brand; }
+
+    const action = document.getElementById('hcard-action');
+    if (action) action.innerHTML = isExtreme
+      ? '<button class="hcard__notify" type="button">'+(cardLang === 'zh' ? '到货通知' : 'Notify')+'</button>'
+      : '<button class="hcard__cart" aria-label="Add to cart"><img src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Add to cart"></button>';
+  }
+
+  function renderVariantStrip() {
+    const strip = document.getElementById('variant-strip');
+    strip.innerHTML = '';
+    [
+      { key:'default', label:'Default' },
+      { key:'properties', label:'Product Properties' },
+      { key:'extreme', label:'Extreme Condition' }
+    ].forEach(variant => {
+      const btn = document.createElement('button');
+      btn.className = 'chip-btn' + (variant.key === currentVariant ? ' is-active' : '');
+      btn.textContent = variant.label;
+      btn.addEventListener('click', () => {
+        currentVariant = variant.key;
+        renderVariantStrip();
+        renderPreview();
+      });
+      strip.appendChild(btn);
+    });
+  }
+
+  function renderCatStrip() {
+    const strip = document.getElementById('cat-strip');
+    strip.innerHTML = '';
+    CATS.forEach(c => {
+      const btn = document.createElement('button');
+      btn.className = 'chip-btn' + (c.key === currentCat ? ' is-active' : '');
+      btn.textContent = c.label;
+      btn.addEventListener('click', () => {
+        currentCat = c.key;
+        currentPreset = 0;
+        renderCatStrip();
+        renderPresetStrip();
+        renderPreview();
+      });
+      strip.appendChild(btn);
+    });
+  }
+
+  function renderPresetStrip() {
+    const strip = document.getElementById('preset-strip');
+    strip.innerHTML = '';
+    const list = D.catalog[currentCat] || [];
+    list.forEach((p, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'chip-btn' + (idx === currentPreset ? ' is-active' : '');
+      btn.textContent = p.brand;
+      btn.addEventListener('click', () => {
+        currentPreset = idx;
+        renderPresetStrip();
+        renderPreview();
+      });
+      strip.appendChild(btn);
+    });
+  }
+
+  /* ================ Used In · 出现在 (data-driven cards + Figma lightbox) ================
+   * Reads PAGES_DATA.pagesForCard(cardKey) — the SAME source as the Pages Overview.
+   * Renders compact page cards; clicking one opens a lightbox with the real Figma
+   * frame (iframe injected on open, removed on close, so the page stays light and
+   * its scroll height constant). Host + modal are i18n-excluded and self-render in cardLang. */
+  const PD = window.PAGES_DATA;
+  const usedHost = document.querySelector('.usedin[data-card-key]');
+  const USED_KEY = usedHost ? (usedHost.getAttribute('data-card-key') || '') : '';
+
+  const UsedCopy = {
+    summary:  { zh: n => '出现在 <b>'+n+'</b> 个真实页面 · 点击卡片查看 Figma 落位',
+                en: n => 'Appears in <b>'+n+'</b> real pages · click a card to view the Figma frame' },
+    view:     { zh: '查看页面', en: 'View page' },
+    open:     { zh: '在 Figma 打开', en: 'Open in Figma' },
+    onPage:   { zh: '同页商卡', en: 'Cards on this page' },
+    thisCard: { zh: '本卡', en: 'this card' },
+    close:    { zh: '关闭', en: 'Close' },
+    empty:    { zh: '暂未登记出现页面。', en: 'No pages recorded yet.' }
+  };
+  function uEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function uPad(n){ return (n<10?'0':'')+n; }
+  function uBoardNo(p){ return PD.pages.findIndex(x => x.id === p.id) + 1; }
+  const uExtSvg = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3h7v7M13 3l-8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  function usedLanguage() {
+    if (window.JoybuySite && typeof window.JoybuySite.getLanguage === 'function') {
+      return window.JoybuySite.getLanguage();
+    }
+    return document.documentElement.lang === 'en' ? 'en' : 'zh';
+  }
+
+  let uframe = null, uOpenId = null, uLastTrigger = null;
+
+  function buildFrame() {
+    if (uframe) return uframe;
+    uframe = document.createElement('div');
+    uframe.className = 'uframe';
+    uframe.setAttribute('data-global-i18n', 'off');
+    uframe.setAttribute('role', 'dialog');
+    uframe.setAttribute('aria-modal', 'true');
+    uframe.innerHTML =
+      '<div class="uframe__backdrop" data-uf-close></div>' +
+      '<div class="uframe__panel" role="document">' +
+        '<div class="uframe__head">' +
+          '<div class="uframe__titles"><div class="uframe__title"></div><div class="uframe__sub"></div></div>' +
+          '<div class="uframe__actions">' +
+            '<a class="uframe__open" target="_blank" rel="noopener"></a>' +
+            '<button class="uframe__close" type="button" data-uf-close></button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="uframe__body"></div>' +
+        '<div class="uframe__foot"></div>' +
+      '</div>';
+    document.body.appendChild(uframe);
+    uframe.addEventListener('click', e => { if (e.target.closest('[data-uf-close]')) closeFrame(); });
+    return uframe;
+  }
+
+  function fillFrame(p) {
+    const lg = usedLanguage(), other = lg === 'zh' ? 'en' : 'zh';
+    uframe.querySelector('.uframe__title').textContent = p.short[lg];
+    uframe.querySelector('.uframe__sub').textContent = p[lg] + ' · ' + p[other];
+    const openA = uframe.querySelector('.uframe__open');
+    openA.setAttribute('href', PD.deepLink(p.node));
+    openA.innerHTML = '<span>' + uEsc(UsedCopy.open[lg]) + '</span>' + uExtSvg;
+    const closeBtn = uframe.querySelector('.uframe__close');
+    closeBtn.setAttribute('aria-label', UsedCopy.close[lg]);
+    closeBtn.textContent = '✕';
+    // (re)inject a fresh lazy iframe so switching pages reloads and closing frees it
+    uframe.querySelector('.uframe__body').innerHTML =
+      '<iframe loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="' +
+      uEsc(PD.embedLink(p.node)) + '" title="' + uEsc(p[lg]) + '"></iframe>';
+    let foot = '<span class="uframe__foot-label">' + uEsc(UsedCopy.onPage[lg]) + '</span>';
+    p.cards.forEach(key => {
+      const c = PD.cards[key];
+      if (!c) return;
+      foot += key === USED_KEY
+        ? '<span class="uframe__chip uframe__chip--self">' + uEsc(c[lg]) + ' · ' + uEsc(UsedCopy.thisCard[lg]) + '</span>'
+        : '<a class="uframe__chip" href="../' + uEsc(c.file) + '">' + uEsc(c[lg]) + '</a>';
+    });
+    if (p.inhouse) foot += '<a class="uframe__chip uframe__chip--inhouse" href="../' + uEsc(p.inhouse.file) + '">' + uEsc(p.inhouse[lg]) + '</a>';
+    uframe.querySelector('.uframe__foot').innerHTML = foot;
+  }
+
+  function openFrame(id, trigger) {
+    if (!PD) return;
+    const p = PD.pages.filter(x => x.id === id)[0];
+    if (!p) return;
+    buildFrame();
+    uOpenId = id;
+    uLastTrigger = trigger || null;
+    fillFrame(p);
+    uframe.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    const closeBtn = uframe.querySelector('.uframe__close');
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function closeFrame() {
+    if (!uframe || !uframe.classList.contains('is-open')) return;
+    uframe.classList.remove('is-open');
+    uframe.querySelector('.uframe__body').innerHTML = ''; // stop / unload the iframe
+    document.body.style.overflow = '';
+    uOpenId = null;
+    if (uLastTrigger && typeof uLastTrigger.focus === 'function') uLastTrigger.focus();
+    uLastTrigger = null;
+  }
+
+  function renderUsedIn() {
+    if (!usedHost) return;
+    if (!PD || typeof PD.pagesForCard !== 'function') { usedHost.innerHTML = ''; return; }
+    const lg = usedLanguage();
+    const pages = PD.pagesForCard(USED_KEY);
+    if (!pages.length) { usedHost.innerHTML = '<p class="uin-summary">' + uEsc(UsedCopy.empty[lg]) + '</p>'; return; }
+    let html = '<p class="uin-summary">' + UsedCopy.summary[lg](pages.length) + '</p><div class="uin-grid">';
+    pages.forEach(p => {
+      const owner = p.owner ? '<span class="uin-card__co">· ' + uEsc(p.owner) + '</span>' : '';
+      html +=
+        '<button class="uin-card" type="button" data-open-page="' + uEsc(p.id) + '">' +
+          '<span class="uin-card__thumb">' +
+            '<span class="uin-card__idx">' + uPad(uBoardNo(p)) + '</span>' +
+            '<img loading="lazy" src="../' + uEsc(p.shot) + '" alt="' + uEsc(p.short[lg]) + '">' +
+            '<span class="uin-card__open">' + uExtSvg + '<span>' + uEsc(UsedCopy.view[lg]) + '</span></span>' +
+          '</span>' +
+          '<span class="uin-card__body">' +
+            '<span class="uin-card__name">' + uEsc(p.short[lg]) + '</span>' +
+            '<span class="uin-card__meta"><span class="uin-card__dot"></span>' + uEsc(p.channel) + owner + '</span>' +
+          '</span>' +
+        '</button>';
+    });
+    usedHost.innerHTML = html + '</div>';
+  }
+
+  if (usedHost) {
+    usedHost.addEventListener('click', e => {
+      const btn = e.target.closest('[data-open-page]');
+      if (btn) openFrame(btn.getAttribute('data-open-page'), btn);
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && uframe && uframe.classList.contains('is-open')) closeFrame();
+    });
+  }
+  renderUsedIn();
+
+  function setCardLang(lang) {
+    cardLang = lang;
+    document.querySelectorAll('.lang-toggle__btn').forEach(b => b.classList.toggle('is-active', b.dataset.lang === lang));
+    document.querySelectorAll('#sp-lang [data-sp-lang]').forEach(b => b.classList.toggle('is-active', b.dataset.spLang === lang));
+    renderPreview();
+    renderTypeBlocks();
+    renderPreviewStack();
+  }
+  document.getElementById('lang-toggle').addEventListener('click', e => {
+    const btn = e.target.closest('.lang-toggle__btn');
+    if (!btn) return;
+    setCardLang(btn.dataset.lang);
+  });
+  document.getElementById('sp-lang').addEventListener('click', e => {
+    const btn = e.target.closest('[data-sp-lang]');
+    if (!btn) return;
+    setCardLang(btn.dataset.spLang);
+  });
+
+  /* ================ Static "Types" showcase ================ */
+  function hcardHTML(cfg) {
+    // cfg: {catKey, presetIdx, mode ('default'|'promo'|'oos'|'compact')}
+    const list = D.catalog[cfg.catKey];
+    if (!list || !list[cfg.presetIdx]) return '';
+    const p = list[cfg.presetIdx];
+    const t = p[cardLang];
+    const img = D.productImages[p.img] || '';
+    const dim = cfg.mode === 'oos' ? ' hcard--dim' : '';
+
+    let html = '<div class="hcard' + dim + '">';
+
+    // Image
+    html += '<div class="hcard__image">';
+    html += (img ? '<img src="'+img+'" alt="'+p.brand+'">' : '');
+    html += '<button class="hcard__favorite" type="button" aria-label="Add to wishlist"><img src="../assets/figma-atoms/tag-like/tag-like.svg" alt=""></button>';
+    if (cfg.mode === 'extreme') {
+      html += '<div class="hcard__oos"><img src="../assets/figma-atoms/stock/out-of-stock.svg" alt="Out of stock"></div>';
+    }
+    html += '</div>';
+
+    // Body
+    html += '<div class="hcard__body">';
+
+    // Highlight
+    const highlight = cfg.mode === 'extreme' ? 'clearance' : t.highlight;
+    if (highlight && HIGHLIGHT_ENUM.has(highlight)) {
+      html += '<span class="hcard__highlight"><img src="../assets/figma-atoms/product-highlights/'+highlight+'.svg" alt="'+(HIGHLIGHT_LABEL[highlight]||highlight)+'"></span>';
+    }
+    html += '<div class="hcard__brand">'+p.brand+'</div>';
+    html += '<p class="hcard__title">'+t.title+'</p>';
+    html += '<div class="hcard__meta">';
+    html += '<span class="hcard__meta-star">'+p.rating+'</span>';
+    html += '<span class="hcard__meta-sep"></span>';
+    html += '<span>'+(cfg.mode === 'properties' ? (cardLang === 'zh' ? '189 条评论' : '189 Reviews') : (cfg.mode === 'extreme' ? (cardLang === 'zh' ? '缺货' : 'Out of stock') : t.sold))+'</span>';
+    html += '</div>';
+
+    if (cfg.mode === 'properties') html += '<div class="hcard__promotion">'+productProperties(cfg.catKey)+'</div>';
+    if (cfg.mode === 'extreme') html += '<div class="hcard__promotion">'+(cardLang === 'zh' ? '最佳食用期：12/12/25' : 'Best before: 12/12/25')+'</div>';
+
+    html += '<div class="hcard__prices">';
+    html += '<span class="hcard__sale-price">'+(cfg.mode === 'extreme' ? '£350.00' : p.salePrice)+'</span>';
+    if (p.originalPrice && cfg.mode !== 'extreme') {
+      html += '<span class="hcard__price-was">RRP: <span class="hcard__original-price">'+p.originalPrice+'</span></span>';
+    }
+    html += '</div>';
+
+    if (t.discount) html += '<div class="hcard__discount">'+t.discount+'</div>';
+    if (t.promotion) html += '<div class="hcard__offer">'+t.promotion+'</div>';
+    if (t.perUnit) html += '<div class="hcard__per-unit">'+t.perUnit+'</div>';
+    if (t.deposit) html += '<div class="hcard__deposit">'+t.deposit+'</div>';
+
+    html += '<div class="hcard__fulfillment">'+t.fulfillment+'</div>';
+
+    html += '<div class="hcard__foot">';
+    html += '<span class="hcard__seller">'+t.seller+'</span>';
+    if (cfg.mode === 'extreme') {
+      html += '<button class="hcard__notify" type="button">'+(cardLang === 'zh' ? '到货通知' : 'Notify')+'</button>';
+    } else {
+      html += '<button class="hcard__cart" aria-label="Add to cart"><img src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Add to cart"></button>';
+    }
+    html += '</div>';
+
+    html += '</div></div>';
+    return html;
+  }
+
+  function renderTypeBlocks() {
+    const t1 = document.getElementById('type-default');
+    if (t1) t1.innerHTML = hcardHTML({ catKey:'beauty',    presetIdx:1, mode:'default' });
+    const t2 = document.getElementById('type-properties');
+    if (t2) t2.innerHTML = hcardHTML({ catKey:'3c', presetIdx:0, mode:'properties' });
+    const t3 = document.getElementById('type-extreme');
+    if (t3) t3.innerHTML = hcardHTML({ catKey:'food', presetIdx:0, mode:'extreme' });
+  }
+
+  /* ================ Right-rail variant preview (reuses hcardHTML) ================ */
+  function renderPreviewStack() {
+    const map = [
+      ['sp-1', { catKey:'beauty',  presetIdx:1, mode:'default' }],
+      ['sp-2', { catKey:'3c', presetIdx:0, mode:'properties' }],
+      ['sp-3', { catKey:'food', presetIdx:0, mode:'extreme' }]
+    ];
+    map.forEach(([id, cfg]) => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = hcardHTML(cfg);
+    });
+  }
+
+  /* ================ Sticky tab scroll-spy ================ */
+  const tabLinks = document.querySelectorAll('.doc-tabs__link[data-tab]');
+  const tabSections = Array.from(tabLinks).map(a => document.getElementById(a.dataset.tab)).filter(Boolean);
+  function updateTabs() {
+    const y = window.scrollY + 160;
+    let current = tabSections[0] ? tabSections[0].id : null;
+    for (const s of tabSections) { if (s.offsetTop <= y) current = s.id; }
+    tabLinks.forEach(a => a.classList.toggle('is-active', a.dataset.tab === current));
+  }
+  window.addEventListener('scroll', updateTabs, { passive: true });
+
+  /* ================ Init ================ */
+  renderVariantStrip();
+  renderCatStrip();
+  renderPresetStrip();
+  renderPreview();
+  renderTypeBlocks();
+  renderPreviewStack();
+  updateTabs();
+</script>
+<script src="../assets/card-detail-template.js"></script>
+<script src="../assets/card-preview-controls.js"></script>
+</body>
+</html>

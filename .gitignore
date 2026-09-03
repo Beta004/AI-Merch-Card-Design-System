@@ -1,0 +1,17 @@
+# macOS
+.DS_Store
+._*
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+*~
+
+# 开发遗留
+index-legacy.html
+
+# 本地临时
+*.log
+*.tmp
+node_modules/

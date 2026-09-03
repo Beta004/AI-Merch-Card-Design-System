@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>图标 · Iconography · Foundations · 商卡设计系统</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="全站可用的 Figma 图标资源目录，按功能分组，点击复制路径。">
+<link rel="stylesheet" href="../assets/tokens.css">
+<style>
+  /* Page chrome (same as sibling foundations pages) */
+  .crumb {
+    font-size: 12.5px; color: var(--ink-4);
+    margin-bottom: 18px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .crumb a { color: var(--ink-4); transition: color .12s ease; }
+  .crumb a:hover { color: var(--accent); }
+  .crumb .sep { color: var(--outline-strong); }
+  .crumb .curr { color: var(--ink-2); font-weight: 600; }
+
+  .head { margin-bottom: 4px; }
+  .head__eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 700; letter-spacing: .14em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .head__title {
+    margin: 0 0 10px;
+    font-size: 33px; font-weight: 700; letter-spacing: -.02em;
+    color: var(--ink); line-height: 1.16;
+  }
+  .head__title-en {
+    font-size: 14.5px; color: var(--ink-4);
+    line-height: 1.5; margin-bottom: 0;
+  }
+  /* Meta strip — quiet arco-clean tags with airy spacing, balanced like a
+     TDesign component header. Chip visuals come from the shared .chip. */
+  .head__metas {
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px; margin-bottom: 0;
+  }
+  /* Anchor tabs */
+  .doc-tabs {
+    position: sticky; top: 0; z-index: 20;
+    /* Break out of .site-main__inner to span the whole main column,
+       edge-to-edge from the nav border to the TOC border. */
+    margin: 20px calc(-1 * var(--page-pad-x)) 32px;
+    background: rgba(255, 255, 255, .86);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--outline);
+  }
+  .doc-tabs__inner {
+    max-width: calc(var(--content-max) + 2 * var(--page-pad-x));
+    margin: 0 auto;
+    padding: 0 var(--page-pad-x);
+    display: flex; gap: 2px;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .doc-tabs__inner::-webkit-scrollbar { display: none; }
+  .doc-tabs__link {
+    position: relative;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 14px 14px 13px;
+    font-size: 13.5px; font-weight: 500;
+    color: var(--ink-4);
+    white-space: nowrap; text-decoration: none;
+    transition: color .15s ease;
+  }
+  .doc-tabs__link::after {
+    content: ''; position: absolute;
+    left: 12px; right: 12px; bottom: -1px; height: 2px;
+    background: var(--accent); border-radius: 2px 2px 0 0;
+    transform: scaleX(0); transform-origin: center;
+    transition: transform .22s cubic-bezier(.4, 0, .2, 1);
+  }
+  .doc-tabs__link:hover { color: var(--ink-2); }
+  .doc-tabs__link.is-active { color: var(--accent); font-weight: 600; }
+  .doc-tabs__link.is-active::after { transform: scaleX(1); }
+  .doc-tabs__link-idx {
+    font-family: var(--f-mono);
+    font-size: 11px; font-weight: 500; color: var(--ink-5);
+    letter-spacing: 0;
+  }
+  .doc-tabs__link.is-active .doc-tabs__link-idx { color: var(--accent); opacity: .7; }
+  /* Search filter */
+  .search-bar {
+    position: sticky;
+    top: 47px;
+    z-index: 4;
+    background: var(--bg);
+    padding: 12px 0 16px;
+    display: flex; gap: 12px; align-items: center;
+    border-bottom: 1px solid var(--outline);
+    margin-bottom: 32px;
+  }
+  .search-bar__input {
+    flex: 1;
+    max-width: 420px;
+    padding: 8px 14px;
+    font: inherit;
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-pill);
+    outline: none;
+    transition: border-color .12s ease;
+  }
+  .search-bar__input:focus { border-color: var(--accent); }
+  .search-bar__hits {
+    font-size: 12px; color: var(--ink-4);
+    font-family: var(--f-mono);
+  }
+
+  /* Category header */
+  .cat-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .cat-head__title {
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .cat-head__title h3 {
+    margin: 0;
+    font-size: 15px; font-weight: 700;
+    color: var(--ink);
+  }
+  .cat-head__count {
+    font-family: var(--f-mono); font-size: 11px;
+    color: var(--ink-4);
+  }
+  .cat-head__path {
+    font-family: var(--f-mono); font-size: 11px;
+    color: var(--ink-5);
+  }
+  .cat-head__desc {
+    margin: 0 0 20px;
+    font-size: 13px; color: var(--ink-4); line-height: 1.6;
+    max-width: 640px;
+  }
+
+  /* Icon grid */
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  .icon-cell {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-sm);
+    padding: 14px 12px 10px;
+    display: flex; flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: border-color .12s ease, box-shadow .12s ease, transform .12s ease;
+    position: relative;
+  }
+  .icon-cell:hover {
+    border-color: var(--outline-strong);
+    box-shadow: var(--shadow-1);
+    transform: translateY(-1px);
+  }
+  .icon-cell.is-hit { border-color: var(--accent); }
+  .icon-cell__stage {
+    width: 100%;
+    height: 56px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(180deg, #f8f8f9 0%, #f2f2f3 100%);
+    border-radius: var(--r-xs);
+    padding: 8px;
+  }
+  .icon-cell__stage img {
+    max-width: 100%; max-height: 40px;
+    height: auto; width: auto;
+  }
+  .icon-cell__name {
+    font-family: var(--f-mono); font-size: 11px;
+    color: var(--ink-2);
+    text-align: center;
+    line-height: 1.35;
+    word-break: break-all;
+    overflow: hidden;
+  }
+  .icon-cell__path {
+    display: none;
+  }
+
+  /* Overview grid */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .overview-tile {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 16px 18px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color .12s ease, transform .12s ease;
+  }
+  .overview-tile:hover {
+    border-color: var(--outline-strong);
+    transform: translateY(-1px);
+  }
+  .overview-tile__label {
+    font-family: var(--f-mono); font-size: 11px; font-weight: 700;
+    color: var(--joybuy-red);
+    letter-spacing: .04em;
+    margin-bottom: 4px;
+  }
+  .overview-tile__title {
+    font-size: 14px; font-weight: 700; color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .overview-tile__count {
+    font-size: 22px; font-weight: 700; color: var(--ink);
+    letter-spacing: -.005em;
+    margin: 8px 0 6px;
+  }
+  .overview-tile__desc {
+    font-size: 12px; color: var(--ink-4); line-height: 1.55;
+  }
+
+  /* Info banner */
+  .info-banner {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 18px;
+    background: var(--accent-50);
+    border: 1px solid var(--accent-100);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--r-sm);
+    font-size: 13px; color: var(--ink-2); line-height: 1.65;
+    margin-bottom: 24px;
+  }
+  .info-banner__tag {
+    flex-shrink: 0;
+    font-size: 11px; font-weight: 700;
+    color: var(--accent); background: var(--accent-50);
+    padding: 2px 8px; border-radius: 3px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  /* Toast */
+  #toast {
+    position: fixed;
+    bottom: 32px; left: 50%; transform: translateX(-50%);
+    padding: 10px 20px;
+    background: var(--ink);
+    color: #fff;
+    font-size: 13px; font-weight: 500;
+    border-radius: var(--r-pill);
+    opacity: 0; pointer-events: none;
+    transition: opacity .2s ease;
+    z-index: 100;
+    font-family: var(--f-mono);
+  }
+  #toast.is-visible { opacity: 1; }
+
+  /* Empty state */
+  .empty-state {
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--ink-4);
+    font-size: 14px;
+  }
+  .empty-state code {
+    background: var(--surface-2);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+  }
+  .empty-state--hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="site" style="grid-template-columns: var(--nav-w) 1fr;">
+
+  <aside id="site-nav" class="site-nav" data-active="foundations/iconography"></aside>
+
+  <main class="site-main">
+    <div class="site-main__inner">
+
+      <!-- Breadcrumb -->
+      <nav class="crumb">
+        <a href="../index.html">概览</a>
+        <span class="sep">/</span>
+        <span>Foundations · 基础</span>
+        <span class="sep">/</span>
+        <span class="curr">Iconography</span>
+      </nav>
+
+      <!-- Header -->
+      <header class="head">
+        <span class="head__eyebrow">
+          <span style="width: 6px; height: 6px; background: var(--joybuy-red); border-radius: 50%;"></span>
+          Foundations · Iconography
+        </span>
+        <h1 class="head__title">图标目录</h1>
+        <div class="head__title-en">Iconography · 105 Figma-exported SVGs · click to copy path</div>
+        <div class="head__metas">
+          <span class="chip">v0.1</span>
+          <span class="chip chip--red">MVP · Now</span>
+          <span class="chip">6 分组</span>
+          <span class="chip">18 家族</span>
+          <span class="chip">105 图标</span>
+        </div>
+      </header>
+
+      </div><!-- /head -->
+
+      <!-- Anchor tab bar · full-bleed sticky, spans the main column -->
+      <nav class="doc-tabs">
+        <div class="doc-tabs__inner">
+        <a class="doc-tabs__link is-active" href="#s-overview"><span class="doc-tabs__link-idx">01</span>概览</a>
+        <a class="doc-tabs__link"           href="#s-highlights"><span class="doc-tabs__link-idx">02</span>亮点标签</a>
+        <a class="doc-tabs__link"           href="#s-interaction"><span class="doc-tabs__link-idx">03</span>交互</a>
+        <a class="doc-tabs__link"           href="#s-fulfillment"><span class="doc-tabs__link-idx">04</span>履约库存</a>
+        <a class="doc-tabs__link"           href="#s-price"><span class="doc-tabs__link-idx">05</span>价格营销</a>
+        <a class="doc-tabs__link"           href="#s-attribute"><span class="doc-tabs__link-idx">06</span>属性辅助</a>
+      </div>
+      </nav>
+
+      <div class="site-main__inner">
+
+      <!-- Search filter (sticky) -->
+      <div class="search-bar">
+        <input id="search-input" class="search-bar__input" type="search" placeholder="搜索图标名 · 如 best-seller / campaign / rrp …" autocomplete="off" spellcheck="false">
+        <span id="search-hits" class="search-bar__hits">105 icons</span>
+      </div>
+
+      <div id="empty-state" class="empty-state empty-state--hidden">
+        没有找到与 <code id="empty-q"></code> 匹配的图标。试试 <code>best-seller</code>、<code>campaign</code>、<code>rrp</code>。
+      </div>
+
+      <!-- ============== 01 Overview ============== -->
+      <section class="section" id="s-overview">
+        <div class="section__head">
+          <span class="section__index">01</span>
+          <h2 class="section__title">Overview · 概览</h2>
+        </div>
+        <p class="section__lede">
+          全部图标由 Figma REST API 从 Joybuy 商卡组件库导出为 SVG，落在 <code>site/assets/figma-atoms/&lt;category&gt;/&lt;name&gt;.svg</code>。
+          点任意图标即可复制 <code>var()</code>-可用的相对路径。禁止手绘 icon 二次修改，改动请在 Figma 源文件里更新后重新导出。
+        </p>
+
+        <div class="info-banner">
+          <span class="info-banner__tag">Rule</span>
+          <div>
+            <b>视觉一致</b>是"视觉一模一样"的底线—— 商卡里的每一个图标都必须来自这份目录，
+            不允许用 Unicode 字符（如 ★）或 CSS 手绘（如 <code>border</code> 拼三角）作为图标使用。
+          </div>
+        </div>
+
+        <div class="overview-grid" id="overview-grid"></div>
+      </section>
+
+      <!-- Icon groups populated by JS -->
+      <section class="section" id="s-highlights" data-group="highlights">
+        <div class="section__head">
+          <span class="section__index">02</span>
+          <h2 class="section__title">Highlights · 亮点标签</h2>
+        </div>
+        <p class="section__lede">
+          用户扫视商卡时最先捕获的视觉锚点。Product Highlights 走枚举驱动（9 枚 SVG 对应 9 个 enum key），
+          AI Recommendation 与 Dietary Badges 是补充分组。
+        </p>
+        <div class="cat-list" id="cat-list-highlights"></div>
+      </section>
+
+      <section class="section" id="s-interaction" data-group="interaction">
+        <div class="section__head">
+          <span class="section__index">03</span>
+          <h2 class="section__title">Interaction · 交互</h2>
+        </div>
+        <p class="section__lede">
+          直接与用户手指发生交互的按钮 · 加购按钮全 11 状态、收藏/点赞按钮的 3 状态。
+        </p>
+        <div class="cat-list" id="cat-list-interaction"></div>
+      </section>
+
+      <section class="section" id="s-fulfillment" data-group="fulfillment">
+        <div class="section__head">
+          <span class="section__index">04</span>
+          <h2 class="section__title">Fulfillment · 履约库存</h2>
+        </div>
+        <p class="section__lede">
+          物流承诺、卖家类型、库存状态相关的图形。灰阶为主，用来在信息层次上把"次级信息"和主内容拉开距离。
+        </p>
+        <div class="cat-list" id="cat-list-fulfillment"></div>
+      </section>
+
+      <section class="section" id="s-price" data-group="price">
+        <div class="section__head">
+          <span class="section__index">05</span>
+          <h2 class="section__title">Price · 价格营销</h2>
+        </div>
+        <p class="section__lede">
+          价格主行、促销副行、大促标签等富含数字的组合。这些 SVG 内含 tabular-nums 版式，直接嵌入卡片无需二次排版。
+        </p>
+        <div class="cat-list" id="cat-list-price"></div>
+      </section>
+
+      <section class="section" id="s-attribute" data-group="attribute">
+        <div class="section__head">
+          <span class="section__index">06</span>
+          <h2 class="section__title">Attribute · 属性辅助</h2>
+        </div>
+        <p class="section__lede">
+          颜色/能效/等级等属性型图形，用于辅助信息展示。使用频率较低但每张商卡都可能出现一到两个。
+        </p>
+        <div class="cat-list" id="cat-list-attribute"></div>
+      </section>
+
+    </div>
+  </main>
+
+</div>
+
+<!-- Toast -->
+<div id="toast" role="status" aria-live="polite">已复制</div>
+
+<script src="../assets/nav.js"></script>
+<script>
+/* =========================================================
+   Icon catalog — grouped by function.
+   Files map 1:1 to figma-atoms/<key>/<name>.svg on disk.
+   ========================================================= */
+const CATALOG = {
+  highlights: {
+    label: '亮点标签',
+    en: 'Highlights',
+    desc: '产品亮点、AI 推荐、饮食标识、心愿标签 — 4 家族 · 22 图标。',
+    families: [
+      {
+        key: 'product-highlights',
+        label: 'Product Highlights',
+        desc: '9 枚枚举驱动的商品亮点 · 按 enum key 一一对应，绝不换标签图。',
+        files: ['best-before','best-seller','blockbuster','clearance','hot-deal','new','plus-price','sponsored','top-deal']
+      },
+      {
+        key: 'ai-recommendation',
+        label: 'AI Recommendation',
+        desc: 'AI 推荐理由标签 · 与产品亮点二选一，同一张商卡不并存。',
+        files: ['ai-recommendation-reasons','best-seller']
+      },
+      {
+        key: 'dietary-badges',
+        label: 'Dietary Badges',
+        desc: '食品类目的饮食属性标识 · 素食/清真/无麸质 · 冷冻/有机等。',
+        files: ['dairy-free','frozen','gluten-free','halal','number','organic','vegan','vegetarian']
+      },
+      {
+        key: 'tag-like',
+        label: 'Tag · Like',
+        desc: '收藏/心愿标签 · 3 态 · 未收藏 / 已收藏 / 加载中。',
+        files: ['loading','tag-like','tag-liked']
+      }
+    ]
+  },
+  interaction: {
+    label: '交互',
+    en: 'Interaction',
+    desc: '加购按钮全状态 · 直接与用户手指对话。1 家族 · 11 图标。',
+    families: [
+      {
+        key: 'btn-cart',
+        label: 'Btn · Add to Cart',
+        desc: '加购按钮全 11 态 · Default / Hover / Loading / Added / Result-1 / Result-Multi / Press / Success-N / Success-1 / Success-Loading / View-Detail。',
+        files: ['add-success-1','add-success-loading','add-success-n','btn-add-press','btn-add-result-mul','btn-add-result1','btn-add-to-cart','btn-add-to-cart-added','btn-add-to-cart-hover','btn-add-to-cart-loading','btn-view-detail']
+      }
+    ]
+  },
+  fulfillment: {
+    label: '履约库存',
+    en: 'Fulfillment · Stock',
+    desc: '物流承诺、卖家类型、库存状态。3 家族 · 6 图标。',
+    families: [
+      {
+        key: 'fulfillment-time',
+        label: 'Fulfillment Time',
+        desc: '履约时间提示 · 分自营与 POP 两种卡车图标。',
+        files: ['joybuy','pop']
+      },
+      {
+        key: 'leading-icon',
+        label: 'Leading Icon',
+        desc: '卖家标识前置图标 · Joybuy 自营 vs POP 第三方。',
+        files: ['joybuy','pop']
+      },
+      {
+        key: 'stock',
+        label: 'Stock',
+        desc: '库存状态标签 · 低库存红色警示 / 脱销灰底遮罩。',
+        files: ['low-stock','out-of-stock']
+      }
+    ]
+  },
+  price: {
+    label: '价格营销',
+    en: 'Price · Promotion',
+    desc: '价格主行、副行、总促、单个促销活动、Plus 会员价 · 5 家族 · 48 图标。',
+    families: [
+      {
+        key: 'price',
+        label: 'Price · 主行',
+        desc: '售价主行的 11 种排布 · 单价 / 起价 / 区间 / 折扣百分比 / Save 金额 / RRP 划线 / Plus 会员价等。',
+        files: ['default','price-sale-plus-new-rrp','price-sale-plus-new-was','range','rrp','sale-percent-rrp','sale-percent-was','sale-save-rrp','sale-save-was','starting-price','was']
+      },
+      {
+        key: 'price-second-line',
+        label: 'Price · 副行',
+        desc: '价格辅助副行 · RRP / Was / PPR 折扣 · 分横向与竖向两套。',
+        files: ['ppr-discount1-horizontal','ppr-discount1-vertical','ppr-discount2-horizontal','ppr-discount2-vertical','rrp-horizontal','was-discount1-horizontal','was-discount1-vertical','was-discount2-horizontal','was-discount2-vertical','was-horizontal']
+      },
+      {
+        key: 'plus-price',
+        label: 'Plus · 会员价',
+        desc: 'Plus 会员专享价 · 与总促搭配的 3 种版式。',
+        files: ['no-total-promotion-horizontal','no-total-promotion-vertical','with-total-promotion-default']
+      },
+      {
+        key: 'total-promotion',
+        label: 'Total Promotion',
+        desc: '整卡叠加的总促标签 · 满减 / N 件 M 折 / 买赠 / 积分 / 虚拟礼包 5 类。',
+        files: ['15-00-off-over-100-00','3-for-2','buy-1-get-1-free','buy-2-get-30-off','pay-after-promotion','points','virtual-gift-3-00-in-gifts','virtual-gift-3-gifts','virtual-gift-free-gift','virtual-gift-gift-up-to-3-00','virtual-gift-pick-3-gifts']
+      },
+      {
+        key: 'individual-promotion',
+        label: 'Individual Promotion',
+        desc: '单个营销活动标 · 快闪 / 限时 / 新品 / 首发 / 早鸟 / 清仓 / 价格保护 13 变体。',
+        files: ['campaign-happy-hour','campaign-lightning-offers','campaign-price-match','campaign-welcome-offer','clearance-sale','compaign-everyday-low-price','early-access','type-contract','type-launch-contract-limit-time','type-launch-contract','type-new-launch-limit-time','type-new-launch','type-pre-sale']
+      }
+    ]
+  },
+  attribute: {
+    label: '属性辅助',
+    en: 'Attribute · Helper',
+    desc: '颜色球、能效标、评分、标题、原始属性、图片容器 · 6 家族 · 21 图标。',
+    families: [
+      {
+        key: 'color',
+        label: 'Color',
+        desc: '商品可选颜色球组合 · 默认 / +99 更多 / +1 更多 / 脱销 4 变体。',
+        files: ['default','more-1','more-99','out-of-stock']
+      },
+      {
+        key: 'energy',
+        label: 'Energy',
+        desc: '能效等级标 · 默认 / 长文字 / 2 型 / 4 型 4 变体。',
+        files: ['default','longtext','variant2','variant4']
+      },
+      {
+        key: 'rating-sold',
+        label: 'Rating · Sold',
+        desc: '评分、销量、浏览量 · 拆星单元 star 独立使用。',
+        files: ['rate-sold','sold','star','variant','variant5','viewed']
+      },
+      {
+        key: 'title',
+        label: 'Title',
+        desc: '标题占位骨架图 · 1/2/3 行 · 用在骨架屏和 anatomy schematic。',
+        files: ['1','2','3']
+      },
+      {
+        key: 'attributes',
+        label: 'Attributes',
+        desc: '通用属性组件 · 复合列表变体两种。',
+        files: ['component-11','component-12']
+      }
+    ]
+  }
+};
+
+/* =========================================================
+   Render
+   ========================================================= */
+function makeIconCell(catKey, familyKey, fileName) {
+  const rel = 'figma-atoms/' + familyKey + '/' + fileName + '.svg';
+  const cell = document.createElement('div');
+  cell.className = 'icon-cell';
+  cell.setAttribute('data-name', fileName);
+  cell.setAttribute('data-family', familyKey);
+  cell.setAttribute('data-copy', '../assets/' + rel);
+  cell.innerHTML =
+      '<div class="icon-cell__stage"><img src="../assets/' + rel + '" alt="' + fileName + '"></div>'
+    + '<div class="icon-cell__name">' + fileName + '</div>';
+  cell.addEventListener('click', () => copyText(cell.getAttribute('data-copy'), cell));
+  return cell;
+}
+
+function renderCategoryList(catKey) {
+  const cat = CATALOG[catKey];
+  const host = document.getElementById('cat-list-' + catKey);
+  if (!host) return;
+  host.innerHTML = '';
+  cat.families.forEach(family => {
+    const head = document.createElement('div');
+    head.className = 'cat-head';
+    head.innerHTML =
+      '<div class="cat-head__title">'
+      + '<h3>' + family.label + '</h3>'
+      + '<span class="cat-head__count">' + family.files.length + ' 变体</span>'
+      + '</div>'
+      + '<span class="cat-head__path">assets/figma-atoms/' + family.key + '/</span>';
+    host.appendChild(head);
+
+    const desc = document.createElement('p');
+    desc.className = 'cat-head__desc';
+    desc.textContent = family.desc;
+    host.appendChild(desc);
+
+    const grid = document.createElement('div');
+    grid.className = 'icon-grid';
+    family.files.forEach(fn => grid.appendChild(makeIconCell(catKey, family.key, fn)));
+    host.appendChild(grid);
+  });
+}
+
+function renderOverview() {
+  const host = document.getElementById('overview-grid');
+  if (!host) return;
+  host.innerHTML = '';
+  Object.keys(CATALOG).forEach(catKey => {
+    const cat = CATALOG[catKey];
+    const total = cat.families.reduce((acc, f) => acc + f.files.length, 0);
+    const tile = document.createElement('a');
+    tile.className = 'overview-tile';
+    tile.href = '#s-' + catKey;
+    tile.innerHTML =
+      '<div class="overview-tile__label">' + cat.en + '</div>'
+      + '<div class="overview-tile__title">' + cat.label + '</div>'
+      + '<div class="overview-tile__count">' + total + ' <span style="font-size:12px;color:var(--ink-4);font-weight:500;">icons</span></div>'
+      + '<div class="overview-tile__desc">' + cat.desc + '</div>';
+    host.appendChild(tile);
+  });
+}
+
+/* =========================================================
+   Copy + toast
+   ========================================================= */
+const toast = document.getElementById('toast');
+let toastTimer;
+function copyText(text, cell) {
+  const done = () => {
+    toast.textContent = 'Copied · ' + text;
+    toast.classList.add('is-visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('is-visible'), 1400);
+    if (cell) {
+      cell.classList.add('is-hit');
+      setTimeout(() => cell.classList.remove('is-hit'), 600);
+    }
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done, () => fallbackCopy(text, done));
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+function fallbackCopy(text, done) {
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); done(); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+/* =========================================================
+   Search filter
+   ========================================================= */
+function filterIcons(q) {
+  q = q.trim().toLowerCase();
+  let visibleCount = 0;
+  document.querySelectorAll('.icon-cell').forEach(cell => {
+    const name = cell.getAttribute('data-name') || '';
+    const family = cell.getAttribute('data-family') || '';
+    const match = !q || name.toLowerCase().includes(q) || family.toLowerCase().includes(q);
+    cell.style.display = match ? '' : 'none';
+    if (match) visibleCount++;
+  });
+  // hide the whole family group if no cells visible
+  document.querySelectorAll('.cat-list .icon-grid').forEach(grid => {
+    const anyVisible = Array.from(grid.querySelectorAll('.icon-cell')).some(c => c.style.display !== 'none');
+    // walk up to head + desc siblings
+    const desc = grid.previousElementSibling;
+    const head = desc && desc.previousElementSibling;
+    if (head && head.classList.contains('cat-head')) {
+      head.style.display = anyVisible ? '' : 'none';
+      if (desc) desc.style.display = anyVisible ? '' : 'none';
+    }
+    grid.style.display = anyVisible ? '' : 'none';
+  });
+  document.getElementById('search-hits').textContent = visibleCount + ' / 105 icons';
+  const empty = document.getElementById('empty-state');
+  if (visibleCount === 0 && q) {
+    empty.classList.remove('empty-state--hidden');
+    document.getElementById('empty-q').textContent = q;
+  } else {
+    empty.classList.add('empty-state--hidden');
+  }
+}
+
+/* =========================================================
+   Init
+   ========================================================= */
+Object.keys(CATALOG).forEach(renderCategoryList);
+renderOverview();
+
+const input = document.getElementById('search-input');
+input.addEventListener('input', e => filterIcons(e.target.value));
+</script>
+</body>
+</html>

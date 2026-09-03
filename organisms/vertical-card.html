@@ -1,0 +1,2454 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>Vertical Card · Product Cards · 商卡设计系统</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Universal 2-Column Product Card — the canonical vertical product card, used across home feed, category listing and search grid results.">
+<link rel="stylesheet" href="../assets/tokens.css">
+<style>
+  /* ========== Breadcrumb & page head ========== */
+  .crumb {
+    font-size: 12.5px; color: var(--ink-4);
+    margin-bottom: 18px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .crumb a { color: var(--ink-4); transition: color .12s ease; }
+  .crumb a:hover { color: var(--accent); }
+  .crumb .sep { color: var(--outline-strong); }
+  .crumb .curr { color: var(--ink-2); font-weight: 600; }
+
+  .head { margin-bottom: 4px; }
+  .head__eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 700; letter-spacing: .14em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .head__title {
+    margin: 0 0 10px;
+    font-size: 33px; font-weight: 700; letter-spacing: -.02em;
+    color: var(--ink); line-height: 1.16;
+  }
+  .head__title-en {
+    font-size: 14.5px; color: var(--ink-4);
+    line-height: 1.5; margin-bottom: 0;
+  }
+  /* Meta strip — quiet arco-clean tags with airy spacing, balanced like a
+     TDesign component header. Chip visuals come from the shared .chip. */
+  .head__metas {
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px; margin-bottom: 0;
+  }
+  /* ========== 01 Overview - interactive preview ========== */
+  .demo {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 32px;
+    align-items: flex-start;
+  }
+  .demo__stage {
+    background: linear-gradient(180deg, #f8f8f9 0%, #f2f2f3 100%);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 32px 28px;
+    display: flex; flex-direction: column; align-items: center; gap: 20px;
+  }
+  .demo__controls {
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .demo__controls-block { }
+  .demo__controls-title {
+    font-size: 11px; font-weight: 700; letter-spacing: .08em;
+    color: var(--ink-4); text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .demo__controls-hint {
+    font-size: 12px; color: var(--ink-4); line-height: 1.6;
+  }
+
+  /* Language toggle */
+  .lang-toggle {
+    display: inline-flex; padding: 3px;
+    border: 1px solid var(--outline); border-radius: var(--r-pill);
+    background: var(--surface);
+  }
+  .lang-toggle__btn {
+    all: unset; cursor: pointer;
+    padding: 5px 14px; border-radius: var(--r-pill);
+    font-size: 12px; font-weight: 600;
+    color: var(--ink-4); transition: background .12s ease, color .12s ease;
+  }
+  .lang-toggle__btn.is-active {
+    background: var(--ink); color: #fff;
+  }
+
+  /* Chip strip (cat) */
+  .chip-strip {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .chip-btn {
+    all: unset; cursor: pointer;
+    padding: 6px 12px; border-radius: var(--r-pill);
+    font-size: 12px; font-weight: 600;
+    color: var(--ink-3); background: var(--surface);
+    border: 1px solid var(--outline);
+    transition: all .12s ease;
+  }
+  .chip-btn:hover { border-color: var(--outline-strong); }
+  .chip-btn.is-active {
+    color: var(--accent); background: var(--accent-50);
+    border-color: var(--accent-100);
+  }
+
+  /* Preset thumbs */
+  .preset-strip {
+    display: grid; grid-template-columns: repeat(6, 42px); gap: 8px;
+  }
+  .preset-thumb {
+    all: unset; cursor: pointer;
+    width: 42px; height: 42px; border-radius: 6px;
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color .12s ease, transform .12s ease;
+  }
+  .preset-thumb img { max-width: 90%; max-height: 90%; }
+  .preset-thumb:hover { border-color: var(--outline-strong); }
+  .preset-thumb.is-active {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  /* ========== The Vertical Card — 176px wide, Figma spec ========== */
+  .vcard {
+    width: var(--product-image-two-column);
+    background: var(--surface);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    display: flex; flex-direction: column;
+    font-family: var(--f-sans);
+  }
+  .vcard__image {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    background: #f5f5f5;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .vcard__image::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,.03);
+    pointer-events: none;
+  }
+  .vcard__image-inner {
+    width: 78%; height: 78%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+  .vcard__image-inner img {
+    max-width: 100%; max-height: 100%; object-fit: contain;
+  }
+  .vcard__favorite {
+    position: absolute; top: 4px; right: 4px;
+    width: 40px; height: 40px;
+    background: transparent;
+    padding: 0; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    overflow: visible;
+    z-index: 2;
+  }
+  .vcard__favorite svg {
+    width: 15px; height: 15px; stroke: var(--ink-2);
+    stroke-width: 1.8; fill: none;
+  }
+  .vcard__favorite img {
+    width: 64px; height: 64px;
+    display: block; pointer-events: none;
+    flex-shrink: 0;
+  }
+  .vcard__hint {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 4px 0; text-align: center;
+    background: rgba(0,0,0,.55); color: #fff;
+    font-size: 10px; letter-spacing: .04em;
+    opacity: 0; transition: opacity .15s ease;
+    z-index: 2;
+  }
+  .vcard__image:hover .vcard__hint { opacity: 1; }
+
+  .vcard__colors {
+    display: flex; gap: 6px;
+    padding: 10px 12px 0;
+  }
+  .vcard__color-dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    border: 1px solid rgba(0,0,0,.08);
+  }
+  .vcard__color-dot--extra {
+    background: var(--surface-2);
+    color: var(--ink-3);
+    font-size: 9px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    border: none;
+  }
+
+  .vcard__body { padding: 8px 6px 6px; display: flex; flex-direction: column; gap: 4px; }
+  .vcard__highlight {
+    align-self: flex-start;
+    /* Figma product-highlights SVG shown directly, no CSS chip anymore */
+    display: inline-block; line-height: 0;
+  }
+  .vcard__highlight[data-empty] { display: none; }
+  .vcard__highlight img { display: block; height: 16px; width: auto; }
+  .vcard__brand {
+    font-size: 14px; font-weight: 700; color: var(--ink);
+    line-height: 20px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .vcard__title {
+    margin: 0;
+    font-size: 14px; font-weight: 500;
+    color: var(--ink); line-height: 20px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden; text-overflow: ellipsis;
+    min-height: 40px;
+  }
+  .vcard__meta {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--ink-3);
+  }
+  .vcard__meta-star {
+    display: inline-flex; align-items: center; gap: 2px;
+    color: var(--ink); font-weight: 700;
+  }
+  .vcard__meta-star::before {
+    content: "";
+    display: inline-block;
+    width: 14px; height: 14px;
+    background: url('../assets/figma-atoms/rating-sold/star.svg') center/contain no-repeat;
+    flex-shrink: 0;
+  }
+  .vcard__meta-sep {
+    display: inline-block;
+    width: 1px; height: 8px;
+    background: var(--ink);
+    vertical-align: middle;
+  }
+
+  .vcard__price-row {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .vcard__prices {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  }
+  .vcard__sale-price {
+    font-size: 20px; font-weight: 900;
+    color: var(--joybuy-red);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.02em;
+    line-height: 1.15;
+  }
+  .vcard__original-price {
+    font-size: 12px; color: var(--ink-5);
+    text-decoration: line-through;
+    font-variant-numeric: tabular-nums;
+  }
+  .vcard__discount {
+    display: inline-block;
+    font-size: 12px; font-weight: 500;
+    color: var(--ink-2);
+    background: transparent;
+    padding: 0;
+    align-self: flex-start;
+  }
+  .vcard__promotion {
+    font-size: 12px; color: var(--joybuy-red); font-weight: 600;
+  }
+  .vcard__fulfillment {
+    font-size: 12px; font-weight: 500; color: var(--ink-2);
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .vcard__fulfillment::before {
+    content: "";
+    display: inline-block;
+    width: 16px; height: 16px;
+    background: url('../assets/figma-atoms/leading-icon/joybuy.svg') center/contain no-repeat;
+    flex-shrink: 0;
+  }
+  .vcard__price-was {
+    font-size: 12px; color: var(--ink-5);
+    font-variant-numeric: tabular-nums;
+  }
+  .vcard__price-was .vcard__original-price::before { content: none; }
+  .vcard__per-unit,
+  .vcard__deposit {
+    font-size: 12px; color: var(--ink-4); font-weight: 400;
+    font-variant-numeric: tabular-nums;
+  }
+  .vcard__per-unit:empty,
+  .vcard__deposit:empty,
+  [data-field][data-empty] { display: none; }
+  .vcard__bottom {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .vcard__seller { font-size: 12px; color: var(--ink-4); }
+  .vcard__cart {
+    all: unset; cursor: pointer;
+    width: 32px; height: 32px;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: opacity .12s ease;
+  }
+  .vcard__cart:hover { opacity: .8; }
+  .vcard__cart img { display: block; width: 32px; height: 32px; }
+
+  /* ========== 02 Structure diagram ========== */
+  .schematic {
+    display: grid; grid-template-columns: 260px 1fr; gap: 32px;
+    align-items: flex-start;
+  }
+  .schematic__frame {
+    background: var(--surface-2);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 20px;
+  }
+  .schematic__card {
+    width: 220px; margin: 0 auto;
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 0; overflow: hidden;
+    border: 1px solid var(--outline-strong);
+  }
+  .schematic__slot {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 10px;
+    border-bottom: 1px dashed var(--outline);
+    font-size: 11px; color: var(--ink-3);
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(225,37,27,.04),
+      rgba(225,37,27,.04) 6px,
+      transparent 6px,
+      transparent 12px
+    );
+  }
+  .schematic__slot:last-child { border-bottom: none; }
+  .schematic__slot-idx {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--joybuy-red); color: #fff;
+    font-size: 10px; font-weight: 700; font-family: var(--f-mono);
+    flex-shrink: 0;
+  }
+  .schematic__slot--image {
+    height: 88px;
+    display: flex; align-items: center; justify-content: center;
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(225,37,27,.04),
+      rgba(225,37,27,.04) 6px,
+      transparent 6px,
+      transparent 12px
+    );
+    border-bottom: 1px dashed var(--outline);
+  }
+  .schematic__slot--image .schematic__slot-idx { margin-right: 4px; }
+
+  /* ========== 03 Types grid ========== */
+  .type-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+  .type-cell {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 24px 20px 20px;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+  }
+  .type-cell__label {
+    font-size: 12px; font-weight: 700; color: var(--ink);
+    align-self: stretch;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .type-cell__stage {
+    background: var(--surface-2);
+    border-radius: var(--r-sm);
+    padding: 20px 12px;
+    width: 100%;
+    display: flex; justify-content: center;
+  }
+  .type-cell__desc {
+    font-size: 11.5px; color: var(--ink-4); line-height: 1.55;
+    align-self: stretch;
+  }
+
+  /* mini v-card for Types grid (static, no interactivity) */
+  .mcard {
+    width: 160px;
+    background: var(--surface); border-radius: 10px; overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,.04);
+    font-size: 11px;
+  }
+  .mcard__img {
+    aspect-ratio: 1/1; background: #f4f4f5;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-4);
+    overflow: hidden;
+  }
+  .mcard__img svg { width: 40%; opacity: .3; }
+  .mcard__img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .mcard__body { padding: 8px 10px 10px; }
+  .mcard__title {
+    font-size: 11px; color: var(--ink-2); line-height: 1.3;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 2px 0 6px;
+    min-height: 28px;
+  }
+  .mcard__price {
+    font-size: 14px; font-weight: 800; color: var(--joybuy-red);
+    letter-spacing: -.01em;
+  }
+  .mcard__hi {
+    font-size: 9px; font-weight: 700;
+    background: var(--joybuy-red); color: #fff;
+    padding: 1px 5px; border-radius: 3px;
+    display: inline-block; margin-bottom: 4px;
+  }
+  .mcard__hi--img {
+    display: block; height: 16px; width: auto;
+    margin-bottom: 4px;
+  }
+  .mcard__cart {
+    float: right;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--joybuy-red);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .mcard__cart svg { width: 10px; height: 10px; stroke: #fff; stroke-width: 2.5; fill: none; }
+  .mcard__cart--img {
+    float: right;
+    width: 22px; height: 22px;
+    display: block;
+  }
+  .mcard__oos--img {
+    float: right;
+    height: 16px; width: auto;
+    display: block;
+  }
+
+  /* ===== Used In · 出现在 — compact page cards + Figma lightbox ===== */
+  .uin-summary { font-size: 13px; color: var(--ink-4); margin: 2px 0 15px; }
+  .uin-grid { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .uin-card {
+    display: flex; flex-direction: column; text-align: left; width: 100%; padding: 0;
+    font: inherit; color: inherit; cursor: pointer;
+    background: var(--surface); border: 1px solid var(--outline);
+    border-radius: var(--r-md); overflow: hidden;
+    transition: border-color .14s ease, box-shadow .14s ease, transform .14s ease;
+  }
+  .uin-card:hover { border-color: var(--outline-strong); box-shadow: var(--shadow-2); transform: translateY(-2px); }
+  .uin-card:focus-visible { outline: none; border-color: var(--accent); box-shadow: var(--shadow-focus); }
+  .uin-card__thumb {
+    position: relative; aspect-ratio: 16 / 10; background: var(--surface-2);
+    border-bottom: 1px solid var(--outline); overflow: hidden;
+    display: grid; place-items: center;
+  }
+  .uin-card__thumb img {
+    width: 88%; height: 78%; object-fit: contain; display: block;
+    border-radius: 6px; box-shadow: 0 8px 22px rgba(16, 18, 22, .12);
+  }
+  .uin-card__idx {
+    position: absolute; top: 8px; left: 8px; z-index: 2;
+    font-family: var(--f-mono); font-size: 11px; font-weight: 700; color: #fff;
+    background: rgba(17,20,24,.60); padding: 2px 7px; border-radius: var(--r-pill);
+  }
+  .uin-card__open {
+    position: absolute; inset: 0; z-index: 1; display: flex; align-items: center; justify-content: center;
+    gap: 7px; font-size: 12.5px; font-weight: 600; color: #fff;
+    background: rgba(17,20,24,0); opacity: 0;
+    transition: opacity .14s ease, background .14s ease;
+  }
+  .uin-card:hover .uin-card__open, .uin-card:focus-visible .uin-card__open { opacity: 1; background: rgba(17,20,24,.44); }
+  .uin-card__open svg { width: 15px; height: 15px; }
+  .uin-card__body { padding: 11px 13px 13px; display: flex; flex-direction: column; gap: 5px; }
+  .uin-card__name { font-size: 14px; font-weight: 700; color: var(--ink); letter-spacing: -.01em; line-height: 1.3; }
+  .uin-card__meta { display: flex; align-items: center; gap: 7px; font-size: 11.5px; color: var(--ink-4); flex-wrap: wrap; }
+  .uin-card__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex: 0 0 auto; }
+  .uin-card__co { font-size: 11px; color: var(--ink-5); }
+  @media (max-width: 900px) { .uin-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .uin-grid { grid-template-columns: minmax(0, 1fr); } }
+
+  /* Lightbox */
+  .uframe { position: fixed; inset: 0; z-index: 200; display: none; }
+  .uframe.is-open { display: block; }
+  .uframe__backdrop { position: absolute; inset: 0; background: rgba(10,12,15,.58); }
+  .uframe__panel {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: min(1040px, 94vw); height: min(88vh, 860px);
+    display: flex; flex-direction: column; overflow: hidden;
+    background: var(--surface); border: 1px solid var(--outline);
+    border-radius: var(--r-lg); box-shadow: var(--shadow-2);
+  }
+  .uframe__head { display: flex; align-items: flex-start; gap: 14px; padding: 15px 18px; border-bottom: 1px solid var(--outline); }
+  .uframe__titles { min-width: 0; flex: 1 1 auto; }
+  .uframe__title { font-size: 16px; font-weight: 700; color: var(--ink); letter-spacing: -.01em; }
+  .uframe__sub { font-size: 12px; color: var(--ink-5); margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .uframe__actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+  .uframe__open {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--accent);
+    border: 1px solid var(--accent-100); background: var(--accent-50); padding: 6px 12px; border-radius: var(--r-pill);
+    transition: background .13s ease, border-color .13s ease;
+  }
+  .uframe__open:hover { background: var(--accent-100); border-color: var(--accent); }
+  .uframe__open svg { width: 13px; height: 13px; }
+  .uframe__close {
+    width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--outline); background: var(--surface); border-radius: var(--r-sm);
+    color: var(--ink-3); cursor: pointer; font-size: 15px; line-height: 1;
+  }
+  .uframe__close:hover { border-color: var(--outline-strong); color: var(--ink); }
+  .uframe__body { position: relative; flex: 1 1 auto; background: var(--surface-2); }
+  .uframe__body iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .uframe__foot { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 11px 18px; border-top: 1px solid var(--outline); font-size: 12px; color: var(--ink-5); }
+  .uframe__foot-label { font-weight: 600; color: var(--ink-4); }
+  .uframe__chip {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--ink-2);
+    background: var(--surface-2); border: 1px solid var(--outline); padding: 4px 10px; border-radius: var(--r-pill);
+    text-decoration: none;
+  }
+  a.uframe__chip:hover { border-color: var(--accent); color: var(--accent); }
+  .uframe__chip--self { color: var(--accent); border-color: var(--accent-100); background: var(--accent-50); cursor: default; }
+  .uframe__chip--inhouse { border-style: dashed; color: var(--accent); border-color: var(--accent-100); background: var(--accent-50); }
+  @media (max-width: 560px) {
+    .uframe__panel { width: 96vw; height: 90vh; }
+    .uframe__head { flex-wrap: wrap; }
+  }
+
+  /* Figma iframe */
+  .figma-wrap {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+  .figma-wrap iframe {
+    display: block; width: 100%; height: 540px; border: 0;
+  }
+  .figma-hint {
+    padding: 10px 14px;
+    background: var(--surface-2);
+    font-size: 11.5px; color: var(--ink-4);
+    border-top: 1px solid var(--outline);
+  }
+
+  /* ========== TDesign-style anchor tab bar ========== */
+  .doc-tabs {
+    position: sticky; top: 0; z-index: 20;
+    /* Break out of .site-main__inner to span the whole main column,
+       edge-to-edge from the nav border to the TOC border. */
+    margin: 20px calc(-1 * var(--page-pad-x)) 32px;
+    background: rgba(255, 255, 255, .86);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--outline);
+  }
+  .doc-tabs__inner {
+    max-width: calc(var(--content-max) + 2 * var(--page-pad-x));
+    margin: 0 auto;
+    padding: 0 var(--page-pad-x);
+    display: flex; gap: 2px;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .doc-tabs__inner::-webkit-scrollbar { display: none; }
+  .doc-tabs__link {
+    position: relative;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 14px 14px 13px;
+    font-size: 13.5px; font-weight: 500;
+    color: var(--ink-4);
+    white-space: nowrap; text-decoration: none;
+    transition: color .15s ease;
+  }
+  .doc-tabs__link::after {
+    content: ''; position: absolute;
+    left: 12px; right: 12px; bottom: -1px; height: 2px;
+    background: var(--accent); border-radius: 2px 2px 0 0;
+    transform: scaleX(0); transform-origin: center;
+    transition: transform .22s cubic-bezier(.4, 0, .2, 1);
+  }
+  .doc-tabs__link:hover { color: var(--ink-2); }
+  .doc-tabs__link.is-active { color: var(--accent); font-weight: 600; }
+  .doc-tabs__link.is-active::after { transform: scaleX(1); }
+  .doc-tabs__link-idx {
+    font-family: var(--f-mono);
+    font-size: 11px; font-weight: 500; color: var(--ink-5);
+    letter-spacing: 0;
+  }
+  .doc-tabs__link.is-active .doc-tabs__link-idx { color: var(--accent); opacity: .7; }
+  /* ========== Right panel: Types preview stack ========== */
+  .types-stack {
+    padding: 20px 16px;
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+  }
+  .types-stack__head {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 11px; font-weight: 700; letter-spacing: .08em;
+    color: var(--ink-4); text-transform: uppercase;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--outline);
+    margin-bottom: 16px;
+  }
+  .types-stack__head-lang {
+    display: inline-flex; padding: 2px;
+    border: 1px solid var(--outline); border-radius: var(--r-pill);
+    background: var(--surface);
+    letter-spacing: 0;
+  }
+  .types-stack__head-lang button {
+    all: unset; cursor: pointer;
+    padding: 3px 8px; border-radius: var(--r-pill);
+    font-size: 10px; font-weight: 700;
+    color: var(--ink-4); transition: background .12s ease, color .12s ease;
+    text-transform: none;
+  }
+  .types-stack__head-lang button.is-active {
+    background: var(--ink); color: #fff;
+  }
+  .types-stack__items {
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .types-stack__item {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .types-stack__item-label {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 11px;
+  }
+  .types-stack__item-label > span:first-child {
+    color: var(--ink); font-weight: 700;
+  }
+  .types-stack__item-tag {
+    color: var(--ink-5);
+    font-size: 10px;
+    background: var(--surface-2);
+    padding: 1px 6px; border-radius: 3px;
+    font-weight: 500;
+  }
+  .types-stack__stage {
+    background: #f7f7f8;
+    border-radius: var(--r-sm);
+    padding: 14px;
+    display: flex; justify-content: center;
+  }
+
+  /* Types-stack mini vcard — same design language as .vcard, smaller scale */
+  .tvcard {
+    width: 130px;
+    background: var(--surface);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    display: flex; flex-direction: column;
+    font-family: var(--f-sans);
+  }
+  .tvcard__img {
+    aspect-ratio: 1/1;
+    background: #f5f5f5;
+    display: flex; align-items: center; justify-content: center;
+    padding: 10px;
+    position: relative;
+  }
+  .tvcard__img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .tvcard__fav {
+    position: absolute; top: 4px; right: 4px;
+    width: 26px; height: 26px;
+    background: transparent;
+    display: flex; align-items: center; justify-content: center;
+    overflow: visible;
+  }
+  .tvcard__fav svg { width: 9px; height: 9px; stroke: var(--ink-2); stroke-width: 2; fill: none; }
+  .tvcard__fav img { width: 44px; height: 44px; display: block; flex-shrink: 0; }
+  .tvcard__colors {
+    display: flex; gap: 3px;
+    padding: 6px 8px 0;
+  }
+  .tvcard__color-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    border: 1px solid rgba(0,0,0,.08);
+  }
+  .tvcard__body { padding: 5px 8px 8px; display: flex; flex-direction: column; gap: 2px; }
+  .tvcard__hi {
+    align-self: flex-start;
+    line-height: 0;
+    margin-bottom: 1px;
+  }
+  .tvcard__hi img { display: block; height: 10px; width: auto; }
+  .tvcard__brand { font-size: 10px; font-weight: 700; color: var(--ink); line-height: 1.15; }
+  .tvcard__title {
+    margin: 0;
+    font-size: 9px; color: var(--ink-2); line-height: 1.3;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .tvcard__price-row {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+    margin-top: 2px;
+  }
+  .tvcard__price {
+    font-size: 12px; font-weight: 800; color: var(--joybuy-red);
+    letter-spacing: -.01em;
+  }
+  .tvcard__oprice {
+    font-size: 9px; color: var(--ink-5);
+    text-decoration: line-through;
+  }
+  .tvcard__price-was {
+    font-size: 9px; color: var(--ink-5);
+  }
+  .tvcard__disc { font-size: 9px; color: var(--ink-2); font-weight: 500; }
+  .tvcard__bottom {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 2px;
+  }
+  .tvcard__seller { font-size: 9px; color: var(--ink-4); }
+  .tvcard__cart {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: #f5f7fa;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .tvcard__cart svg { width: 9px; height: 9px; stroke: var(--ink); stroke-width: 2.2; fill: none; stroke-linecap: round; }
+  .tvcard__cart--img { width: 20px; height: 20px; display: block; }
+  .tvcard__oos {
+    font-size: 9px; font-weight: 700;
+    background: var(--surface-2); color: var(--ink-4);
+    padding: 1px 6px; border-radius: 2px;
+    letter-spacing: .02em;
+  }
+  .tvcard__oos--img { height: 14px; width: auto; display: block; }
+  .tvcard--dim { opacity: .85; }
+  .tvcard--dim .tvcard__price { color: var(--ink-2); }
+
+  /* ========== Anatomy panel (Structure sub-panel) ========== */
+  .anatomy { margin-top: 32px; }
+  .anatomy__title {
+    display: flex; align-items: baseline; gap: 10px;
+    font-size: 14px; font-weight: 700; color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .anatomy__title-en { font-size: 12px; color: var(--ink-4); font-weight: 500; }
+  .anatomy__lede {
+    font-size: 13px; color: var(--ink-3); line-height: 1.7;
+    margin: 0 0 16px; max-width: 640px;
+  }
+  .anatomy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .anatomy-cell {
+    padding: 12px 12px 10px;
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    display: flex; flex-direction: column; gap: 8px;
+    transition: border-color .12s ease;
+  }
+  .anatomy-cell:hover { border-color: var(--outline-strong); }
+  .anatomy-cell__head {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--ink-3);
+  }
+  .anatomy-cell__idx {
+    font-family: var(--f-mono);
+    font-size: 10px; font-weight: 700;
+    color: var(--joybuy-red);
+    background: var(--joybuy-red-50);
+    padding: 1px 6px; border-radius: 3px;
+    min-width: 18px; text-align: center;
+  }
+  .anatomy-cell__slot { font-weight: 700; color: var(--ink); }
+  .anatomy-cell__stage {
+    height: 68px;
+    background: linear-gradient(180deg, #fafafa 0%, #f4f4f5 100%);
+    border: 1px solid #edecec;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 8px;
+    overflow: hidden;
+  }
+  .anatomy-cell__stage img { max-height: 100%; max-width: 100%; display: block; }
+  .anatomy-cell__stage--pair img { max-height: 100%; max-width: 48%; }
+  .anatomy-cell__stage--pair { gap: 8px; }
+  .anatomy-cell__stage--placeholder {
+    background:
+      repeating-linear-gradient(45deg, #f2f2f2 0 6px, #ebebeb 6px 12px);
+    color: var(--ink-5);
+    font-size: 10px;
+    letter-spacing: .02em;
+  }
+  .anatomy-cell__atom {
+    font-size: 11px; color: var(--ink-4);
+    line-height: 1.5;
+  }
+  .anatomy-cell__atom a {
+    color: var(--ink-3);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--ink-5);
+    transition: color .12s ease, border-bottom-color .12s ease;
+  }
+  .anatomy-cell__atom a:hover { color: var(--joybuy-red); border-bottom-color: var(--joybuy-red); }
+
+  @media (max-width: 1200px) {
+    .demo { grid-template-columns: 1fr; }
+    .schematic { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 900px) { .anatomy-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .anatomy-grid { grid-template-columns: 1fr; } }
+
+  /* =====================================================
+     01 Overview · Arco-inspired restyle
+     只改视觉，不改结构与内容；全部作用域 #s-overview
+     ===================================================== */
+
+  #s-overview {
+    padding: 48px 0 72px;
+    border-top: none;
+  }
+
+  /* 头部：由 [index · title 横排] 改为 [eyebrow / title / lede 上下堆叠] */
+  #s-overview .section__head {
+    display: block;
+    margin-bottom: 20px;
+  }
+  #s-overview .section__index {
+    display: block;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .16em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    min-width: 0;
+  }
+  #s-overview .section__title {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    line-height: 1.15;
+    color: var(--ink);
+  }
+  #s-overview .section__lede {
+    margin: 16px 0 0 0;
+    max-width: 660px;
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--ink-3);
+  }
+
+  /* 展示区 */
+  #s-overview .demo {
+    margin-top: 48px !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+
+  /* 左：白底 + 极淡点阵网格，居中卡片，长气派留白 */
+  #s-overview .demo__stage {
+    background:
+      radial-gradient(circle at 1px 1px, rgba(15,15,15,.055) 1px, transparent 1.2px) 0 0/16px 16px,
+      #ffffff;
+    border: 1px solid #ececef;
+    border-radius: 14px;
+    padding: 32px 24px;
+    min-height: 0;
+    box-shadow: none;
+    justify-content: center;
+    position: relative;
+  }
+  /* 悬浮卡片有一点点柔阴影，像 arco preview */
+  #s-overview .demo__stage .vcard {
+    box-shadow:
+      0 1px 2px rgba(0,0,0,.04),
+      0 6px 24px rgba(0,0,0,.06),
+      0 24px 48px -18px rgba(0,0,0,.08);
+    transition: transform .35s cubic-bezier(.2,.7,.2,1);
+  }
+  #s-overview .demo__stage .vcard:hover {
+    transform: translateY(-2px);
+  }
+
+  /* 右：控件区更松散、更"规范"化 */
+  #s-overview .demo__controls {
+    padding: 8px 0;
+    gap: 44px;
+  }
+  #s-overview .demo__controls-title {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .18em;
+    color: var(--ink-5);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  #s-overview .demo__controls-hint {
+    margin-top: 14px !important;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--ink-4);
+  }
+  #s-overview .demo__controls-hint b {
+    color: var(--ink-2);
+    font-weight: 600;
+  }
+
+  /* Language toggle — 更方正、更细腻 */
+  #s-overview .lang-toggle {
+    padding: 4px;
+    border-radius: 10px;
+    border-color: #ececef;
+  }
+  #s-overview .lang-toggle__btn {
+    padding: 6px 18px;
+    border-radius: 7px;
+    font-size: 12.5px;
+    font-weight: 500;
+  }
+  #s-overview .lang-toggle__btn.is-active {
+    font-weight: 600;
+  }
+
+  /* Category chips — flat 圆角矩形，非胶囊 */
+  #s-overview .chip-strip { gap: 8px; }
+  #s-overview .chip-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ink-3);
+    background: var(--surface);
+    border: 1px solid #ececef;
+    transition: color .12s ease, border-color .12s ease, background .12s ease;
+  }
+  #s-overview .chip-btn:hover {
+    color: var(--ink-2);
+    border-color: #d4d4d8;
+  }
+  #s-overview .chip-btn.is-active {
+    color: var(--accent);
+    background: var(--accent-50);
+    border-color: var(--accent-100);
+    font-weight: 600;
+  }
+
+  /* Preset thumbs — 大一号，激活状态是柔和光晕（arco 蓝色边框感的红色版） */
+  #s-overview .preset-strip {
+    grid-template-columns: repeat(6, 52px);
+    gap: 10px;
+  }
+  #s-overview .preset-thumb {
+    width: 52px; height: 52px;
+    border-radius: 10px;
+    background: var(--surface);
+    border: 1px solid #ececef;
+    transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+  }
+  #s-overview .preset-thumb img { max-width: 82%; max-height: 82%; }
+  #s-overview .preset-thumb:hover {
+    border-color: #d4d4d8;
+    transform: translateY(-1px);
+  }
+  #s-overview .preset-thumb.is-active {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-50);
+  }
+
+  /* 响应式：窄屏堆叠 */
+  @media (max-width: 900px) {
+    #s-overview .demo { grid-template-columns: 1fr; gap: 32px; }
+    #s-overview .demo__stage { padding: 48px 24px; min-height: 0; }
+    #s-overview .section__title { font-size: 26px; }
+  }
+
+  /* ================================================================
+     MVP5 · Use-this CTA / Handoff / Field simulator (added)
+     ================================================================ */
+
+  /* ---- Feature 1 · "决定用这个了" CTA (always-dark accent card) ---- */
+  .use-cta {
+    margin-top: 28px;
+    background: #0f0f10; color: #fff;
+    border-radius: var(--r-lg);
+    padding: 20px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 20px; flex-wrap: wrap;
+  }
+  .use-cta__left { display: flex; flex-direction: column; gap: 3px; min-width: 240px; }
+  .use-cta__eyebrow {
+    font-size: 10.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+    color: rgba(255,255,255,.5);
+  }
+  .use-cta__title { font-size: 17px; font-weight: 700; letter-spacing: -.01em; }
+  .use-cta__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .use-cta__btn {
+    all: unset; cursor: pointer; box-sizing: border-box;
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 12.5px; font-weight: 600;
+    padding: 9px 16px; border-radius: var(--r-pill);
+    transition: background .12s ease, border-color .12s ease, transform .12s ease;
+  }
+  .use-cta__btn:active { transform: translateY(1px); }
+  .use-cta__btn--primary { background: var(--accent); color: var(--bg); }
+  .use-cta__btn--primary:hover { background: var(--accent-600); }
+  /* ---- Feature 2 · Handoff entry cards ---- */
+  .handoff-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    margin: 18px 0 22px;
+  }
+  .handoff-card {
+    border: 1px solid var(--outline); border-radius: var(--r-md);
+    padding: 16px 16px 14px; background: var(--surface);
+    display: flex; flex-direction: column; gap: 10px;
+    transition: border-color .12s ease, box-shadow .12s ease;
+  }
+  .handoff-card--live { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+  .handoff-card--disabled {
+    background: var(--surface-2);
+    border-style: dashed;
+  }
+  .handoff-card__top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .handoff-card__name { font-size: 13.5px; font-weight: 700; color: var(--ink); }
+  .handoff-card__tag {
+    flex: none; padding: 3px 8px; border-radius: var(--r-pill);
+    font-size: 9.5px; font-weight: 700; letter-spacing: .04em; white-space: nowrap;
+  }
+  .handoff-card__tag--live { color: var(--surface); background: var(--ink); }
+  .handoff-card__tag--soon { color: var(--ink-4); background: var(--surface); border: 1px solid var(--outline); }
+  .handoff-card__desc { font-size: 12px; line-height: 1.6; color: var(--ink-4); flex: 1; }
+  .handoff-card__btn {
+    all: unset; cursor: pointer; box-sizing: border-box; text-align: center;
+    font-size: 12.5px; font-weight: 600;
+    padding: 9px 14px; border-radius: var(--r-sm);
+    transition: background .12s ease, border-color .12s ease, transform .12s ease;
+  }
+  .handoff-card__btn:active { transform: translateY(1px); }
+  .handoff-card__btn--primary { background: var(--accent); color: var(--bg); }
+  .handoff-card__btn--primary:hover { background: var(--accent-600); }
+  .handoff-card__btn--disabled {
+    cursor: not-allowed; color: var(--ink-5); background: var(--surface);
+    border: 1px solid var(--outline);
+  }
+  .handoff-card__btn--disabled:active { transform: none; }
+  @media (max-width: 720px) { .handoff-grid { grid-template-columns: 1fr; } }
+
+  /* ---- Feature 3 · Field simulator (switches + copilot) ---- */
+  .field-sim { border-top: 1px dashed var(--outline); padding-top: 18px; }
+  .field-sim__title {
+    font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-4); margin-bottom: 4px;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .field-sim__title-hint { font-size: 11px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--ink-5); }
+  .sim-group { margin-top: 16px; }
+  .sim-group__head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+  .sim-group__name { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
+  .sim-group__rule { font-size: 10.5px; color: var(--ink-5); white-space: nowrap; }
+  .sim-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 7px 0;
+  }
+  .sim-row + .sim-row { border-top: 1px solid var(--surface-2); }
+  .sim-row__label { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink-2); }
+  .sim-row__pri {
+    font-size: 9.5px; font-weight: 700; letter-spacing: .03em;
+    color: var(--ink-5); background: var(--surface-2);
+    border-radius: 4px; padding: 1px 5px;
+  }
+  .sim-row__na { font-size: 10px; color: var(--ink-5); }
+  .sim-row.is-picked .sim-row__label { color: var(--ink); font-weight: 600; }
+  .sim-row.is-picked .sim-row__pri { color: var(--accent); background: var(--accent-50); }
+  .sim-row.is-folded .sim-row__label { color: var(--ink-4); }
+  .sim-row.is-disabled { opacity: .5; }
+  /* switch */
+  .sim-sw {
+    all: unset; cursor: pointer; box-sizing: border-box; flex: none;
+    width: 36px; height: 20px; border-radius: var(--r-pill);
+    background: var(--outline); position: relative; transition: background .15s ease;
+  }
+  .sim-sw::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25);
+    transition: transform .15s ease;
+  }
+  .sim-sw[aria-checked="true"] { background: var(--accent); }
+  .sim-sw[aria-checked="true"]::after { transform: translateX(16px); }
+  .sim-sw[aria-disabled="true"] { cursor: not-allowed; opacity: .55; }
+  /* copilot */
+  .sim-copilot {
+    margin-top: 16px; padding: 13px 14px;
+    border: 1px solid var(--outline); border-radius: var(--r-md);
+    background: var(--surface-2);
+  }
+  .sim-copilot__head {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  .sim-copilot__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+  .sim-copilot p { margin: 0 0 6px; font-size: 12px; line-height: 1.65; color: var(--ink-3); }
+  .sim-copilot p:last-child { margin-bottom: 0; }
+  .sim-copilot b { color: var(--ink); font-weight: 600; }
+  .sim-copilot em { font-style: normal; color: var(--ink-4); }
+
+</style>
+  <link rel="stylesheet" href="../assets/card-preview-alignment.css">
+</head>
+<body>
+<div class="site site--card-detail">
+
+  <main class="site-main">
+    <div class="site-main__inner">
+
+      <!-- Breadcrumb -->
+      <nav class="crumb">
+        <a href="../index.html">概览</a>
+        <span class="sep">/</span>
+        <span>Product Cards · 商卡</span>
+        <span class="sep">/</span>
+        <span class="curr">Vertical Card</span>
+      </nav>
+
+      <!-- Header -->
+      <header class="head">
+        <h1 class="head__title" data-doc="page.title">通用双列-商品卡片组件</h1>
+      </header>
+
+      </div><!-- /head -->
+
+      <!-- Anchor tab bar · full-bleed sticky, spans the main column -->
+      <nav class="doc-tabs" id="doc-tabs">
+        <div class="doc-tabs__inner">
+        <a class="doc-tabs__link is-active" href="#s-overview"  data-tab="s-overview"><span class="doc-tabs__link-idx">01</span><span data-doc="tab.overview">概览</span></a>
+        <a class="doc-tabs__link"           href="#s-figma-map" data-tab="s-figma-map"><span class="doc-tabs__link-idx">02</span><span data-doc="tab.figmaMap">Figma 标注</span></a>
+        <a class="doc-tabs__link"           href="#s-used"      data-tab="s-used"><span class="doc-tabs__link-idx">03</span><span data-doc="tab.used">使用页面</span></a>
+        <a class="doc-tabs__link"           href="#s-structure" data-tab="s-structure"><span class="doc-tabs__link-idx">04</span><span data-doc="tab.structure">组件结构</span></a>
+        <a class="doc-tabs__link"           href="#s-types"     data-tab="s-types"><span class="doc-tabs__link-idx">05</span><span data-doc="tab.types">常见样式</span></a>
+        <a class="doc-tabs__link"           href="#s-data"      data-tab="s-data"><span class="doc-tabs__link-idx">06</span><span data-doc="tab.data">字段说明</span></a>
+        <a class="doc-tabs__link"           href="#s-when"      data-tab="s-when"><span class="doc-tabs__link-idx">07</span><span data-doc="tab.when">使用建议</span></a>
+        <a class="doc-tabs__link"           href="#s-figma"     data-tab="s-figma"><span class="doc-tabs__link-idx">08</span><span data-doc="tab.figma">获取组件</span></a>
+      </div>
+      </nav>
+
+      <div class="site-main__inner">
+
+      <!-- ============== 01 Overview ============== -->
+      <section class="section" id="s-overview">
+        <div class="section__head">
+          <span class="section__index">01</span>
+          <h2 class="section__title">Overview · 概览</h2>
+        </div>
+        <p class="section__lede">
+          最常用的商品卡片，在首页信息流、分类页、搜索结果双列视图里以 200px 卡片框架出现，其中商品图片容器固定为 176×176。
+          信息层次从上到下：品牌 → 标题 → 评分销量 → 价格与折扣 → 促销 → 履约 → 售卖方 + 加购。
+        </p>
+
+        <div class="demo" style="margin-top: 8px;">
+          <!-- 左侧：卡片预览 -->
+          <div class="demo__stage">
+            <div class="vcard" id="vcard">
+              <div class="vcard__image" id="vcard-image-click">
+                <div class="vcard__image-inner" id="vcard-image"></div>
+                <button class="vcard__favorite" aria-label="favorite" onclick="event.stopPropagation()">
+                  <img src="../assets/figma-atoms/tag-like/tag-like.svg" alt="Favorite">
+                </button>
+                <span class="vcard__hint" data-i18n="c1.imgHint">Click to swap</span>
+              </div>
+              <div class="vcard__colors" id="vcard-colors"></div>
+              <div class="vcard__body">
+                <span class="vcard__highlight" data-field="highlight"><img src="../assets/figma-atoms/product-highlights/best-seller.svg" alt="Best seller"></span>
+                <div class="vcard__brand" data-field="brand">TCL</div>
+                <p class="vcard__title" data-field="title">Seeded Sourdough Bread System</p>
+                <div class="vcard__meta">
+                  <span class="vcard__meta-star"><span data-field="rating">4.5</span></span>
+                  <span class="vcard__meta-sep"></span>
+                  <span data-field="sold">100k+ sold</span>
+                </div>
+                <div class="vcard__reviews" data-field="reviews">Over 100,000 positive reviews</div>
+                <div class="vcard__price-row">
+                  <span class="vcard__promotion" data-field="promotion">Lightning offers</span>
+                  <div class="vcard__prices">
+                    <span class="vcard__sale-price" data-field="salePrice">£350.00</span>
+                    <span class="vcard__price-was">RRP: <span class="vcard__original-price" data-field="originalPrice">£500.00</span></span>
+                  </div>
+                  <span class="vcard__discount" data-field="discount">Save 18% on RRP</span>
+                  <span class="vcard__per-unit" data-field="perUnit">£0.72 per 100ml</span>
+                  <span class="vcard__deposit" data-field="deposit">Excl. deposit £0.15</span>
+                  <span class="vcard__fulfillment" data-field="fulfillment">Get it by today</span>
+                  <div class="vcard__bottom">
+                    <span class="vcard__seller" data-field="seller">Sold by Joybuy</span>
+                    <button class="vcard__cart" aria-label="add to cart">
+                      <img src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Add to cart" width="32" height="32">
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 右侧：控件 -->
+          <div class="demo__controls">
+            <div class="demo__controls-block">
+              <div class="demo__controls-title" data-doc="ctrl.lang">Card language</div>
+              <div class="lang-toggle">
+                <button class="lang-toggle__btn is-active" data-card-lang="en" type="button">EN</button>
+                <button class="lang-toggle__btn" data-card-lang="zh" type="button">中</button>
+              </div>
+              <div class="demo__controls-hint" style="margin-top: 6px;" data-doc="ctrl.langHint">
+                只切换商卡内容语言，不影响全站文档语言。
+              </div>
+            </div>
+            <div class="demo__controls-block">
+              <div class="demo__controls-title">品类 · Category</div>
+              <div class="chip-strip" id="vcard-cat-strip"></div>
+              <div class="demo__controls-hint" style="margin-top: 8px;">
+                仅 <b>3C 数码</b> 与 <b>大家电</b> 显示配色控件；其余品类隐藏。
+              </div>
+            </div>
+            <div class="demo__controls-block">
+              <div class="demo__controls-title">预设 · Preset</div>
+              <div class="preset-strip" id="vcard-preset-strip"></div>
+              <div class="demo__controls-hint" style="margin-top: 8px;">
+                点击缩略图切换商品，或直接点击卡片主图循环预设。
+              </div>
+            </div>
+            <!-- Feature 3 · Field simulator (rendered by JS in card language, i18n-excluded) -->
+            <div class="demo__controls-block field-sim" data-global-i18n="off">
+              <div id="vcard-sim"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature 1 · "决定用这个了" CTA — jump to Figma frame / quick handoff.
+             Bilingual "中文 · English" literals resolve per doc-language via i18n inferBilingual. -->
+        <div class="use-cta">
+          <div class="use-cta__left">
+            <span class="use-cta__eyebrow">准备使用 · Ready to build</span>
+            <span class="use-cta__title">决定用这个了 · Use this component</span>
+          </div>
+          <div class="use-cta__actions">
+            <a class="use-cta__btn use-cta__btn--primary"
+               href="https://www.figma.com/design/eInnhKDnBhPIyPprZADdnO/App-Business-Components?node-id=5577-17342"
+               target="_blank" rel="noopener">在 Figma 打开 · Open in Figma</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== 02 Figma field map ============== -->
+      <section class="section" id="s-figma-map">
+        <div class="section__head">
+          <span class="section__index">02</span>
+          <h2 class="section__title">Figma Field Map · Figma 字段全景</h2>
+        </div>
+        <p class="section__lede">
+          先从真实设计了解完整字段、位置和可选关系，再进入后面的结构与字段规则。 · Start with the real design to understand every field, its position, and whether it is optional before reading the detailed rules.
+        </p>
+        <div class="figma-wrap" style="margin-top: 20px;">
+          <iframe
+            src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fdesign%2FeInnhKDnBhPIyPprZADdnO%2FApp-Business-Components%3Fnode-id%3D5577-17342"
+            allowfullscreen loading="lazy"
+            title="Vertical Card field map in Figma"></iframe>
+          <div class="figma-hint">
+            如果显示空白，请在 Figma 分享面板开启「Anyone with link」访问权限。 · If blank, enable "Anyone with link" access in the Figma share panel.
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== 03 Where this card lives ============== -->
+      <section class="section" id="s-used">
+        <div class="section__head">
+          <span class="section__index">03</span>
+          <h2 class="section__title">Where This Card Lives · 商卡使用页面</h2>
+        </div>
+        <p class="section__lede">
+          查看这张商卡在真实业务页面中的使用位置；点击页面卡片可打开对应的 Figma 画板。 · See where this card lives in real product pages, then open a page card to inspect its Figma frame.
+        </p>
+        <div id="vcard-usedin" class="usedin" data-global-i18n="off" data-card-key="vertical-card"></div>
+      </section>
+
+      <!-- ============== 04 Anatomy ============== -->
+      <section class="section" id="s-structure">
+        <div class="section__head">
+          <span class="section__index">04</span>
+          <h2 class="section__title">Anatomy · 组件结构</h2>
+        </div>
+        <p class="section__lede">
+          先看卡片由哪些区域组成：商品图始终保留，标题、价格、履约和操作按固定顺序排列；没有内容的可选区域会自动收起。 · See how the card is assembled: the product image is always present, while optional content collapses without leaving empty space.
+        </p>
+
+        <div class="schematic" style="margin-top: 8px;">
+          <div class="schematic__frame">
+            <div class="schematic__card">
+              <div class="schematic__slot--image">
+                <span class="schematic__slot-idx">1</span>
+                <span style="font-size: 11px; color: var(--ink-3);">image · 1:1</span>
+              </div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">2</span>colors (opt.)</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">3</span>highlight (opt.)</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">4</span>brand</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">5</span>title · 2 line clamp</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">6</span>rating · sold</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">7</span>promotion (opt.)</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">8</span>salePrice / RRP · discount</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">9</span>perUnit · deposit (opt.)</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">10</span>fulfillment</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">11</span>seller · cart button</div>
+            </div>
+          </div>
+          <table class="table">
+            <thead>
+              <tr><th style="width: 40px;">#</th><th>Slot</th><th>必填</th><th>规则</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td><code>image</code></td><td>是</td><td>1:1 比例，缺失时显示灰底占位</td></tr>
+              <tr><td>2</td><td><code>colors</code> + <code>extraColors</code></td><td>否</td><td>仅 3C / 大家电展示；&gt;5 个色时收 <code>+N</code></td></tr>
+              <tr><td>3</td><td><code>highlight</code></td><td>否</td><td>enum → Figma SVG 标签，缺失整行不渲染</td></tr>
+              <tr><td>4</td><td><code>brand</code></td><td>是</td><td>粗体黑字，&gt;12 字省略</td></tr>
+              <tr><td>5</td><td><code>title</code></td><td>是</td><td>2 行截断，第 3 行 <code>…</code></td></tr>
+              <tr><td>6</td><td><code>rating</code> + <code>soldCount</code></td><td>否</td><td>销量 &lt;100 时隐藏</td></tr>
+              <tr><td>7</td><td><code>promotion</code></td><td>否</td><td>红字营销标（如 <code>Lightning offers</code>），置于价格上方；空值整行折叠</td></tr>
+              <tr><td>8</td><td><code>salePrice</code> / <code>originalPrice</code> · <code>discount</code></td><td>是 / 否 / 否</td><td>原价另起一行加 <code>RRP:</code> 前缀，折扣标独立行</td></tr>
+              <tr><td>9</td><td><code>perUnit</code>, <code>deposit</code></td><td>否 / 否</td><td>单价（如 <code>£0.72 per 100ml</code>）与押金（如 <code>Excl. deposit £0.15</code>）；空则整行折叠</td></tr>
+              <tr><td>10</td><td><code>fulfillment</code></td><td>否</td><td>灰字履约信息，前置 Figma 卡车图标</td></tr>
+              <tr><td>11</td><td><code>seller</code> + cart button</td><td>否 / 是</td><td>加购按钮直接使用 Figma <code>btn-add-to-cart.svg</code>，售罄时置灰</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Anatomy: slot → Figma atom mapping -->
+        <div class="anatomy">
+          <div class="anatomy__title">
+            Anatomy · 原子映射
+            <span class="anatomy__title-en">Which Figma atom fills each slot</span>
+          </div>
+          <p class="anatomy__lede">
+            这张卡的 11 个槽位分别由哪些原子组件填充。所有原子图像直接来自 Figma 源文件，与商卡视觉严格一致。点击原子名可跳到原子浏览器查看全部变体。
+          </p>
+          <div class="anatomy-grid">
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">1</span><span class="anatomy-cell__slot">image</span><span>· 商品图</span></div>
+              <div class="anatomy-cell__stage anatomy-cell__stage--placeholder">176px · 1:1 容器</div>
+              <div class="anatomy-cell__atom">Main image · <a href="../atoms/index.html#atom-main-image">Product Image 商品图片</a></div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">2</span><span class="anatomy-cell__slot">colors</span><span>· 色板</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/color/default.svg" alt="Color atom - default variant">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-color">Color · SPU 色板</a> · 4 变体</div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">3</span><span class="anatomy-cell__slot">highlight</span><span>· 亮点</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/product-highlights/hot-deal.svg" alt="Product Highlights atom - Hot Deal variant">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-product-highlights">Product Highlights · 商品亮点</a> · 9 变体</div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">4</span><span class="anatomy-cell__slot">brand</span><span>· 品牌</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/title/1.svg" alt="Title atom - 1 line variant">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-title">Title · 商品标题</a> · 1 行变体</div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">5</span><span class="anatomy-cell__slot">title</span><span>· 标题</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/title/2.svg" alt="Title atom - 2 line variant">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-title">Title · 商品标题</a> · 2 行变体</div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">6</span><span class="anatomy-cell__slot">rating · sold</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/rating-sold/rate-sold.svg" alt="Rating & Sold atom">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-rating-sold">Rating &amp; Sold · 评分销量</a></div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">7</span><span class="anatomy-cell__slot">promotion</span><span>· 营销标</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/individual-promotion/campaign-lightning-offers.svg" alt="Individual Promotion atom">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-individual-promotion">Individual Promotion · 单品营销</a> · 6 变体</div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">8</span><span class="anatomy-cell__slot">prices</span><span>· 价格行</span></div>
+              <div class="anatomy-cell__stage anatomy-cell__stage--pair">
+                <img src="../assets/figma-atoms/price/default.svg" alt="Price atom">
+                <img src="../assets/figma-atoms/price-second-line/rrp-horizontal.svg" alt="Price second line atom">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-price">Price · 售价</a> + <a href="../atoms/index.html#atom-price-second-line">Price second line · RRP 副行</a></div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">9</span><span class="anatomy-cell__slot">perUnit · deposit</span><span>· 单价 / 押金</span></div>
+              <div class="anatomy-cell__stage anatomy-cell__stage--pair">
+                <img src="../assets/figma-atoms/plus-price/no-total-promotion-horizontal.svg" alt="Plus Price atom - per-unit horizontal variant">
+                <img src="../assets/figma-atoms/price-second-line/was-horizontal.svg" alt="Price second line - deposit-like footnote variant">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-plus-price">Plus Price · 单价</a> + <a href="../atoms/index.html#atom-price-second-line">Price second line · 押金 / 副行</a></div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">10</span><span class="anatomy-cell__slot">fulfillment</span><span>· 履约</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/fulfillment-time/joybuy.svg" alt="Fulfillment Time atom - Joybuy variant">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-fulfillment-time">Fulfillment Time · 履约时效</a> · 3 变体</div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">11</span><span class="anatomy-cell__slot">seller · cart</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Btn Cart atom - default variant">
+              </div>
+              <div class="anatomy-cell__atom">"Sold by …" 文本标签 + <a href="../atoms/index.html#atom-btn-cart">Btn_Cart · 加购按钮</a> · 11 变体</div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== 05 Common Variants ============== -->
+      <section class="section" id="s-types">
+        <div class="section__head">
+          <span class="section__index">05</span>
+          <h2 class="section__title">Common Variants · 常见样式</h2>
+        </div>
+        <p class="section__lede">
+          根据业务需要选择合适的样式；它们共用同一套图片、价格与内容规则，只调整信息多少和操作状态。 · Choose a variant by content density and action state; image, pricing, and content rules stay consistent.
+        </p>
+
+        <div class="type-grid" style="margin-top: 8px;">
+
+          <div class="type-cell">
+            <div class="type-cell__label">
+              <span>Default · 默认</span>
+              <span class="chip chip--red">最常用</span>
+            </div>
+            <div class="type-cell__stage">
+              <div class="mcard">
+                <div class="mcard__img" data-mcard-img="haagen"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
+                <div class="mcard__body">
+                  <img class="mcard__hi--img" src="../assets/figma-atoms/product-highlights/hot-deal.svg" alt="Hot Deal">
+                  <div style="font-weight: 700; font-size: 11.5px;">Häagen-Dazs</div>
+                  <p class="mcard__title">Strawberry Cheesecake Ice Cream 460ml</p>
+                  <div><span class="mcard__price">£5.50</span> <span style="font-size:10px;color:var(--ink-5);text-decoration:line-through;">£6.75</span></div>
+                  <div style="margin-top:6px;">
+                    <span style="font-size:10px;color:var(--ink-4);">Sold by Joybuy</span>
+                    <img class="mcard__cart--img" src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Add to cart">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="type-cell__desc">全字段展示，红加购按钮。用于首页信息流、搜索结果、类目页。</div>
+          </div>
+
+          <div class="type-cell">
+            <div class="type-cell__label">
+              <span>With colors · 带配色</span>
+              <span class="chip">3C · 大家电</span>
+            </div>
+            <div class="type-cell__stage">
+              <div class="mcard">
+                <div class="mcard__img" data-mcard-img="iphone"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
+                <div style="padding: 4px 10px 0;">
+                  <div style="display:flex;gap:4px;">
+                    <span style="width:10px;height:10px;border-radius:50%;background:#f5f5f5;border:1px solid #ddd;"></span>
+                    <span style="width:10px;height:10px;border-radius:50%;background:#1a1a1a;"></span>
+                    <span style="width:10px;height:10px;border-radius:50%;background:var(--joybuy-red);"></span>
+                    <span style="width:10px;height:10px;border-radius:50%;background:#4d6a8e;"></span>
+                    <span style="width:10px;height:10px;border-radius:50%;background:var(--surface-2);font-size:8px;display:flex;align-items:center;justify-content:center;color:var(--ink-3);">+1</span>
+                  </div>
+                </div>
+                <div class="mcard__body">
+                  <img class="mcard__hi--img" src="../assets/figma-atoms/product-highlights/hot-deal.svg" alt="Hot Deal">
+                  <div style="font-weight: 700; font-size: 11.5px;">Apple</div>
+                  <p class="mcard__title">iPhone SE 128GB Starlight</p>
+                  <div><span class="mcard__price">£429</span> <span style="font-size:10px;color:var(--ink-5);text-decoration:line-through;">£479</span></div>
+                  <div style="margin-top:6px;">
+                    <span style="font-size:10px;color:var(--ink-4);">Apple Store</span>
+                    <img class="mcard__cart--img" src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Add to cart">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="type-cell__desc">图片下方增加色板行，多色时以 <code>+N</code> 收起。</div>
+          </div>
+
+          <div class="type-cell">
+            <div class="type-cell__label">
+              <span>Read-only · 只读</span>
+              <span class="chip">下架 · 断货</span>
+            </div>
+            <div class="type-cell__stage">
+              <div class="mcard" style="opacity:.85;">
+                <div class="mcard__img" data-mcard-img="diptyque"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
+                <div class="mcard__body">
+                  <div style="font-weight: 700; font-size: 11.5px;">Diptyque</div>
+                  <p class="mcard__title">Baies Scented Candle 190g</p>
+                  <div><span class="mcard__price">£58.00</span></div>
+                  <div style="margin-top:6px;">
+                    <span style="font-size:10px;color:var(--ink-4);">Diptyque</span>
+                    <img class="mcard__oos--img" src="../assets/figma-atoms/stock/out-of-stock.svg" alt="Out of stock">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="type-cell__desc">加购按钮换成"SOLD OUT"占位或"To notify"通知按钮，其余保持。</div>
+          </div>
+
+          <div class="type-cell">
+            <div class="type-cell__label">
+              <span>Minimal · 极简</span>
+              <span class="chip">榜单 · 关联推荐</span>
+            </div>
+            <div class="type-cell__stage">
+              <div class="mcard">
+                <div class="mcard__img" data-mcard-img="dior-tote"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
+                <div class="mcard__body">
+                  <p class="mcard__title" style="font-weight:600;color:var(--ink);">Book Tote Medium Toile de Jouy</p>
+                  <div><span class="mcard__price">£2,900</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="type-cell__desc">仅保留图片 + 标题 + 价格；用在榜单、关联推荐、Live 直播浮层等信息密度低的场景。</div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ============== 06 Field Guide ============== -->
+      <section class="section" id="s-data">
+        <div class="section__head">
+          <span class="section__index">06</span>
+          <h2 class="section__title">Field Guide · 字段说明</h2>
+        </div>
+        <p class="section__lede">
+          这里列出每个字段从哪里来、是否必需，以及没有数据时如何处理，方便设计与开发快速核对。 · Use this table to check where each field comes from, whether it is required, and what happens when data is missing.
+        </p>
+
+        <table class="table" style="margin-top: 8px;">
+          <thead>
+            <tr>
+              <th>字段</th>
+              <th>类型</th>
+              <th>来源</th>
+              <th>缺失兜底</th>
+              <th>i18n</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>brand</code></td><td>string</td><td>商品主档</td><td>必填，缺失禁投</td><td>不翻译</td></tr>
+            <tr><td><code>title</code></td><td>string</td><td>商品主档</td><td>必填，缺失禁投</td><td>en / zh 双语，缺失回退英文</td></tr>
+            <tr><td><code>image</code></td><td>url</td><td>CDN 首图</td><td>用 <code>image-placeholder.svg</code></td><td>—</td></tr>
+            <tr><td><code>salePrice</code></td><td>string · 含货币符</td><td>价格服务实时</td><td>必填，缺失禁投</td><td>符号跟随站点区域</td></tr>
+            <tr><td><code>originalPrice</code></td><td>string · 含货币符</td><td>价格服务</td><td>无折扣时不渲染</td><td>符号跟随站点区域</td></tr>
+            <tr><td><code>discount</code></td><td>string</td><td>价格服务计算</td><td>无折扣时不渲染</td><td>en / zh</td></tr>
+            <tr><td><code>perUnit</code></td><td>string · 含货币符 · 单位</td><td>价格服务计算</td><td>非计价商品不渲染</td><td>符号跟随站点区域</td></tr>
+            <tr><td><code>deposit</code></td><td>string</td><td>价格服务</td><td>非押金商品不渲染</td><td>en / zh</td></tr>
+            <tr><td><code>highlight</code></td><td>enum · best-seller / hot-deal / top-deal / blockbuster / new / clearance / plus-price / sponsored / best-before</td><td>运营 CMS</td><td>不渲染</td><td>enum key，标签图跟 Figma SVG</td></tr>
+            <tr><td><code>rating</code></td><td>number 1-5, 1dp</td><td>评价服务</td><td>&lt;10 条评价时不渲染</td><td>数字通用</td></tr>
+            <tr><td><code>soldCount</code></td><td>string · 已本地化</td><td>订单服务</td><td>&lt;100 时不渲染</td><td>en <code>k/M</code> · zh <code>万/亿</code></td></tr>
+            <tr><td><code>promotion</code></td><td>string</td><td>营销服务</td><td>不渲染</td><td>en / zh</td></tr>
+            <tr><td><code>fulfillment</code></td><td>string</td><td>履约服务</td><td>不渲染</td><td>en / zh</td></tr>
+            <tr><td><code>seller</code></td><td>string</td><td>商户档</td><td>回退平台自营文案</td><td>en / zh</td></tr>
+            <tr><td><code>colors</code></td><td>hex[]</td><td>SKU 主档</td><td>非 3C / 大家电不渲染</td><td>—</td></tr>
+            <tr><td><code>extraColors</code></td><td>number</td><td>SKU 计数 <code>-colors.length</code></td><td>0 时不渲染 <code>+N</code></td><td>数字通用</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ============== 07 Usage Guidance ============== -->
+      <section class="section" id="s-when">
+        <div class="section__head">
+          <span class="section__index">07</span>
+          <h2 class="section__title">Usage Guidance · 使用建议</h2>
+        </div>
+        <p class="section__lede">
+          需要双列浏览、商品图优先并支持直接加购时，优先使用这张商卡；不符合时选择右侧替代方案。 · Use this card for two-column browsing with image-led decisions and direct cart actions; choose the alternatives below for other contexts.
+        </p>
+
+        <div class="dodont" style="margin-top: 8px;">
+          <div class="dodont__col dodont__col--do">
+            <div class="dodont__head dodont__head--do">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              DO · 推荐使用
+            </div>
+            <ul class="dodont__list">
+              <li>首页信息流、搜索结果、类目页的双列瀑布</li>
+              <li>需要展示价格 + 折扣 + 促销 + 加购一体化的场景</li>
+              <li>图片是决策主因（服饰、美妆、家电）</li>
+              <li>需要展示 SKU 配色（仅 3C / 大家电）</li>
+              <li>榜单场景可以退化为 Minimal 变体</li>
+            </ul>
+          </div>
+          <div class="dodont__col dodont__col--dont">
+            <div class="dodont__head dodont__head--dont">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              DON'T · 避免使用
+            </div>
+            <ul class="dodont__list">
+              <li>购物车、订单确认——用 <b>Universal Horizontal</b></li>
+              <li>PDP 相关推荐横滑——用 <b>Horizontal Scroll</b></li>
+              <li>活动 / 大促专场——用 <b>Campaign Card</b> 承载氛围</li>
+              <li>直播 / 拍卖 / 预约——用对应 <b>Booking Card</b> 变体</li>
+              <li>信息极简的浮层 / 弹窗——用 <b>Small Image Dynamic</b></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== 08 Get the Component ============== -->
+      <section class="section" id="s-figma">
+        <div class="section__head">
+          <span class="section__index">08</span>
+          <h2 class="section__title">Get the Component · 获取组件</h2>
+        </div>
+        <p class="section__lede">
+          从规范进入真实设计。 · From spec to real design.
+        </p>
+
+        <div class="handoff-grid">
+          <div class="handoff-card handoff-card--live">
+            <div class="handoff-card__top">
+              <span class="handoff-card__name">在 Design Library 打开 · Open in Design Library</span>
+              <span class="handoff-card__tag handoff-card__tag--live">可用 · Live</span>
+            </div>
+            <p class="handoff-card__desc">打开主组件，在 Figma 中查看变体、图层与标注。 · Open the main component to inspect variants, layers, and specifications in Figma.</p>
+            <a class="handoff-card__btn handoff-card__btn--primary"
+               href="https://www.figma.com/design/eInnhKDnBhPIyPprZADdnO/App-Business-Components?node-id=5577-17342"
+               target="_blank" rel="noopener">在 Figma 打开 · Open in Figma</a>
+          </div>
+
+          <div class="handoff-card handoff-card--disabled" aria-disabled="true">
+            <div class="handoff-card__top">
+              <span class="handoff-card__name">复制组件 Key · Copy Component Key</span>
+              <span class="handoff-card__tag handoff-card__tag--soon">即将开放 · Coming Soon</span>
+            </div>
+            <p class="handoff-card__desc">复制组件标识，在配套工具中快速定位同一主组件。 · Copy the component identifier to locate the same main component in supported tools.</p>
+            <button class="handoff-card__btn handoff-card__btn--disabled" type="button" disabled>暂未开放 · Not Available Yet</button>
+          </div>
+
+          <div class="handoff-card handoff-card--disabled" aria-disabled="true">
+            <div class="handoff-card__top">
+              <span class="handoff-card__name">下载 .fig 组件包 · Download .fig Kit</span>
+              <span class="handoff-card__tag handoff-card__tag--soon">即将开放 · Coming Soon</span>
+            </div>
+            <p class="handoff-card__desc">下载包含完整变体与图层结构的离线组件包。 · Download an offline component kit with complete variants and layer structure.</p>
+            <button class="handoff-card__btn handoff-card__btn--disabled" type="button" disabled>暂未开放 · Not Available Yet</button>
+          </div>
+
+          <div class="handoff-card handoff-card--disabled" aria-disabled="true">
+            <div class="handoff-card__top">
+              <span class="handoff-card__name">通过插件插入 · Insert via Plugin</span>
+              <span class="handoff-card__tag handoff-card__tag--soon">即将开放 · Coming Soon</span>
+            </div>
+            <p class="handoff-card__desc">通过配套插件将当前商卡及字段配置一键插入画布。 · Insert the current card and field configuration into the canvas with the companion plugin.</p>
+            <button class="handoff-card__btn handoff-card__btn--disabled" type="button" disabled>暂未开放 · Not Available Yet</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer-note" style="margin-top: 48px; display:flex; justify-content:space-between; align-items:center; padding:20px 0; border-top:1px solid var(--outline); font-size:12px; color:var(--ink-5);">
+        <span>下一张 · <a href="#" style="color: var(--joybuy-red); font-weight: 600;">Universal Horizontal ↗</a></span>
+        <span>Last updated 2026-08-26 · Wu Peipei</span>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Right panel: Types preview stack (replaces TOC) -->
+  <aside class="site-toc">
+    <div class="types-stack">
+      <div class="types-stack__head">
+        <span data-doc="stack.title">Types preview</span>
+        <span class="types-stack__head-lang">
+          <button data-card-lang="en" class="is-active" type="button">EN</button>
+          <button data-card-lang="zh" type="button">中</button>
+        </span>
+      </div>
+      <div class="types-stack__items">
+
+        <div class="types-stack__item">
+          <div class="types-stack__item-label">
+            <span data-doc="stack.default">Default</span>
+            <span class="types-stack__item-tag" data-doc="stack.tag.default">most used</span>
+          </div>
+          <div class="types-stack__stage" id="tstack-default"></div>
+        </div>
+
+        <div class="types-stack__item">
+          <div class="types-stack__item-label">
+            <span data-doc="stack.withColors">With colors</span>
+            <span class="types-stack__item-tag" data-doc="stack.tag.withColors">3C · Appliance</span>
+          </div>
+          <div class="types-stack__stage" id="tstack-colors"></div>
+        </div>
+
+        <div class="types-stack__item">
+          <div class="types-stack__item-label">
+            <span data-doc="stack.readonly">Read-only</span>
+            <span class="types-stack__item-tag" data-doc="stack.tag.readonly">sold out</span>
+          </div>
+          <div class="types-stack__stage" id="tstack-readonly"></div>
+        </div>
+
+        <div class="types-stack__item">
+          <div class="types-stack__item-label">
+            <span data-doc="stack.minimal">Minimal</span>
+            <span class="types-stack__item-tag" data-doc="stack.tag.minimal">ranking · carousel</span>
+          </div>
+          <div class="types-stack__stage" id="tstack-minimal"></div>
+        </div>
+
+      </div>
+    </div>
+
+  </aside>
+
+</div>
+
+<script src="../assets/card-data.js"></script>
+<script src="../assets/pages-data.js"></script>
+<script src="../assets/nav.js"></script>
+<script>
+(function(){
+  const D = window.CARD_DATA;
+  if (!D) { console.error('CARD_DATA missing'); return; }
+
+  /* Card language is intentionally independent from global documentation i18n. */
+  let cardLang = 'en';
+  let currentCat = 'beauty';
+  let currentPreset = 0;
+
+  const docsDict = {
+    en: {
+      'page.title': 'Universal 2-Column Product Card',
+      'chip.mvpNow': 'MVP · Now',
+      'chip.variants': '7 variant slots',
+      'chip.usedIn': 'Home / Search / Category',
+      'tab.overview': 'Overview',
+      'tab.figmaMap': 'Figma map',
+      'tab.used': 'Where it lives',
+      'tab.structure': 'Anatomy',
+      'tab.types': 'Common variants',
+      'tab.data': 'Field guide',
+      'tab.when': 'Usage guidance',
+      'tab.figma': 'Get component',
+      'ctrl.lang': 'Card language',
+      'ctrl.langHint': 'Toggles product text only. Docs language is separate.',
+      'stack.title': 'Types preview',
+      'stack.default': 'Default',
+      'stack.tag.default': 'most used',
+      'stack.withColors': 'With colors',
+      'stack.tag.withColors': '3C · Appliance',
+      'stack.readonly': 'Read-only',
+      'stack.tag.readonly': 'sold out',
+      'stack.minimal': 'Minimal',
+      'stack.tag.minimal': 'ranking · carousel',
+    },
+    zh: {
+      'page.title': '通用双列-商品卡片组件',
+      'chip.mvpNow': 'MVP · 已上线',
+      'chip.variants': '7 个变体位置',
+      'chip.usedIn': '首页 / 搜索 / 类目页',
+      'tab.overview': '概览',
+      'tab.figmaMap': 'Figma 标注',
+      'tab.used': '使用页面',
+      'tab.structure': '组件结构',
+      'tab.types': '常见样式',
+      'tab.data': '字段说明',
+      'tab.when': '使用建议',
+      'tab.figma': '获取组件',
+      'ctrl.lang': '商卡语言',
+      'ctrl.langHint': '只切换商卡内容语言，不影响全站文档语言。',
+      'stack.title': '类型预览',
+      'stack.default': '默认',
+      'stack.tag.default': '最常用',
+      'stack.withColors': '带配色',
+      'stack.tag.withColors': '3C · 大家电',
+      'stack.readonly': '只读',
+      'stack.tag.readonly': '断货',
+      'stack.minimal': '极简',
+      'stack.tag.minimal': '榜单 · 关联推荐',
+    }
+  };
+
+  /* ================ Card-side rendering ================ */
+
+  // Fixed enum of Figma product-highlights atoms (filename = enum key).
+  const HIGHLIGHT_ENUM = new Set([
+    'best-before','best-seller','blockbuster','clearance',
+    'hot-deal','new','plus-price','sponsored','top-deal'
+  ]);
+  const HIGHLIGHT_LABEL = {
+    'best-before':'Best before', 'best-seller':'Best seller', 'blockbuster':'Blockbuster',
+    'clearance':'Clearance', 'hot-deal':'Hot deal', 'new':'New',
+    'plus-price':'Plus price', 'sponsored':'Sponsored', 'top-deal':'Top deal'
+  };
+
+  /* ================ Field simulator · state + rule tables ================
+   * The simulator demonstrates how the card resolves its OPTIONAL slots.
+   * Highlight + Single-promotion are single-slot (max 1, resolved by priority);
+   * Pricing extras stack (multi-select). All labels follow cardLang. */
+  const SIM_HI = [   // priority order (index = priority; 0 = highest)
+    { key:'best-seller', pri:0, en:'Best seller', zh:'畅销' },
+    { key:'blockbuster', pri:1, en:'Blockbuster', zh:'爆款' },
+    { key:'top-deal',    pri:2, en:'Top deal',    zh:'超值' },
+    { key:'hot-deal',    pri:3, en:'Hot deal',    zh:'热卖' },
+    { key:'sponsored',   pri:4, en:'Sponsored',   zh:'推广' }
+  ];
+  const SIM_PROMO = [ // priority order
+    { key:'contract',  pri:0, en:'Contract launch', zh:'合约首发' },
+    { key:'lightning', pri:1, en:'Lightning deal',  zh:'限时闪购' },
+    { key:'happy',     pri:2, en:'Happy hour',      zh:'欢乐时光' },
+    { key:'welcome',   pri:3, en:'Welcome offer',   zh:'新人礼' }
+  ];
+  const SIM_PRICE = [ // multi-select; `field` = data-field slot it controls
+    { key:'rrp',      field:'originalPrice', en:'RRP',        zh:'RRP 原价' },
+    { key:'discount', field:'discount',      en:'Discount',   zh:'折扣' },
+    { key:'unit',     field:'perUnit',       en:'Unit price', zh:'单价' },
+    { key:'deposit',  field:'deposit',       en:'Deposit',    zh:'押金' }
+  ];
+  // Live simulator state (defaults chosen to match a rich, typical card).
+  const sim = {
+    hi:    { 'best-seller':true, 'blockbuster':false, 'top-deal':false, 'hot-deal':false, 'sponsored':false },
+    promo: { contract:false, lightning:true, happy:false, welcome:false },
+    price: { rrp:true, discount:true, unit:true, deposit:true }
+  };
+  const SIM_TXT = {
+    en: { title:'Field simulator', hint:'Figma-style slot toggles',
+          hi:'Highlight', promo:'Single promotion', price:'Pricing extras',
+          max1:'max 1 · by priority', multi:'multi-select',
+          copilot:'Copilot · why it renders this way',
+          slot:'slot', na:'n/a for this product', none:'hidden (nothing enabled)',
+          hiLead:'Highlight slot (1 seat):', promoLead:'Promotion slot (1 seat):', priceLead:'Pricing extras:',
+          shows:'shows', folded:'folded by priority', andSep:', ', stack:'stacked together', off:'off' },
+    zh: { title:'字段模拟器', hint:'Figma 式坑位开关',
+          hi:'亮点', promo:'单促', price:'价格附加',
+          max1:'最多 1 · 按优先级', multi:'多选',
+          copilot:'Copilot · 为什么这样显示',
+          slot:'坑位', na:'该商品不适用', none:'不展示（未启用任何项）',
+          hiLead:'亮点位（1 坑）：', promoLead:'单促位（1 坑）：', priceLead:'价格附加：',
+          shows:'展示', folded:'按优先级折叠', andSep:'、', stack:'同时展示', off:'关闭' }
+  };
+
+  function setField(name, value) {
+    document.querySelectorAll('[data-field="'+name+'"]').forEach(el => {
+      // highlight is a special enum → render Figma SVG, not plain text
+      if (name === 'highlight') {
+        if (value && HIGHLIGHT_ENUM.has(value)) {
+          el.innerHTML = '<img src="../assets/figma-atoms/product-highlights/'+value+'.svg" alt="'+(HIGHLIGHT_LABEL[value]||value)+'">';
+          el.removeAttribute('data-empty');
+        } else {
+          el.innerHTML = '';
+          el.setAttribute('data-empty', '1');
+        }
+        return;
+      }
+      el.textContent = value || '';
+      // Hide entire row when value is empty — CSS :empty handles most,
+      // but ensure hidden display is inert too.
+      if (!value) el.setAttribute('data-empty', '1'); else el.removeAttribute('data-empty');
+    });
+  }
+
+  function renderColors(colors, extra) {
+    const wrap = document.getElementById('vcard-colors');
+    if (!wrap) return;
+    const showColors = (currentCat === '3c' || currentCat === 'appliance');
+    wrap.style.display = showColors ? '' : 'none';
+    wrap.innerHTML = '';
+    if (!showColors) return;
+    (colors || []).forEach(c => {
+      const dot = document.createElement('div');
+      dot.className = 'vcard__color-dot';
+      dot.style.background = c;
+      wrap.appendChild(dot);
+    });
+    if (extra > 0) {
+      const e = document.createElement('div');
+      e.className = 'vcard__color-dot vcard__color-dot--extra';
+      e.textContent = '+' + extra;
+      wrap.appendChild(e);
+    }
+  }
+
+  function renderProduct() {
+    const p = D.catalog[currentCat][currentPreset];
+    const t = p[cardLang];
+    // Base fields — owned by the category / preset picker.
+    setField('brand', p.brand);
+    setField('title', t.title);
+    setField('rating', p.rating);
+    setField('sold', t.sold);
+    setField('reviews', cardLang === 'zh'
+      ? '超过 ' + t.sold.replace(/\s*已售|\s*sold/gi, '') + ' 条好评'
+      : 'Over ' + t.sold.replace(/\s*sold/gi, '') + ' positive reviews');
+    setField('salePrice', p.salePrice);
+    setField('fulfillment', t.fulfillment);
+    setField('seller', t.seller);
+    const inner = document.getElementById('vcard-image');
+    if (inner) {
+      inner.innerHTML = D.productImages[p.img]
+        ? '<img src="'+D.productImages[p.img]+'" alt="'+p.brand+'">'
+        : '';
+    }
+    renderColors(p.colors, p.extraColors);
+    // Optional slots (highlight / promotion / RRP / discount / perUnit / deposit)
+    // + the RRP wrapper are owned by the field simulator, so its toggles stay
+    // authoritative across language / category / preset changes.
+    applySimulator();
+  }
+
+  /* ================ Field simulator · resolution + rendering ================ */
+
+  // Which pricing extras does the current preset actually carry?
+  function priceAvail() {
+    const p = D.catalog[currentCat][currentPreset];
+    const t = p[cardLang];
+    return {
+      originalPrice: !!p.originalPrice,
+      discount: !!t.discount,
+      perUnit: !!t.perUnit,
+      deposit: !!t.deposit
+    };
+  }
+
+  // Apply simulator state to the live card's optional slots, then re-render the panel.
+  function applySimulator() {
+    const p = D.catalog[currentCat][currentPreset];
+    const t = p[cardLang];
+    const avail = priceAvail();
+
+    // Highlight — single slot; highest-priority enabled wins.
+    const hiPick = SIM_HI.find(o => sim.hi[o.key]) || null;
+    setField('highlight', hiPick ? hiPick.key : '');
+
+    // Single promotion — single slot; highest-priority enabled wins.
+    const promoPick = SIM_PROMO.find(o => sim.promo[o.key]) || null;
+    setField('promotion', promoPick ? promoPick[cardLang] : '');
+
+    // Pricing extras — visibility from sim state, value from preset, gated by availability.
+    setField('originalPrice', (sim.price.rrp && avail.originalPrice) ? p.originalPrice : '');
+    setField('discount',      (sim.price.discount && avail.discount) ? t.discount : '');
+    setField('perUnit',       (sim.price.unit && avail.perUnit) ? t.perUnit : '');
+    setField('deposit',       (sim.price.deposit && avail.deposit) ? t.deposit : '');
+
+    // RRP wrapper collapses when originalPrice is empty.
+    document.querySelectorAll('.vcard__price-was').forEach(el => {
+      const inner = el.querySelector('.vcard__original-price');
+      el.style.display = (inner && inner.textContent) ? '' : 'none';
+    });
+
+    renderSimulator();
+  }
+
+  function simSwitchRow(group, o, opts) {
+    const T = SIM_TXT[cardLang];
+    let cls = 'sim-row';
+    if (opts.picked)   cls += ' is-picked';
+    if (opts.folded)   cls += ' is-folded';
+    if (opts.disabled) cls += ' is-disabled';
+    const pri = (opts.pri !== undefined && opts.pri !== null)
+      ? '<span class="sim-row__pri">P'+opts.pri+'</span>' : '';
+    const right = opts.disabled
+      ? '<span class="sim-row__na">'+T.na+'</span>'
+      : '<button class="sim-sw" type="button" role="switch" aria-checked="'+(opts.on?'true':'false')+'" '
+        + 'aria-label="'+o[cardLang]+'" data-sim-group="'+group+'" data-sim-key="'+o.key+'"></button>';
+    return '<div class="'+cls+'">'
+      + '<span class="sim-row__label">'+o[cardLang]+pri+'</span>'
+      + right + '</div>';
+  }
+
+  function renderSimulator() {
+    const host = document.getElementById('vcard-sim');
+    if (!host) return;
+    const T = SIM_TXT[cardLang];
+    const avail = priceAvail();
+    const hiPick = SIM_HI.find(o => sim.hi[o.key]) || null;
+    const promoPick = SIM_PROMO.find(o => sim.promo[o.key]) || null;
+
+    let html = '<div class="field-sim__title">'+T.title
+      + ' <span class="field-sim__title-hint">· '+T.hint+'</span></div>';
+
+    // Group A · Highlight (max 1 · by priority)
+    html += '<div class="sim-group"><div class="sim-group__head">'
+      + '<span class="sim-group__name">'+T.hi+'</span>'
+      + '<span class="sim-group__rule">'+T.max1+'</span></div>';
+    SIM_HI.forEach(o => {
+      const on = !!sim.hi[o.key];
+      html += simSwitchRow('hi', o, { on:on, pri:o.pri,
+        picked: !!(hiPick && hiPick.key === o.key),
+        folded: on && !!hiPick && hiPick.key !== o.key });
+    });
+    html += '</div>';
+
+    // Group B · Single promotion (max 1 · by priority)
+    html += '<div class="sim-group"><div class="sim-group__head">'
+      + '<span class="sim-group__name">'+T.promo+'</span>'
+      + '<span class="sim-group__rule">'+T.max1+'</span></div>';
+    SIM_PROMO.forEach(o => {
+      const on = !!sim.promo[o.key];
+      html += simSwitchRow('promo', o, { on:on, pri:o.pri,
+        picked: !!(promoPick && promoPick.key === o.key),
+        folded: on && !!promoPick && promoPick.key !== o.key });
+    });
+    html += '</div>';
+
+    // Group C · Pricing extras (multi-select)
+    html += '<div class="sim-group"><div class="sim-group__head">'
+      + '<span class="sim-group__name">'+T.price+'</span>'
+      + '<span class="sim-group__rule">'+T.multi+'</span></div>';
+    SIM_PRICE.forEach(o => {
+      const has = avail[o.field];
+      const on = !!sim.price[o.key];
+      html += simSwitchRow('price', o, { on: on && has, disabled: !has,
+        picked: on && has });
+    });
+    html += '</div>';
+
+    html += renderCopilot(hiPick, promoPick, avail);
+    host.innerHTML = html;
+  }
+
+  // Deterministic explanation of how each slot resolved.
+  function renderCopilot(hiPick, promoPick, avail) {
+    const T = SIM_TXT[cardLang];
+    const hiOn = SIM_HI.filter(o => sim.hi[o.key]);
+    let hiSent;
+    if (!hiPick) {
+      hiSent = '<em>'+T.none+'</em>';
+    } else {
+      hiSent = T.shows+' <b>'+hiPick[cardLang]+'</b> (P'+hiPick.pri+')';
+      const folded = hiOn.filter(o => o.key !== hiPick.key).map(o => o[cardLang]);
+      if (folded.length) hiSent += ' · '+folded.join(T.andSep)+' '+T.folded;
+    }
+    const promoSent = promoPick
+      ? T.shows+' <b>'+promoPick[cardLang]+'</b> (P'+promoPick.pri+')'
+      : '<em>'+T.none+'</em>';
+    const priceParts = SIM_PRICE.map(o => {
+      const has = avail[o.field];
+      if (!has) return o[cardLang]+' <em>('+T.na+')</em>';
+      return sim.price[o.key] ? '<b>'+o[cardLang]+'</b>' : o[cardLang]+' <em>('+T.off+')</em>';
+    });
+    return '<div class="sim-copilot">'
+      + '<div class="sim-copilot__head"><span class="sim-copilot__dot"></span>'+T.copilot+'</div>'
+      + '<p>'+T.hiLead+' '+hiSent+'</p>'
+      + '<p>'+T.promoLead+' '+promoSent+'</p>'
+      + '<p>'+T.priceLead+' '+priceParts.join(T.andSep)+'</p>'
+      + '</div>';
+  }
+
+  /* ================ Types stack (right panel) ================ */
+
+  function tvcardHTML(cfg) {
+    // cfg: {catKey, presetIdx, showHi, showColors, showBottom, dim, oos, minimal}
+    const list = D.catalog[cfg.catKey];
+    if (!list || !list[cfg.presetIdx]) return '';
+    const p = list[cfg.presetIdx];
+    const t = p[cardLang];
+    const img = D.productImages[p.img] || '';
+    let html = '<div class="tvcard' + (cfg.dim ? ' tvcard--dim' : '') + '">';
+
+    // image + fav
+    html += '<div class="tvcard__img">';
+    html += (img ? '<img src="'+img+'" alt="'+p.brand+'">' : '');
+    html += '<span class="tvcard__fav"><img src="../assets/figma-atoms/tag-like/tag-like.svg" alt="Favorite"></span>';
+    html += '</div>';
+
+    // colors row
+    if (cfg.showColors && p.colors && p.colors.length) {
+      html += '<div class="tvcard__colors">';
+      p.colors.slice(0, 4).forEach(c => {
+        html += '<span class="tvcard__color-dot" style="background:'+c+'"></span>';
+      });
+      if (p.extraColors > 0 || p.colors.length > 4) {
+        html += '<span class="tvcard__color-dot" style="background:#eee;font-size:6px;display:flex;align-items:center;justify-content:center;color:#666;">+</span>';
+      }
+      html += '</div>';
+    }
+
+    html += '<div class="tvcard__body">';
+
+    if (cfg.showHi && t.highlight && HIGHLIGHT_ENUM.has(t.highlight)) {
+      html += '<span class="tvcard__hi"><img src="../assets/figma-atoms/product-highlights/'+t.highlight+'.svg" alt="'+(HIGHLIGHT_LABEL[t.highlight]||t.highlight)+'"></span>';
+    }
+
+    if (cfg.minimal) {
+      // minimal: title + price only
+      html += '<p class="tvcard__title" style="font-weight:600;color:var(--ink);">'+t.title+'</p>';
+      html += '<div class="tvcard__price-row"><span class="tvcard__price">'+p.salePrice+'</span></div>';
+    } else {
+      html += '<div class="tvcard__brand">'+p.brand+'</div>';
+      html += '<p class="tvcard__title">'+t.title+'</p>';
+      html += '<div class="tvcard__price-row">';
+      html += '<span class="tvcard__price">'+p.salePrice+'</span>';
+      if (p.originalPrice) html += '<span class="tvcard__price-was">RRP: <span class="tvcard__oprice">'+p.originalPrice+'</span></span>';
+      html += '</div>';
+      if (cfg.showBottom !== false) {
+        html += '<div class="tvcard__bottom">';
+        html += '<span class="tvcard__seller">'+t.seller+'</span>';
+        if (cfg.oos) {
+          html += '<img class="tvcard__oos--img" src="../assets/figma-atoms/stock/out-of-stock.svg" alt="Out of stock">';
+        } else {
+          html += '<img class="tvcard__cart--img" src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Add to cart">';
+        }
+        html += '</div>';
+      }
+    }
+
+    html += '</div></div>';
+    return html;
+  }
+
+  function renderTypesStack() {
+    // Default: full-featured card in beauty category
+    const d1 = document.getElementById('tstack-default');
+    if (d1) d1.innerHTML = tvcardHTML({ catKey:'beauty', presetIdx:0, showHi:true });
+
+    // With colors: 3C category, force showColors
+    const d2 = document.getElementById('tstack-colors');
+    if (d2) d2.innerHTML = tvcardHTML({ catKey:'3c', presetIdx:0, showHi:true, showColors:true });
+
+    // Read-only: dim + SOLD OUT
+    const d3 = document.getElementById('tstack-readonly');
+    if (d3) d3.innerHTML = tvcardHTML({ catKey:'beauty', presetIdx:2, showHi:false, dim:true, oos:true });
+
+    // Minimal: title + price only
+    const d4 = document.getElementById('tstack-minimal');
+    if (d4) d4.innerHTML = tvcardHTML({ catKey:'fashion', presetIdx:0, minimal:true });
+  }
+
+  /* ---- Hydrate main-column Types mcards with real product images.
+   * Each .mcard__img[data-mcard-img="<key>"] gets its placeholder icon
+   * replaced with the base64 image from CARD_DATA.productImages.
+   * Only the image swaps; brand/title/price/HOT badge/cart button stay
+   * hand-drawn for now — those will migrate to Figma atoms in a later pass.
+   */
+  function hydrateMcardImages() {
+    const slots = document.querySelectorAll('.mcard__img[data-mcard-img]');
+    slots.forEach(slot => {
+      const key = slot.getAttribute('data-mcard-img');
+      const src = D.productImages && D.productImages[key];
+      if (!src) return; // leave placeholder icon
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = key;
+      slot.textContent = '';
+      slot.appendChild(img);
+    });
+  }
+
+  /* ================ Chip / preset strips ================ */
+
+  function renderCatStrip() {
+    const strip = document.getElementById('vcard-cat-strip');
+    if (!strip) return;
+    strip.innerHTML = '';
+    Object.keys(D.catalog).forEach(cat => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip-btn' + (cat === currentCat ? ' is-active' : '');
+      b.textContent = (D.dict[cardLang] && D.dict[cardLang]['cat.'+cat]) || cat;
+      b.addEventListener('click', () => {
+        currentCat = cat; currentPreset = 0;
+        renderCatStrip(); renderPresetStrip(); renderProduct();
+      });
+      strip.appendChild(b);
+    });
+  }
+
+  function renderPresetStrip() {
+    const strip = document.getElementById('vcard-preset-strip');
+    if (!strip) return;
+    strip.innerHTML = '';
+    D.catalog[currentCat].forEach((p, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'preset-thumb' + (i === currentPreset ? ' is-active' : '');
+      b.title = p.brand;
+      b.innerHTML = D.productImages[p.img]
+        ? '<img src="'+D.productImages[p.img]+'" alt="'+p.brand+'">'
+        : '';
+      b.addEventListener('click', () => {
+        currentPreset = i;
+        renderPresetStrip(); renderProduct();
+      });
+      strip.appendChild(b);
+    });
+  }
+
+  /* ================ Used In · 出现在 (data-driven cards + Figma lightbox) ================
+   * Reads PAGES_DATA.pagesForCard(cardKey) — the SAME source as the Pages Overview.
+   * Renders compact page cards; clicking one opens a lightbox with the real Figma
+   * frame (iframe injected on open, removed on close, so the page stays light and
+   * its scroll height constant). Host + modal are i18n-excluded and self-render in cardLang. */
+  const PD = window.PAGES_DATA;
+  const usedHost = document.querySelector('.usedin[data-card-key]');
+  const USED_KEY = usedHost ? (usedHost.getAttribute('data-card-key') || '') : '';
+
+  const UsedCopy = {
+    view:     { zh: '查看页面', en: 'View page' },
+    open:     { zh: '在 Figma 打开', en: 'Open in Figma' },
+    onPage:   { zh: '同页商卡', en: 'Cards on this page' },
+    thisCard: { zh: '本卡', en: 'this card' },
+    close:    { zh: '关闭', en: 'Close' },
+    empty:    { zh: '暂未登记出现页面。', en: 'No pages recorded yet.' }
+  };
+  function uEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function uPad(n){ return (n<10?'0':'')+n; }
+  function uBoardNo(p){ return PD.pages.findIndex(x => x.id === p.id) + 1; }
+  const uExtSvg = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3h7v7M13 3l-8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  let uframe = null, uOpenId = null, uLastTrigger = null;
+
+  function usedLanguage() {
+    if (window.JoybuySite && typeof window.JoybuySite.getLanguage === 'function') {
+      return window.JoybuySite.getLanguage();
+    }
+    return document.documentElement.lang === 'en' ? 'en' : 'zh';
+  }
+
+  function buildFrame() {
+    if (uframe) return uframe;
+    uframe = document.createElement('div');
+    uframe.className = 'uframe';
+    uframe.setAttribute('data-global-i18n', 'off');
+    uframe.setAttribute('role', 'dialog');
+    uframe.setAttribute('aria-modal', 'true');
+    uframe.innerHTML =
+      '<div class="uframe__backdrop" data-uf-close></div>' +
+      '<div class="uframe__panel" role="document">' +
+        '<div class="uframe__head">' +
+          '<div class="uframe__titles"><div class="uframe__title"></div><div class="uframe__sub"></div></div>' +
+          '<div class="uframe__actions">' +
+            '<a class="uframe__open" target="_blank" rel="noopener"></a>' +
+            '<button class="uframe__close" type="button" data-uf-close></button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="uframe__body"></div>' +
+        '<div class="uframe__foot"></div>' +
+      '</div>';
+    document.body.appendChild(uframe);
+    uframe.addEventListener('click', e => { if (e.target.closest('[data-uf-close]')) closeFrame(); });
+    return uframe;
+  }
+
+  function fillFrame(p) {
+    const lg = usedLanguage();
+    uframe.querySelector('.uframe__title').textContent = p.short[lg];
+    uframe.querySelector('.uframe__sub').textContent = p[lg];
+    const openA = uframe.querySelector('.uframe__open');
+    openA.setAttribute('href', PD.deepLink(p.node));
+    openA.innerHTML = '<span>' + uEsc(UsedCopy.open[lg]) + '</span>' + uExtSvg;
+    const closeBtn = uframe.querySelector('.uframe__close');
+    closeBtn.setAttribute('aria-label', UsedCopy.close[lg]);
+    closeBtn.textContent = '✕';
+    // (re)inject a fresh lazy iframe so switching pages reloads and closing frees it
+    uframe.querySelector('.uframe__body').innerHTML =
+      '<iframe loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="' +
+      uEsc(PD.embedLink(p.node)) + '" title="' + uEsc(p[lg]) + '"></iframe>';
+    let foot = '<span class="uframe__foot-label">' + uEsc(UsedCopy.onPage[lg]) + '</span>';
+    p.cards.forEach(key => {
+      const c = PD.cards[key];
+      if (!c) return;
+      foot += key === USED_KEY
+        ? '<span class="uframe__chip uframe__chip--self">' + uEsc(c[lg]) + ' · ' + uEsc(UsedCopy.thisCard[lg]) + '</span>'
+        : '<a class="uframe__chip" href="../' + uEsc(c.file) + '">' + uEsc(c[lg]) + '</a>';
+    });
+    if (p.inhouse) foot += '<a class="uframe__chip uframe__chip--inhouse" href="../' + uEsc(p.inhouse.file) + '">' + uEsc(p.inhouse[lg]) + '</a>';
+    uframe.querySelector('.uframe__foot').innerHTML = foot;
+  }
+
+  function openFrame(id, trigger) {
+    if (!PD) return;
+    const p = PD.pages.filter(x => x.id === id)[0];
+    if (!p) return;
+    buildFrame();
+    uOpenId = id;
+    uLastTrigger = trigger || null;
+    fillFrame(p);
+    uframe.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    const closeBtn = uframe.querySelector('.uframe__close');
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function closeFrame() {
+    if (!uframe || !uframe.classList.contains('is-open')) return;
+    uframe.classList.remove('is-open');
+    uframe.querySelector('.uframe__body').innerHTML = ''; // stop / unload the iframe
+    document.body.style.overflow = '';
+    uOpenId = null;
+    if (uLastTrigger && typeof uLastTrigger.focus === 'function') uLastTrigger.focus();
+    uLastTrigger = null;
+  }
+
+  function renderUsedIn() {
+    if (!usedHost) return;
+    if (!PD || typeof PD.pagesForCard !== 'function') { usedHost.innerHTML = ''; return; }
+    const lg = usedLanguage();
+    const pages = PD.pagesForCard(USED_KEY);
+    if (!pages.length) { usedHost.innerHTML = '<p class="uin-summary">' + uEsc(UsedCopy.empty[lg]) + '</p>'; return; }
+    let html = '<div class="uin-grid">';
+    pages.forEach(p => {
+      const owner = p.owner ? '<span class="uin-card__co">· ' + uEsc(p.owner) + '</span>' : '';
+      html +=
+        '<button class="uin-card" type="button" data-open-page="' + uEsc(p.id) + '">' +
+          '<span class="uin-card__thumb">' +
+            '<span class="uin-card__idx">' + uPad(uBoardNo(p)) + '</span>' +
+            '<img loading="lazy" src="../' + uEsc(p.shot) + '" alt="' + uEsc(p.short[lg]) + '">' +
+            '<span class="uin-card__open">' + uExtSvg + '<span>' + uEsc(UsedCopy.view[lg]) + '</span></span>' +
+          '</span>' +
+          '<span class="uin-card__body">' +
+            '<span class="uin-card__name">' + uEsc(p.short[lg]) + '</span>' +
+            '<span class="uin-card__meta"><span class="uin-card__dot"></span>' + uEsc(p.channel) + owner + '</span>' +
+          '</span>' +
+        '</button>';
+    });
+    usedHost.innerHTML = html + '</div>';
+  }
+
+  if (usedHost) {
+    usedHost.addEventListener('click', e => {
+      const btn = e.target.closest('[data-open-page]');
+      if (btn) openFrame(btn.getAttribute('data-open-page'), btn);
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && uframe && uframe.classList.contains('is-open')) closeFrame();
+    });
+  }
+
+  /* ================ Card preview language switching ================ */
+
+  function applyCardPreviewI18n() {
+    document.querySelectorAll('.types-stack [data-doc]').forEach(el => {
+      const key = el.getAttribute('data-doc');
+      const v = docsDict[cardLang] && docsDict[cardLang][key];
+      if (v !== undefined) el.textContent = v;
+    });
+  }
+
+  function setCardLang(next) {
+    cardLang = next;
+    document.querySelectorAll('[data-card-lang]').forEach(b => {
+      b.classList.toggle('is-active', b.dataset.cardLang === next);
+    });
+    // Card content changes: the main .vcard + all types-stack minis
+    applyCardPreviewI18n();
+    renderCatStrip();
+    renderProduct();
+    renderTypesStack();
+  }
+
+  window.addEventListener('joybuy:languagechange', () => {
+    renderUsedIn();
+    if (uframe && uframe.classList.contains('is-open') && uOpenId) {
+      const page = PD.pages.filter(item => item.id === uOpenId)[0];
+      if (page) fillFrame(page);
+    }
+  });
+
+  // Wire toggles
+  document.querySelectorAll('[data-card-lang]').forEach(b => {
+    b.addEventListener('click', () => setCardLang(b.dataset.cardLang));
+  });
+
+  // Field simulator toggles (delegated — #vcard-sim is rebuilt on every apply)
+  const simHost = document.getElementById('vcard-sim');
+  if (simHost) {
+    simHost.addEventListener('click', (e) => {
+      const btn = e.target.closest('.sim-sw');
+      if (!btn) return;
+      const g = btn.dataset.simGroup, k = btn.dataset.simKey;
+      if (!g || !k || !sim[g] || !(k in sim[g])) return;
+      sim[g][k] = !sim[g][k];
+      applySimulator();
+    });
+  }
+
+  // Image click cycles preset
+  const clickTarget = document.getElementById('vcard-image-click');
+  if (clickTarget) {
+    clickTarget.addEventListener('click', () => {
+      const list = D.catalog[currentCat];
+      currentPreset = (currentPreset + 1) % list.length;
+      renderPresetStrip(); renderProduct();
+    });
+  }
+
+  // Cmd/Ctrl + L → toggle cardLang (fast preview)
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'l') {
+      e.preventDefault();
+      setCardLang(cardLang === 'en' ? 'zh' : 'en');
+    }
+  });
+
+  /* ================ Anchor tabs scroll-spy ================ */
+  const tabLinks = document.querySelectorAll('.doc-tabs__link[data-tab]');
+  const tabSections = Array.from(tabLinks).map(a => document.getElementById(a.dataset.tab)).filter(Boolean);
+  function updateTabs() {
+    const y = window.scrollY + 160;
+    let current = tabSections[0] ? tabSections[0].id : null;
+    for (const s of tabSections) {
+      if (s.offsetTop <= y) current = s.id;
+    }
+    tabLinks.forEach(a => {
+      a.classList.toggle('is-active', a.dataset.tab === current);
+    });
+  }
+  window.addEventListener('scroll', updateTabs, { passive: true });
+
+  /* ================ Init ================ */
+  applyCardPreviewI18n();
+  renderCatStrip();
+  renderPresetStrip();
+  renderProduct();
+  renderTypesStack();
+  renderUsedIn();
+  hydrateMcardImages();
+  updateTabs();
+})();
+</script>
+<script src="../assets/card-preview-controls.js"></script>
+</body>
+</html>

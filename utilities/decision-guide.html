@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>选型指南 · Decision Guide · 商卡设计系统</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="回答几个问题，快速选对商卡类型；或直接查看 7 种商卡的对比矩阵与选型口诀。">
+<link rel="stylesheet" href="../assets/tokens.css">
+<style>
+  /* =====================================================
+     Decision Guide 选型指南 — Utilities layer.
+     Three parts, all rendered bilingually inside #dg-root
+     (data-global-i18n="off", re-rendered on language change):
+       1) 选卡助手  a guided question flow → recommended card
+       2) 对比一览  7-card comparison matrix (reuses card-previews PNGs)
+       3) 选型口诀  quick "if… then…" rules
+     Card names / files / 出现在 counts come from PAGES_DATA (single source);
+     the editorial columns (layout / slots / variants / scene / when) are
+     curated here. Chrome uses --accent only; brand red stays on the cards. */
+
+  .dg-crumb { font-size: 12px; color: var(--ink-5); margin-bottom: 16px; }
+  .dg-crumb a { color: var(--ink-4); }
+  .dg-crumb a:hover { color: var(--accent); }
+  .dg-crumb .sep { margin: 0 6px; color: var(--ink-5); }
+
+  .dg-head { padding: 8px 0 24px; border-bottom: 1px solid var(--outline); margin-bottom: 26px; }
+  .dg-head__title { margin: 0 0 14px; font-size: 40px; font-weight: 700; letter-spacing: -.015em; color: var(--ink); line-height: 1.15; }
+  .dg-head__subtitle { margin: 0; max-width: 780px; font-size: 14px; color: var(--ink-4); line-height: 1.75; }
+  .dg-head__meta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-top: 20px; }
+  .dg-stat { display: inline-flex; align-items: baseline; gap: 7px; font-size: 12px; color: var(--ink-4); background: var(--surface-2); border: 1px solid var(--outline); padding: 5px 12px; border-radius: var(--r-pill); }
+  .dg-stat b { font-size: 14px; font-weight: 800; color: var(--ink); font-family: var(--f-mono); }
+
+  /* ---- Segmented anchor nav ---- */
+  .dg-jump { display: inline-flex; gap: 4px; padding: 4px; background: var(--surface-2); border: 1px solid var(--outline); border-radius: var(--r-pill); margin-bottom: 34px; flex-wrap: wrap; }
+  .dg-jump__link { display: inline-flex; align-items: center; gap: 7px; padding: 7px 15px; border-radius: var(--r-pill); font-size: 13px; font-weight: 600; color: var(--ink-3); cursor: pointer; text-decoration: none; transition: color .13s ease, background-color .13s ease; }
+  .dg-jump__link:hover { color: var(--ink); background: var(--surface); }
+  .dg-jump__num { font-family: var(--f-mono); font-size: 11px; opacity: .6; }
+
+  /* ---- Section shell ---- */
+  .dg-sec { margin-bottom: 52px; scroll-margin-top: 96px; }
+  .dg-sec__eyebrow { font-size: 11.5px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--accent); font-family: var(--f-mono); margin-bottom: 8px; }
+  .dg-sec__title { margin: 0 0 8px; font-size: 24px; font-weight: 700; letter-spacing: -.01em; color: var(--ink); }
+  .dg-sec__lede { margin: 0 0 22px; max-width: 720px; font-size: 13.5px; color: var(--ink-4); line-height: 1.7; }
+
+  /* ============ 1 · 选卡助手 flow ============ */
+  .dg-flow { border: 1px solid var(--outline); border-radius: var(--r-lg); background: var(--surface); overflow: hidden; box-shadow: var(--shadow-1); }
+  .dg-flow__body { padding: 26px 26px 28px; }
+
+  /* progress indicator (step position + up-to-4 dots) */
+  .dg-progress { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+  .dg-progress__label { font-size: 12px; font-weight: 700; color: var(--ink-4); font-family: var(--f-mono); letter-spacing: .01em; }
+  .dg-progress__label--done { color: var(--accent); }
+  .dg-progress__dots { display: inline-flex; gap: 6px; }
+  .dg-dot { width: 22px; height: 5px; border-radius: 3px; background: var(--surface-2); border: 1px solid var(--outline); transition: background-color .16s ease, border-color .16s ease; }
+  .dg-dot.is-done { background: var(--accent); border-color: var(--accent); }
+  .dg-dot.is-active { background: var(--accent-100); border-color: var(--accent); }
+
+  /* answered-steps breadcrumb */
+  .dg-steps { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+  .dg-steps:empty { display: none; }
+  .dg-step { display: inline-flex; align-items: center; gap: 7px; padding: 5px 12px 5px 11px; border-radius: var(--r-pill); background: var(--accent-50); border: 1px solid var(--accent-100); color: var(--accent-600); font-size: 12px; font-weight: 600; cursor: pointer; transition: border-color .12s ease, background-color .12s ease; }
+  .dg-step:hover { background: var(--accent-100); border-color: var(--accent); }
+  .dg-step__x { font-size: 13px; opacity: .55; line-height: 1; }
+  .dg-step:hover .dg-step__x { opacity: 1; }
+
+  .dg-q { font-size: 19px; font-weight: 700; color: var(--ink); letter-spacing: -.01em; margin: 0 0 4px; }
+  .dg-q__hint { font-size: 12.5px; color: var(--ink-5); margin: 0 0 20px; }
+  .dg-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  .dg-opt { text-align: left; display: flex; flex-direction: column; gap: 5px; padding: 16px 17px; border: 1px solid var(--outline); border-radius: var(--r-md); background: var(--surface); color: var(--ink); cursor: pointer; transition: border-color .13s ease, box-shadow .13s ease, transform .13s ease, background-color .13s ease; }
+  .dg-opt:hover { border-color: var(--accent); box-shadow: var(--shadow-1); transform: translateY(-1px); background: var(--accent-50); }
+  .dg-opt__label { font-size: 14.5px; font-weight: 700; display: flex; align-items: center; gap: 9px; }
+  .dg-opt__tag { flex: 0 0 auto; width: 22px; height: 22px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--outline); display: inline-flex; align-items: center; justify-content: center; font-family: var(--f-mono); font-size: 11px; font-weight: 700; color: var(--ink-4); }
+  .dg-opt:hover .dg-opt__tag { background: var(--accent-50); border-color: var(--accent-100); color: var(--accent); }
+  .dg-opt__desc { font-size: 12px; color: var(--ink-4); line-height: 1.55; padding-left: 31px; }
+
+  /* result panel */
+  .dg-result { display: grid; grid-template-columns: 176px 1fr; gap: 24px; align-items: start; }
+  .dg-result__shot { border: 1px solid var(--outline); border-radius: var(--r-md); background: var(--surface-2); height: 172px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .dg-result__shot img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+  .dg-result__tag { font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); font-family: var(--f-mono); margin-bottom: 7px; }
+  .dg-result__name { font-size: 25px; font-weight: 800; color: var(--ink); letter-spacing: -.01em; line-height: 1.2; }
+  .dg-result__en { font-size: 13px; color: var(--ink-5); margin-top: 3px; }
+  .dg-result__why { margin: 15px 0 10px; font-size: 13.5px; color: var(--ink-2); line-height: 1.7; max-width: 520px; }
+  .dg-result__facts { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .dg-fact { display: inline-flex; align-items: baseline; gap: 6px; font-size: 12px; color: var(--ink-4); background: var(--surface-2); border: 1px solid var(--outline); padding: 4px 11px; border-radius: var(--r-pill); }
+  .dg-fact b { color: var(--ink); font-weight: 700; }
+  .dg-result__actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .dg-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: var(--r-pill); font-size: 13px; font-weight: 700; cursor: pointer; border: 1px solid transparent; transition: background-color .13s ease, border-color .13s ease, color .13s ease, transform .13s ease; }
+  .dg-btn--primary { background: var(--accent); color: var(--bg); }
+  .dg-btn--primary:hover { background: var(--accent-600); transform: translateY(-1px); }
+  .dg-btn--ghost { background: var(--surface); color: var(--ink-2); border-color: var(--outline-strong); }
+  .dg-btn--ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .dg-btn svg { width: 15px; height: 15px; }
+
+  /* also-consider runner-up chips */
+  .dg-alt { margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--outline); }
+  .dg-alt__label { font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-5); font-family: var(--f-mono); margin-bottom: 9px; }
+  .dg-alt__list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .dg-altchip { display: inline-flex; align-items: center; gap: 9px; padding: 7px 13px; border: 1px solid var(--outline); border-radius: var(--r-pill); background: var(--surface); text-decoration: none; transition: border-color .13s ease, background-color .13s ease; }
+  .dg-altchip:hover { border-color: var(--accent); background: var(--accent-50); }
+  .dg-altchip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .dg-altchip__name { font-size: 12.5px; font-weight: 700; color: var(--ink); }
+  .dg-altchip__reason { font-size: 11.5px; color: var(--ink-5); }
+  .dg-altchip .arrow { color: var(--accent); opacity: .5; font-weight: 700; }
+  .dg-altchip:hover .arrow { opacity: 1; }
+
+  @media (max-width: 620px) {
+    .dg-result { grid-template-columns: 1fr; }
+    .dg-result__shot { height: 200px; }
+  }
+
+  /* ============ 2 · 对比一览 matrix ============ */
+  .dg-table-wrap { border: 1px solid var(--outline); border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-1); }
+  table.dg-table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--surface); }
+  .dg-table thead th { text-align: left; font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-5); background: var(--surface-2); padding: 12px 16px; border-bottom: 1px solid var(--outline); white-space: nowrap; }
+  .dg-table tbody td { padding: 15px 16px; border-bottom: 1px solid var(--outline); vertical-align: middle; color: var(--ink-3); line-height: 1.55; }
+  .dg-table tbody tr:last-child td { border-bottom: 0; }
+  .dg-table tbody tr { transition: background-color .12s ease; }
+  .dg-table tbody tr:hover { background: var(--accent-50); }
+
+  .dg-cardcell { display: flex; align-items: center; gap: 13px; min-width: 200px; }
+  .dg-cardcell__shot { flex: 0 0 auto; width: 76px; height: 58px; border: 1px solid var(--outline); border-radius: 8px; background: var(--surface-2); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .dg-cardcell__shot img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+  .dg-cardcell__name { font-size: 14px; font-weight: 700; color: var(--ink); display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+  .dg-cardcell__name:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 5px; }
+  .dg-cardcell__name .arrow { opacity: .4; transition: opacity .12s ease, transform .12s ease; }
+  .dg-table tbody tr:hover .dg-cardcell__name { color: var(--accent); }
+  .dg-table tbody tr:hover .dg-cardcell__name .arrow { opacity: .9; transform: translateX(2px); }
+  .dg-cardcell__en { font-size: 11.5px; color: var(--ink-5); margin-top: 2px; }
+  .dg-num { font-family: var(--f-mono); font-weight: 700; color: var(--ink); font-size: 13px; }
+  .dg-vtags { display: flex; flex-wrap: wrap; gap: 5px; max-width: 190px; }
+  .dg-vtag { font-family: var(--f-mono); font-size: 10.5px; color: var(--ink-4); background: var(--surface-2); border: 1px solid var(--outline); padding: 2px 7px; border-radius: 5px; white-space: nowrap; }
+  .dg-when { color: var(--ink-2); max-width: 230px; }
+  .dg-used { display: inline-flex; align-items: baseline; gap: 5px; font-size: 12px; color: var(--ink-4); }
+  .dg-used b { font-family: var(--f-mono); font-size: 14px; font-weight: 800; color: var(--accent); }
+  .dg-usednames { display: block; margin-top: 4px; font-size: 11px; color: var(--ink-5); line-height: 1.5; max-width: 240px; }
+
+  /* responsive: stack into label:value cards */
+  @media (max-width: 940px) {
+    .dg-table thead { display: none; }
+    .dg-table, .dg-table tbody, .dg-table tr, .dg-table td { display: block; width: 100%; }
+    .dg-table tbody tr { padding: 8px 0 12px; border-bottom: 8px solid var(--surface-2); }
+    .dg-table tbody td { border: 0; padding: 6px 18px; display: flex; gap: 14px; align-items: flex-start; }
+    .dg-table tbody td::before { content: attr(data-label); flex: 0 0 88px; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-5); padding-top: 2px; }
+    .dg-table tbody td.dg-td-card::before { display: none; }
+    .dg-td-card { padding-top: 14px !important; }
+    .dg-vtags, .dg-when, .dg-usednames { max-width: none; }
+  }
+
+  /* ============ 3 · 选型口诀 rules ============ */
+  .dg-rules { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+  .dg-rule { display: flex; align-items: center; gap: 14px; padding: 15px 18px; border: 1px solid var(--outline); border-radius: var(--r-md); background: var(--surface); transition: border-color .13s ease, box-shadow .13s ease; }
+  .dg-rule:hover { border-color: var(--accent); box-shadow: var(--shadow-1); }
+  .dg-rule__if { flex: 1 1 auto; font-size: 13.5px; color: var(--ink-2); line-height: 1.5; }
+  .dg-rule__arrow { flex: 0 0 auto; color: var(--ink-5); }
+  .dg-rule__then { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--accent); white-space: nowrap; }
+  .dg-rule__then .arrow { opacity: .5; }
+  .dg-rule:hover .dg-rule__then .arrow { opacity: 1; }
+
+  .dg-foot { margin-top: 8px; padding: 22px 0; border-top: 1px solid var(--outline); display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--ink-5); }
+
+  @media (max-width: 900px) { .dg-head__title { font-size: 30px; } }
+</style>
+</head>
+<body>
+<div class="site">
+
+  <aside id="site-nav" class="site-nav" data-active="decision-guide"></aside>
+
+  <main class="site-main">
+    <div class="site-main__inner">
+      <!-- Everything is rendered bilingually by JS and kept out of the global
+           text-node translator (self-managed language). -->
+      <div id="dg-root" data-global-i18n="off"></div>
+    </div>
+  </main>
+
+</div>
+
+<script src="../assets/pages-data.js"></script>
+<script src="../assets/nav.js"></script>
+<script>
+/* Decision Guide — self-managed bilingual render + guided flow state machine. */
+(function () {
+  var D = window.PAGES_DATA;
+  var root = document.getElementById('dg-root');
+  if (!D || !root) return;
+
+  function lang() {
+    if (window.JoybuySite && typeof window.JoybuySite.getLanguage === 'function') return window.JoybuySite.getLanguage();
+    return document.documentElement.lang === 'en' ? 'en' : 'zh';
+  }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function cardHref(key) { return '../' + D.cards[key].file; }
+  function previewSrc(key) { return '../assets/card-previews/' + PREVIEW[key]; }
+  function usedCount(key) { return D.pagesForCard(key).length; }
+  function usedNames(key) { var lg = lang(); return D.pagesForCard(key).map(function (p) { return p.short[lg]; }).join(lg === 'zh' ? '、' : ', '); }
+
+  /* card key → existing preview PNG (reuse, don't re-render) */
+  var PREVIEW = {
+    'vertical-card': 'universal-2-column.png',
+    'horizontal-card': 'universal-horizontal.png',
+    'horizontal-mini': 'universal-horizontal-mini.png',
+    'horizontal-scroll': 'horizontal-scroll.png',
+    'campaign-card': 'campaign.png',
+    'booking-card': 'booking.png',
+    'small-dynamic': 'small-image-dynamic.png'
+  };
+
+  var ORDER = ['vertical-card', 'horizontal-card', 'horizontal-mini', 'horizontal-scroll', 'campaign-card', 'booking-card', 'small-dynamic'];
+
+  /* curated, decision-guide-specific editorial metadata (bilingual) */
+  var META = {
+    'vertical-card':     { layout: { zh: '竖向双列 · 大图', en: 'Vertical 2-col · large image' }, slots: 11, variants: ['default', 'promo', 'oos', 'multi-cat'],
+      scene: { zh: '首页 / 搜索的双列信息流主力', en: 'Home & search 2-column feeds' },
+      when:  { zh: '要两列大图、以图带货、信息量中等', en: 'Two columns, image-led, medium info' } },
+    'horizontal-card':   { layout: { zh: '横向 · 图左 130px', en: 'Horizontal · 130px image left' }, slots: 8, variants: ['default', 'promo', 'oos', 'compact'],
+      scene: { zh: '列表 / 内容 / 心愿单', en: 'Lists / content / wishlist' },
+      when:  { zh: '一行一卡，且信息要全（评分·促销·配送·加购）', en: 'One row per item with full info' } },
+    'horizontal-mini':   { layout: { zh: '横向 · 图左 64px', en: 'Horizontal · 64px image left' }, slots: 6, variants: ['default', 'highlight', 'oos', 'scroller'],
+      scene: { zh: '导购 / 心愿 / 搜索里省地方', en: 'Albot / wishlist / search — compact' },
+      when:  { zh: '横向但空间紧，只保留关键信息', en: 'Horizontal but space-tight, key info only' } },
+    'horizontal-scroll': { layout: { zh: '横向滑动 · scroll-snap', en: 'Horizontal scroll · snap' }, slots: 6, variants: ['default', 'brand', 'category', 'themed'],
+      scene: { zh: '推荐条 / 专区横滑', en: 'Recommendation rails / zones' },
+      when:  { zh: '有限高度内横向浏览多个商品', en: 'Browse many items in limited height' } },
+    'campaign-card':     { layout: { zh: '活动氛围 · 倒计时', en: 'Campaign styling · countdown' }, slots: 7, variants: ['sale', 'brand', 'seasonal', 'urgency'],
+      scene: { zh: '大促造节 / 活动页', en: 'Big-sale / campaign pages' },
+      when:  { zh: '限时活动，需要倒计时·活动价·氛围色', en: 'Time-limited, needs countdown & sale price' } },
+    'booking-card':      { layout: { zh: '状态驱动 · ribbon/chip/cta', en: 'State-driven ribbon/chip/cta' }, slots: 8, variants: ['presale', 'live', 'auction', 'ended'],
+      scene: { zh: '预售 / 拍卖 / 预约', en: 'Presale / auction / booking' },
+      when:  { zh: '商品有状态流转（presale→live→ended）', en: 'Item has a status lifecycle' } },
+    'small-dynamic':     { layout: { zh: '入口小图 · 多格', en: 'Entry small-image · multi-cell' }, slots: 4, variants: ['grid3', 'row6', 'ribbon', 'brand'],
+      scene: { zh: '频道入口 / 曝光导流位', en: 'Channel entries / traffic drivers' },
+      when:  { zh: '入口位导流，而非主商品位', en: 'Entry / traffic slot, not the primary product' } }
+  };
+
+  /* closest runner-up per result — shown as "也可考虑 / Also consider" */
+  var ALT = {
+    'vertical-card':     [{ key: 'horizontal-card',   reason: { zh: '想一行一个、信息更全', en: 'One per row, fuller info' } }],
+    'horizontal-card':   [{ key: 'horizontal-mini',   reason: { zh: '空间更紧、只留关键信息', en: 'Tighter space, key info only' } }],
+    'horizontal-mini':   [{ key: 'horizontal-card',   reason: { zh: '信息要更全 / 图更大', en: 'Need fuller info / larger image' } }],
+    'horizontal-scroll': [{ key: 'small-dynamic',     reason: { zh: '其实是入口小图而非商品', en: 'Actually entry tiles, not products' } }],
+    'campaign-card':     [{ key: 'vertical-card',     reason: { zh: '不需要倒计时 / 活动氛围时', en: 'When no countdown styling is needed' } }],
+    'booking-card':      [{ key: 'campaign-card',     reason: { zh: '只是限时促销、无状态流转', en: 'Just a timed sale, no lifecycle' } }],
+    'small-dynamic':     [{ key: 'horizontal-scroll', reason: { zh: '是真商品、要横滑浏览', en: 'Real products, browsed by scroll' } }]
+  };
+
+  /* guided decision tree — every option either advances (to) or resolves (result) */
+  var TREE = {
+    q1: { q: { zh: '这张卡主要为了什么？', en: 'What is this card mainly for?' }, hint: { zh: '先区分运营属性。', en: 'Start with the operational intent.' }, opts: [
+      { label: { zh: '常规商品展示', en: 'Regular product display' }, desc: { zh: '普通的一件商品，图 + 标题 + 价格。', en: 'A plain product: image, title, price.' }, to: 'q2' },
+      { label: { zh: '限时大促 / 活动氛围', en: 'Time-limited campaign' }, desc: { zh: '倒计时、活动价、造节氛围色。', en: 'Countdown, sale price, festive styling.' }, result: 'campaign-card' },
+      { label: { zh: '预售 / 拍卖 / 预约', en: 'Presale / auction / booking' }, desc: { zh: '有状态流转（presale→live→ended）。', en: 'Has a status lifecycle.' }, result: 'booking-card' }
+    ]},
+    q2: { q: { zh: '它出现在什么位置 / 形态？', en: 'Where does it appear, and in what form?' }, hint: { zh: '决定横竖与滚动方式。', en: 'This sets orientation & scrolling.' }, opts: [
+      { label: { zh: '主内容流里，一条条商品', en: 'In the main content feed' }, desc: { zh: '首页 / 搜索 / 详情正文的商品列表。', en: 'Product lists in home, search, content.' }, to: 'q3' },
+      { label: { zh: '横向可滑动的推荐条', en: 'A horizontally-scrolling rail' }, desc: { zh: '一屏内横向滑动看更多。', en: 'Swipe sideways to see more in one row.' }, result: 'horizontal-scroll' },
+      { label: { zh: '频道入口小图（多小图导流）', en: 'Channel-entry small images' }, desc: { zh: '多个小格子引流到频道，不是主商品位。', en: 'Multi-cell entries driving traffic.' }, result: 'small-dynamic' }
+    ]},
+    q3: { q: { zh: '商品怎么排？', en: 'How are items laid out?' }, hint: { zh: '竖排双列 vs 横排一行一个。', en: '2-col vertical vs one-per-row horizontal.' }, opts: [
+      { label: { zh: '竖排 · 两列 · 大图为主', en: 'Vertical · 2 columns · large image' }, desc: { zh: '瀑布式双列，以图带货。', en: 'Two-column, image-led grid.' }, result: 'vertical-card' },
+      { label: { zh: '横排 · 一行一个 · 图在左', en: 'Horizontal · one per row · image left' }, desc: { zh: '列表式，一行一张卡。', en: 'A list, one card per row.' }, to: 'q4' }
+    ]},
+    q4: { q: { zh: '信息密度 / 图片大小？', en: 'Information density & image size?' }, hint: { zh: '标准 130 vs 紧凑 64。', en: 'Standard 130px vs compact 64px.' }, opts: [
+      { label: { zh: '信息完整 · 图较大 (130px)', en: 'Full info · larger image (130px)' }, desc: { zh: '评分、促销、配送、加购都要展示。', en: 'Show rating, promo, delivery, add-to-cart.' }, result: 'horizontal-card' },
+      { label: { zh: '紧凑 · 图较小 (64px) · 只留关键信息', en: 'Compact · smaller image (64px)' }, desc: { zh: '空间紧张，精简到关键字段。', en: 'Space-tight, trimmed to essentials.' }, result: 'horizontal-mini' }
+    ]}
+  };
+
+  var COPY = {
+    crumbHome:   { zh: '概览', en: 'Overview' },
+    crumbSelf:   { zh: '选型指南', en: 'Decision Guide' },
+    title:       { zh: '选型指南', en: 'Decision Guide' },
+    subtitle:    { zh: '不确定该用哪张商卡？回答下面几个问题，我们直接给出推荐；或往下翻，用对比矩阵和选型口诀自己拍板。7 种商卡覆盖首页、搜索、活动、预售到频道入口的全部场景。', en: 'Not sure which product card to use? Answer a few questions for a recommendation — or scroll down and decide for yourself with the comparison matrix and quick rules. Seven card types cover home, search, campaign, presale and channel-entry scenarios.' },
+    statCards:   { zh: '种商卡', en: 'card types' },
+    statSteps:   { zh: '步内选定', en: 'steps or fewer' },
+    jump1:       { zh: '选卡助手', en: 'Card finder' },
+    jump2:       { zh: '对比一览', en: 'Compare' },
+    jump3:       { zh: '选型口诀', en: 'Quick rules' },
+    sec1Eyebrow: { zh: 'Step by step', en: 'Step by step' },
+    sec1Title:   { zh: '选卡助手', en: 'Card finder' },
+    sec1Lede:    { zh: '一次回答一个问题，最多 4 步就能锁定一张商卡。选错了？点上方任意一步就能改。', en: 'Answer one question at a time — four steps at most to land on a card. Changed your mind? Click any answered step to revise.' },
+    sec2Eyebrow: { zh: 'At a glance', en: 'At a glance' },
+    sec2Title:   { zh: '对比一览', en: 'Comparison matrix' },
+    sec2Lede:    { zh: '7 种商卡的布局、槽位、变体、典型场景与「何时选它」并排对比。点任意一行进入该商卡详情页。', en: 'Layout, slots, variants, scenarios and "when to pick" for all seven cards, side by side. Click any row to open its detail page.' },
+    sec3Eyebrow: { zh: 'Rules of thumb', en: 'Rules of thumb' },
+    sec3Title:   { zh: '选型口诀', en: 'Quick rules' },
+    sec3Lede:    { zh: '记不住矩阵？这几条「如果……就选……」覆盖了绝大多数日常场景。', en: 'Can’t memorise the matrix? These "if… then…" lines cover most everyday cases.' },
+    thCard:      { zh: '商卡', en: 'Card' },
+    thLayout:    { zh: '布局 · 图', en: 'Layout · image' },
+    thSlots:     { zh: '槽位', en: 'Slots' },
+    thVariants:  { zh: '变体', en: 'Variants' },
+    thScene:     { zh: '典型场景', en: 'Typical scene' },
+    thWhen:      { zh: '何时选它', en: 'When to pick' },
+    thUsed:      { zh: '出现在', en: 'Used in' },
+    usedUnit:    { zh: '页', en: 'pages' },
+    reco:        { zh: '推荐使用', en: 'Recommended' },
+    slotsUnit:   { zh: '槽位', en: 'slots' },
+    variantsUnit:{ zh: '变体', en: 'variants' },
+    usedFact:    { zh: '出现在', en: 'used in' },
+    viewDetail:  { zh: '查看详情', en: 'View details' },
+    restart:     { zh: '重新选择', en: 'Start over' },
+    alsoConsider:{ zh: '也可考虑', en: 'Also consider' },
+    stepOf:      { zh: '第 %n 步 · 最多 4 步', en: 'Step %n of up to 4' },
+    stepDone:    { zh: '已选定 · 共 %n 步', en: 'Done · %n step(s)' },
+    footNote:    { zh: '选型建议基于 7 种商卡的结构与典型用法，可随体系迭代更新。', en: 'Guidance is based on the structure & typical use of the 7 card types; it evolves with the system.' }
+  };
+  function t(k) { return COPY[k][lang()]; }
+
+  /* quick "if → then" rules (order mirrors decision priority) */
+  var RULES = [
+    { key: 'vertical-card',     if: { zh: '首页两列大图种草', en: 'Home 2-col, image-led discovery' } },
+    { key: 'horizontal-card',   if: { zh: '一行一个、信息要全', en: 'One per row, full info' } },
+    { key: 'horizontal-mini',   if: { zh: '同样横向但更省地方', en: 'Same but more space-efficient' } },
+    { key: 'horizontal-scroll', if: { zh: '一屏内横滑看更多', en: 'Swipe sideways for more' } },
+    { key: 'campaign-card',     if: { zh: '限时大促要倒计时', en: 'Time-limited sale with countdown' } },
+    { key: 'booking-card',      if: { zh: '预售 / 拍卖 / 预约，强状态', en: 'Presale / auction, strong states' } },
+    { key: 'small-dynamic',     if: { zh: '频道入口多小图导流', en: 'Channel entry, multi small-image' } }
+  ];
+
+  var extLinkSvg = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M6 3h7v7M13 3l-8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var chevSvg = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  /* ---- flow state ---- */
+  var path = []; // array of chosen option indices
+
+  function resolveFlow() {
+    var node = 'q1', asked = [];
+    for (var i = 0; i < path.length; i++) {
+      var opt = TREE[node].opts[path[i]];
+      if (!opt) break;
+      asked.push({ qid: node, opt: opt, idx: i });
+      if (opt.result) return { done: true, result: opt.result, asked: asked };
+      node = opt.to;
+    }
+    return { done: false, qid: node, asked: asked };
+  }
+
+  /* up-to-4-step progress: filled dots for answered, ring for current, text label */
+  function progressHTML(st) {
+    var answered = st.asked.length, MAX = 4, dots = '';
+    for (var i = 0; i < MAX; i++) {
+      var cls = 'dg-dot';
+      if (i < answered) cls += ' is-done';
+      else if (!st.done && i === answered) cls += ' is-active';
+      dots += '<span class="' + cls + '"></span>';
+    }
+    var label = (st.done ? t('stepDone') : t('stepOf')).replace('%n', st.done ? answered : (answered + 1));
+    return '<div class="dg-progress"><span class="dg-progress__label' + (st.done ? ' dg-progress__label--done' : '') + '">' +
+             (st.done ? '✓ ' : '') + esc(label) +
+           '</span><span class="dg-progress__dots" aria-hidden="true">' + dots + '</span></div>';
+  }
+
+  function flowHTML() {
+    var lg = lang(), st = resolveFlow();
+    var steps = '';
+    st.asked.forEach(function (a) {
+      steps += '<button class="dg-step" type="button" data-dg-step="' + a.idx + '">' +
+                 esc(a.opt.label[lg]) + '<span class="dg-step__x" aria-hidden="true">×</span></button>';
+    });
+
+    var inner;
+    if (st.done) {
+      inner = resultHTML(st.result, lg);
+    } else {
+      var Q = TREE[st.qid];
+      var opts = '';
+      Q.opts.forEach(function (o, i) {
+        opts += '<button class="dg-opt" type="button" data-dg-opt="' + i + '">' +
+                  '<span class="dg-opt__label"><span class="dg-opt__tag">' + String.fromCharCode(65 + i) + '</span>' + esc(o.label[lg]) + '</span>' +
+                  '<span class="dg-opt__desc">' + esc(o.desc[lg]) + '</span>' +
+                '</button>';
+      });
+      inner = '<div class="dg-q">' + esc(Q.q[lg]) + '</div>' +
+              '<p class="dg-q__hint">' + esc(Q.hint[lg]) + '</p>' +
+              '<div class="dg-opts">' + opts + '</div>';
+    }
+
+    return '<div class="dg-flow"><div class="dg-flow__body">' +
+             progressHTML(st) +
+             '<div class="dg-steps">' + steps + '</div>' + inner +
+           '</div></div>';
+  }
+
+  function resultHTML(key, lg) {
+    var c = D.cards[key], m = META[key];
+    return '<div class="dg-result">' +
+      '<div class="dg-result__shot"><img src="' + previewSrc(key) + '" alt="' + esc(c[lg]) + '"></div>' +
+      '<div>' +
+        '<div class="dg-result__tag">' + esc(t('reco')) + '</div>' +
+        '<div class="dg-result__name">' + esc(c[lg]) + '</div>' +
+        '<div class="dg-result__en">' + esc(c[lg === 'zh' ? 'en' : 'zh']) + '</div>' +
+        '<p class="dg-result__why">' + esc(m.when[lg]) + '</p>' +
+        '<div class="dg-result__facts">' +
+          '<span class="dg-fact">' + esc(m.layout[lg]) + '</span>' +
+          '<span class="dg-fact"><b>' + m.slots + '</b>' + esc(t('slotsUnit')) + '</span>' +
+          '<span class="dg-fact"><b>' + m.variants.length + '</b>' + esc(t('variantsUnit')) + '</span>' +
+          '<span class="dg-fact">' + esc(t('usedFact')) + ' <b>' + usedCount(key) + '</b>' + esc(t('usedUnit')) + '</span>' +
+        '</div>' +
+        '<div class="dg-result__actions">' +
+          '<a class="dg-btn dg-btn--primary" href="' + cardHref(key) + '">' + esc(t('viewDetail')) + chevSvg + '</a>' +
+          '<button class="dg-btn dg-btn--ghost" type="button" data-dg-reset>' + esc(t('restart')) + '</button>' +
+        '</div>' +
+        altHTML(key, lg) +
+      '</div>' +
+    '</div>';
+  }
+
+  function altHTML(key, lg) {
+    var alts = ALT[key];
+    if (!alts || !alts.length) return '';
+    var chips = alts.map(function (a) {
+      var c = D.cards[a.key];
+      return '<a class="dg-altchip" href="' + cardHref(a.key) + '">' +
+        '<span class="dg-altchip__name">' + esc(c[lg]) + '</span>' +
+        '<span class="dg-altchip__reason">' + esc(a.reason[lg]) + '</span>' +
+        '<span class="arrow" aria-hidden="true">→</span>' +
+      '</a>';
+    }).join('');
+    return '<div class="dg-alt"><div class="dg-alt__label">' + esc(t('alsoConsider')) + '</div>' +
+           '<div class="dg-alt__list">' + chips + '</div></div>';
+  }
+
+  function matrixHTML() {
+    var lg = lang();
+    var rows = '';
+    ORDER.forEach(function (key) {
+      var c = D.cards[key], m = META[key];
+      var vtags = m.variants.map(function (v) { return '<span class="dg-vtag">' + esc(v) + '</span>'; }).join('');
+      rows += '<tr data-dg-row="' + key + '" title="' + esc(t('viewDetail')) + ' · ' + esc(c[lg]) + '">' +
+        '<td class="dg-td-card" data-label="' + esc(t('thCard')) + '"><div class="dg-cardcell">' +
+          '<span class="dg-cardcell__shot"><img src="' + previewSrc(key) + '" alt="' + esc(c[lg]) + '"></span>' +
+          '<span><a class="dg-cardcell__name" href="' + cardHref(key) + '">' + esc(c[lg]) + '<span class="arrow" aria-hidden="true">→</span></a>' +
+          '<span class="dg-cardcell__en">' + esc(c[lg === 'zh' ? 'en' : 'zh']) + '</span></span>' +
+        '</div></td>' +
+        '<td data-label="' + esc(t('thLayout')) + '">' + esc(m.layout[lg]) + '</td>' +
+        '<td data-label="' + esc(t('thSlots')) + '"><span class="dg-num">' + m.slots + '</span></td>' +
+        '<td data-label="' + esc(t('thVariants')) + '"><span class="dg-vtags">' + vtags + '</span></td>' +
+        '<td data-label="' + esc(t('thScene')) + '">' + esc(m.scene[lg]) + '</td>' +
+        '<td data-label="' + esc(t('thWhen')) + '"><span class="dg-when">' + esc(m.when[lg]) + '</span></td>' +
+        '<td data-label="' + esc(t('thUsed')) + '"><span class="dg-used"><b>' + usedCount(key) + '</b>' + esc(t('usedUnit')) + '</span><span class="dg-usednames">' + esc(usedNames(key)) + '</span></td>' +
+      '</tr>';
+    });
+
+    return '<div class="dg-table-wrap"><table class="dg-table"><thead><tr>' +
+      '<th>' + esc(t('thCard')) + '</th>' +
+      '<th>' + esc(t('thLayout')) + '</th>' +
+      '<th>' + esc(t('thSlots')) + '</th>' +
+      '<th>' + esc(t('thVariants')) + '</th>' +
+      '<th>' + esc(t('thScene')) + '</th>' +
+      '<th>' + esc(t('thWhen')) + '</th>' +
+      '<th>' + esc(t('thUsed')) + '</th>' +
+      '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+  }
+
+  function rulesHTML() {
+    var lg = lang();
+    var cards = '';
+    RULES.forEach(function (r) {
+      var c = D.cards[r.key];
+      cards += '<a class="dg-rule" href="' + cardHref(r.key) + '">' +
+        '<span class="dg-rule__if">' + esc(r.if[lg]) + '</span>' +
+        '<span class="dg-rule__arrow">' + chevSvg + '</span>' +
+        '<span class="dg-rule__then">' + esc(c[lg]) + '<span class="arrow">→</span></span>' +
+      '</a>';
+    });
+    return '<div class="dg-rules">' + cards + '</div>';
+  }
+
+  function render() {
+    var lg = lang();
+    root.innerHTML =
+      '<nav class="dg-crumb"><a href="../index.html">' + esc(t('crumbHome')) + '</a><span class="sep">/</span><span>' + esc(t('crumbSelf')) + '</span></nav>' +
+      '<header class="dg-head">' +
+        '<h1 class="dg-head__title">' + esc(t('title')) + '</h1>' +
+        '<p class="dg-head__subtitle">' + esc(t('subtitle')) + '</p>' +
+        '<div class="dg-head__meta">' +
+          '<span class="dg-stat"><b>7</b><span>' + esc(t('statCards')) + '</span></span>' +
+          '<span class="dg-stat"><b>4</b><span>' + esc(t('statSteps')) + '</span></span>' +
+        '</div>' +
+      '</header>' +
+      '<div class="dg-jump">' +
+        '<a class="dg-jump__link" href="#dg-finder" data-dg-jump="dg-finder"><span class="dg-jump__num">01</span>' + esc(t('jump1')) + '</a>' +
+        '<a class="dg-jump__link" href="#dg-compare" data-dg-jump="dg-compare"><span class="dg-jump__num">02</span>' + esc(t('jump2')) + '</a>' +
+        '<a class="dg-jump__link" href="#dg-rules" data-dg-jump="dg-rules"><span class="dg-jump__num">03</span>' + esc(t('jump3')) + '</a>' +
+      '</div>' +
+      '<section class="dg-sec" id="dg-finder">' +
+        '<div class="dg-sec__eyebrow">' + esc(t('sec1Eyebrow')) + '</div>' +
+        '<h2 class="dg-sec__title">' + esc(t('sec1Title')) + '</h2>' +
+        '<p class="dg-sec__lede">' + esc(t('sec1Lede')) + '</p>' +
+        flowHTML() +
+      '</section>' +
+      '<section class="dg-sec" id="dg-compare">' +
+        '<div class="dg-sec__eyebrow">' + esc(t('sec2Eyebrow')) + '</div>' +
+        '<h2 class="dg-sec__title">' + esc(t('sec2Title')) + '</h2>' +
+        '<p class="dg-sec__lede">' + esc(t('sec2Lede')) + '</p>' +
+        matrixHTML() +
+      '</section>' +
+      '<section class="dg-sec" id="dg-rules">' +
+        '<div class="dg-sec__eyebrow">' + esc(t('sec3Eyebrow')) + '</div>' +
+        '<h2 class="dg-sec__title">' + esc(t('sec3Title')) + '</h2>' +
+        '<p class="dg-sec__lede">' + esc(t('sec3Lede')) + '</p>' +
+        rulesHTML() +
+      '</section>' +
+      '<div class="dg-foot"><span>' + esc(t('footNote')) + '</span><span>Last updated 2026-08-30</span></div>';
+  }
+
+  /* re-render only the flow card in place (keeps scroll position on the finder) */
+  function renderFlow() {
+    var sec = document.getElementById('dg-finder');
+    if (!sec) return render();
+    var old = sec.querySelector('.dg-flow');
+    if (!old) return render();
+    var tmp = document.createElement('div');
+    tmp.innerHTML = flowHTML();
+    old.parentNode.replaceChild(tmp.firstChild, old);
+  }
+
+  /* single delegated click handler (root is replaced by render, so bind on document) */
+  document.addEventListener('click', function (e) {
+    var opt = e.target.closest('[data-dg-opt]');
+    if (opt && root.contains(opt)) { path.push(parseInt(opt.getAttribute('data-dg-opt'), 10)); renderFlow(); return; }
+    var step = e.target.closest('[data-dg-step]');
+    if (step && root.contains(step)) { path = path.slice(0, parseInt(step.getAttribute('data-dg-step'), 10)); renderFlow(); return; }
+    var reset = e.target.closest('[data-dg-reset]');
+    if (reset && root.contains(reset)) { path = []; renderFlow(); return; }
+    var jump = e.target.closest('[data-dg-jump]');
+    if (jump && root.contains(jump)) {
+      var target = document.getElementById(jump.getAttribute('data-dg-jump'));
+      if (target && typeof target.scrollIntoView === 'function') { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      return;
+    }
+    var row = e.target.closest('[data-dg-row]');
+    if (row && root.contains(row) && !e.target.closest('a')) { window.location.href = cardHref(row.getAttribute('data-dg-row')); return; }
+  });
+
+  window.addEventListener('joybuy:languagechange', render);
+  render();
+})();
+</script>
+</body>
+</html>

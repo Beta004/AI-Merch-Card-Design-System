@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 460" role="img" aria-label="活动页 · Campaign (placeholder)">
+  <defs>
+    <linearGradient id="skuFadeTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0f1114" stop-opacity="0"/>
+      <stop offset="1" stop-color="#0f1114" stop-opacity="0.44"/>
+    </linearGradient>
+    <linearGradient id="skuFadeBottom" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0f1114" stop-opacity="0.44"/>
+      <stop offset="1" stop-color="#0f1114" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="cardClip">
+      <rect x="8" y="8" width="324" height="444" rx="24"/>
+    </clipPath>
+  </defs>
+  <rect width="340" height="460" fill="#F5F6F7"/>
+  <rect x="8" y="8" width="324" height="444" rx="24" fill="#FFFFFF"/>
+  <g clip-path="url(#cardClip)">
+    <!-- app bar -->
+    <path d="M8,32 a24,24 0 0 1 24,-24 h276 a24,24 0 0 1 24,24 v46 h-324 Z" fill="#E1251B"/>
+    <circle cx="34" cy="43" r="11" fill="#fff" opacity="0.92"/>
+    <path d="M30 43l3 3 6-6" fill="none" stroke="#E1251B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="54" y="37" width="96" height="12" rx="6" fill="#fff" opacity="0.95"/>
+    <rect x="196" y="32" width="124" height="22" rx="11" fill="#fff" opacity="0.28"/>
+    <!-- category chips -->
+    <rect x="26" y="98" width="72" height="24" rx="12" fill="#FDE8E7"/>
+    <rect x="106" y="98" width="60" height="24" rx="12" fill="#EEF0F2"/>
+    <rect x="174" y="98" width="60" height="24" rx="12" fill="#EEF0F2"/>
+    <!-- card placeholders -->
+    <rect x="26" y="140" width="134" height="74" rx="7" fill="#EEF0F2"/>
+    <rect x="34" y="223" width="118" height="7" rx="3.5" fill="#E3E6E9"/>
+    <rect x="34" y="235" width="80" height="7" rx="3.5" fill="#EEF0F2"/>
+    <rect x="34" y="251" width="46" height="10" rx="4" fill="#FDE8E7"/>
+    <rect x="180" y="140" width="134" height="74" rx="7" fill="#EEF0F2"/>
+    <rect x="188" y="223" width="118" height="7" rx="3.5" fill="#E3E6E9"/>
+    <rect x="188" y="235" width="80" height="7" rx="3.5" fill="#EEF0F2"/>
+    <rect x="188" y="251" width="46" height="10" rx="4" fill="#FDE8E7"/>
+    <rect x="26" y="273" width="134" height="74" rx="7" fill="#EEF0F2"/>
+    <rect x="34" y="356" width="118" height="7" rx="3.5" fill="#E3E6E9"/>
+    <rect x="34" y="368" width="80" height="7" rx="3.5" fill="#EEF0F2"/>
+    <rect x="34" y="384" width="46" height="10" rx="4" fill="#FDE8E7"/>
+    <rect x="180" y="273" width="134" height="74" rx="7" fill="#EEF0F2"/>
+    <rect x="188" y="356" width="118" height="7" rx="3.5" fill="#E3E6E9"/>
+    <rect x="188" y="368" width="80" height="7" rx="3.5" fill="#EEF0F2"/>
+    <rect x="188" y="384" width="46" height="10" rx="4" fill="#FDE8E7"/>
+    <!-- tab bar -->
+    <path d="M8,410 h324 v18 a24,24 0 0 1 -24,24 h-276 a24,24 0 0 1 -24,-24 Z" fill="#fff"/>
+    <rect x="8" y="410" width="324" height="1" fill="#E7E9EC"/>
+    <circle cx="52" cy="431" r="5" fill="#E1251B"/><circle cx="130" cy="431" r="5" fill="#E3E6E9"/>
+    <circle cx="210" cy="431" r="5" fill="#E3E6E9"/><circle cx="288" cy="431" r="5" fill="#E3E6E9"/>
+  </g>
+  <!-- screen border on top -->
+  <rect x="8" y="8" width="324" height="444" rx="24" fill="none" stroke="#E7E9EC" stroke-width="1.5"/>
+</svg>

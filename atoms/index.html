@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>原子组件 · 商卡设计系统</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="19 个业务原子组件，每个原子直接平铺展示 Structure + 全部 Types，来源 Figma App Business Components。">
+<link rel="stylesheet" href="../assets/tokens.css">
+<style>
+  /* =====================================================
+     Atoms page — flat variant browser
+     No detail pages. Each atom is one block containing
+     all its Figma variants side-by-side.
+     ===================================================== */
+
+  .ov-crumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    color: var(--ink-4);
+    font-size: 12.5px;
+  }
+  .ov-crumb a { color: var(--ink-4); }
+  .ov-crumb a:hover { color: var(--accent); }
+  .ov-crumb .sep { color: var(--outline-strong); }
+
+  .ov-head {
+    margin-bottom: 4px;
+  }
+  .ov-head__title {
+    margin: 0 0 10px;
+    color: var(--ink);
+    font-size: 33px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+    line-height: 1.16;
+  }
+  .ov-head__subtitle {
+    margin: 0;
+    max-width: 720px;
+    color: var(--ink-4);
+    font-size: 14.5px;
+    line-height: 1.65;
+  }
+
+  /* TDesign-style group directory: sticky, scrollable and scroll-spy aware. */
+  .doc-tabs {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    margin: 20px calc(-1 * var(--page-pad-x)) 36px;
+    background: rgba(255, 255, 255, .88);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--outline);
+  }
+  .doc-tabs__inner {
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .doc-tabs__inner::-webkit-scrollbar { display: none; }
+  .doc-tabs__link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 48px;
+    padding: 0 14px;
+    color: var(--ink-4);
+    font-size: 13.5px;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: color .15s ease;
+  }
+  .doc-tabs__link::after {
+    content: '';
+    position: absolute;
+    right: 12px;
+    bottom: -1px;
+    left: 12px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px 2px 0 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform .22s cubic-bezier(.4, 0, .2, 1);
+  }
+  .doc-tabs__link:hover { color: var(--ink-2); }
+  .doc-tabs__link:focus-visible {
+    outline: none;
+    border-radius: 4px;
+    box-shadow: inset 0 0 0 2px var(--accent);
+  }
+  .doc-tabs__link.is-active {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .doc-tabs__link.is-active::after { transform: scaleX(1); }
+  .doc-tabs__link-idx {
+    color: var(--ink-5);
+    font-family: var(--f-mono);
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .doc-tabs__link.is-active .doc-tabs__link-idx {
+    color: var(--accent);
+    opacity: .7;
+  }
+
+  /* Group — one per functional category */
+  .ov-group {
+    margin-bottom: 48px;
+    scroll-margin-top: calc(var(--global-header-offset) + 72px);
+  }
+  .ov-group:last-of-type { margin-bottom: 24px; }
+  .ov-group__title {
+    margin: 0 0 6px;
+    font-size: 22px; font-weight: 700; color: var(--ink);
+    letter-spacing: -.005em;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .ov-group__count {
+    font-size: 12px; font-weight: 600;
+    color: var(--ink-4);
+    background: var(--surface-2);
+    padding: 2px 10px; border-radius: 10px;
+    letter-spacing: 0;
+  }
+  .ov-group__hint {
+    margin: 0 0 20px;
+    font-size: 13px; color: var(--ink-4); line-height: 1.65;
+    max-width: 720px;
+  }
+
+  /* Atom block — one row per atom, horizontally packed with variants */
+  .atom-block {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    padding: 20px 22px 24px;
+    margin-bottom: 12px;
+    scroll-margin-top: calc(var(--global-header-offset) + 72px);
+    transition: border-color .15s ease;
+  }
+  .atom-block:hover {
+    border-color: var(--outline-strong);
+  }
+
+  .atom-block__head {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+  }
+  .atom-block__name {
+    font-size: 15px; font-weight: 700; color: var(--ink);
+    letter-spacing: -.005em;
+  }
+  .atom-block__name-en {
+    font-size: 12px; color: var(--ink-5);
+    letter-spacing: .01em;
+    font-weight: 500;
+  }
+  .atom-block__count {
+    margin-left: auto;
+    font-size: 11px; font-weight: 600;
+    color: var(--ink-4);
+    background: var(--surface-2);
+    padding: 2px 10px; border-radius: 10px;
+    letter-spacing: .02em;
+  }
+  .atom-block__count--empty {
+    color: var(--ink-5);
+    background: transparent;
+    border: 1px dashed var(--outline);
+  }
+  .atom-block__node {
+    font-family: var(--f-mono);
+    font-size: 10px; color: var(--ink-5);
+    letter-spacing: 0;
+  }
+  .atom-block__note {
+    margin: 8px 0 0;
+    font-size: 12px; color: var(--ink-4); line-height: 1.55;
+    padding: 8px 12px;
+    background: var(--surface-2);
+    border-radius: 4px;
+    border-left: 2px solid var(--outline-strong);
+  }
+
+  /* Main image uses size specifications, not Figma variants. */
+  .image-specs {
+    display: grid;
+    gap: 12px;
+    margin-top: 18px;
+  }
+  .image-spec {
+    display: grid;
+    grid-template-columns: minmax(190px, 240px) minmax(0, 1fr);
+    gap: 24px;
+    align-items: center;
+    padding: 18px;
+    background: var(--surface-2);
+    border: 1px solid var(--outline-soft);
+    border-radius: var(--r-sm);
+  }
+  .image-spec__title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .image-spec__title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .image-spec__title-en {
+    font-size: 11px;
+    color: var(--ink-5);
+  }
+  .image-spec__size {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 14px;
+    font-family: var(--f-mono);
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .image-spec__size small {
+    margin-left: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-5);
+  }
+  .image-spec__usage {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: var(--ink-4);
+    line-height: 1.6;
+  }
+  .image-spec__link {
+    display: inline-flex;
+    margin-top: 12px;
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .image-spec__preview {
+    min-width: 0;
+    min-height: 208px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px dashed #d4d4d8;
+    border-radius: var(--r-sm);
+  }
+  .product-image-sample {
+    position: relative;
+    flex: none;
+    width: min(100%, var(--image-size));
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 12px;
+    isolation: isolate;
+  }
+  .product-image-sample::after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    pointer-events: none;
+    background: rgba(0, 0, 0, .04);
+  }
+  .product-image-sample__product {
+    position: absolute;
+    z-index: 0;
+    inset: 9.09%;
+    width: 81.82%;
+    height: 81.82%;
+    object-fit: contain;
+  }
+  .product-image-sample__favorite {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
+  .product-image-sample__ranking {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    color: #1a1a1a;
+    background: #e4e6eb;
+    border-radius: 8px 0;
+    font-family: var(--f-sans);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 16px;
+  }
+  .product-image-sample__dietary {
+    position: absolute;
+    z-index: 2;
+    left: 6px;
+    bottom: 6px;
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+
+  .grid-guidance {
+    margin-top: 16px;
+    padding: 20px;
+    border: 1px solid var(--outline);
+    border-radius: var(--r-sm);
+    background: var(--surface);
+  }
+  .grid-guidance__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .grid-guidance__title {
+    margin: 0;
+    font-size: 15px;
+    color: var(--ink);
+  }
+  .grid-guidance__meta {
+    color: var(--ink-5);
+    font-family: var(--f-mono);
+    font-size: 10px;
+  }
+  .grid-guidance__lede {
+    max-width: 780px;
+    margin: 8px 0 18px;
+    color: var(--ink-4);
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .grid-guidance__columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+  }
+  .grid-rule__title {
+    margin-bottom: 10px;
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .grid-rule__stack {
+    display: grid;
+    gap: 8px;
+  }
+  .grid-rule__row {
+    display: grid;
+    grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+    gap: 8px;
+  }
+  .grid-rule__cell,
+  .grid-rule__rail-cell {
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-3);
+    background: var(--accent-50);
+    border: 1px solid var(--accent-100);
+    border-radius: 3px;
+    font-family: var(--f-mono);
+    font-size: 10px;
+  }
+  .grid-rule__rail {
+    --grid-gap: 4px;
+    display: flex;
+    gap: var(--grid-gap);
+    overflow: hidden;
+  }
+  .grid-rule__rail-cell {
+    flex: 0 0 var(--basis);
+  }
+  .grid-rule__rail-cell--fixed { flex-basis: 102px; }
+  .grid-guidance__rules {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .grid-guidance__rule {
+    padding-top: 10px;
+    border-top: 1px solid var(--outline);
+    color: var(--ink-4);
+    font-size: 11px;
+    line-height: 1.55;
+  }
+  .grid-guidance__rule strong { color: var(--ink); }
+
+  /* Variants grid */
+  .atom-block__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .atom-variant {
+    display: flex; flex-direction: column;
+    align-items: center;
+    padding: 14px 8px 10px;
+    background: #fbfbfc;
+    border: 1px solid var(--outline-soft);
+    border-radius: 6px;
+    transition: background .12s ease, border-color .12s ease;
+  }
+  .atom-variant:hover {
+    background: #fff;
+    border-color: var(--outline);
+  }
+  .atom-variant__img {
+    width: 100%;
+    min-height: 56px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 10px;
+  }
+  .atom-variant__img img {
+    max-width: 48px; max-height: 48px;
+    display: block;
+  }
+  .atom-variant__img--empty {
+    background:
+      repeating-linear-gradient(45deg,
+        var(--outline-soft) 0,
+        var(--outline-soft) 4px,
+        transparent 4px,
+        transparent 8px);
+    border: 1px dashed var(--outline);
+    border-radius: 4px;
+    width: 48px; height: 48px;
+    min-height: 0;
+  }
+  .atom-variant__name {
+    font-size: 10.5px; color: var(--ink-3);
+    text-align: center;
+    line-height: 1.35;
+    word-break: break-word;
+    max-width: 100%;
+    font-family: var(--f-mono);
+    letter-spacing: 0;
+  }
+
+  /* Pending state — for atoms whose SVGs aren't exported yet */
+  .atom-block__pending {
+    margin-top: 14px;
+    padding: 14px 16px;
+    text-align: center;
+    font-size: 12px; color: var(--ink-5);
+    background: var(--surface-2);
+    border-radius: 4px;
+    border: 1px dashed var(--outline);
+  }
+  .atom-block__pending strong {
+    color: var(--ink-3);
+    font-weight: 600;
+  }
+
+  /* Footer */
+  .ov-foot {
+    margin-top: 40px;
+    padding: 20px 0;
+    border-top: 1px solid var(--outline);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: var(--ink-5);
+    flex-wrap: wrap; gap: 12px;
+  }
+  .ov-foot a { color: var(--accent); font-weight: 600; }
+  .ov-foot a:hover { color: var(--accent-600); }
+
+  /* Progress marker in header */
+  .ov-progress {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 10px;
+    background: #ecfdf3;
+    color: #16a34a;
+    border-radius: 12px;
+    font-size: 11px; font-weight: 600;
+    margin-left: 8px;
+    letter-spacing: .02em;
+    vertical-align: middle;
+  }
+  .ov-progress::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: #16a34a;
+  }
+
+  @media (max-width: 720px) {
+    .ov-head__title { font-size: 28px; }
+    .doc-tabs { margin-bottom: 28px; }
+    .doc-tabs__link { min-height: 44px; padding: 0 12px; font-size: 13px; }
+    .atom-block__grid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); }
+    .image-spec { grid-template-columns: 1fr; gap: 16px; }
+    .grid-guidance__columns,
+    .grid-guidance__rules { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="site">
+
+  <aside id="site-nav" class="site-nav" data-active="atoms"></aside>
+
+  <main class="site-main">
+    <div class="site-main__inner">
+
+      <nav class="ov-crumb">
+        <a href="../index.html">概览</a>
+        <span class="sep">/</span>
+        <span>原子组件 · Atomic Components</span>
+      </nav>
+
+      <header class="ov-head">
+        <h1 class="ov-head__title">原子组件</h1>
+        <p class="ov-head__subtitle">19 个业务原子组件，跟 Figma <em>App Business Components</em> 目录 1:1 对齐。每个原子按自身语义记录尺寸规格或 Types；可导出的变体图片直接来自 Figma 源文件。</p>
+      </header>
+
+    </div>
+
+    <nav class="doc-tabs" id="atom-tabs" aria-label="原子组件分类目录">
+      <div class="doc-tabs__inner" id="atom-tabs-inner"></div>
+    </nav>
+
+    <div class="site-main__inner">
+
+      <div id="atoms-root"></div>
+
+      <div class="ov-foot">
+        <span id="foot-progress">加载中…</span>
+        <span>Last updated 2026-08-27</span>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+
+<script src="../assets/nav.js"></script>
+<script src="../assets/card-data.js"></script>
+<script src="../assets/atoms-data.js"></script>
+<script>
+(function () {
+  var D = window.ATOMS_DATA;
+  if (!D) { console.error('ATOMS_DATA missing'); return; }
+
+  var root = document.getElementById('atoms-root');
+  var tabsRoot = document.getElementById('atom-tabs');
+  var tabsInner = document.getElementById('atom-tabs-inner');
+
+  // Group atoms by their group key, preserving group order
+  var groups = D.groups.map(function (g) {
+    return {
+      key: g.key, name: g.name, hint: g.hint,
+      atoms: D.atoms.filter(function (a) { return a.group === g.key; })
+    };
+  });
+
+  var html = '';
+  var tabsHtml = '';
+  var totalVariants = 0;
+  var exportedVariants = 0;
+
+  groups.forEach(function (g, groupIndex) {
+    var groupId = 'group-' + g.key;
+    var groupNumber = String(groupIndex + 1).padStart(2, '0');
+    tabsHtml += '<a class="doc-tabs__link' + (groupIndex === 0 ? ' is-active' : '') + '" href="#' + groupId + '" data-tab="' + groupId + '"' + (groupIndex === 0 ? ' aria-current="location"' : '') + '>'
+      + '<span class="doc-tabs__link-idx">' + groupNumber + '</span>'
+      + '<span>' + esc(g.name) + '</span></a>';
+    html += '<section class="ov-group" id="' + groupId + '">';
+    html += '  <h2 class="ov-group__title">' + esc(g.name)
+         +  '    <span class="ov-group__count">' + g.atoms.length + '</span>'
+         +  '  </h2>';
+    html += '  <p class="ov-group__hint">' + esc(g.hint) + '</p>';
+
+    g.atoms.forEach(function (a) {
+      var sizes = a.sizes || [];
+      var hasSizeSpecs = sizes.length > 0;
+      var vCount = a.variants.length;
+      var exported = a.variants.filter(function (v) { return v.svg; }).length;
+      totalVariants += vCount;
+      exportedVariants += exported;
+
+      html += '  <article class="atom-block" id="atom-' + a.slug + '">';
+      html += '    <header class="atom-block__head">';
+      html += '      <span class="atom-block__name">' + esc(a.name_cn) + '</span>';
+      html += '      <span class="atom-block__name-en">' + esc(a.name_en) + '</span>';
+      html += '      <span class="atom-block__node">' + esc(a.figma_node) + '</span>';
+      if (hasSizeSpecs) {
+        html += '      <span class="atom-block__count">' + sizes.length + ' sizes</span>';
+      } else if (vCount > 0) {
+        html += '      <span class="atom-block__count">' + vCount + ' variants</span>';
+      } else {
+        html += '      <span class="atom-block__count atom-block__count--empty">0 types</span>';
+      }
+      html += '    </header>';
+
+      if (a.note) {
+        html += '    <p class="atom-block__note">' + esc(a.note) + '</p>';
+      }
+
+      if (hasSizeSpecs) {
+        html += renderImageSpecs(a);
+      } else if (vCount === 0) {
+        html += '    <div class="atom-block__pending">'
+             +  '      <strong>暂无可展示类型</strong> · 请在数据源中补充规格或 Types'
+             +  '    </div>';
+      } else if (exported === 0) {
+        html += '    <div class="atom-block__grid">';
+        a.variants.forEach(function (v) {
+          html += '      <div class="atom-variant">'
+               +  '        <div class="atom-variant__img"><div class="atom-variant__img--empty"></div></div>'
+               +  '        <div class="atom-variant__name">' + esc(v.label) + '</div>'
+               +  '      </div>';
+        });
+        html += '    </div>';
+        html += '    <div class="atom-block__pending">'
+             +  '      <strong>' + vCount + ' 个变体图片待从 Figma 拉取</strong>'
+             +  '      · 变体名称已按 Figma 命名列出'
+             +  '    </div>';
+      } else {
+        html += '    <div class="atom-block__grid">';
+        a.variants.forEach(function (v) {
+          html += '      <div class="atom-variant">';
+          if (v.svg) {
+            html += '        <div class="atom-variant__img"><img src="' + esc(v.svg) + '" alt="' + esc(v.label) + '"></div>';
+          } else {
+            html += '        <div class="atom-variant__img"><div class="atom-variant__img--empty"></div></div>';
+          }
+          html += '        <div class="atom-variant__name">' + esc(v.label) + '</div>';
+          html += '      </div>';
+        });
+        html += '    </div>';
+      }
+
+      html += '  </article>';
+    });
+
+    html += '</section>';
+  });
+
+  tabsInner.innerHTML = tabsHtml;
+  root.innerHTML = html;
+
+  var tabLinks = Array.prototype.slice.call(tabsInner.querySelectorAll('.doc-tabs__link[data-tab]'));
+  var tabSections = tabLinks.map(function (link) {
+    return document.getElementById(link.getAttribute('data-tab'));
+  }).filter(Boolean);
+  var activeTabId = '';
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function stickyOffset() {
+    var rootStyle = window.getComputedStyle(document.documentElement);
+    var headerOffset = parseFloat(rootStyle.getPropertyValue('--global-header-offset')) || 0;
+    return headerOffset + (tabsRoot ? tabsRoot.offsetHeight : 48) + 24;
+  }
+
+  function revealActiveTab(link) {
+    if (!link || !tabsInner) return;
+    var left = link.offsetLeft;
+    var right = left + link.offsetWidth;
+    var visibleLeft = tabsInner.scrollLeft;
+    var visibleRight = visibleLeft + tabsInner.clientWidth;
+    if (left < visibleLeft || right > visibleRight) {
+      tabsInner.scrollTo({
+        left: Math.max(0, left - 12),
+        behavior: reduceMotion ? 'auto' : 'smooth'
+      });
+    }
+  }
+
+  function setActiveTab(id) {
+    if (!id || id === activeTabId) return;
+    activeTabId = id;
+    tabLinks.forEach(function (link) {
+      var active = link.getAttribute('data-tab') === id;
+      link.classList.toggle('is-active', active);
+      if (active) {
+        link.setAttribute('aria-current', 'location');
+        revealActiveTab(link);
+      } else {
+        link.removeAttribute('aria-current');
+      }
+    });
+  }
+
+  function updateTabs() {
+    var marker = window.scrollY + Math.max(160, stickyOffset());
+    var current = tabSections[0] ? tabSections[0].id : '';
+    tabSections.forEach(function (section) {
+      if (section.offsetTop <= marker) current = section.id;
+    });
+    setActiveTab(current);
+  }
+
+  tabLinks.forEach(function (link) {
+    link.addEventListener('click', function (event) {
+      var target = document.getElementById(link.getAttribute('data-tab'));
+      if (!target) return;
+      event.preventDefault();
+      target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+      window.history.pushState(null, '', '#' + target.id);
+      setActiveTab(target.id);
+    });
+  });
+
+  window.addEventListener('scroll', updateTabs, { passive: true });
+  window.addEventListener('resize', updateTabs, { passive: true });
+  function updateTabsLanguage(language) {
+    tabsRoot.setAttribute('aria-label', language === 'en'
+      ? 'Atomic component category directory'
+      : '原子组件分类目录');
+  }
+
+  window.addEventListener('joybuy:languagechange', function (event) {
+    updateTabsLanguage(event.detail.language);
+  });
+  updateTabsLanguage(window.JoybuySite ? window.JoybuySite.getLanguage() : 'zh');
+
+  if (window.location.hash) {
+    window.requestAnimationFrame(function () {
+      var hashTarget = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+      if (hashTarget) hashTarget.scrollIntoView({ block: 'start' });
+      updateTabs();
+    });
+  } else {
+    updateTabs();
+  }
+
+  var pct = totalVariants === 0 ? 0 : Math.round(exportedVariants / totalVariants * 100);
+  document.getElementById('foot-progress').innerHTML =
+    '19 个原子 · <strong>' + exportedVariants + ' / ' + totalVariants
+    + '</strong> 个变体已从 Figma 拉取 (' + pct + '%)';
+
+  function renderImageSpecs(atom) {
+    var images = window.CARD_DATA && window.CARD_DATA.productImages;
+    var output = '<div class="image-specs">';
+
+    atom.sizes.forEach(function (spec) {
+      var source = images && images[spec.image] ? images[spec.image] : '';
+      output += '<section class="image-spec">';
+      output += '  <div class="image-spec__meta">';
+      output += '    <div class="image-spec__title-row"><span class="image-spec__title">' + esc(spec.label) + '</span><span class="image-spec__title-en">' + esc(spec.label_en) + '</span></div>';
+      output += '    <div class="image-spec__size">' + spec.size + '<small>px · 1:1</small></div>';
+      output += '    <p class="image-spec__usage">' + esc(spec.usage) + '</p>';
+      output += '    <a class="image-spec__link" href="' + esc(spec.href) + '">查看对应商卡 →</a>';
+      output += '  </div>';
+      output += '  <div class="image-spec__preview" data-global-i18n="off" style="--image-size:' + spec.size + 'px">';
+      output += renderProductImage(source, spec);
+      output += '  </div>';
+      output += '</section>';
+    });
+
+    output += '</div>';
+    output += '<section class="grid-guidance">';
+    output += '  <div class="grid-guidance__head"><h3 class="grid-guidance__title">图片与多容器栅格</h3><span class="grid-guidance__meta">Search · Category H2 2026</span></div>';
+    output += '  <p class="grid-guidance__lede">图片容器只定义自身 1:1 尺寸；当页面出现多张卡片、图片、视频或轮播时，由页面栅格决定单元宽度与间距。不要为了填满一行临时拉伸图片容器。</p>';
+    output += '  <div class="grid-guidance__columns">';
+    output += '    <div class="grid-rule"><div class="grid-rule__title">Vertical list · Average</div><div class="grid-rule__stack">';
+    [1, 2, 3, 4].forEach(function (columns) {
+      output += '<div class="grid-rule__row" style="--columns:' + columns + '">';
+      for (var index = 0; index < columns; index += 1) output += '<span class="grid-rule__cell">Flexible</span>';
+      output += '</div>';
+    });
+    output += '    </div></div>';
+    output += '    <div class="grid-rule"><div class="grid-rule__title">Carousel · Fixed span</div><div class="grid-rule__stack">';
+    [{ span: 10, basis: '41.6667%' }, { span: 7, basis: '29.1667%' }].forEach(function (preset) {
+      output += '<div class="grid-rule__rail">';
+      for (var index = 0; index < 4; index += 1) output += '<span class="grid-rule__rail-cell" style="--basis:' + preset.basis + '">' + preset.span + ' grids</span>';
+      output += '</div>';
+    });
+    output += '<div class="grid-rule__rail"><span class="grid-rule__rail-cell grid-rule__rail-cell--fixed">102 px</span><span class="grid-rule__rail-cell grid-rule__rail-cell--fixed">102 px</span><span class="grid-rule__rail-cell grid-rule__rail-cell--fixed">102 px</span><span class="grid-rule__rail-cell grid-rule__rail-cell--fixed">102 px</span></div>';
+    output += '<div class="grid-rule__rail"><span class="grid-rule__rail-cell" style="--basis:50%">12 grids</span><span class="grid-rule__rail-cell" style="--basis:50%">12 grids</span><span class="grid-rule__rail-cell" style="--basis:50%">12 grids</span></div>';
+    output += '    </div></div>';
+    output += '  </div>';
+    output += '  <div class="grid-guidance__rules"><div class="grid-guidance__rule"><strong>纵向列表</strong><br>1–4 列等分可用宽度，卡片跟随单元伸缩。</div><div class="grid-guidance__rule"><strong>横向轮播</strong><br>使用固定栅格跨度或固定宽度，保留下一张卡的露出提示。</div><div class="grid-guidance__rule"><strong>间距归属</strong><br>统一继承页面的 margin 与 gutter，图片组件内部不重复增加外间距。</div></div>';
+    output += '</section>';
+    return output;
+  }
+
+  function renderProductImage(source, spec) {
+    return '<div class="product-image-sample">'
+      + (source ? '<img class="product-image-sample__product" src="' + source + '" alt="' + esc(spec.label) + '">' : '')
+      + (spec.ranking ? '<span class="product-image-sample__ranking" aria-hidden="true">' + spec.ranking + '</span>' : '')
+      + '<img class="product-image-sample__favorite" src="../assets/figma-atoms/tag-like/tag-like.svg" alt="" aria-hidden="true">'
+      + (spec.dietary ? '<img class="product-image-sample__dietary" src="../assets/figma-atoms/dietary-badges/' + esc(spec.dietary) + '.svg" alt="" aria-hidden="true">' : '')
+      + '</div>';
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+})();
+</script>
+</body>
+</html>

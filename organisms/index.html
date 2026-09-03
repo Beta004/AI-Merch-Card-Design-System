@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>商卡概览 · 商卡设计系统</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="7 张商卡，每种对应特定的浏览场景与信息密度诉求。">
+<link rel="stylesheet" href="../assets/tokens.css">
+<style>
+  /* =====================================================
+     Overview page — TDesign mobile-vue inspired layout
+     ===================================================== */
+
+  .ov-crumb {
+    font-size: 12px; color: var(--ink-5);
+    margin-bottom: 16px;
+  }
+  .ov-crumb a { color: var(--ink-4); }
+  .ov-crumb a:hover { color: var(--accent); }
+  .ov-crumb .sep { margin: 0 6px; color: var(--ink-5); }
+
+  .ov-head {
+    padding: 8px 0 40px;
+    border-bottom: 1px solid var(--outline);
+    margin-bottom: 40px;
+  }
+  .ov-head__title {
+    margin: 0 0 14px;
+    font-size: 40px; font-weight: 700; letter-spacing: -.015em;
+    color: var(--ink); line-height: 1.15;
+  }
+  .ov-head__subtitle {
+    margin: 0;
+    max-width: 720px;
+    font-size: 14px; color: var(--ink-4); line-height: 1.75;
+  }
+
+  /* Section grouping */
+  .ov-group { margin-bottom: 56px; }
+  .ov-group:last-of-type { margin-bottom: 24px; }
+  .ov-group__title {
+    margin: 0 0 6px;
+    font-size: 22px; font-weight: 700; color: var(--ink);
+    letter-spacing: -.005em;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .ov-group__count {
+    font-size: 12px; font-weight: 600;
+    color: var(--ink-4);
+    background: var(--surface-2);
+    padding: 2px 10px; border-radius: 10px;
+    letter-spacing: 0;
+  }
+  .ov-group__hint {
+    margin: 0 0 20px;
+    font-size: 13px; color: var(--ink-4); line-height: 1.65;
+    max-width: 640px;
+  }
+
+  /* Card grid — 4 columns on wide, responsive down */
+  .ov-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+    gap: 16px;
+  }
+
+  /* The card itself — no border-left accent, no status tags on top */
+  .ov-card {
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex; flex-direction: column;
+    position: relative;
+    transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+  }
+  .ov-card:hover:not(.ov-card--stub) {
+    border-color: var(--outline-strong);
+    box-shadow: var(--shadow-2);
+    transform: translateY(-2px);
+  }
+  .ov-card--stub { cursor: default; }
+  .ov-card--stub .ov-card__preview > * { opacity: .55; filter: saturate(.65); }
+
+  /* Preview stage — TDesign-style neutral canvas with generous breathing room */
+  .ov-card__preview {
+    aspect-ratio: 4 / 3;
+    background: #f5f5f6;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px 22px;
+    overflow: hidden;
+    position: relative;
+  }
+  .ov-card__preview-media {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ov-card__preview-img {
+    width: auto; height: auto;
+    max-width: 82%; max-height: 78%;
+    object-fit: contain;
+    object-position: center;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,.035));
+  }
+  .ov-card__preview-img--portrait { max-width: 48%; max-height: 86%; }
+  .ov-card__preview-img--wide { max-width: 88%; max-height: 72%; }
+  .ov-card__preview-img--strip { max-width: 90%; max-height: 60%; }
+
+  /* Meta below preview — just name, no metadata clutter */
+  .ov-card__meta {
+    padding: 14px 18px 16px;
+    border-top: 1px solid var(--outline);
+  }
+  .ov-card__name {
+    font-size: 14px; font-weight: 600; color: var(--ink);
+    line-height: 1.3;
+  }
+  .ov-card__name-en {
+    font-size: 11px; color: var(--ink-5);
+    margin-top: 3px;
+    letter-spacing: .01em;
+  }
+
+  /* Subtle status pill (only for stubs) */
+  .ov-card__pill {
+    position: absolute;
+    top: 10px; right: 10px;
+    font-size: 10px; font-weight: 600;
+    color: var(--ink-5);
+    background: rgba(255,255,255,.9);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    padding: 2px 8px; border-radius: 10px;
+    letter-spacing: .02em;
+    z-index: 2;
+  }
+  .ov-card__pill--live {
+    color: var(--accent);
+    background: var(--accent-50);
+  }
+
+  /* =====================================================
+     Preview mockups — real Joybuy product card style
+     ===================================================== */
+
+  /* Vertical mini card */
+  .pv-vcard {
+    width: 82px;
+    background: #fff; border-radius: 8px; overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+    display: flex; flex-direction: column;
+    flex-shrink: 0;
+  }
+  .pv-vcard__img {
+    aspect-ratio: 1/1;
+    background: #f5f5f5;
+    display: flex; align-items: center; justify-content: center;
+    padding: 8px;
+  }
+  .pv-vcard__img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .pv-vcard__body { padding: 5px 7px 7px; }
+  .pv-vcard__hi {
+    display: inline-block;
+    font-size: 7px; font-weight: 600;
+    color: #1a1a1a; background: #f5f6fa;
+    padding: 1px 4px; border-radius: 2px;
+    margin-bottom: 3px;
+    letter-spacing: .02em;
+  }
+  .pv-vcard__brand { font-size: 8px; font-weight: 700; color: #1a1a1a; line-height: 1.1; }
+  .pv-vcard__price {
+    font-size: 10px; font-weight: 800;
+    color: var(--joybuy-red);
+    letter-spacing: -.01em;
+    margin-top: 2px;
+  }
+  .pv-vcards { display: flex; gap: 8px; }
+
+  /* Horizontal card */
+  .pv-hcard {
+    width: 190px; height: 62px;
+    background: #fff; border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    display: flex; overflow: hidden;
+  }
+  .pv-hcard__img {
+    width: 62px; height: 62px; background: #f5f5f5;
+    display: flex; align-items: center; justify-content: center; padding: 6px;
+    flex-shrink: 0;
+  }
+  .pv-hcard__img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .pv-hcard__body { flex: 1; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
+  .pv-hcard__brand { font-size: 9px; font-weight: 700; color: #1a1a1a; }
+  .pv-hcard__title { font-size: 8px; color: #1a1a1a; line-height: 1.25;
+    display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+  .pv-hcard__price { font-size: 11px; font-weight: 800; color: var(--joybuy-red); margin-top: auto; }
+  .pv-hcard--mini { width: 170px; height: 52px; }
+  .pv-hcard--mini .pv-hcard__img { width: 52px; height: 52px; padding: 5px; }
+  .pv-hcard--mini .pv-hcard__body { padding: 6px 8px; }
+
+  /* Campaign — 2 mini vcards on red banner */
+  .pv-campaign {
+    position: relative;
+    padding: 18px 8px 8px;
+    background: linear-gradient(180deg, var(--joybuy-red-50) 0%, transparent 100%);
+    border-radius: 8px;
+    display: flex; gap: 6px;
+  }
+  .pv-campaign::before {
+    content: 'BIG SALE · 100M ↓';
+    position: absolute; top: 3px; left: 50%; transform: translateX(-50%);
+    font-size: 7px; font-weight: 800; letter-spacing: .08em;
+    color: #fff; background: var(--joybuy-red);
+    padding: 1px 6px; border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  /* Booking — vcard with countdown badge */
+  .pv-booking { position: relative; }
+  .pv-booking__badge {
+    position: absolute; top: -6px; right: -8px;
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 8px; font-weight: 700;
+    background: #1a1a1a; color: #fff;
+    padding: 2px 5px; border-radius: 3px;
+    letter-spacing: .02em;
+    z-index: 2;
+    white-space: nowrap;
+  }
+  .pv-booking__badge::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--joybuy-red);
+    animation: pv-pulse 1.6s infinite ease-in-out;
+  }
+  @keyframes pv-pulse { 50% { opacity: .35; } }
+
+  /* Horizontal scroll — 3 mini vcards, last fades right */
+  .pv-scroll {
+    display: flex; gap: 6px;
+    align-items: flex-start;
+  }
+  .pv-scroll .pv-vcard { width: 62px; }
+  .pv-scroll .pv-vcard:last-child {
+    opacity: .4;
+    transform: translateX(4px);
+  }
+
+  /* Small image dynamic — 3 tiny cells */
+  .pv-small {
+    display: flex; gap: 6px;
+    align-items: center;
+  }
+  .pv-small__cell {
+    width: 52px; height: 68px;
+    background: #fff; border-radius: 6px;
+    display: flex; flex-direction: column;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    overflow: hidden;
+  }
+  .pv-small__img {
+    height: 40px; background: #f5f5f5;
+    display: flex; align-items: center; justify-content: center;
+    padding: 4px;
+  }
+  .pv-small__img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .pv-small__price {
+    font-size: 10px; font-weight: 800; color: var(--joybuy-red);
+    text-align: center; padding: 3px 0;
+    letter-spacing: -.01em;
+  }
+
+  /* Footer */
+  .ov-foot {
+    margin-top: 40px;
+    padding: 20px 0;
+    border-top: 1px solid var(--outline);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: var(--ink-5);
+  }
+  .ov-foot a { color: var(--accent); font-weight: 600; }
+  .ov-foot a:hover { color: var(--accent-600); }
+
+  /* Responsive */
+  @media (max-width: 720px) {
+    .ov-grid { grid-template-columns: repeat(2, 1fr); }
+    .ov-head__title { font-size: 30px; }
+    .ov-card__preview { padding: 18px 14px; }
+  }
+  @media (max-width: 480px) {
+    .ov-grid { grid-template-columns: 1fr; }
+    .ov-card__preview { padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="site">
+
+  <aside id="site-nav" class="site-nav" data-active="organisms"></aside>
+
+  <main class="site-main">
+    <div class="site-main__inner">
+
+      <nav class="ov-crumb">
+        <a href="../index.html">概览</a>
+        <span class="sep">/</span>
+        <span>Product Cards · 商卡</span>
+      </nav>
+
+      <header class="ov-head">
+        <h1 class="ov-head__title">商卡概览</h1>
+        <p class="ov-head__subtitle">7 张商卡，每种对应特定的浏览场景与信息密度诉求。从最常用的双列信息流商卡，到活动落地页的强化倒计时形态。将根据业务实践持续更新商卡类型，敬请留意变更记录。</p>
+      </header>
+
+      <!-- ================ 通用商卡 · Universal ================ -->
+      <section class="ov-group">
+        <h2 class="ov-group__title">
+          通用商卡
+          <span class="ov-group__count">4</span>
+        </h2>
+        <p class="ov-group__hint">图文并重的默认商卡形态。覆盖首页、搜索、类目、购物车、店铺等基础浏览场景。</p>
+
+        <div class="ov-grid">
+
+          <!-- 01 Vertical Card (Live) -->
+          <a class="ov-card" href="vertical-card.html">
+            <span class="ov-card__pill ov-card__pill--live">Now</span>
+            <div class="ov-card__preview">
+              <div class="ov-card__preview-media">
+                <img class="ov-card__preview-img ov-card__preview-img--portrait" src="../assets/card-previews/universal-2-column.png" alt="通用双列商品卡片预览" loading="lazy" decoding="async">
+              </div>
+            </div>
+            <div class="ov-card__meta">
+              <div class="ov-card__name">通用双列</div>
+              <div class="ov-card__name-en">Universal 2-Column</div>
+            </div>
+          </a>
+
+          <!-- 02 Universal Horizontal (Live) -->
+          <a class="ov-card" href="horizontal-card.html">
+            <span class="ov-card__pill ov-card__pill--live">Now</span>
+            <div class="ov-card__preview">
+              <div class="ov-card__preview-media">
+                <img class="ov-card__preview-img" src="../assets/card-previews/universal-horizontal.png" alt="通用横向商品卡片预览" loading="lazy" decoding="async">
+              </div>
+            </div>
+            <div class="ov-card__meta">
+              <div class="ov-card__name">通用横向</div>
+              <div class="ov-card__name-en">Universal Horizontal</div>
+            </div>
+          </a>
+
+          <!-- 03 Universal Horizontal Mini (Live) -->
+          <a class="ov-card" href="horizontal-mini.html">
+            <span class="ov-card__pill ov-card__pill--live">Now</span>
+            <div class="ov-card__preview">
+              <div class="ov-card__preview-media">
+                <img class="ov-card__preview-img ov-card__preview-img--strip" src="../assets/card-previews/universal-horizontal-mini.png" alt="通用横向小图商品卡片预览" loading="lazy" decoding="async">
+              </div>
+            </div>
+            <div class="ov-card__meta">
+              <div class="ov-card__name">通用横向-小图</div>
+              <div class="ov-card__name-en">Universal Horizontal Mini</div>
+            </div>
+          </a>
+
+          <!-- 04 Horizontal Scroll (Live) -->
+          <a class="ov-card" href="horizontal-scroll.html">
+            <span class="ov-card__pill ov-card__pill--live">Now</span>
+            <div class="ov-card__preview">
+              <div class="ov-card__preview-media">
+                <img class="ov-card__preview-img ov-card__preview-img--wide" src="../assets/card-previews/horizontal-scroll.png" alt="横滑商品卡片预览" loading="lazy" decoding="async">
+              </div>
+            </div>
+            <div class="ov-card__meta">
+              <div class="ov-card__name">横滑商卡</div>
+              <div class="ov-card__name-en">Horizontal Scroll</div>
+            </div>
+          </a>
+
+        </div>
+      </section>
+
+      <!-- ================ 场景商卡 · Scenario ================ -->
+      <section class="ov-group">
+        <h2 class="ov-group__title">
+          场景商卡
+          <span class="ov-group__count">3</span>
+        </h2>
+        <p class="ov-group__hint">强化特定售卖形态的场景化商卡。活动氛围、倒计时售卖、入口曝光。</p>
+
+        <div class="ov-grid">
+
+          <!-- 05 Campaign (Live) -->
+          <a class="ov-card" href="campaign-card.html">
+            <span class="ov-card__pill ov-card__pill--live">Now</span>
+            <div class="ov-card__preview">
+              <div class="ov-card__preview-media">
+                <img class="ov-card__preview-img" src="../assets/card-previews/campaign.png" alt="活动商品卡片预览" loading="lazy" decoding="async">
+              </div>
+            </div>
+            <div class="ov-card__meta">
+              <div class="ov-card__name">活动商卡</div>
+              <div class="ov-card__name-en">Campaign</div>
+            </div>
+          </a>
+
+          <!-- 06 Booking & Auction (Live) -->
+          <a class="ov-card" href="booking-card.html">
+            <span class="ov-card__pill ov-card__pill--live">Now</span>
+            <div class="ov-card__preview">
+              <div class="ov-card__preview-media">
+                <img class="ov-card__preview-img ov-card__preview-img--wide" src="../assets/card-previews/booking.png" alt="预约商品卡片预览" loading="lazy" decoding="async">
+              </div>
+            </div>
+            <div class="ov-card__meta">
+              <div class="ov-card__name">预约商卡</div>
+              <div class="ov-card__name-en">Booking &amp; Auction</div>
+            </div>
+          </a>
+
+          <!-- 07 Small Image Dynamic (Live) -->
+          <a class="ov-card" href="small-dynamic.html">
+            <span class="ov-card__pill ov-card__pill--live">Now</span>
+            <div class="ov-card__preview">
+              <div class="ov-card__preview-media">
+                <img class="ov-card__preview-img ov-card__preview-img--strip" src="../assets/card-previews/small-image-dynamic.png" alt="小图动态商品卡片预览" loading="lazy" decoding="async">
+              </div>
+            </div>
+            <div class="ov-card__meta">
+              <div class="ov-card__name">小图动态</div>
+              <div class="ov-card__name-en">Small Image Dynamic</div>
+            </div>
+          </a>
+
+        </div>
+      </section>
+
+      <div class="ov-foot">
+        <span>7 张商卡 · MVP3 全量上线 · <a href="#">查看变更记录 →</a></span>
+        <span>Last updated 2026-08-28</span>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+
+<script src="../assets/nav.js"></script>
+</body>
+</html>

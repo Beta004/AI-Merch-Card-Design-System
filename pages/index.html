@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>页面总览 · Pages · 商卡设计系统</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="商卡在 7 个真实业务页面里的落位。按 Figma『全局商卡汇总』看板顺序内嵌 frame，并链接到对应商卡类型。">
+<link rel="stylesheet" href="../assets/tokens.css">
+<style>
+  /* =====================================================
+     Pages Overview — 7 real app pages in board order.
+     Each section: header + 用到的商卡 cross-links + live Figma frame.
+     The dynamic list (#pages-host / #pg-rail) is i18n-excluded and
+     renders its own bilingual copy from PAGES_DATA.
+     ===================================================== */
+
+  .pg-crumb { font-size: 12px; color: var(--ink-5); margin-bottom: 16px; }
+  .pg-crumb a { color: var(--ink-4); }
+  .pg-crumb a:hover { color: var(--accent); }
+  .pg-crumb .sep { margin: 0 6px; color: var(--ink-5); }
+
+  .pg-head {
+    padding: 8px 0 24px;
+  }
+  .pg-head__title {
+    margin: 0 0 14px;
+    font-size: 40px; font-weight: 700; letter-spacing: -.015em;
+    color: var(--ink); line-height: 1.15;
+  }
+  .pg-head__subtitle {
+    margin: 0; max-width: 760px;
+    font-size: 14px; color: var(--ink-4); line-height: 1.75;
+  }
+  .pg-head__meta {
+    display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+    margin-top: 20px;
+  }
+  .pg-stat {
+    display: inline-flex; align-items: baseline; gap: 7px;
+    font-size: 12px; color: var(--ink-4);
+    background: var(--surface-2); border: 1px solid var(--outline);
+    padding: 5px 12px; border-radius: var(--r-pill);
+  }
+  .pg-stat b { font-size: 14px; font-weight: 800; color: var(--ink); font-family: var(--f-mono); }
+  .pg-openfig {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600; color: var(--accent);
+    border: 1px solid var(--accent-100); background: var(--accent-50);
+    padding: 5px 12px; border-radius: var(--r-pill);
+    transition: background .13s ease, border-color .13s ease;
+  }
+  .pg-openfig:hover { background: var(--accent-100); border-color: var(--accent); }
+
+  /* ---- Sticky scroll-spy rail (detail-page underline tabs) ---- */
+  .pg-rail {
+    position: sticky; top: var(--global-header-offset); z-index: 60;
+    display: flex; align-items: center; gap: 2px;
+    padding: 0 var(--page-pad-x);
+    margin: 0 calc(-1 * var(--page-pad-x)) 32px;
+    overflow-x: auto; scrollbar-width: none;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--outline);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+    transition: top .22s ease, background-color .2s ease, border-color .2s ease;
+  }
+  .pg-rail::-webkit-scrollbar { display: none; }
+  .pg-rail__link {
+    position: relative;
+    flex: 0 0 auto;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 14px 14px 13px;
+    border: 0; border-radius: 0; background: transparent;
+    color: var(--ink-4); font-size: 13.5px; font-weight: 500;
+    white-space: nowrap; cursor: pointer;
+    transition: color .15s ease;
+  }
+  .pg-rail__link::after {
+    content: ''; position: absolute;
+    left: 12px; right: 12px; bottom: -1px; height: 2px;
+    background: var(--accent); border-radius: 2px 2px 0 0;
+    transform: scaleX(0); transform-origin: center;
+    transition: transform .22s cubic-bezier(.4, 0, .2, 1);
+  }
+  .pg-rail__link:hover { color: var(--ink-2); }
+  .pg-rail__link.is-active { color: var(--accent); font-weight: 600; }
+  .pg-rail__link.is-active::after { transform: scaleX(1); }
+  .pg-rail__num {
+    font-family: var(--f-mono); font-size: 11px; font-weight: 500;
+    color: var(--ink-5); opacity: 1;
+  }
+  .pg-rail__link.is-active .pg-rail__num { color: var(--accent); opacity: .7; }
+
+  /* ---- Page section ---- */
+  .pg-section { padding-top: 10px; margin-bottom: 44px; scroll-margin-top: 124px; }
+  .pg-section__head {
+    display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap;
+    margin-bottom: 4px;
+  }
+  .pg-section__num {
+    font-family: var(--f-mono); font-size: 14px; font-weight: 700;
+    color: var(--accent); line-height: 1.6; flex: 0 0 auto;
+  }
+  .pg-section__names { min-width: 0; flex: 1 1 auto; }
+  .pg-section__name {
+    font-size: 20px; font-weight: 700; color: var(--ink);
+    letter-spacing: -.01em; line-height: 1.3;
+  }
+  .pg-section__name-alt { font-size: 12px; color: var(--ink-5); margin-top: 3px; letter-spacing: .01em; }
+  .pg-tags { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding-top: 3px; }
+  .pg-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11.5px; font-weight: 600; color: var(--ink-4);
+    background: var(--surface-2); border: 1px solid var(--outline);
+    padding: 3px 10px; border-radius: var(--r-pill); white-space: nowrap;
+  }
+  .pg-tag--channel { color: var(--ink-3); }
+  .pg-tag__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-5); }
+  .pg-tag--channel .pg-tag__dot { background: var(--accent); }
+
+  .pg-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(168px, 184px));
+    gap: 10px;
+    align-items: stretch;
+    margin: 16px 0 14px;
+  }
+  .pg-cards__label {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; gap: 7px;
+    font-size: 11px; color: var(--ink-5); font-weight: 600;
+    letter-spacing: .04em; margin-bottom: -2px;
+  }
+  .pg-cards__count {
+    min-width: 20px; height: 18px; padding: 0 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 4px; background: var(--surface-2);
+    color: var(--ink-4); font-family: var(--f-mono); font-size: 10px;
+  }
+  .pg-cardchip {
+    min-width: 0;
+    display: grid; grid-template-columns: 64px minmax(0, 1fr); align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--outline);
+    padding: 7px; border-radius: var(--r-sm);
+    color: var(--ink-2);
+    transition: color .13s ease, border-color .13s ease, box-shadow .13s ease, transform .13s ease;
+  }
+  .pg-cardchip:hover { color: var(--accent); border-color: var(--accent); box-shadow: var(--shadow-1); transform: translateY(-1px); }
+  .pg-cardchip:focus-visible {
+    outline: none; border-color: var(--accent); box-shadow: var(--shadow-focus);
+  }
+  .pg-cardchip__preview {
+    width: 64px; height: 52px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 6px;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #f5f5f6;
+  }
+  .pg-cardchip__preview img {
+    width: 100%; height: 100%; object-fit: contain;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,.05));
+    transition: transform .16s ease;
+  }
+  .pg-cardchip:hover .pg-cardchip__preview img { transform: scale(1.035); }
+  .pg-cardchip__preview img[data-shape="portrait"] { max-width: 42%; }
+  .pg-cardchip__preview img[data-shape="strip"] { max-height: 68%; }
+  .pg-cardchip__copy { min-width: 0; }
+  .pg-cardchip__name {
+    display: -webkit-box; overflow: hidden;
+    -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+    font-size: 12px; font-weight: 650; line-height: 1.3;
+  }
+  .pg-cardchip__action {
+    display: flex; align-items: center; gap: 4px; margin-top: 4px;
+    font-size: 10px; font-weight: 500; color: var(--ink-5);
+  }
+  .pg-cardchip__arrow { opacity: .55; font-size: 11px; transition: opacity .13s ease, transform .13s ease; }
+  .pg-cardchip:hover .pg-cardchip__arrow { opacity: .9; transform: translateX(2px); }
+  .pg-cardchip--inhouse {
+    grid-column: 1 / -1; justify-self: start;
+    display: inline-flex; min-height: 32px; padding: 6px 11px;
+    border-style: dashed; border-radius: var(--r-sm); color: var(--accent);
+    border-color: var(--accent-100); background: var(--accent-50);
+    font-size: 11.5px; font-weight: 600;
+  }
+  .pg-cardchip--inhouse:hover { background: var(--accent-100); }
+
+  .pg-frametool {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin: 4px 0 8px;
+  }
+  .pg-frametool__hint { font-size: 12px; color: var(--ink-5); display: inline-flex; align-items: center; gap: 7px; }
+  .pg-frametool__hint svg { width: 14px; height: 14px; opacity: .7; }
+  .pg-frame {
+    position: relative; height: 620px;
+    border: 1px solid var(--outline); border-radius: var(--r-lg);
+    overflow: hidden; background: var(--surface-2);
+  }
+  .pg-frame iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .pg-frame-hint { margin: 9px 2px 0; font-size: 11.5px; color: var(--ink-5); line-height: 1.6; }
+
+  .pg-foot {
+    margin-top: 12px; padding: 22px 0;
+    border-top: 1px solid var(--outline);
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    flex-wrap: wrap;
+    font-size: 12px; color: var(--ink-5);
+  }
+
+  @media (max-width: 900px) {
+    .pg-head__title { font-size: 30px; }
+    .pg-frame { height: 520px; }
+  }
+    @media (max-width: 560px) {
+    .pg-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .pg-cardchip { grid-template-columns: 54px minmax(0, 1fr); }
+    .pg-cardchip__preview { width: 54px; }
+    .pg-frame { height: 68vh; }
+    .pg-section__head { gap: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="site">
+
+  <aside id="site-nav" class="site-nav" data-active="pages"></aside>
+
+  <main class="site-main">
+    <div class="site-main__inner">
+
+      <nav class="pg-crumb">
+        <a href="../index.html">概览</a>
+        <span class="sep">/</span>
+        <span>Pages · 页面</span>
+      </nav>
+
+      <header class="pg-head">
+        <h1 class="pg-head__title">页面总览</h1>
+        <p class="pg-head__subtitle">这里是商卡在真实业务页面里的落位。7 个页面按「全局商卡汇总」看板顺序排列，每个页面内嵌对应 Figma frame，并链接到它用到的商卡类型详情页。</p>
+        <div class="pg-head__meta">
+          <span class="pg-stat"><b>7</b><span>页面 · Pages</span></span>
+          <a class="pg-openfig" id="pg-board-link" target="_blank" rel="noopener">
+            <span>在 Figma 打开总览板</span>
+            <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M6 3h7v7M13 3l-8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </header>
+
+    </div>
+
+    <!-- Full-width sticky rail; links align with the content column. -->
+    <nav class="pg-rail" id="pg-rail" data-global-i18n="off" aria-label="Page sections"></nav>
+
+    <div class="site-main__inner">
+
+      <!-- 7 page sections (self-managed bilingual, i18n-excluded) -->
+      <div id="pages-host" data-global-i18n="off"></div>
+
+      <div class="pg-foot">
+        <span>7 个真实页面 · 与 Figma「全局商卡汇总」看板同序</span>
+        <span>Last updated 2026-08-30</span>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+
+<script src="../assets/pages-data.js"></script>
+<script src="../assets/nav.js"></script>
+<script>
+/* Pages Overview renderer — self-managed bilingual inside the i18n-excluded host. */
+(function () {
+  var D = window.PAGES_DATA;
+  if (!D) return;
+  var host = document.getElementById('pages-host');
+  var rail = document.getElementById('pg-rail');
+  var boardLink = document.getElementById('pg-board-link');
+
+  function lang() {
+    if (window.JoybuySite && typeof window.JoybuySite.getLanguage === 'function') return window.JoybuySite.getLanguage();
+    return document.documentElement.lang === 'en' ? 'en' : 'zh';
+  }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+
+  var COPY = {
+    cardsUsed:  { zh: '用到的商卡', en: 'Cards used' },
+    openPage:   { zh: '在 Figma 打开此页', en: 'Open this page in Figma' },
+    owner:      { zh: '负责人', en: 'Owner' },
+    frameLabel: { zh: '设计源 · Figma frame', en: 'Design source · Figma frame' },
+    figmaHint:  { zh: '如果显示空白，请在 Figma 分享面板开启「Anyone with link」访问权限。', en: 'If the embed is blank, enable “Anyone with the link” access in Figma.' },
+    viewDetail: { zh: '查看该商卡类型详情', en: 'View this card type' },
+    details:    { zh: '查看详情', en: 'Details' }
+  };
+  function t(key, lg) { return COPY[key][lg]; }
+
+  var extLinkSvg = '<svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M6 3h7v7M13 3l-8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var frameSvg = '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 6h11" stroke="currentColor" stroke-width="1.4"/></svg>';
+
+  var spyLinks = [], spySecs = [], lastActive = null;
+
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+  function sectionHTML(p, i, lg) {
+    var other = lg === 'zh' ? 'en' : 'zh';
+    var num = pad(i + 1);
+
+    var tags = '';
+    if (p.owner) tags += '<span class="pg-tag pg-tag--owner">' + esc(t('owner', lg)) + ' · ' + esc(p.owner) + '</span>';
+    tags += '<span class="pg-tag pg-tag--channel"><span class="pg-tag__dot"></span>' + esc(p.channel) + '</span>';
+
+    var chips = '<span class="pg-cards__label"><span>' + esc(t('cardsUsed', lg)) + '</span>' +
+                  '<span class="pg-cards__count">' + p.cards.length + '</span></span>';
+    p.cards.forEach(function (key) {
+      var c = D.cards[key];
+      if (!c) return;
+      chips += '<a class="pg-cardchip" href="../' + c.file + '" aria-label="' + esc(c[lg] + ' · ' + t('viewDetail', lg)) + '">' +
+                 '<span class="pg-cardchip__preview"><img src="../' + c.preview + '" data-shape="' + esc(c.shape || 'wide') + '" alt="" loading="lazy" decoding="async"></span>' +
+                 '<span class="pg-cardchip__copy"><span class="pg-cardchip__name">' + esc(c[lg]) + '</span>' +
+                 '<span class="pg-cardchip__action">' + esc(t('details', lg)) + '<span class="pg-cardchip__arrow">→</span></span></span></a>';
+    });
+    if (p.inhouse) {
+      chips += '<a class="pg-cardchip pg-cardchip--inhouse" href="../' + p.inhouse.file + '">' +
+                 esc(p.inhouse[lg]) + ' ' + extLinkSvg + '</a>';
+    }
+
+    return '' +
+      '<section class="pg-section" id="page-' + p.id + '">' +
+        '<div class="pg-section__head">' +
+          '<span class="pg-section__num">' + num + '</span>' +
+          '<div class="pg-section__names">' +
+            '<div class="pg-section__name">' + esc(p[lg]) + '</div>' +
+            '<div class="pg-section__name-alt">' + esc(p[other]) + '</div>' +
+          '</div>' +
+          '<div class="pg-tags">' + tags + '</div>' +
+        '</div>' +
+        '<div class="pg-cards">' + chips + '</div>' +
+        '<div class="pg-frametool">' +
+          '<span class="pg-frametool__hint">' + frameSvg + esc(t('frameLabel', lg)) + '</span>' +
+          '<a class="pg-openfig" href="' + D.deepLink(p.node) + '" target="_blank" rel="noopener">' +
+            '<span>' + esc(t('openPage', lg)) + '</span>' + extLinkSvg + '</a>' +
+        '</div>' +
+        '<div class="pg-frame">' +
+          '<iframe loading="lazy" src="' + D.embedLink(p.node) + '" allowfullscreen ' +
+            'referrerpolicy="no-referrer-when-downgrade" title="' + esc(p[lg]) + '"></iframe>' +
+        '</div>' +
+        '<p class="pg-frame-hint">' + esc(t('figmaHint', lg)) + '</p>' +
+      '</section>';
+  }
+
+  function render() {
+    var lg = lang();
+
+    // Board deep-link + label (label span kept translatable by i18n on the head)
+    boardLink.setAttribute('href', D.deepLink(D.board));
+
+    // Rail
+    var railHTML = '';
+    D.pages.forEach(function (p, i) {
+      railHTML += '<a class="pg-rail__link" data-spy="' + p.id + '" href="#page-' + p.id + '">' +
+                    '<span class="pg-rail__num">' + pad(i + 1) + '</span>' + esc(p.short[lg]) + '</a>';
+    });
+    rail.innerHTML = railHTML;
+
+    // Sections
+    var out = '';
+    D.pages.forEach(function (p, i) { out += sectionHTML(p, i, lg); });
+    host.innerHTML = out;
+
+    // Wire rail clicks (smooth scroll respecting scroll-margin-top)
+    [].forEach.call(rail.querySelectorAll('.pg-rail__link'), function (link) {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        var sec = document.getElementById('page-' + link.getAttribute('data-spy'));
+        if (sec && typeof sec.scrollIntoView === 'function') sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    refreshSpy();
+  }
+
+  function refreshSpy() {
+    spyLinks = [].slice.call(rail.querySelectorAll('[data-spy]'));
+    spySecs = D.pages.map(function (p) { return document.getElementById('page-' + p.id); });
+    lastActive = null;
+    onScroll();
+  }
+
+  function onScroll() {
+    if (!spySecs.length) return;
+    var railBottom = rail.getBoundingClientRect().bottom + 8;
+    var activeId = D.pages[0].id;
+    spySecs.forEach(function (sec, idx) {
+      if (sec && sec.getBoundingClientRect().top - railBottom <= 0) activeId = D.pages[idx].id;
+    });
+    if (activeId === lastActive) return;
+    lastActive = activeId;
+    spyLinks.forEach(function (link) {
+      var on = link.getAttribute('data-spy') === activeId;
+      link.classList.toggle('is-active', on);
+      if (on && typeof link.scrollIntoView === 'function') link.scrollIntoView({ block: 'nearest', inline: 'center' });
+    });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('joybuy:languagechange', render);
+
+  render();
+})();
+</script>
+</body>
+</html>
