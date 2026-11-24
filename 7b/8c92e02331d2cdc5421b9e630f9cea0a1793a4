@@ -1,0 +1,393 @@
+organisms/campaign-card.html
+  s_423b6f9ae5c18d::t_2dbf089922faf9 473,477,483,486,493,504,510,518-519,524,532,539,545,547,551,562-563,567-588,590,596-650,716,718-722,771,923,926-980,1038,1050,1064,1074,1076,1126,1138,1140,1149-1170,1172,1174-1193,1196-1234,1236-1239,1385-1392,1395-1398,1405-1407,1409-1411,1427
+  s_423b6f9ae5c18d::t_b3054399615c37 589,591-595
+  s_423b6f9ae5c18d::t_73fcf34ce7dfc0 1011-1013
+  s_423b6f9ae5c18d::t_7cac415ee8d83d 470-472
+  s_423b6f9ae5c18d::t_770fc15dc0d82f 474-476
+  s_423b6f9ae5c18d::t_8f999ac368baf2 478-482
+  s_423b6f9ae5c18d::t_bb0b9594bd7e7e 484-485
+  s_423b6f9ae5c18d::t_94fd205301ff59 487-492
+  s_423b6f9ae5c18d::t_72168b52c12600 494-496,501-503
+  s_423b6f9ae5c18d::t_031b2a547715c8 505-509
+  s_423b6f9ae5c18d::t_cc116f293b5047 511-513,515-517
+  s_423b6f9ae5c18d::t_852b41b6386c1d 520-523
+  s_423b6f9ae5c18d::t_f6c8455eb5f3fd 525-527,529-531
+  s_423b6f9ae5c18d::t_c8daf75fe1f30f 533-538
+  s_423b6f9ae5c18d::t_d97a003dc6f9ec 540-544
+  s_423b6f9ae5c18d::t_c59df03515eac4 546
+  s_423b6f9ae5c18d::t_98f1164369ec26 548-550
+  s_423b6f9ae5c18d::t_3d3c77c32005e9 552-554,559-561
+  s_423b6f9ae5c18d::t_6bfa6ee92008b3 981-983
+  s_423b6f9ae5c18d::t_c285eff80a1eed 1009-1010
+  s_423b6f9ae5c18d::t_bfd7d3fa49b50e 1014-1016,1035-1037
+  s_423b6f9ae5c18d::t_430f432051d9db 1039-1041,1047-1049
+  s_423b6f9ae5c18d::t_c0e47e30321f68 1051-1053,1061-1063
+  s_423b6f9ae5c18d::t_95aa1140c89445 1065-1067,1071-1073
+  s_423b6f9ae5c18d::t_c4436e01c6f161 1075
+  s_423b6f9ae5c18d::t_919039565fca0d 1077-1079,1123-1125
+  s_423b6f9ae5c18d::t_d64a8e08f5fa80 1127-1129,1135-1137
+  s_423b6f9ae5c18d::t_7bfb6a772e5899 1139
+  s_423b6f9ae5c18d::t_8e52c9699bfd97 1141-1143,1146-1148
+  s_423b6f9ae5c18d::t_f8d4b7f0a77a59 1428-1429
+assets/card-preview-alignment.css
+  s_423b6f9ae5c18d::t_207f26b90fb465 15,214,216,234,260,262-263,271-273,291,293-294,309-311,321-322,455,493-495,527,540-542,554-556,600-602,731-738,784,929-933
+  s_423b6f9ae5c18d::t_c3172401acd36c 31,331-333,469-471,722-723,726-728,867,882-886,888-894,896,902,905,912,917-919
+  s_423b6f9ae5c18d::t_39cfe3548734ed 606-612
+  s_423b6f9ae5c18d::t_4b874f1c77ab29 2-14,16-30,32-36,51,57-76,78-79,81,84-112,119-127,132-133,150-155,158-164,167-169,174-213,215,217-233,237-259,261,264-270,274-290,292,297-305,307-308,314-320,323-330,334-393,399-400,403-408,411-413,415,417-418,430,432-433,435-437,439-440,442-443,445-450,452-454,456-457,460-461,463-464,466-468,472,475-477,479-480,482-483,485-487,489-492,496,499-500,502-504,506-512,514-526,528,531-532,535-537,539,543,546-553,557,560-567,570-576,578-592,595-599,603,613,622,642-645,652,660,675,686,691,697-706,708,715,729-730,740-742,744-747,749-750,752,763,768-769,771-783,785-804,806-808,832-836,838-841,855-858,860,922-923,927,944-952,1003-1004,1010,1012,1026-1083
+organisms/horizontal-card.html
+  s_423b6f9ae5c18d::t_2dbf089922faf9 297,300,609,613,619,622,629,640,646,654-655,660,668,675,681,683,687,698-699,703-724,726,732-786,860-862,864,866,868,870-871,873-874,876,878-881,888,890-891,894,898,901-904,946,948,980,1062,1071-1079,1209-1210,1213-1226,1228-1247,1249-1261,1313,1341,1364,1382,1392,1394,1472,1487,1502,1511-1537,1539,1541-1569,1583,1600,1749-1756,1759-1763,1779,1788-1799,1801-1802,1806-1811,1815-1818,1820-1831,1833-1841,1843-1876,1885,1895,1917
+  s_423b6f9ae5c18d::t_73fcf34ce7dfc0 1288-1290
+  s_423b6f9ae5c18d::t_c3172401acd36c 257,259-262
+  s_423b6f9ae5c18d::t_b3054399615c37 725,727-731
+  s_423b6f9ae5c18d::t_98b73685a27343 195,201-202,221-222,224-225,228-229,241,243,283-284,294-296,298-299,301,305,460-463,487-488,605-608,610-612,614-618,620-621,623-628,630-639,641-645,647-653,656-659,661-667,669-674,676-680,682,684-686,688-697,1264-1287,1291-1312,1314-1320,1323-1327,1335-1340,1342,1347,1360-1363,1365-1381,1383-1391,1393,1395-1400,1403-1410,1414-1460,1465,1467-1468,1470-1471,1473-1486,1490-1501,1503-1510,1918-1919
+organisms/horizontal-scroll.html
+  s_423b6f9ae5c18d::t_c3172401acd36c 208-217
+  s_423b6f9ae5c18d::t_2dbf089922faf9 379,383,389,392,399,410,416,424-425,430,438,445,451,453,457,468-469,473-494,496,502-556,622,624-625,627-628,704,854-855,857-861,863-886,888-898,955,980,982,1061,1070-1091,1093-1121,1123-1156,1160-1166,1170-1173,1175,1322-1329,1333-1336,1352
+  s_423b6f9ae5c18d::t_b3054399615c37 495,497-501
+  s_423b6f9ae5c18d::t_73fcf34ce7dfc0 930
+  s_423b6f9ae5c18d::t_1c09dbe64154f5 201,204-205,375-378,380-382,384-388,390-391,393-398,400-409,411-415,417-423,426-429,431-437,439-444,446-450,452,454-456,458-467,899-926,929,931-954,956-967,969,972-979,981,983-984,991-1000,1002-1006,1008,1010-1012,1014-1016,1018-1023,1028-1035,1038,1042-1047,1050-1057,1059-1060,1062-1069,1353-1354
+organisms/horizontal-mini.html
+  s_423b6f9ae5c18d::t_b3054399615c37 726,728-732
+  s_423b6f9ae5c18d::t_73fcf34ce7dfc0 1261-1263
+  s_423b6f9ae5c18d::t_0e033b65b27137 846-851,900,912-914,921,925-929,933,942,944,956-964,968,972,976,980,984,994,996-1002,1013-1017,1041-1042,1050-1053
+  s_423b6f9ae5c18d::t_d8826f556e86a6 142,455,479,859-860,864-878,1215,1218,1352,1359-1363,1376,1683-1690,1700,1702-1703,1707,1710-1714,1716-1720,1722-1723,1728,1733
+  s_423b6f9ae5c18d::t_2dbf089922faf9 610,614,620,623,630,641,647,655-656,661,669,676,682,684,688,699-700,704-725,727,733-787,885,887-888,891,895,1191,1207,1221,1223-1235,1284,1327,1337,1339,1388,1403,1417,1426-1452,1454,1456-1484,1498,1515,1664-1671,1674-1675,1768
+  s_423b6f9ae5c18d::t_b61dfd2a72ccd7 292-295,297,879
+  s_423b6f9ae5c18d::t_7e01f9b8454e4c 145-150,152,154-159,161,166-167,170-172,174,176-182,185-189,191,197-219,222-223,227-229,231-236,239-240,243,245-246,250,255-256,260-264,267-268,271-274,276-278,280-282,288,298,301
+  s_423b6f9ae5c18d::t_1dc06b4955820b 302-307
+  s_423b6f9ae5c18d::t_25b2cc495eef4b 289,606-609,611-613,615-619,621-622,624-629,631-640,642-646,648-654,657-660,662-668,670-675,677-681,683,685-687,689-698,898-899,1054-1057,1183-1184,1187-1190,1192-1200,1202-1206,1208-1214,1216-1217,1219-1220,1237-1260,1264-1283,1285-1291,1297,1310-1326,1328-1336,1338,1340-1344,1347-1351,1364-1375,1377-1379,1381,1383,1386-1387,1389-1402,1406-1416,1418-1425,1676-1679,1769-1770
+organisms/booking-card.html
+  s_423b6f9ae5c18d::t_2dbf089922faf9 165,174,192,207,598-619,621,627-681,740,748,750-751,754,758,761-763,794,846,853,859,864,878,881,897,902,907,925,936-939,946-948,985,1007,1087-1088,1100-1137,1141,1144-1158,1160-1171,1176-1188,1193-1194,1240,1247-1254,1256,1258,1260-1261,1264,1269-1271,1273-1275,1277-1279,1281-1283,1286-1290,1292-1298,1312-1313,1323,1340,1348-1357,1360-1374,1376-1380,1383-1468,1478,1491,1639-1646,1649-1652,1687
+  s_423b6f9ae5c18d::t_b3054399615c37 620,622-626
+  s_423b6f9ae5c18d::t_c3172401acd36c 211-228,230-241,274-358,450,453-456
+  s_423b6f9ae5c18d::t_3508b322c32db3 141-143,146-150,152-153,155-156,160,162-164,166-173,175-178,180,184-191,193-206,208-210,464,485,1688,1691
+organisms/vertical-card.html
+  s_423b6f9ae5c18d::t_c3172401acd36c 114,192,275,277-279,283,285-287,292-293,299-301,304-306,316-317,328,373,391,2314-2318,2320-2332
+  s_423b6f9ae5c18d::t_933527f00ea1bd 182,331,433,477,921,924,926,928-929,1054-1069,1074-1109,1111-1113,1116-1125
+  s_423b6f9ae5c18d::t_9998c753a73fc2 179,187,201,205,214,219,332,358,375,379,382,385,394,400,428,439,480,731,754,1803-1804,1900,1960-1962,1965-1971,2034-2035,2042-2043,2048-2049,2059,2107,2109,2182-2184,2186,2188-2201,2203-2232,2565-2567,2569,2571,2576-2577,2590,2612
+  s_423b6f9ae5c18d::t_17c7a17867ebc2 1925-1927
+  s_bc873da4027fd5::t_b6cdae85aacad3 339-352,434,2123
+  s_423b6f9ae5c18d::t_b3054399615c37 1070-1073,2180-2181
+  s_423b6f9ae5c18d::t_623e0c3005e161 734-749,755-762,764-773
+  s_423b6f9ae5c18d::t_6276f1889cb377 1259-1260,1262-1263,1266,1270,1273
+  s_423b6f9ae5c18d::t_d0ff49e63b34fe 113,166-170,172-173,176-177,180-181,183-186,188-191,195-200,202-204,206-213,215-218,220-221,224,228-229,243-247,249-250,253-254,259,266,269-270,273,326-327,329-330,336-338,354-357,359-372,374,376-378,380-381,383-384,386-390,392-393,395-399,401-407,410-411,419-427,429-432,435-438,440-441,474-476,478-479,723-727,729-730,732-733,750-753,763,1188,1196-1197,1205-1213,1215-1249,1251-1253,1343-1344,1346,1348-1360,1369-1370,1372-1373,1375-1386,1398,1413,1419,1421,1426-1427,1447-1455,1459,1463,1472-1474,1476,1480-1488,1492-1517,1521-1529,1533,1536,1559,1570,1581,1583,1592,1621,1624-1644,1807,1862-1863,1866-1869,1871-1899,1901-1920,1922-1924,1929-1949,1951-1957,1959,1972-1979,1982,1985,2000,2003,2005,2009-2012,2016-2025,2029-2033,2036-2041,2044-2047,2050-2058,2060,2064,2076-2078,2081,2083-2084,2088-2095,2099-2106,2108,2110-2114,2117-2122,2124-2161,2168,2171-2173,2175-2179,2233-2234,2240-2261,2263,2265,2267-2269,2275-2276,2278-2281,2284-2287,2289-2292,2297-2308,2310-2311,2333-2340,2342,2350-2366,2382,2403,2421-2422,2470,2472,2525,2614-2615
+organisms/small-dynamic.html
+  s_423b6f9ae5c18d::t_2dbf089922faf9 511,515,521,524,531,542,548,556-557,562,570,577,583,585,589,600-601,605-626,628,634-688,757,759-760,762-763,992-1006,1008-1028,1030,1032-1051,1055-1057,1060,1063-1067,1093-1129,1131-1142,1144-1171,1173,1175-1176,1179-1186,1189-1223,1367-1374,1377-1380,1388,1390,1406,1408,1423
+  s_423b6f9ae5c18d::t_c3172401acd36c 183,186-187
+  s_423b6f9ae5c18d::t_b3054399615c37 627,629-633
+  s_423b6f9ae5c18d::t_7968593604ade6 507-510,512-514,516-520,522-523,525-530,532-541,543-547,549-555,558-561,563-569,571-576,578-582,584,586-588,590-599,1424-1425
+README.md
+  s_3f6c90600e7a71::t_676a565a94f963 16-24
+assets/atoms-data.js
+  s_3f6c90600e7a71::t_ae2a60e5043216 3-5,7-10,16,19-24,28-41,45-49,52-63,66-76,78-83,88-115,118,120-124,127,129-135,138-146,148-152,155-188,193-211,216-228,233-237,240-251,256-276,279-295,297-300,305-317,322-327,330-350,355-382
+assets/card-data.js
+  s_3f6c90600e7a71::t_28846d31e2a1a9 1-3,7-115,128,130-206,208-238,240-268,270-299,301-484
+assets/figma-atoms/ai-recommendation/type-added-from-this-store-before.svg
+  s_3f6c90600e7a71::t_d6d6f7bc84130d 1-3
+assets/figma-atoms/ai-recommendation/type-ai-review-summary-ai.svg
+  s_3f6c90600e7a71::t_65c1caa8b4695b 1-3
+assets/figma-atoms/ai-recommendation/type-ai-selling-points-ai.svg
+  s_3f6c90600e7a71::t_ada8ec2636d5d2 1-3
+assets/figma-atoms/ai-recommendation/type-bestseller.svg
+  s_3f6c90600e7a71::t_b00c7bb6250741 1-3
+assets/figma-atoms/ai-recommendation/type-bought-from-this-store-before.svg
+  s_3f6c90600e7a71::t_1b9c1419bc150c 1-3
+assets/figma-atoms/ai-recommendation/type-last-30d-price-30.svg
+  s_3f6c90600e7a71::t_f312b04fa4e90e 1-3
+assets/figma-atoms/ai-recommendation/type-more-buying-choices.svg
+  s_3f6c90600e7a71::t_6bd8092c897d91 1-3
+assets/figma-atoms/ai-recommendation/type-previously-added-to-cart.svg
+  s_3f6c90600e7a71::t_b452cf1795e1f8 1-3
+assets/figma-atoms/ai-recommendation/type-previously-purchased.svg
+  s_3f6c90600e7a71::t_176aec84b865f0 1-3
+assets/figma-atoms/ai-recommendation/type-spu-spu.svg
+  s_3f6c90600e7a71::t_29a2666fb0ddbc 1-3
+assets/figma-atoms/attributes/property-1-component-11.svg
+  s_3f6c90600e7a71::t_f20c18456a1bac 1-3
+assets/figma-atoms/attributes/property-1-component-12.svg
+  s_3f6c90600e7a71::t_98d50818243228 1-5
+assets/figma-atoms/bottle-deposit/bottle-deposit.svg
+  s_3f6c90600e7a71::t_c416a18e006429 1-3
+assets/figma-atoms/brand-default/brand-default.svg
+  s_3f6c90600e7a71::t_c8bdb333c31628 1-3
+assets/figma-atoms/button-group/button-group.svg
+  s_3f6c90600e7a71::t_848e00640c69af 1-4
+assets/figma-atoms/color/more-1.svg
+  s_3f6c90600e7a71::t_106676e5eec21b 2
+assets/figma-atoms/color/more-99.svg
+  s_3f6c90600e7a71::t_ec704db8ea014f 2
+assets/figma-atoms/country-of-origin-small/country-england-size-small.svg
+  s_3f6c90600e7a71::t_256172864da140 1-20
+assets/figma-atoms/country-of-origin-small/country-ireland-size-small.svg
+  s_3f6c90600e7a71::t_388fab49c96e2f 1-20
+assets/figma-atoms/country-of-origin-small/country-scotland-size-small.svg
+  s_3f6c90600e7a71::t_90c5fe8349a0cf 1-20
+assets/figma-atoms/country-of-origin-small/country-united-kingdom-size-small.svg
+  s_3f6c90600e7a71::t_0f9e5ee4146f43 1-20
+assets/figma-atoms/country-of-origin-small/country-wales-size-small.svg
+  s_3f6c90600e7a71::t_7bab220186018e 1-20
+assets/figma-atoms/country-of-origin/country-of-origin-england.svg
+  s_3f6c90600e7a71::t_aaa6746486f3d9 1-16
+assets/figma-atoms/country-of-origin/country-of-origin-ireland.svg
+  s_3f6c90600e7a71::t_b82f235ea5f7b0 1-16
+assets/figma-atoms/country-of-origin/country-of-origin-scotland.svg
+  s_3f6c90600e7a71::t_54678bec377fb6 1-16
+assets/figma-atoms/country-of-origin/country-of-origin-united-kingdom.svg
+  s_3f6c90600e7a71::t_7c79b16b701110 1-16
+assets/figma-atoms/country-of-origin/country-of-origin-wales.svg
+  s_3f6c90600e7a71::t_c6c74fda821c6c 1-16
+assets/figma-atoms/dietary-badges/dairy-free.svg
+  s_3f6c90600e7a71::t_c7f7554e786908 3-4
+assets/figma-atoms/dietary-badges/gluten-free.svg
+  s_3f6c90600e7a71::t_a547492d3a1aac 3-4
+assets/figma-atoms/dietary-badges/halal.svg
+  s_3f6c90600e7a71::t_ba8de4dd8bdc7f 1-5
+assets/figma-atoms/dietary-badges/organic.svg
+  s_3f6c90600e7a71::t_11f9c3dd665c69 3
+assets/figma-atoms/dietary-badges/vegan.svg
+  s_3f6c90600e7a71::t_d02792eb9ea306 3-4
+assets/figma-atoms/dietary-badges/vegetarian.svg
+  s_3f6c90600e7a71::t_f08065dac94be0 3
+assets/figma-atoms/energy/property-1-default.svg
+  s_3f6c90600e7a71::t_d19c425f61acd9 1-19
+assets/figma-atoms/energy/property-1-longtext.svg
+  s_3f6c90600e7a71::t_b7438ab01a5b6e 1-19
+assets/figma-atoms/energy/property-1-variant2.svg
+  s_3f6c90600e7a71::t_cdd676cfcd2f0f 1-19
+assets/figma-atoms/energy/property-1-variant4.svg
+  s_3f6c90600e7a71::t_27ff17923d59a8 1-4
+assets/figma-atoms/fulfillment-time/fulfillment-type-joybuy.svg
+  s_3f6c90600e7a71::t_3a4f9607db29cb 1-12
+assets/figma-atoms/fulfillment-time/fulfillment-type-pop.svg
+  s_3f6c90600e7a71::t_781f26a21e1e20 1-11
+assets/figma-atoms/individual-promotion/type-campaign-happy-hour.svg
+  s_3f6c90600e7a71::t_853b08207dbf03 1-10
+assets/figma-atoms/individual-promotion/type-campaign-lightning-offers.svg
+  s_3f6c90600e7a71::t_41a6ab26797384 1-10
+assets/figma-atoms/individual-promotion/type-campaign-price-match.svg
+  s_3f6c90600e7a71::t_3faccfb506581c 1-10
+assets/figma-atoms/individual-promotion/type-campaign-welcome-offer.svg
+  s_3f6c90600e7a71::t_a15c878061cbf5 1-10
+assets/figma-atoms/individual-promotion/type-clearance-sale.svg
+  s_3f6c90600e7a71::t_e293d0edb9ed5e 1-10
+assets/figma-atoms/individual-promotion/type-compaign-everyday-low-price.svg
+  s_3f6c90600e7a71::t_9db5610ce7eb61 1-15
+assets/figma-atoms/individual-promotion/type-early-access.svg
+  s_3f6c90600e7a71::t_a3ea488bcb21c2 1-10
+assets/figma-atoms/individual-promotion/type-launch-contract-limit-time.svg
+  s_3f6c90600e7a71::t_9193458e3c4f33 3-4,6,8-9,11,19
+assets/figma-atoms/individual-promotion/type-launch-contract.svg
+  s_3f6c90600e7a71::t_17971ede07c17c 1,4,6,8,13,16,19
+assets/figma-atoms/individual-promotion/type-new-launch-limit-time.svg
+  s_3f6c90600e7a71::t_9b47c39aaeedf2 3,5-8,12
+assets/figma-atoms/individual-promotion/type-new-launch.svg
+  s_3f6c90600e7a71::t_3ff891ccc0301d 1,3,7
+assets/figma-atoms/individual-promotion/type-pre-sale-with-time.svg
+  s_3f6c90600e7a71::t_75adf92d46bb18 1-18
+assets/figma-atoms/individual-promotion/type-type-pre-sale.svg
+  s_3f6c90600e7a71::t_05143a0df4cd6c 1-10
+assets/figma-atoms/leading-icon/delivery-by-joybuy.svg
+  s_3f6c90600e7a71::t_1d9a43fb504226 1-4
+assets/figma-atoms/leading-icon/delivery-by-pop.svg
+  s_3f6c90600e7a71::t_e3510be602d370 1-3
+assets/figma-atoms/main-image-130/out-of-stock-no.svg
+  s_3f6c90600e7a71::t_1301d499b4e101 1-23
+assets/figma-atoms/main-image-130/out-of-stock-yes.svg
+  s_3f6c90600e7a71::t_f15c550d3931e7 1-23
+assets/figma-atoms/main-image-146/out-of-stock-no.svg
+  s_3f6c90600e7a71::t_0130b505904afc 1-18
+assets/figma-atoms/main-image-146/out-of-stock-yes.svg
+  s_3f6c90600e7a71::t_369c3c66cda068 1-20
+assets/figma-atoms/main-image-176/out-of-stock-no.svg
+  s_3f6c90600e7a71::t_ff91caba18e93a 1-18
+assets/figma-atoms/main-image-176/out-of-stock-yes.svg
+  s_3f6c90600e7a71::t_7ab2ebf0183fc3 1-18
+assets/figma-atoms/notify-button/notify-button.svg
+  s_3f6c90600e7a71::t_fe93ab0a8ad316 1-4
+assets/figma-atoms/plus-price/type-no-total-promotion-direction-horizontal.svg
+  s_3f6c90600e7a71::t_4f7f0b7bae5775 1-7
+assets/figma-atoms/plus-price/type-no-total-promotion-direction-vertical.svg
+  s_3f6c90600e7a71::t_7d1cdea0bfd3ac 1-7
+assets/figma-atoms/plus-price/type-with-total-promotion-direction-default.svg
+  s_3f6c90600e7a71::t_0eee0b55cdd80d 1-6
+assets/figma-atoms/points-extra-save/points-extra-save.svg
+  s_3f6c90600e7a71::t_372150ec9a456e 1-3
+assets/figma-atoms/price-first-line/price-first-line-sale.svg
+  s_3f6c90600e7a71::t_34fba58e1ade03 1-3
+assets/figma-atoms/price-second-line/type-bought-separately-rrp-direction-vertical.svg
+  s_3f6c90600e7a71::t_2a9d43b7ccf97b 1-6
+assets/figma-atoms/price-second-line/type-ppr-discount1-direction-horizontal.svg
+  s_3f6c90600e7a71::t_44061b4b365510 1-5
+assets/figma-atoms/price-second-line/type-ppr-discount1-direction-vertical.svg
+  s_3f6c90600e7a71::t_bfa0d4e9788779 1-5
+assets/figma-atoms/price-second-line/type-ppr-discount2-direction-horizontal.svg
+  s_3f6c90600e7a71::t_724071df222eaa 1-5
+assets/figma-atoms/price-second-line/type-ppr-discount2-direction-vertical.svg
+  s_3f6c90600e7a71::t_1ac890c73e4167 1-5
+assets/figma-atoms/price-second-line/type-rrp-direction-horizontal.svg
+  s_3f6c90600e7a71::t_d92066aa23ed7e 1-4
+assets/figma-atoms/price-second-line/type-was-direction-horizontal.svg
+  s_3f6c90600e7a71::t_e0f74630e463b0 1-5
+assets/figma-atoms/price-second-line/type-was-discount1-direction-horizontal.svg
+  s_3f6c90600e7a71::t_ab2f8dd6c4bc88 1-6
+assets/figma-atoms/price-second-line/type-was-discount1-direction-vertical.svg
+  s_3f6c90600e7a71::t_8912e03769cdc4 1-6
+assets/figma-atoms/price-second-line/type-was-discount2-direction-horizontal.svg
+  s_3f6c90600e7a71::t_15c89766963f6e 1-6
+assets/figma-atoms/price-second-line/type-was-discount2-direction-vertical.svg
+  s_3f6c90600e7a71::t_4940b5f9f4a9e2 1-6
+assets/figma-atoms/price/type-bought-separately-pricetype.svg
+  s_3f6c90600e7a71::t_94dc83f3568f8c 1-9
+assets/figma-atoms/price/type-default-pricetype.svg
+  s_3f6c90600e7a71::t_ea52f9b388bfd3 1-3
+assets/figma-atoms/price/type-pricetype-rrp.svg
+  s_3f6c90600e7a71::t_c7788fcd8d4f8d 1-6
+assets/figma-atoms/price/type-pricetype-was.svg
+  s_3f6c90600e7a71::t_00c6015f234962 1-7
+assets/figma-atoms/price/type-range-pricetype.svg
+  s_3f6c90600e7a71::t_f8db4c729d59d8 1-17
+assets/figma-atoms/price/type-sale-percent-pricetype-rrp.svg
+  s_3f6c90600e7a71::t_f9265464b4d7fb 1-6
+assets/figma-atoms/price/type-sale-percent-pricetype-was.svg
+  s_3f6c90600e7a71::t_29dd587761ffd7 1-7
+assets/figma-atoms/price/type-sale-save-pricetype-rrp.svg
+  s_3f6c90600e7a71::t_6574bdccc73f89 1-6
+assets/figma-atoms/price/type-sale-save-pricetype-was.svg
+  s_3f6c90600e7a71::t_b8831539540dfc 1-7
+assets/figma-atoms/price/type-starting-price-pricetype.svg
+  s_3f6c90600e7a71::t_2d801fd8ec819f 1-11
+assets/figma-atoms/product-highlights/new-hot.svg
+  s_3f6c90600e7a71::t_94d513242d0816 1-4
+assets/figma-atoms/product-highlights/private-label.svg
+  s_3f6c90600e7a71::t_5578087d12d4f1 1-4
+assets/figma-atoms/product-highlights/sponsored.svg
+  s_3f6c90600e7a71::t_11bb8c2bf3a94c 3
+assets/figma-atoms/product-highlights/too-good-to-waste.svg
+  s_3f6c90600e7a71::t_3e214524470384 1-12
+assets/figma-atoms/product-highlights/top-deal.svg
+  s_3f6c90600e7a71::t_f4d29db4ce767b 1-3
+assets/figma-atoms/rating-sold/rate-sold.svg
+  s_3f6c90600e7a71::t_aa581cb2907df3 3,5
+assets/figma-atoms/rating-sold/sold.svg
+  s_3f6c90600e7a71::t_c5f2b25e743d44 2
+assets/figma-atoms/rating-sold/variant.svg
+  s_3f6c90600e7a71::t_4bf8ec474e80fe 3
+assets/figma-atoms/rating-sold/variant5.svg
+  s_3f6c90600e7a71::t_a8a330dee1a1b0 3-5,7
+assets/figma-atoms/rating-sold/viewed.svg
+  s_3f6c90600e7a71::t_d68a952677d9d9 2
+assets/figma-atoms/service/type-gift-wrapping.svg
+  s_3f6c90600e7a71::t_37cc8d345c35c0 1-11
+assets/figma-atoms/service/type-install-recyle.svg
+  s_3f6c90600e7a71::t_2b82a61c9dabbf 1-13
+assets/figma-atoms/sold-by-joybuy/joybuy-mark.svg
+  s_3f6c90600e7a71::t_be2ede46c2bda9 1-3
+assets/figma-atoms/sold-by-joybuy/sold-by-joybuy.svg
+  s_3f6c90600e7a71::t_ddb134b3a4084d 1-11
+assets/figma-atoms/spu-color/spu-color.svg
+  s_3f6c90600e7a71::t_c67f4893776c95 1-22
+assets/figma-atoms/stock/low-stock-no-out-of-stock-yes.svg
+  s_3f6c90600e7a71::t_a5cc51326dceb6 1-3
+assets/figma-atoms/stock/low-stock-yes-out-of-stock-no.svg
+  s_3f6c90600e7a71::t_cedce41cf2318b 1-3
+assets/figma-atoms/tag-discount/tag-discount.svg
+  s_3f6c90600e7a71::t_9c5cccb6cadce2 1-9
+assets/figma-atoms/tag-like/property-1-loading.svg
+  s_3f6c90600e7a71::t_87f937c104a440 1-3
+assets/figma-atoms/tag-like/property-1-tag-like.svg
+  s_3f6c90600e7a71::t_2c7372b27fd339 1-3
+assets/figma-atoms/tag-like/property-1-tag-liked.svg
+  s_3f6c90600e7a71::t_e012170be09d0d 1-3
+assets/figma-atoms/tag-number/tag-number.svg
+  s_3f6c90600e7a71::t_e90a54064a653a 1-4
+assets/figma-atoms/title/1.svg
+  s_3f6c90600e7a71::t_2a4f3e42f23f5d 3
+assets/figma-atoms/title/2.svg
+  s_3f6c90600e7a71::t_0c8b1116350f07 3
+assets/figma-atoms/title/3.svg
+  s_3f6c90600e7a71::t_7428f11aa84e2d 3
+assets/figma-atoms/total-promotion/spend-and-get-gift-1.svg
+  s_3f6c90600e7a71::t_3c718d77998375 1-10
+assets/figma-atoms/total-promotion/type-15-00-off-over-100-00.svg
+  s_3f6c90600e7a71::t_bce95f3b825377 1-10
+assets/figma-atoms/total-promotion/type-3-for-2.svg
+  s_3f6c90600e7a71::t_72e2f1c57b0a50 1-10
+assets/figma-atoms/total-promotion/type-buy-1-get-1-free.svg
+  s_3f6c90600e7a71::t_d40e02ae501f6f 1-10
+assets/figma-atoms/total-promotion/type-buy-2-get-30-off.svg
+  s_3f6c90600e7a71::t_bf0c846ea01037 1-10
+assets/figma-atoms/total-promotion/type-limited-time-discount.svg
+  s_3f6c90600e7a71::t_185db71ef75c09 1-10
+assets/figma-atoms/total-promotion/type-pay-after-promotion.svg
+  s_3f6c90600e7a71::t_43d7e1f7ce1c9b 1-10
+assets/figma-atoms/total-promotion/type-points.svg
+  s_3f6c90600e7a71::t_ed2e899b8c50fa 1-10
+assets/figma-atoms/total-promotion/type-repeat-save-up-to-7.svg
+  s_3f6c90600e7a71::t_702028ec8f5670 1-10
+assets/figma-atoms/total-promotion/type-spend-get-gift-1.svg
+  s_3f6c90600e7a71::t_92dea11ec6b7c0 1-10
+assets/figma-atoms/total-promotion/type-spend-get-gift-2.svg
+  s_3f6c90600e7a71::t_196fc90c13a95d 1-10
+assets/figma-atoms/total-promotion/type-spend-get-gift-3.svg
+  s_3f6c90600e7a71::t_9ffb03d7458541 1-10
+assets/figma-atoms/total-promotion/type-spend-get-gift-4.svg
+  s_3f6c90600e7a71::t_46a0b1a817be32 1-10
+assets/figma-atoms/total-promotion/type-spend-get-gift-5.svg
+  s_3f6c90600e7a71::t_f6bcbea9c6862f 1-10
+assets/figma-atoms/total-promotion/type-spend-get-gift-6.svg
+  s_3f6c90600e7a71::t_7ccd17f8c6808d 1-10
+assets/figma-atoms/total-promotion/type-virtual-gift-3-00-in-gifts.svg
+  s_3f6c90600e7a71::t_1da78b085dbbf9 1-10
+assets/figma-atoms/total-promotion/type-virtual-gift-3-gifts.svg
+  s_3f6c90600e7a71::t_6d639dcd8f9315 1-10
+assets/figma-atoms/total-promotion/type-virtual-gift-free-gift.svg
+  s_3f6c90600e7a71::t_375f7bad866d86 1-10
+assets/figma-atoms/total-promotion/type-virtual-gift-gift-up-to-3-00.svg
+  s_3f6c90600e7a71::t_8d34404f8f455e 1-10
+assets/figma-atoms/total-promotion/type-virtual-gift-pick-3-gifts.svg
+  s_3f6c90600e7a71::t_440f402d8ce859 1-10
+assets/i18n.js
+  s_3f6c90600e7a71::t_aed5684d481ca6 71,77,113,118,130,137,182,184-187,189,192-194,261,265,304,312,454,575,589,623,639,643
+assets/tokens.css
+  s_3f6c90600e7a71::t_f1947228305926 31-32,103
+foundations/iconography.html
+  s_3f6c90600e7a71::t_808deb6a75a021 338,343,375,443,448-449,454-455,461,467,480,487,493,499-505,511,518,523-524,530,536,541-542,547-548,555,561,567,572-573,579,585
+foundations/tokens.html
+  s_3f6c90600e7a71::t_f61bb39937ac60 427,432,442
+foundations/typography.html
+  s_3f6c90600e7a71::t_dba128d2acdf7e 443,520,525,535,540,606-607,645,656,671-672,682-684,693-694
+utilities/changelog.html
+  s_3f6c90600e7a71::t_95976ac9ceb2c3 7,12,110-111,126-140,243-244,255,259
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "7b8c92e02331d2cdc5421b9e630f9cea0a1793a4",
+  "prompts": {},
+  "sessions": {
+    "s_3f6c90600e7a71": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a20d05-d015-7dc3-8fc1-2b9aa36ae1d4",
+        "model": "MiniMax-M3-joybuilder"
+      },
+      "human_author": "chenyongtian.7 <chenyongtian.7@joybuy.local>"
+    },
+    "s_423b6f9ae5c18d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a20dc5-fd2d-7501-a671-fd3666f8c923",
+        "model": "MiniMax-M3-joybuilder"
+      },
+      "human_author": "chenyongtian.7 <chenyongtian.7@joybuy.local>"
+    },
+    "s_bc873da4027fd5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a20732-c584-7cc3-bc98-f511e69b6bef",
+        "model": "MiniMax-M3-joybuilder"
+      },
+      "human_author": "chenyongtian.7 <chenyongtian.7@joybuy.local>"
+    }
+  }
+}
