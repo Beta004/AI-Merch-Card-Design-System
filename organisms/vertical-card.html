@@ -272,22 +272,25 @@
   .vcard__prices {
     display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
   }
+  /* Price — Figma Pricing atom 5577:19658 · System/16px-Bold (16/700/22). */
   .vcard__sale-price {
-    font-size: 20px; font-weight: 900;
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 16px; font-weight: 700; line-height: 22px;
+    letter-spacing: 0;
     color: var(--joybuy-red);
     font-variant-numeric: tabular-nums;
-    letter-spacing: -.02em;
-    line-height: 1.15;
   }
+  /* Price (second line) — 12/500/16 #1a1a1a, no strikethrough. */
   .vcard__original-price {
-    font-size: 12px; color: var(--ink-5);
-    text-decoration: line-through;
+    font-size: 12px; font-weight: 500; line-height: 16px;
+    color: var(--ink);
+    text-decoration: none;
     font-variant-numeric: tabular-nums;
   }
   .vcard__discount {
     display: inline-block;
-    font-size: 12px; font-weight: 500;
-    color: var(--ink-2);
+    font-size: 12px; font-weight: 500; line-height: 16px;
+    color: var(--ink);
     background: transparent;
     padding: 0;
     align-self: flex-start;
@@ -310,7 +313,8 @@
     flex-shrink: 0;
   }
   .vcard__price-was {
-    font-size: 12px; color: var(--ink-5);
+    font-size: 12px; font-weight: 500; line-height: 16px;
+    color: var(--ink);
     font-variant-numeric: tabular-nums;
   }
   .vcard__price-was .vcard__original-price::before { content: none; }
@@ -878,14 +882,6 @@
     line-height: 1.15;
     color: var(--ink);
   }
-  #s-overview .section__lede {
-    margin: 16px 0 0 0;
-    max-width: 660px;
-    font-size: 15px;
-    line-height: 1.75;
-    color: var(--ink-3);
-  }
-
   /* 展示区 */
   #s-overview .demo {
     margin-top: 48px !important;
@@ -1189,11 +1185,7 @@
           <span class="section__index">01</span>
           <h2 class="section__title">Overview · 概览</h2>
         </div>
-        <p class="section__lede">
-          最常用的商品卡片，在首页信息流、分类页、搜索结果双列视图里以 200px 卡片框架出现，其中商品图片容器固定为 176×176。
-          商品图与商品信息同层还排布 Color Options 色板行（Figma 5577:17539）：24×24 色单元、2px 间距、左对齐卡片且无左右 padding，与上下各 8px。
-          色板下方是两个内容容器：Container 01（亮点 → 品牌 → 标题 → 评分/销量 → AI 推荐理由，间距 4px）与 Container 02（左右 padding 6px；上组：Individual Promotion / Type 单促/业务类型 → 价格 → 总促，下组：库存 → 履约时效 → 自营标签 → 服务 → 原产地 → 性能，组内间距 4px，组间 8px；加购按钮在右侧，与左列间距 4px），两容器间距 8px。
-        </p>
+        <p class="section__lede">最常用的商品卡片，在首页信息流、分类页、搜索结果双列视图里以 200px 卡片框架出现，其中商品图片容器固定为 176×176。</p>
 
         <div class="demo" style="margin-top: 8px;">
           <!-- 左侧：卡片预览 -->
@@ -1424,7 +1416,7 @@
             <div class="anatomy-cell">
               <div class="anatomy-cell__head"><span class="anatomy-cell__idx">3</span><span class="anatomy-cell__slot">highlight</span><span>· 亮点</span></div>
               <div class="anatomy-cell__stage">
-                <img src="../assets/figma-atoms/product-highlights/new-hot.svg" alt="Product Highlights atom - New&Hot variant">
+                <span class="ph-highlight ph-highlight--new-hot" data-figma-node="27850:345179">New&Hot</span>
               </div>
               <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-product-highlights">Product Highlights · 商品亮点</a> · 7 变体</div>
             </div>
@@ -2318,7 +2310,13 @@
     if (show('reviews')) html += '<div class="vcard__reviews">More buying choices</div>';
     html += '</div>';
 
-    if (!cfg.minimal) {
+    if (cfg.minimal) {
+      // 极简：图片 + 标题 + 价格（无 RRP / 折扣 / 履约 / 加购）
+      html += '<div class="vcard__content-02"><div class="vcard__content-02-main">';
+      html += '<div class="vcard__content-02-top"><div class="vcard__prices">';
+      html += '<span class="vcard__sale-price">'+p.salePrice+'</span>';
+      html += '</div></div></div></div>';
+    } else {
       html += '<div class="vcard__content-02"><div class="vcard__content-02-main">';
       html += '<div class="vcard__content-02-top">';
       if (show('promotion')) html += '<span class="vcard__promotion">Lightning offers</span>';
@@ -2331,7 +2329,7 @@
       if (oos) html += '<span class="vcard__stock">Out of stock</span>';
       if (show('fulfillment') && t.fulfillment) html += '<span class="vcard__fulfillment">'+t.fulfillment+'</span>';
       if (show('seller') && p.selfOperated) {
-        html += '<span class="vcard__seller-wrap"><img class="vcard__seller-mark" src="../assets/figma-atoms/sold-by-joybuy/joybuy-mark.svg" alt="" width="16" height="16"><span class="vcard__seller">Sold by Joybuy</span></span>';
+        html += '<span class="vcard__seller-wrap is-joybuy"><img class="vcard__seller-mark" src="../assets/figma-atoms/sold-by-joybuy/joybuy-mark.svg" alt="" width="16" height="16"><span class="vcard__seller">Sold by Joybuy</span></span>';
       }
       html += '</div></div>';
       if (oos) {

@@ -139,136 +139,172 @@
   }
   /* zoom shrinks the real card to fit the narrow rail; collapses layout box too.
      hmini max width 328 → 300px box × .66 ≈ 198px, fits the ~200px stage. */
-  .side-preview__scale { width: 300px; zoom: .66; }
+  .side-preview__scale { width: 375px; zoom: .8; }
 
   /* ============ Horizontal Mini card component ============
-     Layout: left = 64×64 image · right = 6-slot content column.
-     Cart button 24×24. Overall padding 8px. Max width 328. */
+     Figma 6000:33289 — the card is 375 wide.
+       image 130×130, inset 16px from the left, flush to the top/bottom
+       → 12px gap → content column 201
+       content: brand 14/700/20 → 4 → title 14/500/20 (2 lines) → 4 → rating 12/500/16
+       bottom row (bottom-aligned): sale 16/700/22 → 4 → RRP 12/500/16 · action 32×32
+     ============================================================ */
   .hmini {
+    box-sizing: border-box;
     display: grid;
-    grid-template-columns: 64px 1fr;
-    gap: 10px;
+    grid-template-columns: 130px minmax(0, 1fr);
+    column-gap: 12px;
+    width: 375px;
+    max-width: 100%;
+    min-height: 130px;
+    padding: 0 16px;
     background: var(--surface);
-    border: 1px solid var(--outline);
-    border-radius: var(--r-sm);
-    padding: 8px;
+    border-radius: 8px;
     position: relative;
-    max-width: 328px;
   }
   .hmini--dim { opacity: .55; }
 
-  /* Image (1:1) with optional out-of-stock overlay */
+  /* Image (1:1) — product photo centred at 80% inside the Figma 130 box,
+     with the 4% scrim and the 8px radius of the Main image atom. */
   .hmini__image {
     position: relative;
-    width: 64px; height: 64px;
-    border-radius: var(--r-xs);
+    align-self: start;
+    width: 130px; height: 130px;
+    border-radius: 8px;
     overflow: hidden;
-    background: var(--surface-2);
-    flex-shrink: 0;
+    background: #f5f6fa;
   }
-  .hmini__image img {
-    width: 100%; height: 100%;
-    object-fit: cover;
+  .hmini__image-inner {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hmini__image-inner img {
+    width: 80%; height: 80%;
+    object-fit: contain;
     display: block;
   }
+  .hmini__image::after {
+    content: ''; position: absolute; inset: 0;
+    background: rgba(0,0,0,.04);
+    pointer-events: none;
+  }
   .hmini__oos {
-    position: absolute; inset: 0;
+    position: absolute; inset: 0; z-index: 1;
     display: flex; align-items: center; justify-content: center;
     background: rgba(255,255,255,.75);
   }
   .hmini__oos img { height: 32px; width: auto; }
 
-  /* Body: 6 stackable slots */
+  /* Wishlist — heart pinned to the image top-right (Figma Main image atom) */
+  .hmini__favorite {
+    position: absolute; top: 4px; right: 4px; z-index: 2;
+    width: 32px; height: 32px; padding: 0; border: 0;
+    background: transparent; cursor: pointer;
+  }
+  .hmini__favorite img { width: 32px; height: 32px; display: block; }
+
+  /* Discount — Figma Tag-discount atom, pinned to the image top-left */
+  .hmini__discount-tag {
+    position: absolute; top: 8px; left: 8px; z-index: 2;
+    display: inline-flex; align-items: center;
+    height: 20px; padding: 0 8px;
+    border-radius: 4px;
+    background: rgba(255,255,255,.7);
+    backdrop-filter: blur(4px);
+    font-size: 12px; font-weight: 600; line-height: 20px;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .hmini__discount-tag[data-empty] { display: none; }
+
+  /* Content column */
   .hmini__body {
     display: flex; flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-    padding-right: 32px; /* reserve space for cart btn */
-    position: relative;
+    justify-content: space-between; gap: 8px;
+    min-height: 130px; min-width: 0;
   }
   .hmini__body [data-field][data-empty] { display: none; }
 
-  /* Slot 1 · Highlight (SVG chip) */
-  .hmini__highlight {
-    align-self: flex-start;
-    line-height: 0;
-  }
+  /* Title block — brand → title → rating */
+  .hmini__top { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .hmini__highlight { align-self: flex-start; line-height: 0; }
   .hmini__highlight[data-empty] { display: none; }
-  .hmini__highlight img { display: block; height: 12px; width: auto; }
-  /* Sponsored is a 16px text-only atom — keep it on the text baseline, not line-height:0. */
-  .hmini__highlight .ph-sponsored { line-height: 16px; }
-
-  /* Slot 2 · Title — 2-line clamp, no separate brand */
+  .hmini__highlight img { display: block; height: 24px; width: auto; }
+  .hmini__highlight .ph-sponsored { line-height: 20px; }
+  .hmini__brand {
+    font-size: 14px; font-weight: 700; line-height: 20px; color: var(--ink);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
   .hmini__title {
     margin: 0;
-    font-size: 12px; font-weight: 500;
-    color: var(--ink); line-height: 16px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    font-size: 14px; font-weight: 500; line-height: 20px; color: var(--ink);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
     overflow: hidden;
   }
-
-  /* Slot 3 · Rating · sold (compact — one line, no divider) */
+  /* Rating · sold — 14px star box + 12/500/16 copy */
   .hmini__meta {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 11px; color: var(--ink-3); line-height: 14px;
-    margin-top: 2px;
+    display: flex; align-items: center; gap: 4px;
+    font-size: 12px; line-height: 16px; color: var(--ink-4);
   }
   .hmini__meta-star {
     display: inline-flex; align-items: center; gap: 2px;
-    color: var(--ink-2); font-weight: 700;
+    color: var(--ink); font-weight: 500;
   }
   .hmini__meta-star::before {
     content: "";
     display: inline-block;
-    width: 10px; height: 10px;
-    background: url('../assets/figma-atoms/rating-sold/star.svg') center/contain no-repeat;
+    width: 14px; height: 14px;
+    background: url('../assets/figma-atoms/rating-sold/star.svg') center/10px 10px no-repeat;
     flex-shrink: 0;
   }
 
-  /* Slot 4 · Prices — INLINE (unlike hcard which stacks) */
-  .hmini__prices {
-    display: flex; align-items: baseline;
-    gap: 6px;
-    margin-top: 2px;
+  /* Bottom row — price block + action, both flush to the card's bottom-right */
+  .hmini__bottom { display: flex; align-items: flex-end; gap: 8px; }
+  .hmini__price-block {
+    flex: 1 1 auto; min-width: 0;
+    display: flex; flex-direction: column; gap: 4px;
   }
   .hmini__sale-price {
-    font-size: 15px; font-weight: 900;
-    color: var(--ink); line-height: 18px;
+    font-size: 16px; font-weight: 700; line-height: 22px;
+    color: var(--joybuy-red);
     font-variant-numeric: tabular-nums;
   }
-  .hmini__original-price {
-    font-size: 10px; color: var(--ink-5);
-    text-decoration: line-through;
-    font-variant-numeric: tabular-nums;
-    line-height: 12px;
+  /* Price (second line) — "RRP: £500.00", no strikethrough */
+  .hmini__original-line {
+    font-size: 12px; font-weight: 500; line-height: 16px; color: var(--ink);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-
-  /* Slot 5 · Fulfillment (optional, tight) */
+  .hmini__original-price { font-size: inherit; color: inherit; }
+  .hmini__original-line:has([data-empty]) { display: none; }
+  /* Fulfillment time — 16px delivery icon + 12/500/16 tertiary copy */
   .hmini__fulfillment {
-    display: inline-flex; align-items: center; gap: 3px;
-    font-size: 10px; font-weight: 500;
-    color: var(--ink-4);
+    display: inline-flex; align-items: center; gap: 2px;
+    margin-top: 4px;
+    font-size: 12px; font-weight: 500; line-height: 16px; color: var(--ink-4);
     align-self: flex-start;
-    line-height: 14px;
   }
   .hmini__fulfillment::before {
     content: "";
     display: inline-block;
-    width: 12px; height: 12px;
+    width: 16px; height: 16px;
     background: url('../assets/figma-atoms/leading-icon/joybuy.svg') left center/contain no-repeat;
     flex-shrink: 0;
   }
-
-  /* Slot 6 · Cart button — floated top-right of body */
+  /* The action wrapper keeps the button a block-level flex item, so the
+     32px button sits flush with the card's bottom edge (Figma: Btn_Cart
+     bottom-aligned to the price block). */
+  .hmini__action { display: flex; align-items: flex-end; flex: none; }
   .hmini__cart {
-    all: unset; cursor: pointer;
-    position: absolute; top: 0; right: 0;
-    width: 24px; height: 24px;
-    flex-shrink: 0;
+    all: unset; cursor: pointer; flex: none; display: block;
+    width: 32px; height: 32px;
   }
   .hmini__cart img { width: 100%; height: 100%; display: block; }
+  .hmini__cart--quantity { width: 100px; height: 32px; }
+  /* The 100px quantity pill would squeeze the price block, so it drops to its
+     own row and stays pinned to the card's bottom-right corner. */
+  .hmini__body.has-quantity-selector .hmini__bottom {
+    flex-direction: column; align-items: stretch; gap: 8px;
+  }
+  .hmini__body.has-quantity-selector .hmini__cart--quantity { align-self: flex-end; }
 
   /* ============ Demo area ============ */
   .demo {
@@ -416,7 +452,7 @@
   /* ============ 03 Types (variant showcase) ============ */
   .types-stack {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
     gap: 20px;
   }
   .type-block {
@@ -440,6 +476,7 @@
     background: linear-gradient(180deg, #f8f8f9 0%, #f2f2f3 100%);
     border-radius: var(--r-sm);
     padding: 16px;
+    overflow-x: auto;
   }
   /* Multi-card scroller demo */
   .scroller-demo {
@@ -806,8 +843,12 @@
           <h2 class="section__title">Overview · 概览</h2>
         </div>
         <p class="section__lede">
-          80 px 缩略图 + 精简价格信息的迷你横向卡。定位介于横向卡和纯文本联想之间——
-          只保留决策关键字段（标题 · 售价 · 加购），其他辅助信息按需开关。用在补充推荐、下单确认、直播侧边推荐这些"注意力已经在别处"的场景。
+          130 px 主图 + 精简价格信息的迷你横向卡，骨架严格对齐 Figma 母组件
+          <a href="https://www.figma.com/design/eInnhKDnBhPIyPprZADdnO/App-Business-Components?node-id=6000-33289" target="_blank" rel="noopener">6000:33289</a>：
+          375 宽卡体 · 130×130 主图（左侧内缩 16px，垂直顶格）· 12px 间距 · 201px 内容列
+          （品牌 · 标题 · 评分销量 / 售价 · 划线价 · 履约），操作按钮固定在商卡右下角。
+          定位介于横向卡和纯文本联想之间——只保留决策关键字段，其他辅助信息按需开关。
+          用在补充推荐、下单确认、直播侧边推荐这些"注意力已经在别处"的场景。
         </p>
 
         <div class="demo" style="margin-top: 8px;">
@@ -815,23 +856,28 @@
             <!-- Preview -->
             <div class="hmini" id="hmini-preview">
               <div class="hmini__image">
-                <img id="hmini-img" src="" alt="">
+                <div class="hmini__image-inner"><img id="hmini-img" src="" alt=""></div>
+                <span class="hmini__discount-tag" data-field="discount"></span>
                 <button class="hmini__favorite" type="button" aria-label="Add to wishlist"><img src="../assets/figma-atoms/tag-like/tag-like.svg" alt=""></button>
               </div>
               <div class="hmini__body">
-                <span class="hmini__highlight" data-field="highlight"></span>
-                <p class="hmini__title" data-field="title">French Door Refrigerator Freeze Ice &amp; Water</p>
-                <div class="hmini__meta" data-field="meta">
-                  <span class="hmini__meta-star"><span class="hmini__rating">4.5</span></span>
-                  <span class="hmini__sold">100k+ sold</span>
+                <div class="hmini__top">
+                  <span class="hmini__highlight" data-field="highlight"></span>
+                  <div class="hmini__brand" data-field="brand">Apple</div>
+                  <p class="hmini__title" data-field="title">French Door Refrigerator Freeze Ice &amp; Water</p>
+                  <div class="hmini__meta" data-field="meta">
+                    <span class="hmini__meta-star"><span class="hmini__rating">4.5</span></span>
+                    <span class="hmini__sold">100k+ sold</span>
+                  </div>
                 </div>
-                <div class="hmini__prices">
-                  <span class="hmini__sale-price" data-field="salePrice">£350.00</span>
-                  <span class="hmini__original-line">RRP: <span class="hmini__original-price" data-field="originalPrice">£500.00</span></span>
+                <div class="hmini__bottom">
+                  <div class="hmini__price-block">
+                    <span class="hmini__sale-price" data-field="salePrice">£350.00</span>
+                    <span class="hmini__original-line">RRP: <span class="hmini__original-price" data-field="originalPrice">£500.00</span></span>
+                    <span class="hmini__fulfillment" data-field="fulfillment">Get it by today</span>
+                  </div>
+                  <span class="hmini__action" id="hmini-action"></span>
                 </div>
-                <div class="hmini__discount" data-field="discount">Save 18% on RRP</div>
-                <div class="hmini__fulfillment" data-field="fulfillment">Get it by today</div>
-                <span id="hmini-action"></span>
               </div>
             </div>
           </div>
@@ -863,24 +909,28 @@
           <h2 class="section__title">Structure · 骨架</h2>
         </div>
         <p class="section__lede">
-          5 个固定槽位：商品图片、收藏、标题、价格和按钮。按钮通过 Figma 属性在加购按钮与数量选择器之间切换。
+          Figma 母组件拆成 3 层容器：主图层（130×130 主图 + Tag-discount 折扣角标 + 右上收藏）、
+          内容层（品牌 → 标题 → 评分销量，组内 4px）、底部层（售价 → 划线价 → 履约，组内 4px，
+          右侧 32px 操作按钮与内容底部对齐）。按钮通过 Figma 属性在加购按钮与数量选择器之间切换。
         </p>
 
         <div class="anatomy-wrap" style="margin-top: 24px;">
           <!-- Left: schematic frame -->
           <div class="schematic-frame">
             <div class="schematic-hmini">
-              <div class="schematic-hmini__image">80×80</div>
+              <div class="schematic-hmini__image">130×130</div>
               <div class="schematic-hmini__slots">
                 <div class="schematic-slot"><span class="schematic-slot__idx">1</span>product image</div>
                 <div class="schematic-slot"><span class="schematic-slot__idx">2</span>favorite</div>
-                <div class="schematic-slot"><span class="schematic-slot__idx">3</span>title · 2 line</div>
-                <div class="schematic-slot"><span class="schematic-slot__idx">4</span>price</div>
-                <div class="schematic-slot"><span class="schematic-slot__idx">5</span>button / quantity selector</div>
+                <div class="schematic-slot"><span class="schematic-slot__idx">3</span>discount tag</div>
+                <div class="schematic-slot"><span class="schematic-slot__idx">4</span>brand · title · 2 line</div>
+                <div class="schematic-slot"><span class="schematic-slot__idx">5</span>rating · sold</div>
+                <div class="schematic-slot"><span class="schematic-slot__idx">6</span>price · RRP</div>
+                <div class="schematic-slot"><span class="schematic-slot__idx">7</span>button / quantity selector</div>
               </div>
             </div>
             <p class="schematic-caption">
-              收藏位于图片右上；加购按钮或数量选择器位于内容区右下，切换后不改变整体卡片尺寸。
+              收藏位于图片右上、折扣角标位于图片左上；加购按钮或数量选择器位于内容区右下，与内容底部对齐，切换后不改变整体卡片尺寸。
             </p>
           </div>
 
@@ -889,9 +939,9 @@
             <div class="anatomy-cell">
               <div class="anatomy-cell__head"><span class="anatomy-cell__idx">1</span><span class="anatomy-cell__slot">product image</span></div>
               <div class="anatomy-cell__stage">
-                <div class="schematic-hmini__image">80×80</div>
+                <div class="schematic-hmini__image">130×130</div>
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-main-image">Product Image</a> · 80×80 · <code>object-fit: contain</code></div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-main-image">Product Image</a> · 130×130 · <code>object-fit: contain</code>，商品图居中 80%</div>
             </div>
 
             <div class="anatomy-cell">
@@ -903,27 +953,35 @@
             </div>
 
             <div class="anatomy-cell">
-              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">3</span><span class="anatomy-cell__slot">title</span></div>
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">3</span><span class="anatomy-cell__slot">discount tag</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/tag-discount/default.svg" alt="Discount tag">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-tag-discount">Tag-discount</a> · 47×20 · 图片左上角折扣角标</div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">4</span><span class="anatomy-cell__slot">brand · title · rating</span></div>
               <div class="anatomy-cell__stage">
                 <img src="../assets/figma-atoms/title/2.svg" alt="Two-line product title">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-title">Title Row 2</a> · 最多两行，超出截断</div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-title">Title Row 2</a> · 品牌 14/700/20，标题 14/500/20 最多两行，评分 12/500/16</div>
             </div>
 
             <div class="anatomy-cell">
-              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">4</span><span class="anatomy-cell__slot">prices</span></div>
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">5</span><span class="anatomy-cell__slot">price · RRP</span></div>
               <div class="anatomy-cell__stage">
                 <img src="../assets/figma-atoms/price/sale-save-was.svg" alt="Price with RRP">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-price">Price</a> · 15/900 · RRP 划线 baseline 对齐</div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-price">Price</a> · 售价 16/700/22，划线价 12/500/16，无删除线</div>
             </div>
 
             <div class="anatomy-cell">
-              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">5</span><span class="anatomy-cell__slot">button / quantity selector</span></div>
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">6</span><span class="anatomy-cell__slot">button / quantity selector</span></div>
               <div class="anatomy-cell__stage">
                 <img src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Add to cart">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-btn-cart">Btn Cart</a> · 由 <code>Quantity selector=yes/no</code> 切换</div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-btn-cart">Btn Cart</a> · 32×32，商卡右下角，由 <code>Quantity selector=yes/no</code> 切换</div>
             </div>
           </div>
         </div>
@@ -933,11 +991,15 @@
             <tr><th>#</th><th>字段</th><th>必填</th><th>规则</th></tr>
           </thead>
           <tbody>
-            <tr><td>1</td><td><code>image</code></td><td>是</td><td>80×80 商品图片容器</td></tr>
+            <tr><td>1</td><td><code>image</code></td><td>是</td><td>130×130 商品图片容器，商品图居中 80%</td></tr>
             <tr><td>2</td><td><code>favorite</code></td><td>是</td><td>图片右上收藏按钮</td></tr>
-            <tr><td>3</td><td><code>title</code></td><td>是</td><td>最多 2 行</td></tr>
-            <tr><td>4</td><td><code>price</code></td><td>是</td><td>主价格，可带参考价</td></tr>
-            <tr><td>5</td><td><code>quantitySelector</code></td><td>是</td><td><code>yes</code> 显示数量选择器，<code>no</code> 显示加购按钮</td></tr>
+            <tr><td>3</td><td><code>discount</code></td><td>否</td><td>图片左上 Tag-discount 角标</td></tr>
+            <tr><td>4</td><td><code>brand</code></td><td>否</td><td>品牌行 14/700/20</td></tr>
+            <tr><td>5</td><td><code>title</code></td><td>是</td><td>14/500/20，最多 2 行</td></tr>
+            <tr><td>6</td><td><code>rating</code>, <code>sold</code></td><td>否</td><td>评分销量行 12/500/16</td></tr>
+            <tr><td>7</td><td><code>price</code></td><td>是</td><td>售价 16/700/22，可带划线价 12/500/16</td></tr>
+            <tr><td>8</td><td><code>fulfillment</code></td><td>否</td><td>履约时效行，16px 物流图标 + 12/500/16</td></tr>
+            <tr><td>9</td><td><code>quantitySelector</code></td><td>是</td><td><code>yes</code> 显示数量选择器，<code>no</code> 显示加购按钮</td></tr>
           </tbody>
         </table>
       </section>
@@ -948,7 +1010,11 @@
           <span class="section__index">03</span>
           <h2 class="section__title">Types · 类型</h2>
         </div>
-        <p class="section__lede">Figma 母组件由“数量选择器”属性控制两个变体，其他内容变化属于商品数据而不是组件类型。</p>
+        <p class="section__lede">
+          Figma 母组件由“数量选择器”属性控制两个变体，其他内容变化属于商品数据而不是组件类型。
+          两张卡片都按原子组件的字号与间距渲染：主图 130×130、品牌 14/700/20、标题 14/500/20、
+          售价 16/700/22、划线价 12/500/16，操作按钮 32×32 固定在商卡右下角。
+        </p>
 
         <div class="types-stack" style="margin-top: 20px;">
           <div class="type-block">
@@ -972,8 +1038,8 @@
           <h2 class="section__title">Data Contract · 数据契约</h2>
         </div>
         <p class="section__lede">
-          共享 <code>Product</code> 类型。Mini 默认省略 <code>brand</code> / <code>promotion</code> / <code>seller</code> / <code>colors</code> / <code>deposit</code>；
-          brand 融入 title 首词，无需单独字段。
+          共享 <code>Product</code> 类型。Mini 默认省略 <code>promotion</code> / <code>seller</code> / <code>colors</code> / <code>deposit</code>；
+          品牌独立成行（14/700/20），折扣以图片左上角的 Tag-discount 角标呈现。
         </p>
 
         <table class="table" style="margin-top: 16px;">
@@ -982,7 +1048,9 @@
           </thead>
           <tbody>
             <tr><td><code>img</code></td><td>string</td><td>SKU 图库</td><td>骨架图</td><td>-</td></tr>
-            <tr><td><code>title</code></td><td>string · 2-line clamp</td><td>SKU · name（可含 brand 前缀）</td><td>不渲染</td><td>en / zh</td></tr>
+            <tr><td><code>brand</code></td><td>string · <code>Apple</code></td><td>SKU · brand</td><td>不渲染</td><td>en / zh</td></tr>
+            <tr><td><code>title</code></td><td>string · 2-line clamp</td><td>SKU · name</td><td>不渲染</td><td>en / zh</td></tr>
+            <tr><td><code>discount</code></td><td>string · <code>18% off</code></td><td>定价服务</td><td>不渲染角标</td><td>en / zh</td></tr>
             <tr><td><code>highlight</code></td><td>enum · sponsored / best-before / new-hot / top-deal / private-label / new / too-good-to-waste</td><td>运营 CMS</td><td>不渲染</td><td>enum key</td></tr>
             <tr><td><code>rating</code>, <code>sold</code></td><td>number · <code>4.5</code>, string · <code>100k+ sold</code></td><td>用户评价</td><td>不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
             <tr><td><code>salePrice</code>, <code>originalPrice</code></td><td>string · <code>£350.00</code> / <code>£500.00</code></td><td>定价服务</td><td>salePrice 必填 · originalPrice 空则不渲染划线</td><td>货币符号 i18n</td></tr>
@@ -1281,6 +1349,7 @@
     const vis = k => mVis(k, def[k], fieldOv);
 
     // Always-on base
+    setField('brand', p.brand);
     setField('title', t.title);
     setField('salePrice', p.salePrice);
     const img = document.getElementById('hmini-img');
@@ -1290,7 +1359,8 @@
     // Optional data slots
     setField('highlight', vis('highlight') ? t.highlight : '');
     setField('originalPrice', vis('rrp') ? p.originalPrice : '');
-    setField('discount', vis('discount') ? t.discount : '');
+    // Discount rides the Figma Tag-discount atom on the image, not a text line.
+    setField('discount', vis('discount') ? discountBadge(t.discount) : '');
     setField('fulfillment', vis('fulfillment') ? t.fulfillment : '');
 
     // Compound meta slot (rating + sold) — set manually so setField doesn't wipe the inner spans.
@@ -1610,7 +1680,15 @@
     renderTypeBlocks();
     renderPreviewStack();
   }
-  /* ================ Static "Types" showcase ================ */
+  /* ================ Static "Types" showcase ================
+     Same anatomy as the live preview (Figma 6000:33289): image + tag-discount
+     on the left, content column on the right, action flush to the bottom-right. */
+  // Discount copy for the Figma Tag-discount atom: "Save 18% on RRP" → "18% off".
+  function discountBadge(text) {
+    const m = String(text || '').match(/(\d+)\s*%/);
+    return m ? (m[1] + '% off') : String(text || '');
+  }
+
   function hminiHTML(cfg) {
     const list = D.catalog[cfg.catKey];
     if (!list || !list[cfg.presetIdx]) return '';
@@ -1619,29 +1697,40 @@
     const img = D.productImages[p.img] || '';
     let html = '<div class="hmini">';
 
-    // Image
+    // Image — 130×130, product photo centred at 80%
     html += '<div class="hmini__image">';
-    html += (img ? '<img src="'+img+'" alt="'+p.brand+'">' : '');
+    html += '<div class="hmini__image-inner">' + (img ? '<img src="'+img+'" alt="'+p.brand+'">' : '') + '</div>';
+    if (t.discount) html += '<span class="hmini__discount-tag">'+discountBadge(t.discount)+'</span>';
     html += '<button class="hmini__favorite" type="button" aria-label="Add to wishlist"><img src="../assets/figma-atoms/tag-like/tag-like.svg" alt=""></button>';
     html += '</div>';
 
-    // Body
+    // Content column
     html += '<div class="hmini__body'+(cfg.quantity ? ' has-quantity-selector' : '')+'">';
 
+    html += '<div class="hmini__top">';
+    if (t.highlight && HIGHLIGHT_ENUM.has(t.highlight)) {
+      html += '<span class="hmini__highlight">'+highlightHTML(t.highlight)+'</span>';
+    }
+    html += '<div class="hmini__brand">'+p.brand+'</div>';
     html += '<p class="hmini__title">'+t.title+'</p>';
+    if (p.rating && t.sold) {
+      html += '<div class="hmini__meta"><span class="hmini__meta-star"><span>'+p.rating+'</span></span>'
+            + '<span class="hmini__sold">'+t.sold+'</span></div>';
+    }
+    html += '</div>';
 
-    // Prices (inline)
-    html += '<div class="hmini__prices">';
+    html += '<div class="hmini__bottom">';
+    html += '<div class="hmini__price-block">';
     html += '<span class="hmini__sale-price">'+p.salePrice+'</span>';
     if (p.originalPrice) {
       html += '<span class="hmini__original-line">RRP: <span class="hmini__original-price">'+p.originalPrice+'</span></span>';
     }
+    if (t.fulfillment) html += '<span class="hmini__fulfillment">'+t.fulfillment+'</span>';
     html += '</div>';
-    if (t.discount) html += '<div class="hmini__discount">'+t.discount+'</div>';
-
     html += cfg.quantity
       ? '<button class="hmini__cart hmini__cart--quantity" aria-label="Change quantity"><img src="../assets/figma-atoms/btn-cart/add-success-1.svg" alt="Quantity 1"></button>'
       : '<button class="hmini__cart" aria-label="Add to cart"><img src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Add to cart"></button>';
+    html += '</div>';
 
     html += '</div>'; // /.hmini__body
 

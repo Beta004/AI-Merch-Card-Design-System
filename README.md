@@ -13,6 +13,15 @@
 - **页面** [`pages/`](./pages/) — 7 个页面 frame + home-feed
 - **工具** [`utilities/`](./utilities/) — [选型指南](./utilities/decision-guide.html) + [变更记录](./utilities/changelog.html)
 
+## 原子与文案规则
+
+- **唯一事实来源**：Figma `App Business Components` 的 `基础组件 Product Card Atomic Components`（node `28919:271381`）。
+- **原子数据**：[`assets/atoms-data.js`](./assets/atoms-data.js) 当前收敛为 33 个平台原子、149 个变体（对应 Figma 34 个顶层原子 / 148 个变体）；每个变体保留 Figma 命名、导出 SVG 与 `copy` 源文案。
+- **商卡预览文案**：所有可见字段文案必须能在 `atoms-data.js` 的 `copy` 数组中找到；中文/英文切换不生成原子库外翻译。
+- **自营标签**：数据契约使用 `selfOperated` 布尔值；`true` 固定渲染 `Sold by Joybuy`，`false` 或缺失时整个槽位收起，不允许显示第三方商家名。
+- **履约时效**：使用 `fulfillmentType: Joybuy | POP`，可见文案固定为 `Get it by today`。
+- **已移除字段**：`Unit price`、预约量等不在当前原子组件库中的字段不得重新加入商卡预览或数据契约。
+
 ## 本地预览
 
 站点是纯静态 HTML + CSS + JS，任何静态服务器都能跑：

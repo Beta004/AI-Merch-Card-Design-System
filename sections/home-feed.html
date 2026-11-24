@@ -206,12 +206,13 @@
   .hcard__body [data-field][data-empty] { display: none; }
 
   /* Slot 1 · Highlight (SVG chip) */
+  /* All seven Product Highlights variants are native HTML atoms (Barlow Fix 50). */
   .hcard__highlight {
     align-self: flex-start;
     line-height: 0;
   }
   .hcard__highlight[data-empty] { display: none; }
-  .hcard__highlight img { display: block; height: 14px; width: auto; }
+  .hcard__highlight .ph-highlight { height: 24px; }
 
   /* Slot 2 · Brand */
   .hcard__brand {
@@ -573,7 +574,7 @@
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0,0,0,.06);
     display: flex; flex-direction: column;
-    font-family: var(--f-sans);
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
   }
   .tvcard__img {
     aspect-ratio: 1/1;
@@ -595,10 +596,10 @@
   .tvcard__colors { display: flex; gap: 3px; padding: 6px 8px 0; }
   .tvcard__color-dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid rgba(0,0,0,.08); }
   .tvcard__body { padding: 5px 8px 8px; display: flex; flex-direction: column; gap: 2px; }
+  /* All seven Product Highlights variants are native HTML atoms (Barlow Fix 50). */
   .tvcard__hi { align-self: flex-start; line-height: 0; margin-bottom: 1px; }
-  .tvcard__hi img { display: block; height: 10px; width: auto; }
-  /* Sponsored is a 16px text-only atom (no chip) — keep it on the text baseline. */
-  :is(.tvcard__hi, .hcard__highlight) .ph-sponsored { line-height: 16px; }
+  .tvcard__hi .ph-highlight { height: 10px; }
+  .tvcard__hi .ph-sponsored { line-height: 16px; }
   .tvcard__brand { font-size: 10px; font-weight: 700; color: var(--ink); line-height: 1.15; }
   .tvcard__title {
     margin: 0; font-size: 9px; color: var(--ink-2); line-height: 1.3;

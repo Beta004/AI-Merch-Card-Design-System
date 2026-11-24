@@ -208,11 +208,16 @@
   .booking__price-wrap { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1 0 auto; }
   .booking__price-line { display: flex; align-items: center; gap: 3px; }
   .booking__arrow { width: 13px; height: 13px; flex-shrink: 0; display: none; }
+  /* Price — Figma Pricing atom 5577:19658 · System/16px-Bold (16/700/22). */
   .booking__price-current {
-    font-size: 18px; font-weight: 800; color: var(--joybuy-red);
-    line-height: 22px; font-variant-numeric: tabular-nums;
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 16px; font-weight: 700; color: var(--joybuy-red);
+    line-height: 22px; letter-spacing: 0; font-variant-numeric: tabular-nums;
   }
-  .booking__rrp { font-size: 11px; color: var(--ink-3); line-height: 15px; font-variant-numeric: tabular-nums; }
+  .booking__rrp {
+    font-size: 12px; font-weight: 500; color: var(--ink);
+    line-height: 16px; font-variant-numeric: tabular-nums;
+  }
   .booking__rrp b { font-weight: 400; }
 
   /* Type-driven price color + auction down-arrow */
@@ -442,10 +447,13 @@
   .mini-state-chip--live    { background: var(--joybuy-red); color: #fff; }
   .mini-state-chip--auction { background: #7c3aed; color: #fff; }
   .mini-state-chip--ended   { background: var(--surface-3); color: var(--ink-4); }
-  .mini-countdown { display: inline-flex; gap: 2px; font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+  .mini-countdown { display: inline-flex; gap: 2px; font-family: "Barlow Fix 50", "Barlow", var(--f-sans); font-variant-numeric: tabular-nums; }
   .mini-countdown span { background: var(--ink); color: #fff; padding: 1px 3px; border-radius: 2px; font-size: 10px; font-weight: 700; }
   .mini-price-block { display: flex; flex-direction: column; gap: 1px; align-items: flex-start; font-variant-numeric: tabular-nums; }
-  .mini-price-block b { font-size: 14px; color: var(--ink); font-weight: 900; }
+  .mini-price-block b {
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 16px; color: var(--ink); font-weight: 700; line-height: 22px;
+  }
   .mini-price-block small { font-size: 9px; color: var(--ink-4); }
   .mini-deposit { background: var(--joybuy-red-50); color: var(--joybuy-red); padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; }
   .mini-reserved { font-size: 10px; color: var(--ink-4); }

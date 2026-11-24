@@ -192,14 +192,13 @@
   }
   .hcard__body [data-field][data-empty] { display: none; }
 
-  /* Slot 1 · Highlight (SVG chip) */
+  /* Slot 1 · Highlight — all seven variants are native HTML atoms (Barlow Fix 50). */
   .hcard__highlight {
     align-self: flex-start;
     line-height: 0;
   }
   .hcard__highlight[data-empty] { display: none; }
-  .hcard__highlight img { display: block; height: 14px; width: auto; }
-  /* Sponsored is a 16px text-only atom — keep it on the text baseline, not line-height:0. */
+  .hcard__highlight .ph-highlight { height: 24px; }
   .hcard__highlight .ph-sponsored { line-height: 16px; }
 
   /* Slot 2 · Brand */
@@ -255,9 +254,12 @@
     gap: 0;
     margin-top: 2px;
   }
+  /* Price — Figma Pricing atom 5577:19658 · System/16px-Bold (16/700/22). */
   .hcard__sale-price {
-    font-size: 18px; font-weight: 900;
-    color: var(--ink); line-height: 22px;
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 16px; font-weight: 700; line-height: 22px;
+    letter-spacing: 0;
+    color: var(--ink);
     font-variant-numeric: tabular-nums;
   }
   .hcard__price-was {
@@ -941,7 +943,7 @@
             <div class="anatomy-cell">
               <div class="anatomy-cell__head"><span class="anatomy-cell__idx">1</span><span class="anatomy-cell__slot">highlight</span></div>
               <div class="anatomy-cell__stage">
-                <img src="../assets/figma-atoms/product-highlights/new-hot.svg" alt="Product Highlights atom">
+                <span class="ph-highlight ph-highlight--new-hot" data-figma-node="27850:345179">New&Hot</span>
               </div>
               <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-product-highlights">Product Highlights</a> · 7 变体</div>
             </div>

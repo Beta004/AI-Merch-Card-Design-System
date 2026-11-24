@@ -54,6 +54,14 @@
   color-scheme: light;
 }
 
+/* All card previews use the Figma product-card typeface (Barlow Fix 50).
+   Covers every card type so no overview section falls back to system fonts. */
+#s-overview :is(.vcard, .hcard, .hmini, .hs-tile, .campaign, .booking, .sdyn, .sdyn-strip),
+#s-types :is(.vcard, .hcard, .hmini, .hs-tile, .campaign, .booking, .sdyn, .sdyn-strip),
+.side-preview :is(.vcard, .hcard, .hmini, .hs-tile, .campaign, .booking, .sdyn, .sdyn-strip) {
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+}
+
 /* Overview layout: preview stage + control panel sit side by side, but the
    panel WRAPS below the stage as soon as the stage would drop under the widest
    card (sdyn 448 + 48px stage padding ≈ 500). flex-wrap computes the collapse
@@ -595,101 +603,14 @@
   color: #6e7078;
 }
 
-/* Universal horizontal mini master: 375 × 134 / 80 image. */
-#s-overview .hmini {
-  box-sizing: border-box;
+/* Universal horizontal mini master — Figma 6000:33289.
+   Card 375 wide · image 130×130 (16px inset from the left, flush vertically)
+   → 12px gap → content column 201 · action 32×32 bottom-right.
+   The card carries its own Figma insets, so the preview chrome adds no padding. */
+#s-overview .demo__stage .hmini {
   width: 375px;
-  max-width: 100%;
-  min-height: 134px;
-  grid-template-columns: 80px minmax(0, 1fr);
-  gap: 8px;
-  /* skin owned by shared chrome rule (white bg / 8px pad / 8px radius / lift) */
-}
-
-#s-overview .hmini__image {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  border-radius: 10px;
-}
-
-.hmini__favorite {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 32px;
-  height: 32px;
-  padding: 0;
+  padding: 0 16px;
   border: 0;
-  background: transparent;
-}
-.hmini__favorite img { width: 32px; height: 32px; padding: 0; }
-
-.hmini__body.has-quantity-selector {
-  padding-right: 108px;
-}
-
-#s-overview .hmini__image img {
-  object-fit: contain;
-  padding: 8px;
-}
-
-#s-overview .hmini__body {
-  min-height: 110px;
-  gap: 5px;
-  padding-right: 42px;
-}
-
-#s-overview .hmini__title {
-  font-size: 14px;
-  line-height: 20px;
-  min-height: 40px;
-}
-
-#s-overview .hmini__prices {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1px;
-  margin-top: 0;
-}
-
-#s-overview .hmini__sale-price {
-  color: #e1251b;
-  font-size: 18px;
-  line-height: 22px;
-}
-
-#s-overview .hmini__original-line,
-#s-overview .hmini__discount {
-  font-size: 11px;
-  line-height: 15px;
-  color: #303137;
-}
-
-#s-overview .hmini__original-price {
-  font-size: inherit;
-  color: inherit;
-}
-
-#s-overview .hmini__original-line:has([data-empty]) { display: none; }
-
-#s-overview .hmini__cart {
-  top: auto;
-  right: 0;
-  bottom: 0;
-  width: 36px;
-  height: 36px;
-}
-
-#s-overview .hmini__body.has-quantity-selector {
-  padding-right: 108px;
-}
-
-#s-overview .hmini__cart.hmini__cart--quantity,
-.hmini__cart.hmini__cart--quantity {
-  width: 100px;
-  height: 32px;
 }
 
 /* Horizontal-scroll master: 478 frame with three 146px tiles. */
@@ -798,17 +719,23 @@
   margin-top: 8px;
 }
 
+/* Price — Figma Pricing atom 5577:19658 · System/16px-Bold (16/700/22). */
 .hs-tile__price {
   color: #e1251b;
   font-size: 16px;
-  line-height: 20px;
+  line-height: 22px;
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
+/* Price (second line) — 12/500/16 #1a1a1a, no strikethrough. */
 .hs-tile__oprice,
 .hs-tile__discount {
-  color: #303137;
-  font-size: 11px;
-  line-height: 15px;
+  color: #1a1a1a;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  text-decoration: none;
 }
 /* Discount + promotion share the bottom band with the absolute cart/notify
    control — reserve right padding so text never runs under it. */
@@ -925,7 +852,10 @@
 .campaign-product__favorite { position: absolute; top: 0; right: 0; width: 40px; height: 40px; padding: 0; border: 0; background: transparent; }
 .campaign-product__favorite img { width: 40px; height: 40px; }
 .campaign-product__body { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 144px; gap: 4px; padding-bottom: 36px; }
+/* All seven Product Highlights variants are native HTML atoms (Barlow Fix 50). */
 .campaign-product__highlight { align-self: flex-start; line-height: 0; }
+.campaign-product__highlight .ph-highlight { height: 16px; }
+.campaign-product__highlight .ph-sponsored { line-height: 16px; }
 .campaign-product__brand { font-size: 13px; font-weight: 700; line-height: 18px; }
 .campaign-product__title { flex: none; margin: 0; font-size: 13px; line-height: 18px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 .campaign-product__rating,
@@ -934,7 +864,7 @@
 .campaign-product__stock { color: #555861; font-size: 11px; line-height: 15px; }
 .campaign-product__promotion { color: #e1251b; }
 .campaign-product__price { display: flex; align-items: baseline; gap: 6px; }
-.campaign-product__price b { color: #e1251b; font-size: 18px; line-height: 22px; }
+.campaign-product__price b { color: #e1251b; font-size: 16px; line-height: 22px; font-weight: 700; letter-spacing: 0; }
 .campaign-product__price span { color: #73757d; font-size: 10px; text-decoration: line-through; }
 .campaign-product__cart,
 .campaign-product__notify { position: absolute; right: 0; bottom: 0; }
@@ -984,7 +914,9 @@
   color: #1a1a1a;
   text-align: left;
   font-size: 16px;
-  line-height: 20px;
+  line-height: 22px;
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
 .sdyn-strip--4 .sdyn:first-child .sdyn__price,
@@ -994,9 +926,11 @@
 
 .sdyn__original-price {
   padding-top: 2px;
-  color: #303137;
-  font-size: 11px;
-  line-height: 15px;
+  color: #1a1a1a;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  text-decoration: none;
 }
 
 @media (max-width: 720px) {
