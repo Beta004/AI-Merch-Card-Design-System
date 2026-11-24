@@ -1,0 +1,527 @@
+assets/atoms-data.js
+  s_459e3abe8ffeab::t_b9c7d9722fcd33 3-5,7-10,16,19-24,28-41,45-49,52-63,66-76,78-83,88-115,118,120-124,127,129-135,138-146,148-152,155-188,193-211,216-228,233-237,240-251,256-276,279-295,297-300,305-317,322-327,330-350,355-382
+assets/card-data.js
+  s_459e3abe8ffeab::t_c7c9b41b9613a1 1-3,7-115,128,130-206,208-238,240-268,270-299,301-484
+assets/card-preview-alignment.css
+  s_459e3abe8ffeab::t_fe0d97683cc39c 2-36,51,57-68,70-71,73,76-104,111-119,124-125,142-147,150-156,159-161,166-226,229-241,243-294,296-297,299-326,329-385,391-392,395-400,403-405,407,409-410,422,424-449,452-464,467-469,471-488,491-520,523-524,527-535,538-549,552-560,562-579,582-584,587-595,606,701,721-724,731,739,754,765,770,776-785,787,794,801,807-808,813-823,825,836,841-842,844-877,879-881,905-909,911-914,928,930,952-956,958-964,966,972,975,982,990-991,995,1010-1018,1069-1070,1076,1078,1092-1149
+assets/figma-atoms/ai-recommendation/added-from-this-store-before.svg
+  s_459e3abe8ffeab::t_d8a0dc53a0f696 1-3
+assets/figma-atoms/ai-recommendation/ai-review-summary-ai.svg
+  s_459e3abe8ffeab::t_97f06fe35fe1fb 1-3
+assets/figma-atoms/ai-recommendation/ai-selling-points-ai.svg
+  s_459e3abe8ffeab::t_b667afd2845f2f 1-3
+assets/figma-atoms/ai-recommendation/bestseller.svg
+  s_459e3abe8ffeab::t_d10a840d7265d6 1-3
+assets/figma-atoms/ai-recommendation/bought-from-this-store-before.svg
+  s_459e3abe8ffeab::t_2523246a212f7a 1-3
+assets/figma-atoms/ai-recommendation/last-30d-price-30.svg
+  s_459e3abe8ffeab::t_8661287f98a0bc 1-3
+assets/figma-atoms/ai-recommendation/more-buying-choices.svg
+  s_459e3abe8ffeab::t_e95e8442fafb7e 1-3
+assets/figma-atoms/ai-recommendation/previously-added-to-cart.svg
+  s_459e3abe8ffeab::t_c2485de8f79148 1-3
+assets/figma-atoms/ai-recommendation/previously-purchased.svg
+  s_459e3abe8ffeab::t_0ea5119da68a60 1-3
+assets/figma-atoms/ai-recommendation/spu-spu.svg
+  s_459e3abe8ffeab::t_a818ce6c59242c 1-3
+assets/figma-atoms/ai-recommendation/type-added-from-this-store-before.svg
+  s_459e3abe8ffeab::t_f388687209b245 1-3
+assets/figma-atoms/ai-recommendation/type-ai-review-summary-ai.svg
+  s_459e3abe8ffeab::t_823faf1170f5c5 1-3
+assets/figma-atoms/ai-recommendation/type-ai-selling-points-ai.svg
+  s_459e3abe8ffeab::t_ca99cd13a9970e 1-3
+assets/figma-atoms/ai-recommendation/type-bestseller.svg
+  s_459e3abe8ffeab::t_40d2d6736111c2 1-3
+assets/figma-atoms/ai-recommendation/type-bought-from-this-store-before.svg
+  s_459e3abe8ffeab::t_93c5924633b033 1-3
+assets/figma-atoms/ai-recommendation/type-last-30d-price-30.svg
+  s_459e3abe8ffeab::t_6c1406185a4a0f 1-3
+assets/figma-atoms/ai-recommendation/type-more-buying-choices.svg
+  s_459e3abe8ffeab::t_10b127b84400bb 1-3
+assets/figma-atoms/ai-recommendation/type-previously-added-to-cart.svg
+  s_459e3abe8ffeab::t_eb94e5d17e3832 1-3
+assets/figma-atoms/ai-recommendation/type-previously-purchased.svg
+  s_459e3abe8ffeab::t_32f9b96a74315e 1-3
+assets/figma-atoms/ai-recommendation/type-spu-spu.svg
+  s_459e3abe8ffeab::t_ec13ff47db5f4a 1-3
+assets/figma-atoms/attributes/property-1-component-11.svg
+  s_459e3abe8ffeab::t_9b14d9d16c48c5 1-3
+assets/figma-atoms/attributes/property-1-component-12.svg
+  s_459e3abe8ffeab::t_7371b98af5d492 1-5
+assets/figma-atoms/bottle-deposit/bottle-deposit.svg
+  s_459e3abe8ffeab::t_15c3737d28d4fe 1-3
+assets/figma-atoms/bottle-deposit/default.svg
+  s_459e3abe8ffeab::t_f0fbad5d841a7e 1-3
+assets/figma-atoms/brand-default/brand-default.svg
+  s_459e3abe8ffeab::t_19371a4c4b8e24 1-3
+assets/figma-atoms/brand/default.svg
+  s_459e3abe8ffeab::t_e2d0d9b0fbb2ae 1-3
+assets/figma-atoms/button-group/button-group.svg
+  s_459e3abe8ffeab::t_d6b57f52e72d00 1-4
+assets/figma-atoms/button-group/default.svg
+  s_459e3abe8ffeab::t_caae1362cb1e27 1-4
+assets/figma-atoms/color/more-1.svg
+  s_459e3abe8ffeab::t_294f35853f9d20 2
+assets/figma-atoms/color/more-99.svg
+  s_459e3abe8ffeab::t_5fecba1c34b4c0 2
+assets/figma-atoms/country-of-origin-icon/england-small.svg
+  s_459e3abe8ffeab::t_e1a7717701e7e1 1-20
+assets/figma-atoms/country-of-origin-icon/ireland-small.svg
+  s_459e3abe8ffeab::t_13196184936fa9 1-20
+assets/figma-atoms/country-of-origin-icon/scotland-small.svg
+  s_459e3abe8ffeab::t_9138aa8ce43124 1-20
+assets/figma-atoms/country-of-origin-icon/united-kingdom-small.svg
+  s_459e3abe8ffeab::t_5e9cc1d05de8f5 1-20
+assets/figma-atoms/country-of-origin-icon/wales-small.svg
+  s_459e3abe8ffeab::t_03b061f8f72449 1-20
+assets/figma-atoms/country-of-origin-small/country-england-size-small.svg
+  s_459e3abe8ffeab::t_e579a2acbabd85 1-20
+assets/figma-atoms/country-of-origin-small/country-ireland-size-small.svg
+  s_459e3abe8ffeab::t_f3c8eec3a5f5ab 1-20
+assets/figma-atoms/country-of-origin-small/country-scotland-size-small.svg
+  s_459e3abe8ffeab::t_1b903deb338097 1-20
+assets/figma-atoms/country-of-origin-small/country-united-kingdom-size-small.svg
+  s_459e3abe8ffeab::t_717c494b1d88e7 1-20
+assets/figma-atoms/country-of-origin-small/country-wales-size-small.svg
+  s_459e3abe8ffeab::t_54f8f1112fb748 1-20
+assets/figma-atoms/country-of-origin/country-of-origin-england.svg
+  s_459e3abe8ffeab::t_7c40d03b740cb2 1-16
+assets/figma-atoms/country-of-origin/country-of-origin-ireland.svg
+  s_459e3abe8ffeab::t_a885f4f7eed84a 1-16
+assets/figma-atoms/country-of-origin/country-of-origin-scotland.svg
+  s_459e3abe8ffeab::t_6e0dcbea919c0a 1-16
+assets/figma-atoms/country-of-origin/country-of-origin-united-kingdom.svg
+  s_459e3abe8ffeab::t_2fb2a836249e5b 1-16
+assets/figma-atoms/country-of-origin/country-of-origin-wales.svg
+  s_459e3abe8ffeab::t_9688fb43b5e70d 1-16
+assets/figma-atoms/country-of-origin/england.svg
+  s_459e3abe8ffeab::t_204e4ffcc92db7 1-16
+assets/figma-atoms/country-of-origin/from-wales.svg
+  s_459e3abe8ffeab::t_990ebcd3a0b5b7 1-16
+assets/figma-atoms/country-of-origin/ireland.svg
+  s_459e3abe8ffeab::t_aceaa65a8d18ec 1-16
+assets/figma-atoms/country-of-origin/scotland.svg
+  s_459e3abe8ffeab::t_4152cc75724ee5 1-16
+assets/figma-atoms/country-of-origin/united-kingdom.svg
+  s_459e3abe8ffeab::t_e2b10b86a5ff91 1-16
+assets/figma-atoms/country-of-origin/wales.svg
+  s_459e3abe8ffeab::t_f8802a24746151 1-16
+assets/figma-atoms/dietary-badges/dairy-free.svg
+  s_459e3abe8ffeab::t_00b5c5f70248bb 3-4
+assets/figma-atoms/dietary-badges/dairyfree.svg
+  s_459e3abe8ffeab::t_4ffa7b48e86d4c 1-5
+assets/figma-atoms/dietary-badges/gluten-free.svg
+  s_459e3abe8ffeab::t_0883bf4e4421fe 3-4
+assets/figma-atoms/dietary-badges/glutenfree.svg
+  s_459e3abe8ffeab::t_11b6f61020d694 1-5
+assets/figma-atoms/dietary-badges/halal.svg
+  s_459e3abe8ffeab::t_d2a2b1bb6e1286 1-5
+assets/figma-atoms/dietary-badges/organic.svg
+  s_459e3abe8ffeab::t_4676632d336bfd 3
+assets/figma-atoms/dietary-badges/vegan.svg
+  s_459e3abe8ffeab::t_e948bf43713085 3-4
+assets/figma-atoms/dietary-badges/vegetarian.svg
+  s_459e3abe8ffeab::t_a407b65c717dc5 3
+assets/figma-atoms/energy/default.svg
+  s_459e3abe8ffeab::t_801ff991a250d3 5-6,8,10,12
+assets/figma-atoms/energy/longtext.svg
+  s_459e3abe8ffeab::t_28cdf08a4c92d5 5-6,8,10,12-13
+assets/figma-atoms/energy/property-1-default.svg
+  s_459e3abe8ffeab::t_c344fffc427b08 1-19
+assets/figma-atoms/energy/property-1-longtext.svg
+  s_459e3abe8ffeab::t_65f1b7fa0457ce 1-19
+assets/figma-atoms/energy/property-1-variant2.svg
+  s_459e3abe8ffeab::t_5450779c847d43 1-19
+assets/figma-atoms/energy/property-1-variant4.svg
+  s_459e3abe8ffeab::t_7908f3af26fc87 1-4
+assets/figma-atoms/energy/variant2.svg
+  s_459e3abe8ffeab::t_4e09f77944cd23 5-6,8,10,12
+assets/figma-atoms/energy/variant4.svg
+  s_459e3abe8ffeab::t_1f2954eeb5eedd 3
+assets/figma-atoms/fulfillment-time/fulfillment-type-joybuy.svg
+  s_459e3abe8ffeab::t_79589846297144 1-12
+assets/figma-atoms/fulfillment-time/fulfillment-type-pop.svg
+  s_459e3abe8ffeab::t_19237a29516194 1-11
+assets/figma-atoms/fulfillment-time/joybuy.svg
+  s_459e3abe8ffeab::t_fd515687150926 2-3,5
+assets/figma-atoms/fulfillment-time/pop.svg
+  s_459e3abe8ffeab::t_f5b58c56818990 2,4
+assets/figma-atoms/individual-promotion/campaign-happy-hour.svg
+  s_459e3abe8ffeab::t_e9860bd87873fd 3
+assets/figma-atoms/individual-promotion/campaign-lightning-offers.svg
+  s_459e3abe8ffeab::t_203f43f59ebd71 3
+assets/figma-atoms/individual-promotion/campaign-price-match.svg
+  s_459e3abe8ffeab::t_785831ab33ec80 3
+assets/figma-atoms/individual-promotion/campaign-welcome-offer.svg
+  s_459e3abe8ffeab::t_505892bd9d9327 3
+assets/figma-atoms/individual-promotion/clearance-sale.svg
+  s_459e3abe8ffeab::t_fc481b66be7cb8 3
+assets/figma-atoms/individual-promotion/compaign-everyday-low-price.svg
+  s_459e3abe8ffeab::t_93f399d0f7683f 4
+assets/figma-atoms/individual-promotion/contract.svg
+  s_459e3abe8ffeab::t_67423d88ef97fa 1-10
+assets/figma-atoms/individual-promotion/launch-and-contract-limit-time.svg
+  s_459e3abe8ffeab::t_cb6a78c350dc3e 1-25
+assets/figma-atoms/individual-promotion/launch-and-contract.svg
+  s_459e3abe8ffeab::t_329433550d43b8 1-22
+assets/figma-atoms/individual-promotion/new-launch-limit-time.svg
+  s_459e3abe8ffeab::t_88552fe0417fac 1-18
+assets/figma-atoms/individual-promotion/new-launch.svg
+  s_459e3abe8ffeab::t_983a056f224cad 1-10
+assets/figma-atoms/individual-promotion/pre-sale-with-time.svg
+  s_459e3abe8ffeab::t_348bf3f7fdd39a 1-18
+assets/figma-atoms/individual-promotion/type-campaign-happy-hour.svg
+  s_459e3abe8ffeab::t_edf26075604c3c 1-10
+assets/figma-atoms/individual-promotion/type-campaign-lightning-offers.svg
+  s_459e3abe8ffeab::t_eeda4c815d91ca 1-10
+assets/figma-atoms/individual-promotion/type-campaign-price-match.svg
+  s_459e3abe8ffeab::t_e96b8e1759971e 1-10
+assets/figma-atoms/individual-promotion/type-campaign-welcome-offer.svg
+  s_459e3abe8ffeab::t_61879d72c9e323 1-10
+assets/figma-atoms/individual-promotion/type-clearance-sale.svg
+  s_459e3abe8ffeab::t_3628d6c5ef55f4 1-10
+assets/figma-atoms/individual-promotion/type-compaign-everyday-low-price.svg
+  s_459e3abe8ffeab::t_0615b75b86c63d 1-15
+assets/figma-atoms/individual-promotion/type-early-access.svg
+  s_459e3abe8ffeab::t_c6fa6b4226a40d 1-10
+assets/figma-atoms/individual-promotion/type-launch-contract-limit-time.svg
+  s_459e3abe8ffeab::t_d9d89b310db02f 3-4,6,8-9,11,19
+assets/figma-atoms/individual-promotion/type-launch-contract.svg
+  s_459e3abe8ffeab::t_ea4dcb260a843d 1,4,6,8,13,16,19
+assets/figma-atoms/individual-promotion/type-new-launch-limit-time.svg
+  s_459e3abe8ffeab::t_f2261b87bd417e 3,5-8,12
+assets/figma-atoms/individual-promotion/type-new-launch.svg
+  s_459e3abe8ffeab::t_14b72124c416cd 1,3,7
+assets/figma-atoms/individual-promotion/type-pre-sale-with-time.svg
+  s_459e3abe8ffeab::t_873663ab6ff203 1-18
+assets/figma-atoms/individual-promotion/type-pre-sale.svg
+  s_459e3abe8ffeab::t_5571412375ea15 3
+assets/figma-atoms/individual-promotion/type-type-pre-sale.svg
+  s_459e3abe8ffeab::t_52c1f58bc83a96 1-10
+assets/figma-atoms/leading-icon/arrow-down-orange.svg
+  s_459e3abe8ffeab::t_5165ab33b2f9fb 1-3
+assets/figma-atoms/leading-icon/clock.svg
+  s_459e3abe8ffeab::t_67426491772e80 1-6
+assets/figma-atoms/leading-icon/delivery-by-joybuy.svg
+  s_459e3abe8ffeab::t_f0348b25064ce9 1-4
+assets/figma-atoms/leading-icon/delivery-by-pop.svg
+  s_459e3abe8ffeab::t_e306d2b6a0103f 1-3
+assets/figma-atoms/leading-icon/flash-purple.svg
+  s_459e3abe8ffeab::t_6cc5ed4b328870 1-3
+assets/figma-atoms/leading-icon/joybuy.svg
+  s_459e3abe8ffeab::t_8c5e3d06ac49a6 2-3
+assets/figma-atoms/leading-icon/pop.svg
+  s_459e3abe8ffeab::t_bb543ae1bb0d28 2
+assets/figma-atoms/main-image-130/out-of-stock-no.svg
+  s_459e3abe8ffeab::t_18615b9c6fc5bd 1-23
+assets/figma-atoms/main-image-130/out-of-stock-yes.svg
+  s_459e3abe8ffeab::t_c85481d1c875fc 1-23
+assets/figma-atoms/main-image-146/out-of-stock-no.svg
+  s_459e3abe8ffeab::t_564d5dfb69c5bf 1-18
+assets/figma-atoms/main-image-146/out-of-stock-yes.svg
+  s_459e3abe8ffeab::t_355263a5ff2d0b 1-20
+assets/figma-atoms/main-image-176/out-of-stock-no.svg
+  s_459e3abe8ffeab::t_01d59077766041 1-18
+assets/figma-atoms/main-image-176/out-of-stock-yes.svg
+  s_459e3abe8ffeab::t_05ac39809ebeff 1-18
+assets/figma-atoms/notify-button/default.svg
+  s_459e3abe8ffeab::t_c0fb914f7882d7 1-4
+assets/figma-atoms/notify-button/notify-button.svg
+  s_459e3abe8ffeab::t_6a1cde30a19cdf 1-4
+assets/figma-atoms/plus-price/no-total-promotion-horizontal.svg
+  s_459e3abe8ffeab::t_902979e7c685fe 5
+assets/figma-atoms/plus-price/no-total-promotion-vertical.svg
+  s_459e3abe8ffeab::t_4acbef61333290 5-6
+assets/figma-atoms/plus-price/type-no-total-promotion-direction-horizontal.svg
+  s_459e3abe8ffeab::t_20d921620e9db9 1-7
+assets/figma-atoms/plus-price/type-no-total-promotion-direction-vertical.svg
+  s_459e3abe8ffeab::t_337f31df378100 1-7
+assets/figma-atoms/plus-price/type-with-total-promotion-direction-default.svg
+  s_459e3abe8ffeab::t_82c344c0933cb3 1-6
+assets/figma-atoms/plus-price/with-total-promotion-default.svg
+  s_459e3abe8ffeab::t_ce63cd6aca7fdb 5
+assets/figma-atoms/points-extra-save/default.svg
+  s_459e3abe8ffeab::t_aa4d1e1f2775a5 1-3
+assets/figma-atoms/points-extra-save/points-extra-save.svg
+  s_459e3abe8ffeab::t_8217164c45285b 1-3
+assets/figma-atoms/price-first-line/default.svg
+  s_459e3abe8ffeab::t_6cd820998cf715 1-3
+assets/figma-atoms/price-first-line/price-first-line-sale.svg
+  s_459e3abe8ffeab::t_dba32ac8375881 1-3
+assets/figma-atoms/price-second-line/bought-separately-rrp-vertical.svg
+  s_459e3abe8ffeab::t_6346b8d7ecd23e 1-6
+assets/figma-atoms/price-second-line/ppr-discount1-horizontal.svg
+  s_459e3abe8ffeab::t_a69f6ec81927b1 2-4
+assets/figma-atoms/price-second-line/ppr-discount1-vertical.svg
+  s_459e3abe8ffeab::t_333c5c836c3be6 2-4
+assets/figma-atoms/price-second-line/ppr-discount2-horizontal.svg
+  s_459e3abe8ffeab::t_c00a2068809d95 2-4
+assets/figma-atoms/price-second-line/ppr-discount2-vertical.svg
+  s_459e3abe8ffeab::t_0517c6d0fecb04 2-4
+assets/figma-atoms/price-second-line/rrp-horizontal.svg
+  s_459e3abe8ffeab::t_a87e14c009746a 2-3
+assets/figma-atoms/price-second-line/type-bought-separately-rrp-direction-vertical.svg
+  s_459e3abe8ffeab::t_d854e067fe37cc 1-6
+assets/figma-atoms/price-second-line/type-ppr-discount1-direction-horizontal.svg
+  s_459e3abe8ffeab::t_b9bb8e9d1d61c1 1-5
+assets/figma-atoms/price-second-line/type-ppr-discount1-direction-vertical.svg
+  s_459e3abe8ffeab::t_2866fecd2cfd20 1-5
+assets/figma-atoms/price-second-line/type-ppr-discount2-direction-horizontal.svg
+  s_459e3abe8ffeab::t_e10cb5cd436b59 1-5
+assets/figma-atoms/price-second-line/type-ppr-discount2-direction-vertical.svg
+  s_459e3abe8ffeab::t_f968e7588b090e 1-5
+assets/figma-atoms/price-second-line/type-rrp-direction-horizontal.svg
+  s_459e3abe8ffeab::t_e61623da6bbcb9 1-4
+assets/figma-atoms/price-second-line/type-was-direction-horizontal.svg
+  s_459e3abe8ffeab::t_365a6dc61b5e8a 1-5
+assets/figma-atoms/price-second-line/type-was-discount1-direction-horizontal.svg
+  s_459e3abe8ffeab::t_b038ac71cfd5c3 1-6
+assets/figma-atoms/price-second-line/type-was-discount1-direction-vertical.svg
+  s_459e3abe8ffeab::t_b9f5be968c3a17 1-6
+assets/figma-atoms/price-second-line/type-was-discount2-direction-horizontal.svg
+  s_459e3abe8ffeab::t_49d0cb8df3a22b 1-6
+assets/figma-atoms/price-second-line/type-was-discount2-direction-vertical.svg
+  s_459e3abe8ffeab::t_735285cdb885c7 1-6
+assets/figma-atoms/price-second-line/was-discount1-horizontal.svg
+  s_459e3abe8ffeab::t_9471eb2f5faea0 2-3,5
+assets/figma-atoms/price-second-line/was-discount1-vertical.svg
+  s_459e3abe8ffeab::t_f7632c9034ece7 2-3
+assets/figma-atoms/price-second-line/was-discount2-horizontal.svg
+  s_459e3abe8ffeab::t_88bf3e95d81db0 2-3,5
+assets/figma-atoms/price-second-line/was-discount2-vertical.svg
+  s_459e3abe8ffeab::t_8417ed8ab2a18b 2-3
+assets/figma-atoms/price-second-line/was-horizontal.svg
+  s_459e3abe8ffeab::t_b669b0dfa01277 2-3
+assets/figma-atoms/price/bought-separately.svg
+  s_459e3abe8ffeab::t_d85147d6862f57 1-9
+assets/figma-atoms/price/default.svg
+  s_459e3abe8ffeab::t_cb0e5fe5d0a684 2
+assets/figma-atoms/price/range.svg
+  s_459e3abe8ffeab::t_478075794bc9fe 3,7
+assets/figma-atoms/price/rrp.svg
+  s_459e3abe8ffeab::t_48fe8afe253a11 3-5
+assets/figma-atoms/price/sale-percent-rrp.svg
+  s_459e3abe8ffeab::t_7c721c01692a2b 2-5
+assets/figma-atoms/price/sale-percent-was.svg
+  s_459e3abe8ffeab::t_fc7d6d076cbef4 2-4,6
+assets/figma-atoms/price/sale-save-rrp.svg
+  s_459e3abe8ffeab::t_2cc52c96b82dc3 2-5
+assets/figma-atoms/price/sale-save-was.svg
+  s_459e3abe8ffeab::t_ce75f6e35a4669 2-4,6
+assets/figma-atoms/price/starting-price.svg
+  s_459e3abe8ffeab::t_a9d7ed546f806e 2
+assets/figma-atoms/price/type-bought-separately-pricetype.svg
+  s_459e3abe8ffeab::t_8e3ca6c1ef42cd 1-9
+assets/figma-atoms/price/type-default-pricetype.svg
+  s_459e3abe8ffeab::t_58b9ef84810de7 1-3
+assets/figma-atoms/price/type-pricetype-rrp.svg
+  s_459e3abe8ffeab::t_a5b99091fab116 1-6
+assets/figma-atoms/price/type-pricetype-was.svg
+  s_459e3abe8ffeab::t_a7749aec871b8f 1-7
+assets/figma-atoms/price/type-range-pricetype.svg
+  s_459e3abe8ffeab::t_e984f8751cdcad 1-17
+assets/figma-atoms/price/type-sale-percent-pricetype-rrp.svg
+  s_459e3abe8ffeab::t_707455dfcaba9e 1-6
+assets/figma-atoms/price/type-sale-percent-pricetype-was.svg
+  s_459e3abe8ffeab::t_3e19b5587ae99e 1-7
+assets/figma-atoms/price/type-sale-save-pricetype-rrp.svg
+  s_459e3abe8ffeab::t_9fd0551b49ddf6 1-6
+assets/figma-atoms/price/type-sale-save-pricetype-was.svg
+  s_459e3abe8ffeab::t_9e749796b019b1 1-7
+assets/figma-atoms/price/type-starting-price-pricetype.svg
+  s_459e3abe8ffeab::t_accf3d19356513 1-11
+assets/figma-atoms/price/was.svg
+  s_459e3abe8ffeab::t_e44a260a017b18 3-5
+assets/figma-atoms/product-highlights/new-and-hot.svg
+  s_459e3abe8ffeab::t_80ddd99e0bd791 1-4
+assets/figma-atoms/product-highlights/new-hot.svg
+  s_459e3abe8ffeab::t_2fa9bf9b3747d6 1-4
+assets/figma-atoms/product-highlights/private-label.svg
+  s_459e3abe8ffeab::t_a6658dae8434b1 1-4
+assets/figma-atoms/product-highlights/sponsored.svg
+  s_459e3abe8ffeab::t_5b69f24351a58c 3
+assets/figma-atoms/product-highlights/too-good-to-waste.svg
+  s_459e3abe8ffeab::t_f6d8b0d60b117a 1-12
+assets/figma-atoms/product-highlights/top-deal.svg
+  s_459e3abe8ffeab::t_5ed732edd498ff 1-3
+assets/figma-atoms/rating-sold/default.svg
+  s_459e3abe8ffeab::t_85d8148879a17c 1-4
+assets/figma-atoms/rating-sold/rate-and-sold.svg
+  s_459e3abe8ffeab::t_d5802226628982 1-6
+assets/figma-atoms/rating-sold/rate-sold.svg
+  s_459e3abe8ffeab::t_e54bf061024b7e 3,5
+assets/figma-atoms/rating-sold/sold.svg
+  s_459e3abe8ffeab::t_60c1762854629a 2
+assets/figma-atoms/rating-sold/variant.svg
+  s_459e3abe8ffeab::t_b2f8ed2731d079 3
+assets/figma-atoms/rating-sold/variant5.svg
+  s_459e3abe8ffeab::t_560ebd2f66517d 3-5,7
+assets/figma-atoms/rating-sold/viewed.svg
+  s_459e3abe8ffeab::t_9040f7485fd988 2
+assets/figma-atoms/seller-brand/default.svg
+  s_459e3abe8ffeab::t_8b2dac69bb7eda 1-11
+assets/figma-atoms/seller-brand/sold-by-joybuy.svg
+  s_459e3abe8ffeab::t_23ff93b7050a7b 1-3
+assets/figma-atoms/service/gift-wrapping.svg
+  s_459e3abe8ffeab::t_ae78d65c789ecb 1-11
+assets/figma-atoms/service/install-and-recyle.svg
+  s_459e3abe8ffeab::t_c57ac0ea3c11ed 1-13
+assets/figma-atoms/service/install-recycle.svg
+  s_459e3abe8ffeab::t_015c424aad5105 1-13
+assets/figma-atoms/service/recycle.svg
+  s_459e3abe8ffeab::t_39c1c7d3acebbd 1-5
+assets/figma-atoms/service/type-gift-wrapping.svg
+  s_459e3abe8ffeab::t_dee6614bb30297 1-11
+assets/figma-atoms/service/type-install-recyle.svg
+  s_459e3abe8ffeab::t_00ec3e17ecdd0c 1-13
+assets/figma-atoms/sold-by-joybuy/joybuy-mark.svg
+  s_459e3abe8ffeab::t_302d9e7a588e58 1-3
+assets/figma-atoms/sold-by-joybuy/sold-by-joybuy.svg
+  s_459e3abe8ffeab::t_27394d4a62420f 1-11
+assets/figma-atoms/spu-color/spu-color.svg
+  s_459e3abe8ffeab::t_e7bca2c90843f4 1-22
+assets/figma-atoms/stock/low-stock-no-out-of-stock-yes.svg
+  s_459e3abe8ffeab::t_d5fa51454d6fa4 1-3
+assets/figma-atoms/stock/low-stock-yes-out-of-stock-no.svg
+  s_459e3abe8ffeab::t_cb5c474cf6e3db 1-3
+assets/figma-atoms/stock/no-yes.svg
+  s_459e3abe8ffeab::t_00bd808821c6c6 1-3
+assets/figma-atoms/stock/yes-no.svg
+  s_459e3abe8ffeab::t_358333693a294c 1-3
+assets/figma-atoms/tag-discount/default.svg
+  s_459e3abe8ffeab::t_e5aee535b191cd 1-9
+assets/figma-atoms/tag-discount/tag-discount.svg
+  s_459e3abe8ffeab::t_e66f22c980b7c0 1-9
+assets/figma-atoms/tag-like/property-1-loading.svg
+  s_459e3abe8ffeab::t_8ca2e8fe39b55b 1-3
+assets/figma-atoms/tag-like/property-1-tag-like.svg
+  s_459e3abe8ffeab::t_c5ad8bd5e343eb 1-3
+assets/figma-atoms/tag-like/property-1-tag-liked.svg
+  s_459e3abe8ffeab::t_f6e0f2b195dd02 1-3
+assets/figma-atoms/tag-like/tag-like.svg
+  s_459e3abe8ffeab::t_a4f5d6174b7ec6 2
+assets/figma-atoms/tag-number/default.svg
+  s_459e3abe8ffeab::t_cab6bb0874aa9d 1-4
+assets/figma-atoms/tag-number/tag-number.svg
+  s_459e3abe8ffeab::t_a389f690787771 1-4
+assets/figma-atoms/title/1.svg
+  s_459e3abe8ffeab::t_efbf90e68f2842 3
+assets/figma-atoms/title/2.svg
+  s_459e3abe8ffeab::t_501465cba3187c 3
+assets/figma-atoms/title/3.svg
+  s_459e3abe8ffeab::t_b7277bf38e36a2 3
+assets/figma-atoms/total-promotion/15-00-off-over-100-00.svg
+  s_459e3abe8ffeab::t_edba2afe65cb73 3
+assets/figma-atoms/total-promotion/buy-1-get-1-free.svg
+  s_459e3abe8ffeab::t_c63a2ac9c7c27c 3
+assets/figma-atoms/total-promotion/buy-2-get-30-off.svg
+  s_459e3abe8ffeab::t_2b4fa5116f871c 3
+assets/figma-atoms/total-promotion/limited-time-discount.svg
+  s_459e3abe8ffeab::t_b8245805d7975b 1-10
+assets/figma-atoms/total-promotion/pay-after-promotion.svg
+  s_459e3abe8ffeab::t_01c8023ba8e108 3
+assets/figma-atoms/total-promotion/repeat-and-save-up-to-7.svg
+  s_459e3abe8ffeab::t_5331345d6df67c 1-10
+assets/figma-atoms/total-promotion/spend-and-get-gift-1.svg
+  s_459e3abe8ffeab::t_601ab236193536 1-10
+assets/figma-atoms/total-promotion/spend-and-get-gift-2.svg
+  s_459e3abe8ffeab::t_5663d5f346b1d6 1-10
+assets/figma-atoms/total-promotion/spend-and-get-gift-3.svg
+  s_459e3abe8ffeab::t_b39c39bb7b61df 1-10
+assets/figma-atoms/total-promotion/spend-and-get-gift-4.svg
+  s_459e3abe8ffeab::t_e442f5a8cb8d81 1-10
+assets/figma-atoms/total-promotion/spend-and-get-gift-5.svg
+  s_459e3abe8ffeab::t_2cdf4c0e4de436 1-10
+assets/figma-atoms/total-promotion/spend-and-get-gift-6.svg
+  s_459e3abe8ffeab::t_cde98fc68dc4b6 1-10
+assets/figma-atoms/total-promotion/type-15-00-off-over-100-00.svg
+  s_459e3abe8ffeab::t_34070f99b279e3 1-10
+assets/figma-atoms/total-promotion/type-3-for-2.svg
+  s_459e3abe8ffeab::t_de0ae6ab0b3954 1-10
+assets/figma-atoms/total-promotion/type-buy-1-get-1-free.svg
+  s_459e3abe8ffeab::t_db8f42f2b263e6 1-10
+assets/figma-atoms/total-promotion/type-buy-2-get-30-off.svg
+  s_459e3abe8ffeab::t_6250bce84909e0 1-10
+assets/figma-atoms/total-promotion/type-limited-time-discount.svg
+  s_459e3abe8ffeab::t_c69c11a0382373 1-10
+assets/figma-atoms/total-promotion/type-pay-after-promotion.svg
+  s_459e3abe8ffeab::t_badf0c3d10a4eb 1-10
+assets/figma-atoms/total-promotion/type-points.svg
+  s_459e3abe8ffeab::t_5ab7e3a5490497 1-10
+assets/figma-atoms/total-promotion/type-repeat-save-up-to-7.svg
+  s_459e3abe8ffeab::t_1c663715ffe5b6 1-10
+assets/figma-atoms/total-promotion/type-spend-get-gift-1.svg
+  s_459e3abe8ffeab::t_790e29fffc3bad 1-10
+assets/figma-atoms/total-promotion/type-spend-get-gift-2.svg
+  s_459e3abe8ffeab::t_a558d3886f88cd 1-10
+assets/figma-atoms/total-promotion/type-spend-get-gift-3.svg
+  s_459e3abe8ffeab::t_1729428386c388 1-10
+assets/figma-atoms/total-promotion/type-spend-get-gift-4.svg
+  s_459e3abe8ffeab::t_5fb1c67b99e826 1-10
+assets/figma-atoms/total-promotion/type-spend-get-gift-5.svg
+  s_459e3abe8ffeab::t_f931164998569f 1-10
+assets/figma-atoms/total-promotion/type-spend-get-gift-6.svg
+  s_459e3abe8ffeab::t_7f2b832703c897 1-10
+assets/figma-atoms/total-promotion/type-virtual-gift-3-00-in-gifts.svg
+  s_459e3abe8ffeab::t_26d051cfbcaa1f 1-10
+assets/figma-atoms/total-promotion/type-virtual-gift-3-gifts.svg
+  s_459e3abe8ffeab::t_fe359dc53479ae 1-10
+assets/figma-atoms/total-promotion/type-virtual-gift-free-gift.svg
+  s_459e3abe8ffeab::t_76d07d90b1589e 1-10
+assets/figma-atoms/total-promotion/type-virtual-gift-gift-up-to-3-00.svg
+  s_459e3abe8ffeab::t_f7acb98b44620c 1-10
+assets/figma-atoms/total-promotion/type-virtual-gift-pick-3-gifts.svg
+  s_459e3abe8ffeab::t_db884ba1573f7e 1-10
+assets/figma-atoms/total-promotion/virtual-gift-free-gift.svg
+  s_459e3abe8ffeab::t_4744e76e3c75ef 3
+assets/figma-atoms/total-promotion/virtual-gift-gift-up-to-3-00.svg
+  s_459e3abe8ffeab::t_e8a2c51ca75780 3
+assets/i18n.js
+  s_459e3abe8ffeab::t_719e596751c22b 71,77,113,118,130,137,182,184-187,189,192-194,261,265,304,312,454,575,589,623,639,643
+assets/tokens.css
+  s_459e3abe8ffeab::t_efba10ef51eba9 31-32,103
+atoms/index.html
+  s_459e3abe8ffeab::t_47ac4692b139ff 7,195,444,447-453,475-499,572,670,682-686,692-694,796
+foundations/iconography.html
+  s_459e3abe8ffeab::t_11dc399f9a50f7 338,343,375,443,448-449,454-455,461,467,480,487,493,499-505,511,518,523-524,530,536,541-542,547-548,555,561,567,572-573,579,585
+foundations/tokens.html
+  s_459e3abe8ffeab::t_2c932319c69d89 427,432,442
+foundations/typography.html
+  s_459e3abe8ffeab::t_3ae5fef62f2358 443,520,525,535,540,606-607,645,656,671-672,682-684,693-694
+organisms/_compare-vertical.html
+  s_459e3abe8ffeab::t_10f6aaf8a6d126 1-1232
+organisms/booking-card.html
+  s_459e3abe8ffeab::t_d389c389d78208 141-143,146-150,152-153,155-156,160,162-178,180,184-223,225-236,269-353,456,477,590-673,732,740,742-743,746,750,753-755,786,838,845,851,856,870,873,889,894,899,917,928-931,938-940,977,999,1079-1080,1092-1129,1133,1136-1150,1152-1163,1168-1180,1185-1186,1232,1239-1246,1248,1250,1252-1253,1256,1261-1263,1265-1267,1269-1271,1273-1275,1278-1282,1284-1290,1304-1305,1315,1332,1340-1349,1352-1366,1368-1372,1375-1460,1470,1483,1631-1638,1641-1644,1679-1680,1683
+organisms/campaign-card.html
+  s_459e3abe8ffeab::t_e74ce9da3f575b 469-563,567-650,716,718-722,771,923,926-1007,1009-1170,1172,1174-1193,1196-1234,1236-1239,1385-1392,1395-1398,1405-1407,1409-1411,1427-1429
+organisms/horizontal-card.html
+  s_459e3abe8ffeab::t_4cb2c3205074ad 202-203,222-223,225-226,229-230,242,244,281-282,292-299,303,458-461,485-486,603-697,701-784,858-860,862,864,866,868-869,871-872,874,876-879,886,888-889,892,896,899-902,944,946,978,1060,1069-1077,1207-1208,1211-1224,1226-1245,1247-1259,1262-1318,1321-1325,1333-1340,1345,1358-1398,1401-1408,1412-1458,1463,1465-1466,1468-1485,1488-1535,1537,1539-1567,1581,1598,1747-1754,1757-1761,1777,1786-1797,1799-1800,1804-1809,1813-1816,1818-1829,1831-1839,1841-1874,1883,1893,1915-1917
+organisms/horizontal-mini.html
+  s_459e3abe8ffeab::t_2190c8caebbab5 198-199,260,569-663,667-750,822-827,829-830,832-833,839,841-842,845,849,852-854,975,984,986-989,1115-1116,1119-1132,1134-1155,1157-1167,1169-1223,1229,1242-1276,1279-1283,1290-1309,1311,1313,1316-1333,1336-1382,1384,1386-1414,1428,1445,1594-1601,1604-1609,1679-1681
+organisms/horizontal-scroll.html
+  s_459e3abe8ffeab::t_22e08c6a0a70f4 364-458,462-545,611,613-614,616-617,693,843-844,846-856,858-872,874-915,918-956,958,961-973,980-989,991-995,997,999-1001,1003-1005,1007-1012,1017-1024,1027,1031-1036,1039-1046,1048-1080,1082,1084-1145,1149-1155,1159-1162,1164,1311-1318,1322-1325,1341-1343
+organisms/small-dynamic.html
+  s_459e3abe8ffeab::t_65c06736968472 506-600,604-687,756,758-759,761-762,991-1005,1007-1027,1029,1031-1050,1054-1056,1059,1062-1066,1092-1128,1130-1141,1143-1170,1172,1174-1175,1178-1185,1188-1222,1366-1373,1376-1379,1387,1389,1405,1407,1422-1424
+organisms/vertical-card.html
+  s_459e3abe8ffeab::t_edbcd64423bee0 113-114,166-170,172-173,176-177,179-192,195-221,224,228-229,243-247,249-250,253-254,259,266,269-270,273,296-298,301-303,322-328,332-389,391-403,406-407,415-437,470-476,719-723,725-769,925,928,930,932-933,1058-1113,1115-1117,1120-1129,1194-1195,1204-1205,1213-1221,1223-1257,1259-1261,1267-1268,1270-1271,1274,1278,1281,1351-1352,1354,1356-1368,1377-1378,1380-1381,1383-1394,1406,1421,1427,1429,1434-1435,1455-1463,1467,1471,1480-1490,1492,1496,1500,1504-1537,1541,1544,1567,1578,1589,1591,1600,1629,1632-1652,1811-1812,1815,1870-1871,1874-1877,1879-1928,1930-1935,1937-1957,1959-1965,1967-1970,1973-1987,1990,1993,2008,2011,2013,2017-2020,2024-2033,2037-2068,2072,2084-2086,2089,2091-2092,2096-2103,2107-2122,2125-2169,2176,2179-2181,2183-2192,2194,2196-2209,2211-2242,2248-2269,2271,2273,2275-2277,2283-2284,2286-2289,2292-2295,2297-2300,2305-2307,2309-2319,2321-2334,2336-2344,2352-2368,2384,2405,2423-2424,2472,2474,2527,2567-2569,2571,2573,2578-2579,2592,2614,2616-2617
+sections/home-feed.html
+  s_459e3abe8ffeab::t_6b8ced4047497e 234,236-237,240-241,253,255,600-601,1155-1156,1159-1178,1180-1193,1217,1223,1237
+utilities/changelog.html
+  s_459e3abe8ffeab::t_94461f295fc247 7,12,110-111,126-140,243-244,255,259
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "cba964e55edf4c53ba8b2a1ad71ae432ee53fb4d",
+  "prompts": {},
+  "sessions": {
+    "s_459e3abe8ffeab": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a04784-e805-7271-99e6-dcd4e95afed6",
+        "model": "kimi-k3-joybuilder"
+      },
+      "human_author": "Beta004 <chenyongtian004@gmail.com>"
+    }
+  }
+}
