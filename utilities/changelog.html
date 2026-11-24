@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <title>变更记录 · Changelog · 商卡设计系统</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="从基础奠基到 MVP1.0，一条时间线回顾商卡设计系统平台每个版本的里程碑与亮点。">
+<meta name="description" content="从基础奠基到 Figma 原子全量对齐，一条时间线回顾商卡设计系统平台每个版本的里程碑与亮点。">
 <link rel="stylesheet" href="../assets/tokens.css">
 <style>
   /* =====================================================
      Changelog 变更记录 — Utilities layer.
-     A version-timeline narrative (v0.1 → v1.0) of how the
+     A version-timeline narrative (v0.1 → v1.1) of how the
      design system was built, rendered bilingually inside
      #cl-root (data-global-i18n="off", re-rendered on the
      joybuy:languagechange event). Chrome uses the --accent
@@ -107,8 +107,8 @@
     crumbHome:   { zh: '概览', en: 'Overview' },
     crumbSelf:   { zh: '变更记录', en: 'Changelog' },
     title:       { zh: '变更记录', en: 'Changelog' },
-    subtitle:    { zh: '一条时间线，回顾商卡设计系统平台从「基础奠基」到 MVP1.0 的每一步：每个版本做了什么、上线了哪些内容、以及它把设计系统推向了哪里。',
-                   en: 'One timeline tracing the Product Card Design System from its foundations to MVP1.0 — what each release did, what shipped, and where it moved the system.' },
+    subtitle:    { zh: '一条时间线，回顾商卡设计系统平台从「基础奠基」到「Figma 原子全量对齐」的每一步：每个版本做了什么、上线了哪些内容、以及它把设计系统推向了哪里。',
+                   en: 'One timeline tracing the Product Card Design System from its foundations to full Figma atom alignment — what each release did, what shipped, and where it moved the system.' },
     statReleases:{ zh: '个版本', en: 'releases' },
     statLayers:  { zh: '层信息架构', en: 'IA layers' },
     statCurrent: { zh: '当前版本', en: 'current' },
@@ -123,7 +123,21 @@
      summary, and highlights (some linking to the page that shipped). */
   var VERSIONS = [
     {
-      ver: 'v1.0', date: '2026-08-31', current: true,
+      ver: 'v1.1', date: '2026-11-24', current: true,
+      layer: { zh: '原子 · 商卡预览', en: 'Atoms · Card previews' },
+      title: { zh: 'Figma 原子全量对齐 & 预览文案收敛', en: 'Full Figma atom alignment & preview copy lockdown' },
+      summary: { zh: '以 Figma「基础组件 Product Card Atomic Components」为唯一事实来源，重导 148 个 Figma 变体并明示源文案；同时把 7 张商卡预览中的自造字段移除，履约、库存、自营、服务、原产地等文案只允许来自原子库。',
+                 en: 'The Figma Product Card Atomic Components section is now the single source of truth: 148 variants re-exported with source copy shown. All seven card previews drop invented fields; fulfillment, stock, self-operated, service and country copy must come from the atomic library.' },
+      hls: [
+        { zh: '原子浏览器：33 个平台原子 · 149 个变体 · 源文案明示', en: 'Atom browser: 32 platform atoms · 148 Figma variants · source copy shown', href: '../atoms/index.html' },
+        { zh: '履约固定为 Get it by today；自营只允许 Sold by Joybuy 或整槽隐藏', en: 'Fulfillment is fixed to Get it by today; seller shows Sold by Joybuy or hides entirely', href: '../organisms/vertical-card.html' },
+        { zh: '自营标签图标改用 Figma 23572-350839 品牌标节点', en: 'Seller badge now uses the Figma 23572-350839 brand-mark node' },
+        { zh: '移除原子库不存在的 Unit price 与预约量字段', en: 'Removed Unit price and reservation-count fields absent from the atomic library' },
+        { zh: '插件字段表同步收敛为 18 个原子库字段', en: 'Plugin field registry synced to 18 atomic-library fields' }
+      ]
+    },
+    {
+      ver: 'v1.0', date: '2026-08-31',
       layer: { zh: '工具 · 收尾打磨', en: 'Utilities · Polish' },
       title: { zh: 'MVP1.0 — 变更记录上线，全站收尾', en: 'MVP1.0 — Changelog ships, site finalized' },
       summary: { zh: '补齐工具层最后一块拼图：本变更记录页。随后完成全站一致性、链接与响应式审计，并跑通全量冒烟回归，正式定格 MVP1.0。',
@@ -226,6 +240,8 @@
       '</article>';
   }
 
+  const currentVersion = VERSIONS.find(function (item) { return item.current; }) || VERSIONS[0];
+
   function render() {
     var lg = lang();
     root.innerHTML =
@@ -236,11 +252,11 @@
         '<div class="cl-head__meta">' +
           '<span class="cl-stat"><b>' + VERSIONS.length + '</b><span>' + esc(t('statReleases')) + '</span></span>' +
           '<span class="cl-stat"><b>5</b><span>' + esc(t('statLayers')) + '</span></span>' +
-          '<span class="cl-stat"><b>v1.0</b><span>' + esc(t('statCurrent')) + '</span></span>' +
+          '<span class="cl-stat"><b>' + esc(currentVersion.ver) + '</b><span>' + esc(t('statCurrent')) + '</span></span>' +
         '</div>' +
       '</header>' +
       '<div class="cl-timeline">' + VERSIONS.map(function (v) { return entryHTML(v, lg); }).join('') + '</div>' +
-      '<div class="cl-foot"><a href="decision-guide.html">' + esc(t('footLink')) + '</a><span>Last updated 2026-08-31</span></div>';
+      '<div class="cl-foot"><a href="decision-guide.html">' + esc(t('footLink')) + '</a><span>Last updated ' + esc(currentVersion.date) + '</span></div>';
   }
 
   window.addEventListener('joybuy:languagechange', render);

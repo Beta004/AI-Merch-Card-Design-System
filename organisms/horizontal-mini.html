@@ -118,19 +118,6 @@
     border-bottom: 1px solid var(--outline);
     margin-bottom: 16px;
   }
-  .side-preview__lang {
-    display: inline-flex; padding: 2px;
-    border: 1px solid var(--outline); border-radius: var(--r-pill);
-    background: var(--surface); letter-spacing: 0;
-  }
-  .side-preview__lang button {
-    all: unset; cursor: pointer;
-    padding: 3px 8px; border-radius: var(--r-pill);
-    font-size: 10px; font-weight: 700;
-    color: var(--ink-4); transition: background .12s ease, color .12s ease;
-    text-transform: none;
-  }
-  .side-preview__lang button.is-active { background: var(--ink); color: #fff; }
   .side-preview__items { display: flex; flex-direction: column; gap: 20px; }
   .side-preview__item { display: flex; flex-direction: column; gap: 8px; }
   .side-preview__item-label {
@@ -208,6 +195,8 @@
   }
   .hmini__highlight[data-empty] { display: none; }
   .hmini__highlight img { display: block; height: 12px; width: auto; }
+  /* Sponsored is a 16px text-only atom — keep it on the text baseline, not line-height:0. */
+  .hmini__highlight .ph-sponsored { line-height: 16px; }
 
   /* Slot 2 · Title — 2-line clamp, no separate brand */
   .hmini__title {
@@ -268,7 +257,7 @@
     content: "";
     display: inline-block;
     width: 12px; height: 12px;
-    background: url('../assets/figma-atoms/fulfillment-time/joybuy.svg') left center/contain no-repeat;
+    background: url('../assets/figma-atoms/leading-icon/joybuy.svg') left center/contain no-repeat;
     flex-shrink: 0;
   }
 
@@ -302,20 +291,6 @@
   }
   .demo__controls-hint {
     font-size: 12px; color: var(--ink-4); line-height: 1.6;
-  }
-  .lang-toggle {
-    display: inline-flex; padding: 3px;
-    border: 1px solid var(--outline); border-radius: var(--r-pill);
-    background: var(--surface);
-  }
-  .lang-toggle__btn {
-    all: unset; cursor: pointer;
-    padding: 5px 14px; border-radius: var(--r-pill);
-    font-size: 12px; font-weight: 600;
-    color: var(--ink-4); transition: background .12s ease, color .12s ease;
-  }
-  .lang-toggle__btn.is-active {
-    background: var(--ink); color: #fff;
   }
   .chip-strip {
     display: flex; gap: 6px; flex-wrap: wrap;
@@ -591,9 +566,188 @@
     content: "·"; position: absolute; left: 6px; color: var(--ink-5);
     font-weight: 700;
   }
+
+  /* ============ Field explorer · scenario tabs + field switches + copilot ============
+     (visual system shared with vertical-card pilot #2 / booking-card pilot #1) ---- */
+  .field-sim { border-top: 1px dashed var(--outline); padding-top: 18px; }
+  .field-sim__title {
+    font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-4); margin-bottom: 4px;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .field-sim__title-hint { font-size: 11px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--ink-5); }
+  .sim-group { margin-top: 16px; }
+  .sim-group__head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+  .sim-group__name { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
+  .sim-group__rule { font-size: 10.5px; color: var(--ink-5); white-space: nowrap; }
+  .sim-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 7px 0;
+  }
+  .sim-row + .sim-row { border-top: 1px solid var(--surface-2); }
+  .sim-row__label { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink-2); }
+  .sim-row__pri {
+    font-size: 9.5px; font-weight: 700; letter-spacing: .03em;
+    color: var(--ink-5); background: var(--surface-2);
+    border-radius: 4px; padding: 1px 5px;
+  }
+  .sim-row__na { font-size: 10px; color: var(--ink-5); }
+  .sim-row.is-picked .sim-row__label { color: var(--ink); font-weight: 600; }
+  .sim-row.is-picked .sim-row__pri { color: var(--accent); background: var(--accent-50); }
+  .sim-row.is-folded .sim-row__label { color: var(--ink-4); }
+  .sim-row.is-disabled { opacity: .5; }
+  /* switch */
+  .sim-sw {
+    all: unset; cursor: pointer; box-sizing: border-box; flex: none;
+    width: 36px; height: 20px; border-radius: var(--r-pill);
+    background: var(--outline); position: relative; transition: background .15s ease;
+  }
+  .sim-sw::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25);
+    transition: transform .15s ease;
+  }
+  .sim-sw[aria-checked="true"] { background: var(--accent); }
+  .sim-sw[aria-checked="true"]::after { transform: translateX(16px); }
+  .sim-sw[aria-disabled="true"] { cursor: not-allowed; opacity: .55; }
+  /* copilot */
+  .sim-copilot {
+    margin-top: 16px; padding: 13px 14px;
+    border: 1px solid var(--outline); border-radius: var(--r-md);
+    background: var(--surface-2);
+  }
+  .sim-copilot__head {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  .sim-copilot__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+  .sim-copilot p { margin: 0 0 6px; font-size: 12px; line-height: 1.65; color: var(--ink-3); }
+  .sim-copilot p:last-child { margin-bottom: 0; }
+  .sim-copilot b { color: var(--ink); font-weight: 600; }
+  .sim-copilot em { font-style: normal; color: var(--ink-4); }
+  /* scenario tabs */
+  .scene-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .scene-tab {
+    all: unset; cursor: pointer; box-sizing: border-box;
+    padding: 7px 13px; border-radius: 8px;
+    font-size: 12.5px; font-weight: 600; line-height: 1.15;
+    color: var(--ink-3); background: var(--surface);
+    border: 1px solid var(--outline);
+    transition: all .12s ease;
+  }
+  .scene-tab:hover { border-color: var(--outline-strong); }
+  .scene-tab.is-active { color: #fff; background: var(--ink); border-color: var(--ink); }
+  .scene-tab__sub { font-size: 10px; font-weight: 500; opacity: .7; margin-left: 5px; }
+  /* reset + stacked label */
+  .field-sim__head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+  .field-sim__reset {
+    all: unset; cursor: pointer; flex: none;
+    font-size: 11px; font-weight: 600; color: var(--ink-4);
+    padding: 4px 10px; border-radius: var(--r-pill);
+    border: 1px solid var(--outline); background: var(--surface);
+    transition: all .12s ease;
+  }
+  .field-sim__reset:hover { color: var(--accent); border-color: var(--accent-100); background: var(--accent-50); }
+  .field-sim__reset[aria-disabled="true"] { opacity: .4; cursor: default; }
+  .field-sim__reset[aria-disabled="true"]:hover { color: var(--ink-4); border-color: var(--outline); background: var(--surface); }
+  .sim-row__label { flex-direction: column; align-items: flex-start; gap: 1px; }
+  .sim-row__name { display: flex; align-items: center; gap: 6px; }
+  .sim-row__scene { font-size: 10px; color: var(--ink-5); }
+  .sim-row__ov {
+    font-size: 9px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-50);
+    border-radius: 4px; padding: 1px 5px;
+  }
+  .sim-row.is-picked .sim-row__name { color: var(--ink); font-weight: 600; }
 </style>
 <link rel="stylesheet" href="../assets/card-detail-template.css">
   <link rel="stylesheet" href="../assets/card-preview-alignment.css">
+<style>
+  /* ===================================================================
+     Live-config panel v2 · shared with the vertical-card detail page.
+     Grouped field cards, single-line rows, no helper captions.
+     The reset button only appears once a field has been overridden.
+     =================================================================== */
+  #s-overview .demo__controls { gap: 24px; }
+  #s-overview .demo__controls-block + .demo__controls-block {
+    padding-top: 22px;
+    border-top: 1px solid var(--outline);
+  }
+  #s-overview .demo__controls-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    color: var(--ink-4);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .scene-tabs { display: flex; flex-wrap: wrap; gap: 7px; }
+  .scene-tab {
+    padding: 8px 13px; border-radius: 8px;
+    font-size: 12.5px; font-weight: 600; line-height: 1.25;
+  }
+  /* the qualifier keeps same-name scenarios (Dutch auction states) apart */
+  .scene-tab__sub {
+    font-size: 10px; font-weight: 500; opacity: .65;
+    margin-left: 5px; letter-spacing: 0; text-transform: none;
+  }
+
+  .field-sim { padding-top: 22px; border-top: 1px solid var(--outline); }
+  .field-sim__head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 12px;
+  }
+  .field-sim__title {
+    display: block; font-size: 13px; font-weight: 700; color: var(--ink);
+    margin-bottom: 0;
+  }
+  .field-sim__title-hint { display: none; }
+  .field-sim__reset {
+    font-size: 11px; font-weight: 600; color: var(--ink-4);
+    padding: 4px 9px; border-radius: 6px;
+  }
+  .field-sim__reset[aria-disabled="true"] {
+    visibility: hidden; pointer-events: none;
+  }
+
+  .sim-group {
+    margin-top: 8px; overflow: hidden;
+    border: 1px solid var(--outline); border-radius: 9px;
+    background: var(--surface);
+  }
+  .sim-group__head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 12px; margin-bottom: 0;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--outline);
+  }
+  .sim-group__name {
+    font-size: 11px; font-weight: 700; letter-spacing: .04em;
+    color: var(--ink-3); text-transform: uppercase;
+  }
+  .sim-group__rule { display: none; }
+  .sim-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; min-height: 44px; padding: 10px 12px; box-sizing: border-box;
+  }
+  .sim-row__label {
+    display: block; min-width: 0;
+    font-size: 13px; line-height: 1.35; color: var(--ink-2);
+  }
+  .sim-row__name { display: flex; align-items: center; gap: 7px; }
+  .sim-row__scene, .sim-row__ov { display: none; }
+  .sim-row.is-picked .sim-row__name { color: var(--ink); font-weight: 600; }
+  .sim-row.is-overridden .sim-row__name::after {
+    content: ''; width: 5px; height: 5px; flex: none;
+    border-radius: 50%; background: var(--accent);
+  }
+  .sim-row.is-disabled { background: var(--surface-2); opacity: 1; }
+  .sim-row.is-disabled .sim-row__name { color: var(--ink-5); }
+  .sim-row__na { font-size: 10.5px; color: var(--ink-5); white-space: nowrap; }
+  .sim-copilot { display: none; }
+</style>
 </head>
 <body>
 <div class="site site--card-detail">
@@ -665,38 +819,39 @@
                 <button class="hmini__favorite" type="button" aria-label="Add to wishlist"><img src="../assets/figma-atoms/tag-like/tag-like.svg" alt=""></button>
               </div>
               <div class="hmini__body">
-                <p class="hmini__title" data-field="title">Baies Scented Candle 190g</p>
-                <div class="hmini__prices">
-                  <span class="hmini__sale-price" data-field="salePrice">£58</span>
-                  <span class="hmini__original-line">RRP: <span class="hmini__original-price" data-field="originalPrice">£70</span></span>
+                <span class="hmini__highlight" data-field="highlight"></span>
+                <p class="hmini__title" data-field="title">French Door Refrigerator Freeze Ice &amp; Water</p>
+                <div class="hmini__meta" data-field="meta">
+                  <span class="hmini__meta-star"><span class="hmini__rating">4.5</span></span>
+                  <span class="hmini__sold">100k+ sold</span>
                 </div>
-                <div class="hmini__discount" data-field="discount">Save 17% on RRP</div>
+                <div class="hmini__prices">
+                  <span class="hmini__sale-price" data-field="salePrice">£350.00</span>
+                  <span class="hmini__original-line">RRP: <span class="hmini__original-price" data-field="originalPrice">£500.00</span></span>
+                </div>
+                <div class="hmini__discount" data-field="discount">Save 18% on RRP</div>
+                <div class="hmini__fulfillment" data-field="fulfillment">Get it by today</div>
                 <span id="hmini-action"></span>
               </div>
             </div>
           </div>
 
-          <div class="demo__controls">
+          <div class="demo__controls" data-global-i18n="off">
             <div class="demo__controls-block">
-              <div class="demo__controls-title">语言 · Language</div>
-              <div class="lang-toggle" id="lang-toggle">
-                <button class="lang-toggle__btn is-active" data-lang="en">EN</button>
-                <button class="lang-toggle__btn" data-lang="zh">中文</button>
-              </div>
+              <div class="demo__controls-title" data-control-title="scene">业务场景</div>
+              <div class="scene-tabs" id="hmini-scene-tabs"></div>
             </div>
             <div class="demo__controls-block">
-              <div class="demo__controls-title">数量选择器 · Quantity selector</div>
-              <div class="chip-strip" id="quantity-strip"></div>
-            </div>
-            <div class="demo__controls-block">
-              <div class="demo__controls-title">分类 · Category</div>
+              <div class="demo__controls-title" data-control-title="category">品类</div>
               <div class="chip-strip" id="cat-strip"></div>
             </div>
             <div class="demo__controls-block">
-              <div class="demo__controls-title">预设 · Preset</div>
+              <div class="demo__controls-title" data-control-title="preset">商品预设</div>
               <div class="chip-strip" id="preset-strip"></div>
             </div>
-            <div class="demo__controls-hint">Figma 母组件仅提供数量选择器开 / 关两个变体；分类与预设只替换商品数据。</div>
+            <div class="demo__controls-block field-sim" data-global-i18n="off">
+              <div id="hmini-sim"></div>
+            </div>
           </div>
         </div>
       </section>
@@ -817,7 +972,7 @@
           <h2 class="section__title">Data Contract · 数据契约</h2>
         </div>
         <p class="section__lede">
-          共享 <code>Product</code> 类型。Mini 默认省略 <code>brand</code> / <code>promotion</code> / <code>seller</code> / <code>colors</code> / <code>perUnit</code> / <code>deposit</code>；
+          共享 <code>Product</code> 类型。Mini 默认省略 <code>brand</code> / <code>promotion</code> / <code>seller</code> / <code>colors</code> / <code>deposit</code>；
           brand 融入 title 首词，无需单独字段。
         </p>
 
@@ -826,12 +981,12 @@
             <tr><th>字段</th><th>类型 · 示例</th><th>来源</th><th>空值处理</th><th>i18n</th></tr>
           </thead>
           <tbody>
-            <tr><td><code>img</code></td><td>string · <code>diptyque</code></td><td>SKU 图库</td><td>骨架图</td><td>-</td></tr>
+            <tr><td><code>img</code></td><td>string</td><td>SKU 图库</td><td>骨架图</td><td>-</td></tr>
             <tr><td><code>title</code></td><td>string · 2-line clamp</td><td>SKU · name（可含 brand 前缀）</td><td>不渲染</td><td>en / zh</td></tr>
-            <tr><td><code>highlight</code></td><td>enum · best-seller / hot-deal / top-deal / blockbuster / new / clearance / plus-price / sponsored / best-before</td><td>运营 CMS</td><td>不渲染</td><td>enum key</td></tr>
-            <tr><td><code>rating</code>, <code>sold</code></td><td>number · <code>4.9</code>, string · <code>30k+ sold</code></td><td>用户评价</td><td>不渲染</td><td>数字复用，unit i18n</td></tr>
-            <tr><td><code>salePrice</code>, <code>originalPrice</code></td><td>string · <code>£58</code></td><td>定价服务</td><td>salePrice 必填 · originalPrice 空则不渲染划线</td><td>货币符号 i18n</td></tr>
-            <tr><td><code>fulfillment</code></td><td>string · <code>Delivered tomorrow</code></td><td>物流服务</td><td>不渲染</td><td>en / zh</td></tr>
+            <tr><td><code>highlight</code></td><td>enum · sponsored / best-before / new-hot / top-deal / private-label / new / too-good-to-waste</td><td>运营 CMS</td><td>不渲染</td><td>enum key</td></tr>
+            <tr><td><code>rating</code>, <code>sold</code></td><td>number · <code>4.5</code>, string · <code>100k+ sold</code></td><td>用户评价</td><td>不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
+            <tr><td><code>salePrice</code>, <code>originalPrice</code></td><td>string · <code>£350.00</code> / <code>£500.00</code></td><td>定价服务</td><td>salePrice 必填 · originalPrice 空则不渲染划线</td><td>货币符号 i18n</td></tr>
+            <tr><td><code>fulfillmentType</code></td><td>enum · <code>Joybuy / POP</code></td><td>物流服务</td><td>不渲染</td><td>固定渲染 <code>Get it by today</code></td></tr>
           </tbody>
         </table>
       </section>
@@ -927,10 +1082,6 @@
     <div class="side-preview">
       <div class="side-preview__head">
         <span>Types Preview</span>
-        <span class="side-preview__lang" id="sp-lang">
-          <button data-sp-lang="en" class="is-active">EN</button>
-          <button data-sp-lang="zh">中</button>
-        </span>
       </div>
       <div class="side-preview__items">
         <div class="side-preview__item">
@@ -961,25 +1112,121 @@
   ];
 
   const HIGHLIGHT_ENUM = new Set([
-    'best-before','best-seller','blockbuster','clearance',
-    'hot-deal','new','plus-price','sponsored','top-deal'
+    'sponsored','best-before','new-hot','top-deal',
+    'private-label','new','too-good-to-waste'
   ]);
   const HIGHLIGHT_LABEL = {
-    'best-before':'Best before', 'best-seller':'Best seller', 'blockbuster':'Blockbuster',
-    'clearance':'Clearance', 'hot-deal':'Hot deal', 'new':'New',
-    'plus-price':'Plus price', 'sponsored':'Sponsored', 'top-deal':'Top deal'
+    'sponsored':'Sponsored', 'best-before':'Best Before',
+    'new-hot':'New&Hot', 'top-deal':'Top Deal',
+    'private-label':'Private Label', 'new':'New',
+    'too-good-to-waste':'Too Good To Waste'
+  };
+  // All seven Product Highlights variants are native HTML (Figma atoms):
+  // Sponsored 26894:262735 · Best Before 31509:124741 · New&Hot 27850:345179 ·
+  // Top Deal 27850:347936 · Private Label 38163:76435 · New 27850:347938 ·
+  // Too Good To Waste 28525:159689.
+  const HIGHLIGHT_TEXT = {
+    'sponsored':'Sponsored', 'best-before':'Life 3d+',
+    'new-hot':'New&Hot', 'top-deal':'Top Deal',
+    'private-label':'Private Label', 'new':'New',
+    'too-good-to-waste':'Too Good To Waste'
+  };
+  const HIGHLIGHT_NODE = {
+    'sponsored':'26894:262735', 'best-before':'31509:124741',
+    'new-hot':'27850:345179', 'top-deal':'27850:347936',
+    'private-label':'38163:76435', 'new':'27850:347938',
+    'too-good-to-waste':'28525:159689'
+  };
+  function highlightHTML(key) {
+    if (!HIGHLIGHT_ENUM.has(key)) return '';
+    if (key === 'too-good-to-waste') {
+      return '<span class="ph-tgw" data-figma-node="'+HIGHLIGHT_NODE[key]+'">'
+        + '<span class="ph-tgw__chip">Too Good To Waste</span>'
+        + '<span class="ph-tgw__bbd">BBD: 27-12-2025</span>'
+        + '</span>';
+    }
+    if (key === 'sponsored') {
+      return '<span class="ph-sponsored" data-figma-node="'+HIGHLIGHT_NODE[key]+'">Sponsored</span>';
+    }
+    return '<span class="ph-highlight ph-highlight--'+key+'" data-figma-node="'+HIGHLIGHT_NODE[key]+'">'
+      + HIGHLIGHT_TEXT[key] + '</span>';
+  }
+
+  let cardLang = (window.JoybuySite && window.JoybuySite.getLanguage()) || 'zh';
+
+  /* Live-config panel copy follows the global documentation language. */
+  const UI_COPY = {
+    en: { scene:'Scenario', category:'Category', preset:'Product preset', fields:'Field controls', reset:'Reset', na:'N/A' },
+    zh: { scene:'业务场景', category:'品类', preset:'商品预设', fields:'字段控制', reset:'重置', na:'无数据' }
+  };
+  function updateControlCopy() {
+    document.querySelectorAll('[data-control-title]').forEach(el => {
+      const key = el.dataset.controlTitle;
+      el.textContent = (UI_COPY[cardLang] && UI_COPY[cardLang][key]) || key;
+    });
+  }
+  let currentCat = 'beauty';
+  let currentPreset = 1;
+
+  /* ================ Field explorer · scenario / field model ================
+   * A scenario pins a real business config (category + preset + field-visibility
+   * profile) AND clears per-field overrides. Two field kinds:
+   *   data    → default ON when the preset carries data (else N/A / gated off);
+   *   context → synthetic line (quantity selector), default per scenario's `on` map.
+   * The Mini has NO extreme/OOS variant and every preset carries every data field,
+   * so gating never actually fires here — it stays for parity with the family engine.
+   * Override wins: mVis(name, def, ov). Mirrors vertical-card / horizontal-card. */
+  const M_SCENES = [
+    { key:'recent',  cat:'beauty', preset:1, label:{ en:'Recent',  zh:'最近浏览' }, sub:{ en:'Browse',  zh:'个性推荐' },
+      on:{ highlight:true,  meta:true,  rrp:true,  discount:true,  fulfillment:false, quantitySelector:false } },
+    { key:'incart',  cat:'beauty', preset:1, label:{ en:'In cart', zh:'已加购'   }, sub:{ en:'Confirm', zh:'下单确认' },
+      on:{ highlight:false, meta:false, rrp:true,  discount:false, fulfillment:false, quantitySelector:true  } },
+    { key:'live',    cat:'3c',     preset:0, label:{ en:'Live',    zh:'直播侧边' }, sub:{ en:'Sidebar', zh:'直播带货' },
+      on:{ highlight:true,  meta:false, rrp:true,  discount:true,  fulfillment:false, quantitySelector:false } },
+    { key:'deal',    cat:'beauty', preset:3, label:{ en:'Deal',    zh:'促销推荐' }, sub:{ en:'Push',    zh:'活动推荐' },
+      on:{ highlight:true,  meta:true,  rrp:true,  discount:true,  fulfillment:true,  quantitySelector:false } },
+    { key:'grocery', cat:'food',   preset:1, label:{ en:'Grocery', zh:'商超补货' }, sub:{ en:'Reorder', zh:'一键复购' },
+      on:{ highlight:false, meta:false, rrp:true,  discount:true,  fulfillment:true,  quantitySelector:true  } }
+  ];
+
+  const M_GROUPS = [
+    { key:'merch',  name:{ en:'Merchandising',        zh:'营销标签' } },
+    { key:'price',  name:{ en:'Price',                zh:'价格'       } },
+    { key:'action', name:{ en:'Fulfilment & action',  zh:'履约与操作' } }
+  ];
+
+  // Every optional slot on the mini. `meta` is a compound slot (rating + sold,
+  // toggled as one unit); `quantitySelector` is the one real Figma variant (context).
+  const M_FIELDS = [
+    { key:'highlight',        group:'merch',  kind:'data',    label:{ en:'Product highlight', zh:'商品亮点' }, scene:{ en:'Browse & deal',        zh:'浏览 / 促销位'  } },
+    { key:'meta',             group:'merch',  kind:'data',    label:{ en:'Rating · sold',     zh:'评分 · 销量' }, scene:{ en:'When trust drives tap', zh:'需信任背书时'  } },
+    { key:'rrp',              group:'price',  kind:'data',    label:{ en:'Reference price',   zh:'划线价'   }, scene:{ en:'When sale < RRP',      zh:'有原价时'      } },
+    { key:'discount',         group:'price',  kind:'data',    label:{ en:'Discount',          zh:'折扣'     }, scene:{ en:'When discounted',      zh:'有折扣时'      } },
+    { key:'fulfillment',      group:'action', kind:'data',    label:{ en:'Fulfillment',       zh:'履约时效' }, scene:{ en:'Grocery / deal',       zh:'商超 / 促销'   } },
+    { key:'quantitySelector', group:'action', kind:'context', label:{ en:'Quantity selector', zh:'数量选择器' }, scene:{ en:'After add-to-cart',    zh:'加购之后'      } }
+  ];
+
+  const M_TXT = {
+    en: { title:'Field explorer', hint:'toggle any field · reset to scene default',
+          reset:'Reset to default', sceneLead:'appears in: ', copilot:'Field Copilot',
+          lead:'shows these fields', ovNote:'edited', andSep:' · ', none:'only image · title · price', na:'N/A' },
+    zh: { title:'字段探索器', hint:'任意字段可开关 · 一键重置为本场景默认',
+          reset:'重置为默认', sceneLead:'出现场景：', copilot:'字段助手',
+          lead:'显示以下字段', ovNote:'已改', andSep:' · ', none:'仅图 · 名 · 价', na:'不适用' }
   };
 
-  let cardLang = 'en';
-  let currentCat = 'beauty';
-  let currentPreset = 0;
-  let quantitySelector = false;
+  // Field explorer state
+  let sceneKey = 'recent';   // active scenario tab
+  let fieldOv  = {};         // field key -> true/false; absent = follow scenario default
+
+  // Resolve a field's visibility: override wins, else scenario/data default.
+  function mVis(name, def, ov){ return (ov[name] == null) ? !!def : !!ov[name]; }
 
   function setField(name, value) {
     document.querySelectorAll('.hmini [data-field="'+name+'"]').forEach(el => {
       if (name === 'highlight') {
         if (value && HIGHLIGHT_ENUM.has(value)) {
-          el.innerHTML = '<img src="../assets/figma-atoms/product-highlights/'+value+'.svg" alt="'+(HIGHLIGHT_LABEL[value]||value)+'">';
+          el.innerHTML = highlightHTML(value);
           el.removeAttribute('data-empty');
         } else {
           el.innerHTML = '';
@@ -992,41 +1239,179 @@
     });
   }
 
-  function renderPreview() {
+  // Base fields + delegate every optional slot to the field explorer so its toggles
+  // stay authoritative across language / category / preset changes.
+  function renderProduct() { applyFields(); }
+
+  /* ================ Field explorer · resolution + rendering ================ */
+
+  // Which data-kind fields does the current preset actually carry?
+  function mAvail(scene) {
     const p = D.catalog[currentCat][currentPreset];
     const t = p[cardLang];
+    return {
+      highlight:   !!(t.highlight && HIGHLIGHT_ENUM.has(t.highlight)),
+      meta:        !!(p.rating && t.sold),
+      rrp:         !!p.originalPrice,
+      discount:    !!t.discount,
+      fulfillment: !!t.fulfillment
+    };
+  }
+
+  // Canonical default visibility: scene.on wins, else data fields follow
+  // availability, context fields default off.
+  function mDefaults(scene, avail) {
+    const def = {};
+    M_FIELDS.forEach(f => {
+      if (scene.on && scene.on[f.key] != null) def[f.key] = !!scene.on[f.key];
+      else if (f.kind === 'data') def[f.key] = !!avail[f.key];
+      else def[f.key] = false;
+    });
+    return def;
+  }
+
+  // Resolve the active scene + field visibility, push every slot to the live card,
+  // then re-render the switch panel + copilot.
+  function applyFields() {
+    const scene = M_SCENES.find(s => s.key === sceneKey) || M_SCENES[0];
+    const p = D.catalog[currentCat][currentPreset];
+    const t = p[cardLang];
+    const avail = mAvail(scene);
+    const def = mDefaults(scene, avail);
+    const vis = k => mVis(k, def[k], fieldOv);
+
+    // Always-on base
     setField('title', t.title);
     setField('salePrice', p.salePrice);
-    setField('originalPrice', p.originalPrice);
-    setField('discount', t.discount);
-
     const img = document.getElementById('hmini-img');
     const src = D.productImages[p.img] || '';
     if (img) { img.src = src; img.alt = p.brand; }
 
+    // Optional data slots
+    setField('highlight', vis('highlight') ? t.highlight : '');
+    setField('originalPrice', vis('rrp') ? p.originalPrice : '');
+    setField('discount', vis('discount') ? t.discount : '');
+    setField('fulfillment', vis('fulfillment') ? t.fulfillment : '');
+
+    // Compound meta slot (rating + sold) — set manually so setField doesn't wipe the inner spans.
+    const meta = document.querySelector('#hmini-preview [data-field="meta"]');
+    if (meta) {
+      if (vis('meta') && avail.meta) {
+        meta.removeAttribute('data-empty');
+        const r = meta.querySelector('.hmini__rating'); if (r) r.textContent = p.rating;
+        const s = meta.querySelector('.hmini__sold');   if (s) s.textContent = t.sold;
+      } else {
+        meta.setAttribute('data-empty', '1');
+      }
+    }
+
+    // Context · quantity selector → reserves body padding + swaps the action.
+    const showQty = vis('quantitySelector');
     const body = document.querySelector('#hmini-preview .hmini__body');
-    if (body) body.classList.toggle('has-quantity-selector', quantitySelector);
+    if (body) body.classList.toggle('has-quantity-selector', showQty);
     const action = document.getElementById('hmini-action');
-    if (action) action.innerHTML = quantitySelector
+    if (action) action.innerHTML = showQty
       ? '<button class="hmini__cart hmini__cart--quantity" aria-label="Change quantity"><img src="../assets/figma-atoms/btn-cart/add-success-1.svg" alt="Quantity 1"></button>'
       : '<button class="hmini__cart" aria-label="Add to cart"><img src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Add to cart"></button>';
+
+    renderMFieldSim(avail, def);
   }
 
-  function renderQuantityStrip() {
-    const strip = document.getElementById('quantity-strip');
-    strip.innerHTML = '';
-    [{ value:false, label:'No' }, { value:true, label:'Yes' }].forEach(option => {
-      const btn = document.createElement('button');
-      btn.className = 'chip-btn' + (option.value === quantitySelector ? ' is-active' : '');
-      btn.textContent = option.label;
-      btn.addEventListener('click', () => {
-        quantitySelector = option.value;
-        renderQuantityStrip();
-        renderPreview();
-      });
-      strip.appendChild(btn);
+  /* ---- Scenario tab bar ---- */
+  function renderMSceneTabs() {
+    const host = document.getElementById('hmini-scene-tabs');
+    if (!host) return;
+    host.innerHTML = '';
+    M_SCENES.forEach(s => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'scene-tab' + (s.key === sceneKey ? ' is-active' : '');
+      b.innerHTML = '<span>'+s.label[cardLang]+'</span>'
+        + '<span class="scene-tab__sub">'+s.sub[cardLang]+'</span>';
+      b.addEventListener('click', () => applyMScene(s.key));
+      host.appendChild(b);
     });
   }
+
+  // Switch the card to a scenario's canonical config.
+  function applyMScene(key) {
+    const s = M_SCENES.find(x => x.key === key) || M_SCENES[0];
+    sceneKey = key;
+    fieldOv = {};
+    currentCat = s.cat;
+    currentPreset = s.preset;
+    renderMSceneTabs();
+    renderCatStrip();
+    renderPresetStrip();
+    renderProduct();   // → applyFields → renderMFieldSim
+  }
+
+  /* ---- Field switch panel + copilot ---- */
+  function renderMFieldSim(avail, def) {
+    const host = document.getElementById('hmini-sim');
+    if (!host) return;
+    const T = M_TXT[cardLang];
+    const dirty = Object.keys(fieldOv).length > 0;
+
+    const UI = UI_COPY[cardLang];
+    let html = '<div class="field-sim__head">'
+      + '<div class="field-sim__title">'+UI.fields+'</div>'
+      + '<button class="field-sim__reset" id="hmini-reset" type="button"'
+      + (dirty ? '' : ' aria-disabled="true"')+'>'+UI.reset+'</button></div>';
+
+    M_GROUPS.forEach(g => {
+      const fields = M_FIELDS.filter(f => f.group === g.key);
+      const onCount = fields.filter(f => mVis(f.key, def[f.key], fieldOv)).length;
+      html += '<div class="sim-group"><div class="sim-group__head">'
+        + '<span class="sim-group__name">'+g.name[cardLang]+'</span></div>';
+      fields.forEach(f => {
+        const on = mVis(f.key, def[f.key], fieldOv);
+        const gatedOff = (f.kind === 'data') && !avail[f.key];
+        const ov = (fieldOv[f.key] != null);
+        let cls = 'sim-row';
+        if (on) cls += ' is-picked';
+        if (gatedOff) cls += ' is-disabled';
+        if (ov) cls += ' is-overridden';
+        const right = gatedOff
+          ? '<span class="sim-row__na">'+T.na+'</span>'
+          : '<button class="sim-sw" type="button" role="switch" aria-checked="'+(on?'true':'false')+'" '
+            + 'aria-label="'+f.label[cardLang]+'" data-field-key="'+f.key+'"></button>';
+        html += '<div class="'+cls+'">'
+          + '<span class="sim-row__label">'
+          + '<span class="sim-row__name">'+f.label[cardLang]+'</span>'
+          + '</span>' + right + '</div>';
+      });
+      html += '</div>';
+    });
+
+    host.innerHTML = html;
+  }
+
+  // Deterministic explanation: which fields this scenario shows (bold = edited).
+  // Delegated wiring for the switch panel (toggles + reset).
+  (function wireMFieldSim() {
+    const host = document.getElementById('hmini-sim');
+    if (!host) return;
+    host.addEventListener('click', e => {
+      const sw = e.target.closest('.sim-sw');
+      if (sw) {
+        const key = sw.dataset.fieldKey;
+        const scene = M_SCENES.find(s => s.key === sceneKey) || M_SCENES[0];
+        const avail = mAvail(scene);
+        const def = mDefaults(scene, avail);
+        if ((M_FIELDS.find(f => f.key === key) || {}).kind === 'data' && !avail[key]) return; // gated N/A
+        const nv = !mVis(key, def[key], fieldOv);
+        if (nv === !!def[key]) delete fieldOv[key]; else fieldOv[key] = nv;
+        applyFields();
+        return;
+      }
+      if (e.target.closest('#hmini-reset')) {
+        if (!Object.keys(fieldOv).length) return;
+        fieldOv = {};
+        applyFields();
+      }
+    });
+  })();
 
   function renderCatStrip() {
     const strip = document.getElementById('cat-strip');
@@ -1040,7 +1425,7 @@
         currentPreset = 0;
         renderCatStrip();
         renderPresetStrip();
-        renderPreview();
+        renderProduct();
       });
       strip.appendChild(btn);
     });
@@ -1057,7 +1442,7 @@
       btn.addEventListener('click', () => {
         currentPreset = idx;
         renderPresetStrip();
-        renderPreview();
+        renderProduct();
       });
       strip.appendChild(btn);
     });
@@ -1206,26 +1591,25 @@
     });
   }
   renderUsedIn();
+  window.addEventListener('joybuy:languagechange', (event) => {
+    setCardLang(event.detail && event.detail.language);
+    renderUsedIn();
+    if (uframe && uframe.classList.contains('is-open') && uOpenId) {
+      const page = PD.pages.filter(item => item.id === uOpenId)[0];
+      if (page) fillFrame(page);
+    }
+  });
 
   function setCardLang(lang) {
-    cardLang = lang;
-    document.querySelectorAll('.lang-toggle__btn').forEach(b => b.classList.toggle('is-active', b.dataset.lang === lang));
-    document.querySelectorAll('#sp-lang [data-sp-lang]').forEach(b => b.classList.toggle('is-active', b.dataset.spLang === lang));
-    renderPreview();
+    cardLang = lang === 'en' ? 'en' : 'zh';
+    updateControlCopy();
+    renderMSceneTabs();
+    renderCatStrip();
+    renderPresetStrip();
+    renderProduct();
     renderTypeBlocks();
     renderPreviewStack();
   }
-  document.getElementById('lang-toggle').addEventListener('click', e => {
-    const btn = e.target.closest('.lang-toggle__btn');
-    if (!btn) return;
-    setCardLang(btn.dataset.lang);
-  });
-  document.getElementById('sp-lang').addEventListener('click', e => {
-    const btn = e.target.closest('[data-sp-lang]');
-    if (!btn) return;
-    setCardLang(btn.dataset.spLang);
-  });
-
   /* ================ Static "Types" showcase ================ */
   function hminiHTML(cfg) {
     const list = D.catalog[cfg.catKey];
@@ -1292,10 +1676,9 @@
   window.addEventListener('scroll', updateTabs, { passive: true });
 
   /* ================ Init ================ */
-  renderQuantityStrip();
-  renderCatStrip();
-  renderPresetStrip();
-  renderPreview();
+  updateControlCopy();
+  renderMSceneTabs();
+  applyMScene('recent');
   renderTypeBlocks();
   renderPreviewStack();
   updateTabs();

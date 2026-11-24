@@ -65,26 +65,6 @@
     color: var(--ink-4); text-transform: uppercase;
     margin-bottom: 8px;
   }
-  .demo__controls-hint {
-    font-size: 12px; color: var(--ink-4); line-height: 1.6;
-  }
-
-  /* Language toggle */
-  .lang-toggle {
-    display: inline-flex; padding: 3px;
-    border: 1px solid var(--outline); border-radius: var(--r-pill);
-    background: var(--surface);
-  }
-  .lang-toggle__btn {
-    all: unset; cursor: pointer;
-    padding: 5px 14px; border-radius: var(--r-pill);
-    font-size: 12px; font-weight: 600;
-    color: var(--ink-4); transition: background .12s ease, color .12s ease;
-  }
-  .lang-toggle__btn.is-active {
-    background: var(--ink); color: #fff;
-  }
-
   /* Chip strip (cat) */
   .chip-strip {
     display: flex; gap: 6px; flex-wrap: wrap;
@@ -130,8 +110,8 @@
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0,0,0,.06);
-    display: flex; flex-direction: column;
-    font-family: var(--f-sans);
+    display: flex; flex-direction: column; gap: 8px;
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
   }
   .vcard__image {
     position: relative;
@@ -183,30 +163,70 @@
   }
   .vcard__image:hover .vcard__hint { opacity: 1; }
 
+  /* Figma 5577:17539 · Color Options sits on the same level as Product Media and
+     Card Content: 24x24 cells, 2px gap, flush to the card's left edge (the row
+     carries NO 6px content inset); vertical spacing comes from the 8px card gap.
+     Swatch spec (Figma 30045:302415): 20px circle · stroke-width 1px ·
+     stroke var(--Stroke-Outline200, #E0E1E5). */
   .vcard__colors {
-    display: flex; gap: 6px;
-    padding: 10px 12px 0;
+    display: flex; gap: 2px; padding: 0;
+    align-items: center; align-self: flex-start;
   }
   .vcard__color-dot {
-    width: 14px; height: 14px; border-radius: 50%;
-    border: 1px solid rgba(0,0,0,.08);
-  }
-  .vcard__color-dot--extra {
-    background: var(--surface-2);
-    color: var(--ink-3);
-    font-size: 9px; font-weight: 700;
+    position: relative;
+    width: 24px; height: 24px;
     display: flex; align-items: center; justify-content: center;
-    border: none;
+  }
+  .vcard__color-swatch {
+    position: absolute; left: 2px; top: 2px;
+    box-sizing: border-box;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 1px solid var(--Stroke-Outline200, #E0E1E5);
+    background: var(--swatch-color, transparent);
+  }
+  .vcard__color-swatch--more { background: #F5F6FA; }
+  .vcard__color-more-label {
+    position: relative; z-index: 1;
+    font-size: 14px; line-height: 20px; font-weight: 500;
+    color: var(--ink);
   }
 
-  .vcard__body { padding: 8px 6px 6px; display: flex; flex-direction: column; gap: 4px; }
+  /* Card content = two Figma containers stacked 8px apart. Each container owns
+     its own 6px horizontal inset; the body itself stays full-bleed. */
+  .vcard__body { padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .vcard__content-01 {
+    display: flex; flex-direction: column; gap: 4px;
+    padding: 0 6px;
+  }
+  .vcard__content-02 {
+    display: flex; align-items: flex-end; gap: 4px;
+    padding: 0 6px;
+  }
+  /* Out of stock: the Notify button is a full-width action stacked under the
+     price block (Figma 5614:26382), not a 32px button beside it. */
+  .vcard__content-02:has(> .vcard__notify) { flex-wrap: wrap; align-items: stretch; }
+  .vcard__content-02:has(> .vcard__notify) > .vcard__content-02-main { flex: 1 0 100%; }
+  .vcard__content-02-main {
+    display: flex; flex-direction: column; gap: 8px;
+    flex: 1 1 0; min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .vcard__content-02-top,
+  .vcard__content-02-bottom {
+    display: flex; flex-direction: column; gap: 4px;
+    min-width: 0;
+  }
+  .vcard__content-02-top > *,
+  .vcard__content-02-bottom > * { min-width: 0; }
   .vcard__highlight {
     align-self: flex-start;
-    /* Figma product-highlights SVG shown directly, no CSS chip anymore */
+    /* All seven Product Highlights variants are native HTML atoms (Barlow Fix 50). */
     display: inline-block; line-height: 0;
   }
   .vcard__highlight[data-empty] { display: none; }
-  .vcard__highlight img { display: block; height: 16px; width: auto; }
+  .vcard__highlight .ph-highlight { height: 24px; }
+  .vcard__highlight .ph-sponsored { line-height: 16px; }
   .vcard__brand {
     font-size: 14px; font-weight: 700; color: var(--ink);
     line-height: 20px;
@@ -220,33 +240,37 @@
     overflow: hidden; text-overflow: ellipsis;
     min-height: 40px;
   }
+  /* Titles carry explicit line breaks (data uses \n) — honour them. pre-line
+     keeps the 2-line clamp working (pre-wrap would defeat -webkit-line-clamp). */
+  .vcard__title { white-space: pre-line; }
+  /* Rating & Sold — Figma atom 6311:16045 (rate&sold): 12px star, 12/16 Medium
+     #1A1A1A, 4px gaps, 1×8 hairline divider at 12% black. */
   .vcard__meta {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 11px; color: var(--ink-3);
+    display: flex; align-items: center; gap: 4px;
+    font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink);
   }
   .vcard__meta-star {
-    display: inline-flex; align-items: center; gap: 2px;
-    color: var(--ink); font-weight: 700;
+    display: inline-flex; align-items: center; gap: 4px;
+    color: var(--ink); font-weight: 500;
   }
   .vcard__meta-star::before {
     content: "";
     display: inline-block;
-    width: 14px; height: 14px;
+    width: 12px; height: 12px;
     background: url('../assets/figma-atoms/rating-sold/star.svg') center/contain no-repeat;
     flex-shrink: 0;
   }
   .vcard__meta-sep {
     display: inline-block;
     width: 1px; height: 8px;
-    background: var(--ink);
+    background: rgba(0, 0, 0, .12);
     vertical-align: middle;
   }
+  /* Sold count is a single line — never wrap the "100k+ sold" label. */
+  .vcard__sold { white-space: nowrap; }
 
-  .vcard__price-row {
-    display: flex; flex-direction: column; gap: 4px;
-  }
   .vcard__prices {
-    display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
   }
   .vcard__sale-price {
     font-size: 20px; font-weight: 900;
@@ -269,11 +293,14 @@
     align-self: flex-start;
   }
   .vcard__promotion {
-    font-size: 12px; color: var(--joybuy-red); font-weight: 600;
+    font-size: 12px; line-height: 16px;
+    color: var(--joybuy-red); font-weight: 600;
+    overflow-wrap: anywhere;
   }
   .vcard__fulfillment {
-    font-size: 12px; font-weight: 500; color: var(--ink-2);
-    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 12px; font-weight: 500; color: var(--Text-Tertiary, #6E7078);
+    display: inline-flex; align-items: center; gap: 2px;
+    min-width: 0;
   }
   .vcard__fulfillment::before {
     content: "";
@@ -292,21 +319,121 @@
     font-size: 12px; color: var(--ink-4); font-weight: 400;
     font-variant-numeric: tabular-nums;
   }
+  /* AI Recommendation Reasons — Figma Barlow Fix 50 Medium 12/16 #6E7078. */
+  .vcard__reviews {
+    font-size: 12px; font-weight: 500; line-height: 16px;
+    color: var(--Text-Tertiary, #6E7078);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
   .vcard__per-unit:empty,
   .vcard__deposit:empty,
   [data-field][data-empty] { display: none; }
-  .vcard__bottom {
-    display: flex; align-items: center; justify-content: space-between;
+
+  /* ---- Scenario-driven fields (field explorer) — one slot per Figma anatomy item ---- */
+  /* image overlays */
+  /* Ranking badge — Figma Tag-number (node 30133:444813):
+     24x24 flag anchored flush to the media's top-left corner,
+     fill_300 fill, radius/small on top-left + bottom-right only,
+     primary text color, 12px/16px semibold. */
+  .vcard__rank {
+    position: absolute; top: 0; left: 0; z-index: 3;
+    min-width: 24px; height: 24px; padding: 0 6px;
+    border-radius: 8px 0 8px 0;
+    background: #e4e6eb;
+    color: var(--ink, #1a1a1a);
+    font-size: 12px; font-weight: 600; line-height: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-variant-numeric: tabular-nums;
+    overflow: hidden;
   }
-  .vcard__seller { font-size: 12px; color: var(--ink-4); }
+  .vcard__rank[data-empty] { display: none; }
+  .vcard__dietary {
+    position: absolute; left: 6px; bottom: 6px; z-index: 2;
+    display: flex; gap: 4px;
+  }
+  .vcard__dietary[data-empty] { display: none; }
+  .vcard__dietary img { width: 22px; height: 22px; display: block; }
+  /* business-type tag (pre-sale) + total-promotion bar + energy label — real Figma SVG atoms */
+  .vcard__presale-tag,
+  .vcard__total-promo,
+  .vcard__energy { align-self: flex-start; line-height: 0; display: inline-block; }
+  .vcard__presale-tag[data-empty],
+  .vcard__total-promo[data-empty],
+  .vcard__energy[data-empty] { display: none; }
+  .vcard__presale-tag img,
+  .vcard__total-promo img { display: block; height: 16px; width: auto; }
+  .vcard__energy img { display: block; height: 24px; width: auto; }
+  /* stock · low stock warning — Figma Stock Status text 12/16 Medium #6E7078. */
+  .vcard__stock {
+    font-size: 12px; font-weight: 500; line-height: 16px;
+    color: var(--Text-Tertiary, #6E7078);
+  }
+  .vcard__seller {
+    font-size: 12px; line-height: 16px; color: var(--ink-4);
+    overflow-wrap: anywhere;
+  }
+  .vcard__seller-wrap {
+    display: inline-flex; align-items: center; gap: 2px; min-width: 0;
+  }
+  .vcard__seller-mark {
+    width: 16px; height: 16px; flex: none; display: none;
+  }
+  .vcard__seller-wrap.is-joybuy .vcard__seller-mark { display: block; }
+  /* Service / Country of origin — 16px leading icon + 12/16 Medium #6E7078. */
+  .vcard__service,
+  .vcard__country {
+    display: inline-flex; align-items: center; gap: 2px;
+    font-size: 12px; font-weight: 500; line-height: 16px;
+    color: var(--Text-Tertiary, #6E7078);
+    min-width: 0;
+  }
+  .vcard__service img,
+  .vcard__country img {
+    width: 16px; height: 16px; flex: none; display: block;
+    /* Atom SVGs include baked-in label text; clip to the 16×16 leading icon. */
+    object-fit: none; object-position: left center;
+  }
+  .vcard__service span,
+  .vcard__country span { overflow-wrap: anywhere; }
+  .vcard__service[data-empty],
+  .vcard__country[data-empty] { display: none; }
+  .vcard__stock,
+  .vcard__fulfillment,
+  .vcard__seller { overflow-wrap: anywhere; }
   .vcard__cart {
     all: unset; cursor: pointer;
+    flex: none;
+    align-self: flex-end;
     width: 32px; height: 32px;
     display: inline-flex; align-items: center; justify-content: center;
     transition: opacity .12s ease;
   }
   .vcard__cart:hover { opacity: .8; }
   .vcard__cart img { display: block; width: 32px; height: 32px; }
+
+  /* Out of stock (Figma 5614:26382) — the Main image atom "Out of stock = yes"
+     (32030:267651) keeps the photo at 50% under a 4% black veil; no cover label.
+     The Stock row reads "Out of stock" and the cart is replaced by Notify. */
+  .vcard--oos .vcard__image-inner { opacity: .5; }
+  .vcard--oos .vcard__image::after {
+    content: "";
+    position: absolute; inset: 0; z-index: 1;
+    background: rgba(0, 0, 0, .04);
+    pointer-events: none;
+  }
+  /* Notify Button — Figma 5551:25998 inside frame 5614:26382: full width of
+     the content row, 32px, r=4, #F5F6FA, 14/20 600 #1A1A1A. */
+  .vcard__notify {
+    all: unset;
+    box-sizing: border-box;
+    display: flex; align-items: center; justify-content: center;
+    width: 100%; height: 32px; padding: 0 12px;
+    border-radius: 4px; background: #F5F6FA; color: var(--ink, #1A1A1A);
+    font-family: inherit; font-size: 14px; line-height: 20px; font-weight: 600;
+    white-space: nowrap; cursor: pointer;
+  }
+  .vcard__notify:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   /* ========== 02 Structure diagram ========== */
   .schematic {
@@ -340,6 +467,13 @@
     );
   }
   .schematic__slot:last-child { border-bottom: none; }
+  .schematic__group-label {
+    padding: 6px 10px;
+    border-bottom: 1px dashed var(--outline);
+    background: var(--surface-2);
+    font-size: 9px; font-weight: 700; letter-spacing: .04em;
+    color: var(--ink-4); text-transform: uppercase;
+  }
   .schematic__slot-idx {
     display: inline-flex; align-items: center; justify-content: center;
     width: 18px; height: 18px; border-radius: 50%;
@@ -388,65 +522,6 @@
   .type-cell__desc {
     font-size: 11.5px; color: var(--ink-4); line-height: 1.55;
     align-self: stretch;
-  }
-
-  /* mini v-card for Types grid (static, no interactivity) */
-  .mcard {
-    width: 160px;
-    background: var(--surface); border-radius: 10px; overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0,0,0,.04);
-    font-size: 11px;
-  }
-  .mcard__img {
-    aspect-ratio: 1/1; background: #f4f4f5;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--ink-4);
-    overflow: hidden;
-  }
-  .mcard__img svg { width: 40%; opacity: .3; }
-  .mcard__img img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .mcard__body { padding: 8px 10px 10px; }
-  .mcard__title {
-    font-size: 11px; color: var(--ink-2); line-height: 1.3;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-    overflow: hidden;
-    margin: 2px 0 6px;
-    min-height: 28px;
-  }
-  .mcard__price {
-    font-size: 14px; font-weight: 800; color: var(--joybuy-red);
-    letter-spacing: -.01em;
-  }
-  .mcard__hi {
-    font-size: 9px; font-weight: 700;
-    background: var(--joybuy-red); color: #fff;
-    padding: 1px 5px; border-radius: 3px;
-    display: inline-block; margin-bottom: 4px;
-  }
-  .mcard__hi--img {
-    display: block; height: 16px; width: auto;
-    margin-bottom: 4px;
-  }
-  .mcard__cart {
-    float: right;
-    width: 22px; height: 22px; border-radius: 50%;
-    background: var(--joybuy-red);
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .mcard__cart svg { width: 10px; height: 10px; stroke: #fff; stroke-width: 2.5; fill: none; }
-  .mcard__cart--img {
-    float: right;
-    width: 22px; height: 22px;
-    display: block;
-  }
-  .mcard__oos--img {
-    float: right;
-    height: 16px; width: auto;
-    display: block;
   }
 
   /* ===== Used In · 出现在 — compact page cards + Figma lightbox ===== */
@@ -614,22 +689,6 @@
     border-bottom: 1px solid var(--outline);
     margin-bottom: 16px;
   }
-  .types-stack__head-lang {
-    display: inline-flex; padding: 2px;
-    border: 1px solid var(--outline); border-radius: var(--r-pill);
-    background: var(--surface);
-    letter-spacing: 0;
-  }
-  .types-stack__head-lang button {
-    all: unset; cursor: pointer;
-    padding: 3px 8px; border-radius: var(--r-pill);
-    font-size: 10px; font-weight: 700;
-    color: var(--ink-4); transition: background .12s ease, color .12s ease;
-    text-transform: none;
-  }
-  .types-stack__head-lang button.is-active {
-    background: var(--ink); color: #fff;
-  }
   .types-stack__items {
     display: flex; flex-direction: column; gap: 20px;
   }
@@ -657,92 +716,57 @@
     display: flex; justify-content: center;
   }
 
-  /* Types-stack mini vcard — same design language as .vcard, smaller scale */
-  .tvcard {
-    width: 130px;
-    background: var(--surface);
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0,0,0,.06);
-    display: flex; flex-direction: column;
-    font-family: var(--f-sans);
-  }
-  .tvcard__img {
-    aspect-ratio: 1/1;
-    background: #f5f5f5;
-    display: flex; align-items: center; justify-content: center;
-    padding: 10px;
-    position: relative;
-  }
-  .tvcard__img img { max-width: 100%; max-height: 100%; object-fit: contain; }
-  .tvcard__fav {
-    position: absolute; top: 4px; right: 4px;
-    width: 26px; height: 26px;
+  /* 05 Common Variants — the cell renders the real .vcard component (176px,
+     same markup / atoms / type ramp as the live card) so the four common
+     styles can never drift from the component they document. */
+  .type-cell__stage { padding: 20px 12px; }
+  .type-cell__stage > .types-stack__stage {
     background: transparent;
-    display: flex; align-items: center; justify-content: center;
-    overflow: visible;
+    padding: 0;
+    width: auto;
   }
-  .tvcard__fav svg { width: 9px; height: 9px; stroke: var(--ink-2); stroke-width: 2; fill: none; }
-  .tvcard__fav img { width: 44px; height: 44px; display: block; flex-shrink: 0; }
-  .tvcard__colors {
-    display: flex; gap: 3px;
-    padding: 6px 8px 0;
+  /* The four common styles are the real card at 1:1 — the stage only needs to
+     fit the 176px card plus its 8px chrome. */
+  .type-cell__stage > .types-stack__stage > .vcard {
+    width: 192px;
+    background: #fff;
+    border: 1px solid rgba(17, 17, 17, .05);
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, .04),
+      0 6px 20px rgba(0, 0, 0, .06),
+      0 20px 40px -20px rgba(0, 0, 0, .08);
   }
-  .tvcard__color-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    border: 1px solid rgba(0,0,0,.08);
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__image {
+    width: 176px; height: 176px; aspect-ratio: auto;
+    border-radius: 12px; overflow: hidden; background: #fff;
   }
-  .tvcard__body { padding: 5px 8px 8px; display: flex; flex-direction: column; gap: 2px; }
-  .tvcard__hi {
-    align-self: flex-start;
-    line-height: 0;
-    margin-bottom: 1px;
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__image-inner { width: 144px; height: 144px; }
+  /* 05 shows the card at its documented 176px width — titles keep the full
+     2-line clamp instead of being squeezed into a 3-line ellipsis. */
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__title {
+    font-size: 13px; line-height: 18px; min-height: 36px;
   }
-  .tvcard__hi img { display: block; height: 10px; width: auto; }
-  .tvcard__brand { font-size: 10px; font-weight: 700; color: var(--ink); line-height: 1.15; }
-  .tvcard__title {
-    margin: 0;
-    font-size: 9px; color: var(--ink-2); line-height: 1.3;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-    overflow: hidden;
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__favorite { top: 0; right: 0; width: 40px; height: 40px; }
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__favorite img { width: 40px; height: 40px; }
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__body { padding: 0; gap: 8px; }
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__content-01 { gap: 4px; padding: 0 6px; }
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__content-02 { align-items: flex-end; gap: 4px; padding: 0 6px; }
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__content-02-main { gap: 8px; }
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__content-02-top,
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__content-02-bottom { gap: 4px; }
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__highlight .ph-highlight { height: 24px; }
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__prices { gap: 4px; }
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__sale-price {
+    font-size: 16px; line-height: 22px; font-weight: 700; letter-spacing: 0;
   }
-  .tvcard__price-row {
-    display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
-    margin-top: 2px;
-  }
-  .tvcard__price {
-    font-size: 12px; font-weight: 800; color: var(--joybuy-red);
-    letter-spacing: -.01em;
-  }
-  .tvcard__oprice {
-    font-size: 9px; color: var(--ink-5);
-    text-decoration: line-through;
-  }
-  .tvcard__price-was {
-    font-size: 9px; color: var(--ink-5);
-  }
-  .tvcard__disc { font-size: 9px; color: var(--ink-2); font-weight: 500; }
-  .tvcard__bottom {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-top: 2px;
-  }
-  .tvcard__seller { font-size: 9px; color: var(--ink-4); }
-  .tvcard__cart {
-    width: 20px; height: 20px; border-radius: 50%;
-    background: #f5f7fa;
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .tvcard__cart svg { width: 9px; height: 9px; stroke: var(--ink); stroke-width: 2.2; fill: none; stroke-linecap: round; }
-  .tvcard__cart--img { width: 20px; height: 20px; display: block; }
-  .tvcard__oos {
-    font-size: 9px; font-weight: 700;
-    background: var(--surface-2); color: var(--ink-4);
-    padding: 1px 6px; border-radius: 2px;
-    letter-spacing: .02em;
-  }
-  .tvcard__oos--img { height: 14px; width: auto; display: block; }
-  .tvcard--dim { opacity: .85; }
-  .tvcard--dim .tvcard__price { color: var(--ink-2); }
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__price-was,
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__original-price { color: var(--ink); font-size: 12px; line-height: 16px; font-weight: 500; }
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__original-price { text-decoration: none; }
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__discount { color: var(--ink); font-size: 12px; line-height: 16px; font-weight: 500; }
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__fulfillment { gap: 2px; font-size: 12px; line-height: 16px; font-weight: 500; color: var(--Text-Tertiary, #6E7078); }
+  .type-cell__stage > .types-stack__stage > .vcard .vcard__seller { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink); }
 
   /* ========== Anatomy panel (Structure sub-panel) ========== */
   .anatomy { margin-top: 32px; }
@@ -898,43 +922,16 @@
   /* 右：控件区更松散、更"规范"化 */
   #s-overview .demo__controls {
     padding: 8px 0;
-    gap: 44px;
+    gap: 24px;
   }
   #s-overview .demo__controls-title {
-    font-size: 10.5px;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: .18em;
-    color: var(--ink-5);
-    text-transform: uppercase;
-    margin-bottom: 14px;
-  }
-  #s-overview .demo__controls-hint {
-    margin-top: 14px !important;
-    font-size: 12.5px;
-    line-height: 1.7;
+    letter-spacing: .08em;
     color: var(--ink-4);
+    text-transform: uppercase;
+    margin-bottom: 10px;
   }
-  #s-overview .demo__controls-hint b {
-    color: var(--ink-2);
-    font-weight: 600;
-  }
-
-  /* Language toggle — 更方正、更细腻 */
-  #s-overview .lang-toggle {
-    padding: 4px;
-    border-radius: 10px;
-    border-color: #ececef;
-  }
-  #s-overview .lang-toggle__btn {
-    padding: 6px 18px;
-    border-radius: 7px;
-    font-size: 12.5px;
-    font-weight: 500;
-  }
-  #s-overview .lang-toggle__btn.is-active {
-    font-weight: 600;
-  }
-
   /* Category chips — flat 圆角矩形，非胶囊 */
   #s-overview .chip-strip { gap: 8px; }
   #s-overview .chip-btn {
@@ -1058,34 +1055,78 @@
   .handoff-card__btn--disabled:active { transform: none; }
   @media (max-width: 720px) { .handoff-grid { grid-template-columns: 1fr; } }
 
-  /* ---- Feature 3 · Field simulator (switches + copilot) ---- */
-  .field-sim { border-top: 1px dashed var(--outline); padding-top: 18px; }
-  .field-sim__title {
-    font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
-    color: var(--ink-4); margin-bottom: 4px;
-    display: flex; align-items: center; gap: 7px;
+  /* ---- Scenario + field controls ---- */
+  #s-overview .demo__controls-block + .demo__controls-block {
+    padding-top: 22px;
+    border-top: 1px solid var(--outline);
   }
-  .field-sim__title-hint { font-size: 11px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--ink-5); }
-  .sim-group { margin-top: 16px; }
-  .sim-group__head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
-  .sim-group__name { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
-  .sim-group__rule { font-size: 10.5px; color: var(--ink-5); white-space: nowrap; }
+  .scene-tabs { display: flex; flex-wrap: wrap; gap: 7px; }
+  .scene-tab {
+    all: unset; cursor: pointer; box-sizing: border-box;
+    padding: 8px 13px; border-radius: 8px;
+    font-size: 12.5px; font-weight: 600; line-height: 1.1;
+    color: var(--ink-3); background: var(--surface);
+    border: 1px solid var(--outline);
+    transition: color .12s ease, border-color .12s ease, background .12s ease;
+  }
+  .scene-tab:hover { color: var(--ink-2); border-color: var(--outline-strong); }
+  .scene-tab.is-active { color: #fff; background: var(--ink); border-color: var(--ink); }
+  .scene-tab__sub {
+    font-size: 10px; font-weight: 500; opacity: .65;
+    margin-left: 5px; letter-spacing: 0; text-transform: none;
+  }
+
+  .field-sim { padding-top: 22px; border-top: 1px solid var(--outline); }
+  .field-sim__head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    margin-bottom: 12px;
+  }
+  .field-sim__title { font-size: 13px; font-weight: 700; color: var(--ink); }
+  .field-sim__reset {
+    all: unset; cursor: pointer; flex: none;
+    font-size: 11px; font-weight: 600; color: var(--ink-4);
+    padding: 4px 9px; border-radius: 6px;
+    border: 1px solid var(--outline); background: var(--surface);
+    transition: color .12s ease, border-color .12s ease, background .12s ease;
+  }
+  .field-sim__reset:hover { color: var(--accent); border-color: var(--accent-100); background: var(--accent-50); }
+  .field-sim__reset[aria-disabled="true"] {
+    visibility: hidden; pointer-events: none;
+  }
+
+  .sim-group {
+    overflow: hidden;
+    margin-top: 8px;
+    border: 1px solid var(--outline);
+    border-radius: 9px;
+    background: var(--surface);
+  }
+  .sim-group__head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 12px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--outline);
+  }
+  .sim-group__name {
+    font-size: 11px; font-weight: 700; letter-spacing: .04em;
+    color: var(--ink-3); text-transform: uppercase;
+  }
   .sim-row {
-    display: flex; align-items: center; justify-content: space-between; gap: 10px;
-    padding: 7px 0;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    min-height: 44px; padding: 10px 12px;
+    box-sizing: border-box;
   }
   .sim-row + .sim-row { border-top: 1px solid var(--surface-2); }
-  .sim-row__label { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink-2); }
-  .sim-row__pri {
-    font-size: 9.5px; font-weight: 700; letter-spacing: .03em;
-    color: var(--ink-5); background: var(--surface-2);
-    border-radius: 4px; padding: 1px 5px;
+  .sim-row__label { min-width: 0; font-size: 13px; line-height: 1.35; color: var(--ink-2); }
+  .sim-row__name { display: flex; align-items: center; gap: 7px; }
+  .sim-row.is-picked .sim-row__name { color: var(--ink); font-weight: 600; }
+  .sim-row.is-overridden .sim-row__name::after {
+    content: ''; width: 5px; height: 5px; flex: none;
+    border-radius: 50%; background: var(--accent);
   }
-  .sim-row__na { font-size: 10px; color: var(--ink-5); }
-  .sim-row.is-picked .sim-row__label { color: var(--ink); font-weight: 600; }
-  .sim-row.is-picked .sim-row__pri { color: var(--accent); background: var(--accent-50); }
-  .sim-row.is-folded .sim-row__label { color: var(--ink-4); }
-  .sim-row.is-disabled { opacity: .5; }
+  .sim-row.is-disabled { background: var(--surface-2); }
+  .sim-row.is-disabled .sim-row__name { color: var(--ink-5); }
+  .sim-row__na { font-size: 10.5px; color: var(--ink-5); white-space: nowrap; }
   /* switch */
   .sim-sw {
     all: unset; cursor: pointer; box-sizing: border-box; flex: none;
@@ -1100,23 +1141,6 @@
   }
   .sim-sw[aria-checked="true"] { background: var(--accent); }
   .sim-sw[aria-checked="true"]::after { transform: translateX(16px); }
-  .sim-sw[aria-disabled="true"] { cursor: not-allowed; opacity: .55; }
-  /* copilot */
-  .sim-copilot {
-    margin-top: 16px; padding: 13px 14px;
-    border: 1px solid var(--outline); border-radius: var(--r-md);
-    background: var(--surface-2);
-  }
-  .sim-copilot__head {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 8px;
-  }
-  .sim-copilot__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
-  .sim-copilot p { margin: 0 0 6px; font-size: 12px; line-height: 1.65; color: var(--ink-3); }
-  .sim-copilot p:last-child { margin-bottom: 0; }
-  .sim-copilot b { color: var(--ink); font-weight: 600; }
-  .sim-copilot em { font-style: normal; color: var(--ink-4); }
 
 </style>
   <link rel="stylesheet" href="../assets/card-preview-alignment.css">
@@ -1167,7 +1191,8 @@
         </div>
         <p class="section__lede">
           最常用的商品卡片，在首页信息流、分类页、搜索结果双列视图里以 200px 卡片框架出现，其中商品图片容器固定为 176×176。
-          信息层次从上到下：品牌 → 标题 → 评分销量 → 价格与折扣 → 促销 → 履约 → 售卖方 + 加购。
+          商品图与商品信息同层还排布 Color Options 色板行（Figma 5577:17539）：24×24 色单元、2px 间距、左对齐卡片且无左右 padding，与上下各 8px。
+          色板下方是两个内容容器：Container 01（亮点 → 品牌 → 标题 → 评分/销量 → AI 推荐理由，间距 4px）与 Container 02（左右 padding 6px；上组：Individual Promotion / Type 单促/业务类型 → 价格 → 总促，下组：库存 → 履约时效 → 自营标签 → 服务 → 原产地 → 性能，组内间距 4px，组间 8px；加购按钮在右侧，与左列间距 4px），两容器间距 8px。
         </p>
 
         <div class="demo" style="margin-top: 8px;">
@@ -1176,6 +1201,8 @@
             <div class="vcard" id="vcard">
               <div class="vcard__image" id="vcard-image-click">
                 <div class="vcard__image-inner" id="vcard-image"></div>
+                <span class="vcard__rank" data-field="rankBadge" data-empty="1"></span>
+                <span class="vcard__dietary" id="vcard-dietary" data-empty="1"></span>
                 <button class="vcard__favorite" aria-label="favorite" onclick="event.stopPropagation()">
                   <img src="../assets/figma-atoms/tag-like/tag-like.svg" alt="Favorite">
                 </button>
@@ -1183,64 +1210,75 @@
               </div>
               <div class="vcard__colors" id="vcard-colors"></div>
               <div class="vcard__body">
-                <span class="vcard__highlight" data-field="highlight"><img src="../assets/figma-atoms/product-highlights/best-seller.svg" alt="Best seller"></span>
-                <div class="vcard__brand" data-field="brand">TCL</div>
-                <p class="vcard__title" data-field="title">Seeded Sourdough Bread System</p>
-                <div class="vcard__meta">
-                  <span class="vcard__meta-star"><span data-field="rating">4.5</span></span>
-                  <span class="vcard__meta-sep"></span>
-                  <span data-field="sold">100k+ sold</span>
+                <!-- Card Content Container 01 · 4px between slots -->
+                <div class="vcard__content-01">
+                  <span class="vcard__highlight" data-field="highlight"><span class="ph-highlight ph-highlight--private-label" data-figma-node="38163:76435">Private Label</span></span>
+                  <div class="vcard__brand" data-field="brand">Apple</div>
+                  <p class="vcard__title" data-field="title">Seeded Sourdough Bread<br>System</p>
+                  <div class="vcard__meta">
+                    <span class="vcard__meta-star"><span data-field="rating">4.5</span></span>
+                    <span class="vcard__meta-sep"></span>
+                    <span class="vcard__sold" data-field="sold">100k+ sold</span>
+                  </div>
+                  <div class="vcard__reviews" data-field="reviews">More buying choices</div>
                 </div>
-                <div class="vcard__reviews" data-field="reviews">Over 100,000 positive reviews</div>
-                <div class="vcard__price-row">
-                  <span class="vcard__promotion" data-field="promotion">Lightning offers</span>
-                  <div class="vcard__prices">
-                    <span class="vcard__sale-price" data-field="salePrice">£350.00</span>
-                    <span class="vcard__price-was">RRP: <span class="vcard__original-price" data-field="originalPrice">£500.00</span></span>
+                <!-- Card Content Container 02 · left column + 32px button, 4px apart -->
+                <div class="vcard__content-02">
+                  <div class="vcard__content-02-main">
+                    <!-- Part 1 · Individual Promotion / Price / Master Promotion -->
+                    <div class="vcard__content-02-top">
+                      <span class="vcard__presale-tag" data-field="presaleTag" data-empty="1"></span>
+                      <span class="vcard__promotion" data-field="promotion">Lightning offers</span>
+                      <div class="vcard__prices">
+                        <span class="vcard__sale-price" data-field="salePrice">£350.00</span>
+                        <span class="vcard__price-was">RRP: <span class="vcard__original-price" data-field="originalPrice">£500.00</span></span>
+                        <span class="vcard__discount" data-field="discount">Save £20</span>
+                        <span class="vcard__deposit" data-field="deposit">Excl. deposit £0.15</span>
+                      </div>
+                      <span class="vcard__total-promo" data-field="totalPromo" data-empty="1"></span>
+                    </div>
+                    <!-- Part 2 · Stock / Fulfillment / Self-operated / Service / Country / Performance -->
+                    <div class="vcard__content-02-bottom">
+                      <span class="vcard__stock" data-field="stock" data-empty="1"></span>
+                      <span class="vcard__fulfillment" data-field="fulfillment">Get it by today</span>
+                      <span class="vcard__seller-wrap">
+                        <img class="vcard__seller-mark" src="../assets/figma-atoms/sold-by-joybuy/joybuy-mark.svg" alt="" width="16" height="16">
+                        <span class="vcard__seller" data-field="seller">Sold by Joybuy</span>
+                      </span>
+                      <span class="vcard__service" data-field="service" data-empty="1">
+                        <img src="../assets/figma-atoms/service/install-and-recyle.svg" alt="" width="16" height="16">
+                        <span data-field="serviceText">Install &amp; Recycle</span>
+                      </span>
+                      <span class="vcard__country" data-field="country" data-empty="1">
+                        <img src="../assets/figma-atoms/country-of-origin/from-wales.svg" alt="" width="16" height="16">
+                        <span data-field="countryText">From Wales</span>
+                      </span>
+                      <span class="vcard__energy" data-field="energy" data-empty="1"></span>
+                    </div>
                   </div>
-                  <span class="vcard__discount" data-field="discount">Save 18% on RRP</span>
-                  <span class="vcard__per-unit" data-field="perUnit">£0.72 per 100ml</span>
-                  <span class="vcard__deposit" data-field="deposit">Excl. deposit £0.15</span>
-                  <span class="vcard__fulfillment" data-field="fulfillment">Get it by today</span>
-                  <div class="vcard__bottom">
-                    <span class="vcard__seller" data-field="seller">Sold by Joybuy</span>
-                    <button class="vcard__cart" aria-label="add to cart">
-                      <img src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Add to cart" width="32" height="32">
-                    </button>
-                  </div>
+                  <button class="vcard__cart" aria-label="add to cart">
+                    <img src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Add to cart" width="32" height="32">
+                  </button>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- 右侧：控件 -->
-          <div class="demo__controls">
+          <!-- 右侧：实时配置。语言跟随全站语言，不单独设置。 -->
+          <div class="demo__controls" data-global-i18n="off">
             <div class="demo__controls-block">
-              <div class="demo__controls-title" data-doc="ctrl.lang">Card language</div>
-              <div class="lang-toggle">
-                <button class="lang-toggle__btn is-active" data-card-lang="en" type="button">EN</button>
-                <button class="lang-toggle__btn" data-card-lang="zh" type="button">中</button>
-              </div>
-              <div class="demo__controls-hint" style="margin-top: 6px;" data-doc="ctrl.langHint">
-                只切换商卡内容语言，不影响全站文档语言。
-              </div>
+              <div class="demo__controls-title" data-control-title="scene">业务场景</div>
+              <div class="scene-tabs" id="vcard-scene-tabs"></div>
             </div>
             <div class="demo__controls-block">
-              <div class="demo__controls-title">品类 · Category</div>
+              <div class="demo__controls-title" data-control-title="category">品类</div>
               <div class="chip-strip" id="vcard-cat-strip"></div>
-              <div class="demo__controls-hint" style="margin-top: 8px;">
-                仅 <b>3C 数码</b> 与 <b>大家电</b> 显示配色控件；其余品类隐藏。
-              </div>
             </div>
             <div class="demo__controls-block">
-              <div class="demo__controls-title">预设 · Preset</div>
+              <div class="demo__controls-title" data-control-title="preset">商品预设</div>
               <div class="preset-strip" id="vcard-preset-strip"></div>
-              <div class="demo__controls-hint" style="margin-top: 8px;">
-                点击缩略图切换商品，或直接点击卡片主图循环预设。
-              </div>
             </div>
-            <!-- Feature 3 · Field simulator (rendered by JS in card language, i18n-excluded) -->
-            <div class="demo__controls-block field-sim" data-global-i18n="off">
+            <div class="demo__controls-block field-sim">
               <div id="vcard-sim"></div>
             </div>
           </div>
@@ -1310,16 +1348,24 @@
                 <span class="schematic__slot-idx">1</span>
                 <span style="font-size: 11px; color: var(--ink-3);">image · 1:1</span>
               </div>
-              <div class="schematic__slot"><span class="schematic__slot-idx">2</span>colors (opt.)</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">2</span>colors · Color Options (opt.)</div>
+              <div class="schematic__group-label">Card Content Container 01 · gap 4 · padding 0 6</div>
               <div class="schematic__slot"><span class="schematic__slot-idx">3</span>highlight (opt.)</div>
-              <div class="schematic__slot"><span class="schematic__slot-idx">4</span>brand</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">4</span>brand (opt.)</div>
               <div class="schematic__slot"><span class="schematic__slot-idx">5</span>title · 2 line clamp</div>
-              <div class="schematic__slot"><span class="schematic__slot-idx">6</span>rating · sold</div>
-              <div class="schematic__slot"><span class="schematic__slot-idx">7</span>promotion (opt.)</div>
-              <div class="schematic__slot"><span class="schematic__slot-idx">8</span>salePrice / RRP · discount</div>
-              <div class="schematic__slot"><span class="schematic__slot-idx">9</span>perUnit · deposit (opt.)</div>
-              <div class="schematic__slot"><span class="schematic__slot-idx">10</span>fulfillment</div>
-              <div class="schematic__slot"><span class="schematic__slot-idx">11</span>seller · cart button</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">6</span>rating · sold (opt.)</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">7</span>AI reason (opt.)</div>
+              <div class="schematic__group-label">Card Content Container 02 · gap 4 / 8 · padding 0 6</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">8</span>Individual Promotion / Type (opt.)</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">9</span>price</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">10</span>master promotion (opt.)</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">11</span>stock (opt.)</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">12</span>fulfillment (opt.)</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">13</span>self-operated tag (opt.)</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">14</span>service (opt.)</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">15</span>country of origin (opt.)</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">16</span>performance (opt.)</div>
+              <div class="schematic__slot"><span class="schematic__slot-idx">17</span>cart button · 32×32</div>
             </div>
           </div>
           <table class="table">
@@ -1328,16 +1374,24 @@
             </thead>
             <tbody>
               <tr><td>1</td><td><code>image</code></td><td>是</td><td>1:1 比例，缺失时显示灰底占位</td></tr>
-              <tr><td>2</td><td><code>colors</code> + <code>extraColors</code></td><td>否</td><td>仅 3C / 大家电展示；&gt;5 个色时收 <code>+N</code></td></tr>
+              <tr><td>2</td><td><code>colors</code> + <code>extraColors</code></td><td>否</td><td>与商品图 / 商品信息同层；间距 8px，无左右 padding；24×24 色单元 · 2px 间距，更多色只显示 <code>+8 / +99</code></td></tr>
+              <tr><td colspan="4" style="background: var(--surface-2); font-size: 11px; font-weight: 700; color: var(--ink-3); letter-spacing: .02em;">Card Content Container 01（容器 01）· 纵向 gap 4 · 左右 padding 6</td></tr>
               <tr><td>3</td><td><code>highlight</code></td><td>否</td><td>enum → Figma SVG 标签，缺失整行不渲染</td></tr>
-              <tr><td>4</td><td><code>brand</code></td><td>是</td><td>粗体黑字，&gt;12 字省略</td></tr>
-              <tr><td>5</td><td><code>title</code></td><td>是</td><td>2 行截断，第 3 行 <code>…</code></td></tr>
+              <tr><td>4</td><td><code>brand</code></td><td>否</td><td>14/20 700；缺失不渲染，&gt;12 字省略</td></tr>
+              <tr><td>5</td><td><code>title</code></td><td>是</td><td>14/20 500；2 行截断，第 3 行 <code>…</code></td></tr>
               <tr><td>6</td><td><code>rating</code> + <code>soldCount</code></td><td>否</td><td>销量 &lt;100 时隐藏</td></tr>
-              <tr><td>7</td><td><code>promotion</code></td><td>否</td><td>红字营销标（如 <code>Lightning offers</code>），置于价格上方；空值整行折叠</td></tr>
-              <tr><td>8</td><td><code>salePrice</code> / <code>originalPrice</code> · <code>discount</code></td><td>是 / 否 / 否</td><td>原价另起一行加 <code>RRP:</code> 前缀，折扣标独立行</td></tr>
-              <tr><td>9</td><td><code>perUnit</code>, <code>deposit</code></td><td>否 / 否</td><td>单价（如 <code>£0.72 per 100ml</code>）与押金（如 <code>Excl. deposit £0.15</code>）；空则整行折叠</td></tr>
-              <tr><td>10</td><td><code>fulfillment</code></td><td>否</td><td>灰字履约信息，前置 Figma 卡车图标</td></tr>
-              <tr><td>11</td><td><code>seller</code> + cart button</td><td>否 / 是</td><td>加购按钮直接使用 Figma <code>btn-add-to-cart.svg</code>，售罄时置灰</td></tr>
+              <tr><td>7</td><td><code>aiReasons</code></td><td>否</td><td>AI Recommendation Reasons；12/16 500 <code>#6E7078</code>；最多 2 行</td></tr>
+              <tr><td colspan="4" style="background: var(--surface-2); font-size: 11px; font-weight: 700; color: var(--ink-3); letter-spacing: .02em;">Card Content Container 02（容器 02）· 左右 padding 6 · 左列纵向 gap 4 / 8 · 按钮右列 gap 4</td></tr>
+              <tr><td>8</td><td><code>promotion</code></td><td>否</td><td>Individual Promotion / Type 单促/业务类型；Barlow Fix 50 Semibold 12/16 600 <code>#E1251B</code>（如 <code>Lightning offers</code>）；空值整行折叠</td></tr>
+              <tr><td>9</td><td><code>salePrice</code> / <code>originalPrice</code> · <code>discount</code> / <code>deposit</code></td><td>是 / 否</td><td>价格块内部 gap 4；原价加 <code>RRP:</code> 前缀，折扣、押金各自独立行</td></tr>
+              <tr><td>10</td><td><code>totalPromo</code></td><td>否</td><td>Master Promotion；Figma SVG atom；空值折叠</td></tr>
+              <tr><td>11</td><td><code>stock</code></td><td>否</td><td>Stock left；Barlow Fix 50 Medium 12/16 500 <code>var(--Text-Tertiary, #6E7078)</code>；空值折叠</td></tr>
+              <tr><td>12</td><td><code>fulfillment</code></td><td>否</td><td>12/16 500 <code>#6E7078</code>，前置 16px 卡车图标</td></tr>
+              <tr><td>13</td><td><code>seller</code></td><td>否</td><td>Official self-operated tag；12/16 500；1P 显示 Joybuy 红标</td></tr>
+              <tr><td>14</td><td><code>service</code></td><td>否</td><td>Service；16px 图标 + 12/16 500 <code>#6E7078</code>；空值折叠</td></tr>
+              <tr><td>15</td><td><code>country</code></td><td>否</td><td>Country of origin；16px 国旗 + 12/16 500 <code>#6E7078</code>；空值折叠</td></tr>
+              <tr><td>16</td><td><code>energy</code></td><td>否</td><td>Performance；Figma 能效 atom，24px 高；空值折叠</td></tr>
+              <tr><td>17</td><td>cart button</td><td>是</td><td>32×32，直接使用 Figma <code>btn-add-to-cart.svg</code>，售罄时置灰</td></tr>
             </tbody>
           </table>
         </div>
@@ -1349,7 +1403,7 @@
             <span class="anatomy__title-en">Which Figma atom fills each slot</span>
           </div>
           <p class="anatomy__lede">
-            这张卡的 11 个槽位分别由哪些原子组件填充。所有原子图像直接来自 Figma 源文件，与商卡视觉严格一致。点击原子名可跳到原子浏览器查看全部变体。
+            这张卡的 17 个槽位分别由哪些原子组件填充。所有原子图像直接来自 Figma 源文件，与商卡视觉严格一致。点击原子名可跳到原子浏览器查看全部变体。
           </p>
           <div class="anatomy-grid">
 
@@ -1364,23 +1418,21 @@
               <div class="anatomy-cell__stage">
                 <img src="../assets/figma-atoms/color/default.svg" alt="Color atom - default variant">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-color">Color · SPU 色板</a> · 4 变体</div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-color">Color · SPU 色板</a> · 4 变体 · 24×24 单元 / 2px 间距</div>
             </div>
 
             <div class="anatomy-cell">
               <div class="anatomy-cell__head"><span class="anatomy-cell__idx">3</span><span class="anatomy-cell__slot">highlight</span><span>· 亮点</span></div>
               <div class="anatomy-cell__stage">
-                <img src="../assets/figma-atoms/product-highlights/hot-deal.svg" alt="Product Highlights atom - Hot Deal variant">
+                <img src="../assets/figma-atoms/product-highlights/new-hot.svg" alt="Product Highlights atom - New&Hot variant">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-product-highlights">Product Highlights · 商品亮点</a> · 9 变体</div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-product-highlights">Product Highlights · 商品亮点</a> · 7 变体</div>
             </div>
 
             <div class="anatomy-cell">
               <div class="anatomy-cell__head"><span class="anatomy-cell__idx">4</span><span class="anatomy-cell__slot">brand</span><span>· 品牌</span></div>
-              <div class="anatomy-cell__stage">
-                <img src="../assets/figma-atoms/title/1.svg" alt="Title atom - 1 line variant">
-              </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-title">Title · 商品标题</a> · 1 行变体</div>
+              <div class="anatomy-cell__stage"><span style="font-size: 14px; font-weight: 700; color: var(--ink);">TCL</span></div>
+              <div class="anatomy-cell__atom">Brand · 品牌名 · 14/20 700</div>
             </div>
 
             <div class="anatomy-cell">
@@ -1400,15 +1452,23 @@
             </div>
 
             <div class="anatomy-cell">
-              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">7</span><span class="anatomy-cell__slot">promotion</span><span>· 营销标</span></div>
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">7</span><span class="anatomy-cell__slot">AI reason</span><span>· AI 推荐理由</span></div>
               <div class="anatomy-cell__stage">
-                <img src="../assets/figma-atoms/individual-promotion/campaign-lightning-offers.svg" alt="Individual Promotion atom">
+                <img src="../assets/figma-atoms/ai-recommendation/more-buying-choices.svg" alt="AI Recommendation Reasons atom - More buying choices variant">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-individual-promotion">Individual Promotion · 单品营销</a> · 6 变体</div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-ai-recommendation">AI Recommendation Reasons</a> · 12/16 500 <code>#6E7078</code></div>
             </div>
 
             <div class="anatomy-cell">
-              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">8</span><span class="anatomy-cell__slot">prices</span><span>· 价格行</span></div>
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">8</span><span class="anatomy-cell__slot">promotion</span><span>· 单促/业务类型</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/individual-promotion/campaign-lightning-offers.svg" alt="Individual Promotion atom">
+              </div>
+              <div class="anatomy-cell__atom" data-global-i18n="off"><a href="../atoms/index.html#atom-individual-promotion">Individual Promotion / Type</a></div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">9</span><span class="anatomy-cell__slot">price</span><span>· 价格</span></div>
               <div class="anatomy-cell__stage anatomy-cell__stage--pair">
                 <img src="../assets/figma-atoms/price/default.svg" alt="Price atom">
                 <img src="../assets/figma-atoms/price-second-line/rrp-horizontal.svg" alt="Price second line atom">
@@ -1417,29 +1477,70 @@
             </div>
 
             <div class="anatomy-cell">
-              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">9</span><span class="anatomy-cell__slot">perUnit · deposit</span><span>· 单价 / 押金</span></div>
-              <div class="anatomy-cell__stage anatomy-cell__stage--pair">
-                <img src="../assets/figma-atoms/plus-price/no-total-promotion-horizontal.svg" alt="Plus Price atom - per-unit horizontal variant">
-                <img src="../assets/figma-atoms/price-second-line/was-horizontal.svg" alt="Price second line - deposit-like footnote variant">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">10</span><span class="anatomy-cell__slot">totalPromo</span><span>· 总促</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/total-promotion/buy-1-get-1-free.svg" alt="Total Promotion atom">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-plus-price">Plus Price · 单价</a> + <a href="../atoms/index.html#atom-price-second-line">Price second line · 押金 / 副行</a></div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-total-promotion">Total Promotion · 总促</a> · Master Promotion</div>
             </div>
 
             <div class="anatomy-cell">
-              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">10</span><span class="anatomy-cell__slot">fulfillment</span><span>· 履约</span></div>
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">11</span><span class="anatomy-cell__slot">stock</span><span>· 少库存</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/stock/low-stock.svg" alt="Stock atom - low stock variant">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-stock">Stock · 少库存</a> · 12/16 500 <code>#6E7078</code></div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">12</span><span class="anatomy-cell__slot">fulfillment</span><span>· 履约时效</span></div>
               <div class="anatomy-cell__stage">
                 <img src="../assets/figma-atoms/fulfillment-time/joybuy.svg" alt="Fulfillment Time atom - Joybuy variant">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-fulfillment-time">Fulfillment Time · 履约时效</a> · 3 变体</div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-fulfillment-time">Fulfillment Time · 履约时效</a> · 2 变体</div>
             </div>
 
             <div class="anatomy-cell">
-              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">11</span><span class="anatomy-cell__slot">seller · cart</span></div>
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">13</span><span class="anatomy-cell__slot">seller</span><span>· 自营标签</span></div>
+              <div class="anatomy-cell__stage" style="display:flex; align-items:center; gap:2px;">
+                <img src="../assets/figma-atoms/sold-by-joybuy/joybuy-mark.svg" alt="Sold by Joybuy mark" width="16" height="16">
+                <span style="font-size:12px; line-height:16px; font-weight:500; color:var(--ink);">Sold by Joybuy</span>
+              </div>
+              <div class="anatomy-cell__atom">Official self-operated tag · 自营标签 · 12/16 500</div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">14</span><span class="anatomy-cell__slot">service</span><span>· 服务</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/service/install-recycle.svg" alt="Service atom - Install and Recycle">
+              </div>
+              <div class="anatomy-cell__atom">Service · 服务 · 16px icon + 12/16 500 <code>#6E7078</code></div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">15</span><span class="anatomy-cell__slot">country</span><span>· 原产地</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/country-of-origin/from-wales.svg" alt="Country of origin atom - From Wales">
+              </div>
+              <div class="anatomy-cell__atom">Country of origin · 原产地 · 16px flag + 12/16 500 <code>#6E7078</code></div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">16</span><span class="anatomy-cell__slot">energy</span><span>· 性能</span></div>
+              <div class="anatomy-cell__stage">
+                <img src="../assets/figma-atoms/energy/default.svg" alt="Energy atom - default variant">
+              </div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-energy">Energy · 能效</a> · Performance · 24px</div>
+            </div>
+
+            <div class="anatomy-cell">
+              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">17</span><span class="anatomy-cell__slot">cart button</span><span>· 加购</span></div>
               <div class="anatomy-cell__stage">
                 <img src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Btn Cart atom - default variant">
               </div>
-              <div class="anatomy-cell__atom">"Sold by …" 文本标签 + <a href="../atoms/index.html#atom-btn-cart">Btn_Cart · 加购按钮</a> · 11 变体</div>
+              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-btn-cart">Btn_Cart · 加购按钮</a> · 11 变体</div>
             </div>
+
 
           </div>
         </div>
@@ -1463,19 +1564,7 @@
               <span class="chip chip--red">最常用</span>
             </div>
             <div class="type-cell__stage">
-              <div class="mcard">
-                <div class="mcard__img" data-mcard-img="haagen"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
-                <div class="mcard__body">
-                  <img class="mcard__hi--img" src="../assets/figma-atoms/product-highlights/hot-deal.svg" alt="Hot Deal">
-                  <div style="font-weight: 700; font-size: 11.5px;">Häagen-Dazs</div>
-                  <p class="mcard__title">Strawberry Cheesecake Ice Cream 460ml</p>
-                  <div><span class="mcard__price">£5.50</span> <span style="font-size:10px;color:var(--ink-5);text-decoration:line-through;">£6.75</span></div>
-                  <div style="margin-top:6px;">
-                    <span style="font-size:10px;color:var(--ink-4);">Sold by Joybuy</span>
-                    <img class="mcard__cart--img" src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Add to cart">
-                  </div>
-                </div>
-              </div>
+              <div class="types-stack__stage" id="tstack-default"></div>
             </div>
             <div class="type-cell__desc">全字段展示，红加购按钮。用于首页信息流、搜索结果、类目页。</div>
           </div>
@@ -1486,28 +1575,7 @@
               <span class="chip">3C · 大家电</span>
             </div>
             <div class="type-cell__stage">
-              <div class="mcard">
-                <div class="mcard__img" data-mcard-img="iphone"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
-                <div style="padding: 4px 10px 0;">
-                  <div style="display:flex;gap:4px;">
-                    <span style="width:10px;height:10px;border-radius:50%;background:#f5f5f5;border:1px solid #ddd;"></span>
-                    <span style="width:10px;height:10px;border-radius:50%;background:#1a1a1a;"></span>
-                    <span style="width:10px;height:10px;border-radius:50%;background:var(--joybuy-red);"></span>
-                    <span style="width:10px;height:10px;border-radius:50%;background:#4d6a8e;"></span>
-                    <span style="width:10px;height:10px;border-radius:50%;background:var(--surface-2);font-size:8px;display:flex;align-items:center;justify-content:center;color:var(--ink-3);">+1</span>
-                  </div>
-                </div>
-                <div class="mcard__body">
-                  <img class="mcard__hi--img" src="../assets/figma-atoms/product-highlights/hot-deal.svg" alt="Hot Deal">
-                  <div style="font-weight: 700; font-size: 11.5px;">Apple</div>
-                  <p class="mcard__title">iPhone SE 128GB Starlight</p>
-                  <div><span class="mcard__price">£429</span> <span style="font-size:10px;color:var(--ink-5);text-decoration:line-through;">£479</span></div>
-                  <div style="margin-top:6px;">
-                    <span style="font-size:10px;color:var(--ink-4);">Apple Store</span>
-                    <img class="mcard__cart--img" src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Add to cart">
-                  </div>
-                </div>
-              </div>
+              <div class="types-stack__stage" id="tstack-colors"></div>
             </div>
             <div class="type-cell__desc">图片下方增加色板行，多色时以 <code>+N</code> 收起。</div>
           </div>
@@ -1518,20 +1586,9 @@
               <span class="chip">下架 · 断货</span>
             </div>
             <div class="type-cell__stage">
-              <div class="mcard" style="opacity:.85;">
-                <div class="mcard__img" data-mcard-img="diptyque"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
-                <div class="mcard__body">
-                  <div style="font-weight: 700; font-size: 11.5px;">Diptyque</div>
-                  <p class="mcard__title">Baies Scented Candle 190g</p>
-                  <div><span class="mcard__price">£58.00</span></div>
-                  <div style="margin-top:6px;">
-                    <span style="font-size:10px;color:var(--ink-4);">Diptyque</span>
-                    <img class="mcard__oos--img" src="../assets/figma-atoms/stock/out-of-stock.svg" alt="Out of stock">
-                  </div>
-                </div>
-              </div>
+              <div class="types-stack__stage" id="tstack-readonly"></div>
             </div>
-            <div class="type-cell__desc">加购按钮换成"SOLD OUT"占位或"To notify"通知按钮，其余保持。</div>
+            <div class="type-cell__desc">主图降到 50% 并叠 4% 黑遮罩（Figma Main image · Out of stock=yes），库存行显示 <code>Out of stock</code>，加购按钮换成 <code>Notify</code>。</div>
           </div>
 
           <div class="type-cell">
@@ -1540,13 +1597,7 @@
               <span class="chip">榜单 · 关联推荐</span>
             </div>
             <div class="type-cell__stage">
-              <div class="mcard">
-                <div class="mcard__img" data-mcard-img="dior-tote"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
-                <div class="mcard__body">
-                  <p class="mcard__title" style="font-weight:600;color:var(--ink);">Book Tote Medium Toile de Jouy</p>
-                  <div><span class="mcard__price">£2,900</span></div>
-                </div>
-              </div>
+              <div class="types-stack__stage" id="tstack-minimal"></div>
             </div>
             <div class="type-cell__desc">仅保留图片 + 标题 + 价格；用在榜单、关联推荐、Live 直播浮层等信息密度低的场景。</div>
           </div>
@@ -1575,22 +1626,30 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td><code>brand</code></td><td>string</td><td>商品主档</td><td>必填，缺失禁投</td><td>不翻译</td></tr>
-            <tr><td><code>title</code></td><td>string</td><td>商品主档</td><td>必填，缺失禁投</td><td>en / zh 双语，缺失回退英文</td></tr>
+            <tr><td colspan="5" style="background: var(--surface-2); font-size: 11px; font-weight: 700; color: var(--ink-3); letter-spacing: .02em;">Media（媒体）· 商品图 / 色板</td></tr>
             <tr><td><code>image</code></td><td>url</td><td>CDN 首图</td><td>用 <code>image-placeholder.svg</code></td><td>—</td></tr>
-            <tr><td><code>salePrice</code></td><td>string · 含货币符</td><td>价格服务实时</td><td>必填，缺失禁投</td><td>符号跟随站点区域</td></tr>
-            <tr><td><code>originalPrice</code></td><td>string · 含货币符</td><td>价格服务</td><td>无折扣时不渲染</td><td>符号跟随站点区域</td></tr>
-            <tr><td><code>discount</code></td><td>string</td><td>价格服务计算</td><td>无折扣时不渲染</td><td>en / zh</td></tr>
-            <tr><td><code>perUnit</code></td><td>string · 含货币符 · 单位</td><td>价格服务计算</td><td>非计价商品不渲染</td><td>符号跟随站点区域</td></tr>
-            <tr><td><code>deposit</code></td><td>string</td><td>价格服务</td><td>非押金商品不渲染</td><td>en / zh</td></tr>
-            <tr><td><code>highlight</code></td><td>enum · best-seller / hot-deal / top-deal / blockbuster / new / clearance / plus-price / sponsored / best-before</td><td>运营 CMS</td><td>不渲染</td><td>enum key，标签图跟 Figma SVG</td></tr>
-            <tr><td><code>rating</code></td><td>number 1-5, 1dp</td><td>评价服务</td><td>&lt;10 条评价时不渲染</td><td>数字通用</td></tr>
-            <tr><td><code>soldCount</code></td><td>string · 已本地化</td><td>订单服务</td><td>&lt;100 时不渲染</td><td>en <code>k/M</code> · zh <code>万/亿</code></td></tr>
-            <tr><td><code>promotion</code></td><td>string</td><td>营销服务</td><td>不渲染</td><td>en / zh</td></tr>
-            <tr><td><code>fulfillment</code></td><td>string</td><td>履约服务</td><td>不渲染</td><td>en / zh</td></tr>
-            <tr><td><code>seller</code></td><td>string</td><td>商户档</td><td>回退平台自营文案</td><td>en / zh</td></tr>
             <tr><td><code>colors</code></td><td>hex[]</td><td>SKU 主档</td><td>非 3C / 大家电不渲染</td><td>—</td></tr>
-            <tr><td><code>extraColors</code></td><td>number</td><td>SKU 计数 <code>-colors.length</code></td><td>0 时不渲染 <code>+N</code></td><td>数字通用</td></tr>
+            <tr><td><code>extraColors</code></td><td>number</td><td>SKU 计数 <code>-colors.length</code></td><td>0 时不渲染；有值时仅显示 <code>+8 / +99</code></td><td>数字通用</td></tr>
+            <tr><td colspan="5" style="background: var(--surface-2); font-size: 11px; font-weight: 700; color: var(--ink-3); letter-spacing: .02em;">Card Content Container 01（容器 01）· 纵向 gap 4 · 左右 padding 6</td></tr>
+            <tr><td><code>brand</code></td><td>string · Figma 示例 <code>Apple</code></td><td>商品主档</td><td>可选；缺失不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
+            <tr><td><code>title</code></td><td>string</td><td>商品主档</td><td>必填，缺失禁投</td><td>en / zh 双语，缺失回退英文</td></tr>
+            <tr><td><code>highlight</code></td><td>enum · sponsored / best-before / new-hot / top-deal / private-label / new / too-good-to-waste</td><td>运营 CMS</td><td>不渲染</td><td>enum key，标签图跟 Figma SVG</td></tr>
+            <tr><td><code>rating</code></td><td>number · Figma 示例 <code>4.5</code></td><td>评价服务</td><td>缺失不渲染</td><td>数字通用</td></tr>
+            <tr><td><code>soldCount</code></td><td>string · Figma 示例 <code>100k+ sold</code></td><td>订单服务</td><td>缺失不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
+            <tr><td><code>aiReasons</code></td><td>enum · AI Recommendation Reasons 10 个 Figma 变体</td><td>AI 推荐服务</td><td>不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
+            <tr><td colspan="5" style="background: var(--surface-2); font-size: 11px; font-weight: 700; color: var(--ink-3); letter-spacing: .02em;">Card Content Container 02（容器 02）· 左右 padding 6 · 左列纵向 gap 4 / 8 · 按钮右列 gap 4</td></tr>
+            <tr><td><code>promotion</code><br>Individual Promotion / Type</td><td>enum · Figma 14 个变体</td><td>营销服务</td><td>不渲染</td><td>预览仅使用 Figma 源文案；12/16 600 <code>#E1251B</code></td></tr>
+            <tr><td><code>salePrice</code></td><td>string · Figma 示例 <code>£350.00</code></td><td>价格服务实时</td><td>必填，缺失禁投</td><td>符号跟随站点区域</td></tr>
+            <tr><td><code>originalPrice</code></td><td>string · Figma 示例 <code>£500.00</code></td><td>价格服务</td><td>无折扣时不渲染</td><td>符号跟随站点区域</td></tr>
+            <tr><td><code>discount</code></td><td>enum · <code>Save 18% on RRP / 18% off / Save £20.00 on RRP / Save £20</code></td><td>价格服务计算</td><td>无折扣时不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
+            <tr><td><code>deposit</code></td><td>enum · Figma 示例 <code>Excl. deposit £0.15</code></td><td>价格服务</td><td>非押金商品不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
+            <tr><td><code>totalPromo</code><br>Master Promotion</td><td>enum · Figma 19 个变体</td><td>营销服务</td><td>不渲染</td><td>Figma SVG atom</td></tr>
+            <tr><td><code>stock</code><br>Stock left</td><td>enum · <code>Only 10 left / Out of stock</code></td><td>库存服务</td><td>不渲染</td><td>预览仅使用 Figma 源文案；12/16 500 <code>#6E7078</code></td></tr>
+            <tr><td><code>fulfillmentType</code></td><td>enum · <code>Joybuy / POP</code></td><td>履约服务</td><td>不渲染</td><td>固定渲染 Figma 文案 <code>Get it by today</code></td></tr>
+            <tr><td><code>selfOperated</code><br>Official self-operated tag</td><td>boolean</td><td>商户档</td><td><code>false</code> 或缺失时整个槽位不渲染</td><td><code>true</code> 固定渲染 <code>Sold by Joybuy</code></td></tr>
+            <tr><td><code>service</code><br>Service</td><td>enum · <code>Install &amp; Recyle / Gift wrapping</code></td><td>服务能力</td><td>不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
+            <tr><td><code>country</code><br>Country of origin</td><td>enum · <code>From Wales / From United Kingdom / From Scotland / From England / From Ireland</code></td><td>商品主档</td><td>不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
+            <tr><td><code>energy</code><br>Performance</td><td>enum · Figma 4 个变体</td><td>能效服务</td><td>不渲染</td><td>图跟 Figma SVG</td></tr>
           </tbody>
         </table>
       </section>
@@ -1699,10 +1758,6 @@
     <div class="types-stack">
       <div class="types-stack__head">
         <span data-doc="stack.title">Types preview</span>
-        <span class="types-stack__head-lang">
-          <button data-card-lang="en" class="is-active" type="button">EN</button>
-          <button data-card-lang="zh" type="button">中</button>
-        </span>
       </div>
       <div class="types-stack__items">
 
@@ -1753,10 +1808,11 @@
   const D = window.CARD_DATA;
   if (!D) { console.error('CARD_DATA missing'); return; }
 
-  /* Card language is intentionally independent from global documentation i18n. */
-  let cardLang = 'en';
+  /* Product previews follow the global documentation language. */
+  let cardLang = (window.JoybuySite && window.JoybuySite.getLanguage()) || 'zh';
   let currentCat = 'beauty';
   let currentPreset = 0;
+  let lockedHighlight = '';   // scenario-pinned highlight enum (e.g. Sponsored); '' = follow data
 
   const docsDict = {
     en: {
@@ -1772,8 +1828,6 @@
       'tab.data': 'Field guide',
       'tab.when': 'Usage guidance',
       'tab.figma': 'Get component',
-      'ctrl.lang': 'Card language',
-      'ctrl.langHint': 'Toggles product text only. Docs language is separate.',
       'stack.title': 'Types preview',
       'stack.default': 'Default',
       'stack.tag.default': 'most used',
@@ -1797,8 +1851,6 @@
       'tab.data': '字段说明',
       'tab.when': '使用建议',
       'tab.figma': '获取组件',
-      'ctrl.lang': '商卡语言',
-      'ctrl.langHint': '只切换商卡内容语言，不影响全站文档语言。',
       'stack.title': '类型预览',
       'stack.default': '默认',
       'stack.tag.default': '最常用',
@@ -1815,67 +1867,130 @@
 
   // Fixed enum of Figma product-highlights atoms (filename = enum key).
   const HIGHLIGHT_ENUM = new Set([
-    'best-before','best-seller','blockbuster','clearance',
-    'hot-deal','new','plus-price','sponsored','top-deal'
+    'sponsored','best-before','new-hot','top-deal',
+    'private-label','new','too-good-to-waste'
   ]);
   const HIGHLIGHT_LABEL = {
-    'best-before':'Best before', 'best-seller':'Best seller', 'blockbuster':'Blockbuster',
-    'clearance':'Clearance', 'hot-deal':'Hot deal', 'new':'New',
-    'plus-price':'Plus price', 'sponsored':'Sponsored', 'top-deal':'Top deal'
+    'sponsored':'Sponsored', 'best-before':'Best Before',
+    'new-hot':'New&Hot', 'top-deal':'Top Deal',
+    'private-label':'Private Label', 'new':'New',
+    'too-good-to-waste':'Too Good To Waste'
+  };
+  // All seven Product Highlights variants are native HTML (Figma atoms):
+  // Sponsored 26894:262735 · Best Before 31509:124741 · New&Hot 27850:345179 ·
+  // Top Deal 27850:347936 · Private Label 38163:76435 · New 27850:347938 ·
+  // Too Good To Waste 28525:159689.
+  const HIGHLIGHT_TEXT = {
+    'sponsored':'Sponsored', 'best-before':'Life 3d+',
+    'new-hot':'New&Hot', 'top-deal':'Top Deal',
+    'private-label':'Private Label', 'new':'New',
+    'too-good-to-waste':'Too Good To Waste'
+  };
+  const HIGHLIGHT_NODE = {
+    'sponsored':'26894:262735', 'best-before':'31509:124741',
+    'new-hot':'27850:345179', 'top-deal':'27850:347936',
+    'private-label':'38163:76435', 'new':'27850:347938',
+    'too-good-to-waste':'28525:159689'
+  };
+  function highlightHTML(key) {
+    if (!HIGHLIGHT_ENUM.has(key)) return '';
+    if (key === 'too-good-to-waste') {
+      return '<span class="ph-tgw" data-figma-node="'+HIGHLIGHT_NODE[key]+'">'
+        + '<span class="ph-tgw__chip">Too Good To Waste</span>'
+        + '<span class="ph-tgw__bbd">BBD: 27-12-2025</span>'
+        + '</span>';
+    }
+    if (key === 'sponsored') {
+      return '<span class="ph-sponsored" data-figma-node="'+HIGHLIGHT_NODE[key]+'">Sponsored</span>';
+    }
+    return '<span class="ph-highlight ph-highlight--'+key+'" data-figma-node="'+HIGHLIGHT_NODE[key]+'">'
+      + HIGHLIGHT_TEXT[key] + '</span>';
+  }
+
+  /* ================ Field explorer · scenarios + field registry ================
+   * Scenario tabs (场景) are the primary switch: clicking one drives the live card to a
+   * real business configuration (category + preset + canonical field set) AND clears any
+   * per-field overrides. The switch panel below lets you toggle every optional field and
+   * shows, per field, which scenarios it appears in. Fields per Figma anatomy 5577-17539.
+   * data-kind fields default ON when the preset carries the data (N/A otherwise);
+   * context-kind fields carry a constant atom/label and default per scenario. */
+  const V_SCENES = [
+    { key:'universal',  cat:'beauty',    preset:1, label:{ en:'Universal',   zh:'通用'   }, sub:{ en:'General', zh:'常规' }, on:{ promotion:true, aiReasons:true } },
+    { key:'appliance',  cat:'appliance', preset:0, label:{ en:'Appliance',   zh:'大家电' }, sub:{ en:'Large',   zh:'白电' },
+      on:{ energy:true, stock:true, promotion:true, service:true, country:true } },
+    { key:'sponsored',  cat:'beauty',    preset:2, label:{ en:'Sponsored',   zh:'广告'   }, sub:{ en:'Ad',      zh:'推广' }, on:{ aiReasons:true, promotion:true },
+      vals:{ highlight:'sponsored' } },
+    { key:'totalPromo', cat:'beauty',    preset:3, label:{ en:'Total promo', zh:'总促'   }, sub:{ en:'Bundle',  zh:'满赠' }, on:{ totalPromo:true, promotion:true } },
+    { key:'presale',    cat:'3c',        preset:0, label:{ en:'Pre-sale',    zh:'预售'   }, sub:{ en:'Deposit', zh:'定金' },
+      on:{ presaleTag:true, deposit:true, promotion:false },
+      vals:{ deposit:{ en:'Excl. deposit £0.15', zh:'Excl. deposit £0.15' } } },
+    { key:'fresh',      cat:'food',      preset:1, label:{ en:'Grocery',     zh:'生鲜'   }, sub:{ en:'Food',    zh:'商超' },
+      on:{ dietary:true, promotion:true }, dietary:['Vegan','GlutenFree'] }
+  ];
+
+  // Field groups (visual sections inside the switch panel).
+  const V_GROUPS = [
+    { key:'merch', name:{ en:'Merchandising',      zh:'营销标签' } },
+    { key:'price', name:{ en:'Price',              zh:'价格'     } },
+    { key:'spec',  name:{ en:'Fulfilment & specs', zh:'履约信息' } }
+  ];
+
+  // Every optional slot. kind:'data' → default ON when preset carries data (else N/A);
+  // kind:'context' → constant atom/label, default per scenario's `on` map.
+  const V_FIELDS = [
+    { key:'rankBadge',    group:'merch', kind:'context', label:{ en:'Ranking badge',   zh:'榜单序号'   }, scene:{ en:'Ranking rails',   zh:'榜单 · 关联推荐' } },
+    { key:'dietary',      group:'merch', kind:'context', label:{ en:'Dietary badges',  zh:'膳食标'     }, scene:{ en:'Grocery',         zh:'生鲜 · 商超'     } },
+    { key:'colors',       group:'merch', kind:'data',    label:{ en:'Colour swatches', zh:'配色'       }, scene:{ en:'3C · Appliance · Fashion',  zh:'3C · 大家电 · 服饰' } },
+    { key:'highlight',    group:'merch', kind:'data',    label:{ en:'Product highlight',zh:'商品亮点'  }, scene:{ en:'Most scenes',     zh:'多数场景'        } },
+    { key:'aiReasons',    group:'merch', kind:'context', label:{ en:'AI reason',       zh:'AI 推荐理由' }, scene:{ en:'Universal · Ads', zh:'通用 · 广告'     } },
+    { key:'presaleTag',   group:'merch', kind:'context', label:{ en:'Pre-sale tag',    zh:'预售标'     }, scene:{ en:'Pre-sale',        zh:'预售'            } },
+    { key:'promotion',    group:'merch', kind:'context', label:{ en:'Individual Promotion / Type', zh:'单促/业务类型' }, scene:{ en:'Campaign · Business type', zh:'营销 · 业务类型' } },
+    { key:'rrp',          group:'price', kind:'data',    label:{ en:'Reference price', zh:'划线价'     }, scene:{ en:'When sale < RRP', zh:'有原价时'        } },
+    { key:'discount',     group:'price', kind:'data',    label:{ en:'Discount',        zh:'折扣'       }, scene:{ en:'When discounted', zh:'有折扣时'        } },
+    { key:'totalPromo',   group:'price', kind:'context', label:{ en:'Master Promotion',zh:'总促'       }, scene:{ en:'Total-promotion', zh:'总促 · 满赠'     } },
+    { key:'deposit',      group:'price', kind:'data',    label:{ en:'Deposit',         zh:'押金 / 定金' }, scene:{ en:'Bottles · pre-sale',zh:'瓶装 · 预售'   } },
+    { key:'stock',        group:'spec',  kind:'context', label:{ en:'Stock left',      zh:'少库存'     }, scene:{ en:'Low stock',       zh:'低库存 · 大家电' } },
+    { key:'fulfillment',  group:'spec',  kind:'data',    label:{ en:'Fulfillment time',zh:'履约时效'   }, scene:{ en:'All scenes',      zh:'全部场景'        } },
+    { key:'seller',       group:'spec',  kind:'data',    label:{ en:'Official self-operated tag', zh:'自营标签' }, scene:{ en:'1P SKUs only', zh:'仅自营 SKU' } },
+    { key:'service',      group:'spec',  kind:'context', label:{ en:'Service',         zh:'服务'       }, scene:{ en:'Appliance · Installation', zh:'大家电 · 安装回收' } },
+    { key:'country',      group:'spec',  kind:'context', label:{ en:'Country of origin', zh:'原产地'   }, scene:{ en:'Appliance · Imported',    zh:'大家电 · 进口'     } },
+    { key:'energy',       group:'spec',  kind:'context', label:{ en:'Performance',     zh:'性能'       }, scene:{ en:'Appliance',       zh:'大家电'          } }
+  ];
+
+  // Figma SVG atoms rendered directly for the fixed marketing tags (English source, matching
+  // the product-highlights precedent — these are graphic tags, not localized copy).
+  const ATOM_SRC = {
+    presaleTag: '../assets/figma-atoms/individual-promotion/type-pre-sale.svg',
+    totalPromo: '../assets/figma-atoms/total-promotion/buy-1-get-1-free.svg',
+    energy:     '../assets/figma-atoms/energy/default.svg'
   };
 
-  /* ================ Field simulator · state + rule tables ================
-   * The simulator demonstrates how the card resolves its OPTIONAL slots.
-   * Highlight + Single-promotion are single-slot (max 1, resolved by priority);
-   * Pricing extras stack (multi-select). All labels follow cardLang. */
-  const SIM_HI = [   // priority order (index = priority; 0 = highest)
-    { key:'best-seller', pri:0, en:'Best seller', zh:'畅销' },
-    { key:'blockbuster', pri:1, en:'Blockbuster', zh:'爆款' },
-    { key:'top-deal',    pri:2, en:'Top deal',    zh:'超值' },
-    { key:'hot-deal',    pri:3, en:'Hot deal',    zh:'热卖' },
-    { key:'sponsored',   pri:4, en:'Sponsored',   zh:'推广' }
-  ];
-  const SIM_PROMO = [ // priority order
-    { key:'contract',  pri:0, en:'Contract launch', zh:'合约首发' },
-    { key:'lightning', pri:1, en:'Lightning deal',  zh:'限时闪购' },
-    { key:'happy',     pri:2, en:'Happy hour',      zh:'欢乐时光' },
-    { key:'welcome',   pri:3, en:'Welcome offer',   zh:'新人礼' }
-  ];
-  const SIM_PRICE = [ // multi-select; `field` = data-field slot it controls
-    { key:'rrp',      field:'originalPrice', en:'RRP',        zh:'RRP 原价' },
-    { key:'discount', field:'discount',      en:'Discount',   zh:'折扣' },
-    { key:'unit',     field:'perUnit',       en:'Unit price', zh:'单价' },
-    { key:'deposit',  field:'deposit',       en:'Deposit',    zh:'押金' }
-  ];
-  // Live simulator state (defaults chosen to match a rich, typical card).
-  const sim = {
-    hi:    { 'best-seller':true, 'blockbuster':false, 'top-deal':false, 'hot-deal':false, 'sponsored':false },
-    promo: { contract:false, lightning:true, happy:false, welcome:false },
-    price: { rrp:true, discount:true, unit:true, deposit:true }
+  const UI_COPY = {
+    en: { scene:'Scenario', category:'Category', preset:'Product preset', fields:'Field controls', reset:'Reset', na:'N/A' },
+    zh: { scene:'业务场景', category:'品类', preset:'商品预设', fields:'字段控制', reset:'重置', na:'无数据' }
   };
-  const SIM_TXT = {
-    en: { title:'Field simulator', hint:'Figma-style slot toggles',
-          hi:'Highlight', promo:'Single promotion', price:'Pricing extras',
-          max1:'max 1 · by priority', multi:'multi-select',
-          copilot:'Copilot · why it renders this way',
-          slot:'slot', na:'n/a for this product', none:'hidden (nothing enabled)',
-          hiLead:'Highlight slot (1 seat):', promoLead:'Promotion slot (1 seat):', priceLead:'Pricing extras:',
-          shows:'shows', folded:'folded by priority', andSep:', ', stack:'stacked together', off:'off' },
-    zh: { title:'字段模拟器', hint:'Figma 式坑位开关',
-          hi:'亮点', promo:'单促', price:'价格附加',
-          max1:'最多 1 · 按优先级', multi:'多选',
-          copilot:'Copilot · 为什么这样显示',
-          slot:'坑位', na:'该商品不适用', none:'不展示（未启用任何项）',
-          hiLead:'亮点位（1 坑）：', promoLead:'单促位（1 坑）：', priceLead:'价格附加：',
-          shows:'展示', folded:'按优先级折叠', andSep:'、', stack:'同时展示', off:'关闭' }
-  };
+
+  function updateControlCopy() {
+    document.querySelectorAll('[data-control-title]').forEach(el => {
+      const key = el.dataset.controlTitle;
+      el.textContent = UI_COPY[cardLang][key] || key;
+    });
+  }
+
+  // Field explorer state
+  let sceneKey = 'universal';   // active scenario tab
+  let fieldOv  = {};            // field key -> true/false; absent = follow scenario default
+
+  // Resolve a field's visibility: override wins, else scenario/data default.
+  function vVis(name, def, ov){ return (ov[name] == null) ? !!def : !!ov[name]; }
+
 
   function setField(name, value) {
     document.querySelectorAll('[data-field="'+name+'"]').forEach(el => {
-      // highlight is a special enum → render Figma SVG, not plain text
+      // highlight is a special enum → shared HTML atom where available, otherwise Figma SVG
       if (name === 'highlight') {
         if (value && HIGHLIGHT_ENUM.has(value)) {
-          el.innerHTML = '<img src="../assets/figma-atoms/product-highlights/'+value+'.svg" alt="'+(HIGHLIGHT_LABEL[value]||value)+'">';
+          el.innerHTML = highlightHTML(value);
           el.removeAttribute('data-empty');
         } else {
           el.innerHTML = '';
@@ -1890,249 +2005,343 @@
     });
   }
 
-  function renderColors(colors, extra) {
+  function renderColors(show, colors, extra) {
     const wrap = document.getElementById('vcard-colors');
     if (!wrap) return;
-    const showColors = (currentCat === '3c' || currentCat === 'appliance');
-    wrap.style.display = showColors ? '' : 'none';
+    wrap.style.display = show ? '' : 'none';
     wrap.innerHTML = '';
-    if (!showColors) return;
+    if (!show) return;
     (colors || []).forEach(c => {
       const dot = document.createElement('div');
       dot.className = 'vcard__color-dot';
-      dot.style.background = c;
+      const swatch = document.createElement('span');
+      swatch.className = 'vcard__color-swatch';
+      swatch.style.setProperty('--swatch-color', c);
+      dot.appendChild(swatch);
       wrap.appendChild(dot);
     });
     if (extra > 0) {
-      const e = document.createElement('div');
-      e.className = 'vcard__color-dot vcard__color-dot--extra';
-      e.textContent = '+' + extra;
-      wrap.appendChild(e);
+      const more = document.createElement('div');
+      more.className = 'vcard__color-dot vcard__color-dot--extra';
+      const swatch = document.createElement('span');
+      swatch.className = 'vcard__color-swatch vcard__color-swatch--more';
+      more.appendChild(swatch);
+      const label = document.createElement('span');
+      label.className = 'vcard__color-more-label';
+      label.textContent = extra >= 99 ? '+99' : '+8';
+      more.appendChild(label);
+      wrap.appendChild(more);
     }
+  }
+
+  // Ranking pill (context) — dark number badge over the image.
+  function setRank(on, txt) {
+    document.querySelectorAll('[data-field="rankBadge"]').forEach(el => {
+      if (on) { el.textContent = txt; el.removeAttribute('data-empty'); }
+      else { el.textContent = ''; el.setAttribute('data-empty', '1'); }
+    });
+  }
+  // Fixed Figma SVG atom slots (presaleTag / totalPromo / energy).
+  function setAtom(name, on) {
+    const src = ATOM_SRC[name];
+    document.querySelectorAll('[data-field="'+name+'"]').forEach(el => {
+      if (on && src) { el.innerHTML = '<img src="'+src+'" alt="'+name+'">'; el.removeAttribute('data-empty'); }
+      else { el.innerHTML = ''; el.setAttribute('data-empty', '1'); }
+    });
+  }
+  // Toggle a composite slot (icon + text) without touching its children.
+  function setSlot(name, on) {
+    document.querySelectorAll('[data-field="'+name+'"]').forEach(el => {
+      if (on) el.removeAttribute('data-empty'); else el.setAttribute('data-empty', '1');
+    });
+  }
+  // Dietary badges (context) — row of Figma badge atoms bottom-left of image.
+  function setDietary(on, keys) {
+    const files = { Frozen:'frozen', Vegetarian:'vegetarian', Vegan:'vegan', GlutenFree:'gluten-free', Dairyfree:'dairy-free', Organic:'organic', Halal:'halal', Number:'number' };
+    const host = document.getElementById('vcard-dietary');
+    if (!host) return;
+    if (on && keys && keys.length) {
+      host.innerHTML = keys.map(k => '<img src="../assets/figma-atoms/dietary-badges/'+(files[k] || k)+'.svg" alt="'+k+'">').join('');
+      host.removeAttribute('data-empty');
+    } else { host.innerHTML = ''; host.setAttribute('data-empty', '1'); }
   }
 
   function renderProduct() {
     const p = D.catalog[currentCat][currentPreset];
     const t = p[cardLang];
-    // Base fields — owned by the category / preset picker.
+    // Always-on base fields — owned by the category / preset picker.
     setField('brand', p.brand);
     setField('title', t.title);
     setField('rating', p.rating);
     setField('sold', t.sold);
-    setField('reviews', cardLang === 'zh'
-      ? '超过 ' + t.sold.replace(/\s*已售|\s*sold/gi, '') + ' 条好评'
-      : 'Over ' + t.sold.replace(/\s*sold/gi, '') + ' positive reviews');
     setField('salePrice', p.salePrice);
-    setField('fulfillment', t.fulfillment);
-    setField('seller', t.seller);
     const inner = document.getElementById('vcard-image');
     if (inner) {
       inner.innerHTML = D.productImages[p.img]
         ? '<img src="'+D.productImages[p.img]+'" alt="'+p.brand+'">'
         : '';
     }
-    renderColors(p.colors, p.extraColors);
-    // Optional slots (highlight / promotion / RRP / discount / perUnit / deposit)
-    // + the RRP wrapper are owned by the field simulator, so its toggles stay
-    // authoritative across language / category / preset changes.
-    applySimulator();
+    // Every optional slot is owned by the field explorer (scene + overrides),
+    // so its toggles stay authoritative across language / category / preset changes.
+    applyFields();
   }
 
-  /* ================ Field simulator · resolution + rendering ================ */
+  /* ================ Field explorer · resolution + rendering ================ */
 
-  // Which pricing extras does the current preset actually carry?
-  function priceAvail() {
+  // Which data-kind fields does the current preset actually carry (in this scene)?
+  function vAvail(scene) {
     const p = D.catalog[currentCat][currentPreset];
     const t = p[cardLang];
     return {
-      originalPrice: !!p.originalPrice,
-      discount: !!t.discount,
-      perUnit: !!t.perUnit,
-      deposit: !!t.deposit
+      colors:      !!(p.colors && p.colors.length) && (['3c','appliance','fashion'].indexOf(currentCat) !== -1),
+      highlight:   !!(t.highlight && HIGHLIGHT_ENUM.has(t.highlight)),
+      rrp:         !!p.originalPrice,
+      discount:    !!t.discount,
+      deposit:     !!t.deposit || !!(scene.vals && scene.vals.deposit),
+      fulfillment: !!t.fulfillment,
+      seller:      !!p.selfOperated,
+      aiReasons:   !!t.sold
     };
   }
 
-  // Apply simulator state to the live card's optional slots, then re-render the panel.
-  function applySimulator() {
+  // Canonical default visibility for a scenario: scene.on wins, else data fields
+  // follow availability, context fields default off.
+  function vDefaults(scene, avail) {
+    const def = {};
+    V_FIELDS.forEach(f => {
+      if (scene.on && scene.on[f.key] != null) def[f.key] = !!scene.on[f.key];
+      else if (f.kind === 'data') def[f.key] = !!avail[f.key];
+      else def[f.key] = false;
+    });
+    return def;
+  }
+
+  // Resolve the active scene + field visibility, push every optional slot to the
+  // live card, then re-render the switch panel + copilot.
+  function applyFields() {
+    const scene = V_SCENES.find(s => s.key === sceneKey) || V_SCENES[0];
     const p = D.catalog[currentCat][currentPreset];
     const t = p[cardLang];
-    const avail = priceAvail();
+    const avail = vAvail(scene);
+    const def   = vDefaults(scene, avail);
+    const vis   = k => vVis(k, def[k], fieldOv);
 
-    // Highlight — single slot; highest-priority enabled wins.
-    const hiPick = SIM_HI.find(o => sim.hi[o.key]) || null;
-    setField('highlight', hiPick ? hiPick.key : '');
+    // Context copy (constant per scenario, localized to cardLang).
+    const stockTxt = 'Only 10 left';
+    const rankTxt  = '1';   // Figma Tag-number: rank number only
+    // Figma atom default variant: Type=More buying choices — Barlow Fix 50 Medium 12/16 #6E7078.
+    const reasonTxt = 'More buying choices';
+    // Figma atom: Individual Promotion / Type — Campaign-Lightning offers, Barlow Fix 50 Semibold 12/16 #E1251B.
+    const promoVal  = 'Lightning offers';
+    const depositVal = (scene.vals && scene.vals.deposit) ? scene.vals.deposit[cardLang] : t.deposit;
 
-    // Single promotion — single slot; highest-priority enabled wins.
-    const promoPick = SIM_PROMO.find(o => sim.promo[o.key]) || null;
-    setField('promotion', promoPick ? promoPick[cardLang] : '');
+    // Data-kind slots — value from preset, visibility from resolved default/override.
+    renderColors(vis('colors'), p.colors, p.extraColors);
+    setField('highlight',     (vis('highlight') && avail.highlight) ? (lockedHighlight || t.highlight) : '');
+    setField('promotion',     vis('promotion') ? promoVal : '');
+    setField('originalPrice', vis('rrp') ? p.originalPrice : '');
+    setField('discount',      vis('discount') ? t.discount : '');
+    setField('deposit',       vis('deposit') ? depositVal : '');
+    setField('fulfillment',   vis('fulfillment') ? t.fulfillment : '');
+    setField('seller',        (vis('seller') && p.selfOperated) ? 'Sold by Joybuy' : '');
 
-    // Pricing extras — visibility from sim state, value from preset, gated by availability.
-    setField('originalPrice', (sim.price.rrp && avail.originalPrice) ? p.originalPrice : '');
-    setField('discount',      (sim.price.discount && avail.discount) ? t.discount : '');
-    setField('perUnit',       (sim.price.unit && avail.perUnit) ? t.perUnit : '');
-    setField('deposit',       (sim.price.deposit && avail.deposit) ? t.deposit : '');
+    // Context-kind slots — constant atom/label, visibility per scenario.
+    setRank(vis('rankBadge'), rankTxt);
+    setDietary(vis('dietary'), scene.dietary || ['Vegan', 'GlutenFree']);
+    setField('reviews',       vis('aiReasons') ? reasonTxt : '');
+    setAtom('presaleTag',     vis('presaleTag'));
+    setAtom('totalPromo',     vis('totalPromo'));
+    setField('stock',         vis('stock') ? stockTxt : '');
+    setSlot('service',        vis('service'));
+    setField('serviceText',   vis('service') ? 'Install & Recyle' : '');
+    setSlot('country',        vis('country'));
+    setField('countryText',   vis('country') ? 'From Wales' : '');
+    // Energy label atom already bundles the "Product sheet" link (Figma energy/default.svg),
+    // so there is no separate sheet-link or install-service slot on the vertical card.
+    setAtom('energy',         vis('energy'));
 
+    // Seller wrap: red Joybuy mark for first-party sellers; collapse wrap when seller off
+    // (the cart button is a sibling and stays visible).
+    var sellerWrap = document.querySelector('#vcard .vcard__seller-wrap');
+    if (sellerWrap) {
+      sellerWrap.classList.toggle('is-joybuy', vis('seller') && !!p.selfOperated);
+      sellerWrap.style.display = (vis('seller') && !!p.selfOperated) ? '' : 'none';
+    }
     // RRP wrapper collapses when originalPrice is empty.
     document.querySelectorAll('.vcard__price-was').forEach(el => {
       const inner = el.querySelector('.vcard__original-price');
       el.style.display = (inner && inner.textContent) ? '' : 'none';
     });
 
-    renderSimulator();
+    renderVFieldSim(avail, def);
   }
 
-  function simSwitchRow(group, o, opts) {
-    const T = SIM_TXT[cardLang];
-    let cls = 'sim-row';
-    if (opts.picked)   cls += ' is-picked';
-    if (opts.folded)   cls += ' is-folded';
-    if (opts.disabled) cls += ' is-disabled';
-    const pri = (opts.pri !== undefined && opts.pri !== null)
-      ? '<span class="sim-row__pri">P'+opts.pri+'</span>' : '';
-    const right = opts.disabled
-      ? '<span class="sim-row__na">'+T.na+'</span>'
-      : '<button class="sim-sw" type="button" role="switch" aria-checked="'+(opts.on?'true':'false')+'" '
-        + 'aria-label="'+o[cardLang]+'" data-sim-group="'+group+'" data-sim-key="'+o.key+'"></button>';
-    return '<div class="'+cls+'">'
-      + '<span class="sim-row__label">'+o[cardLang]+pri+'</span>'
-      + right + '</div>';
+  /* ---- Scenario tabs ---- */
+  function renderVSceneTabs() {
+    const host = document.getElementById('vcard-scene-tabs');
+    if (!host) return;
+    host.innerHTML = '';
+    V_SCENES.forEach(s => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'scene-tab' + (s.key === sceneKey ? ' is-active' : '');
+      b.innerHTML = '<span>'+s.label[cardLang]+'</span>'
+        + '<span class="scene-tab__sub">'+s.sub[cardLang]+'</span>';
+      b.setAttribute('aria-pressed', String(s.key === sceneKey));
+      b.addEventListener('click', () => applyVScene(s.key));
+      host.appendChild(b);
+    });
   }
 
-  function renderSimulator() {
+  // Switch the card to a scenario's canonical config: set category/preset, clear
+  // per-field overrides, re-render everything.
+  function applyVScene(key) {
+    const s = V_SCENES.find(x => x.key === key) || V_SCENES[0];
+    sceneKey = key;
+    fieldOv = {};
+    currentCat = s.cat;
+    currentPreset = s.preset;
+    lockedHighlight = (s.vals && s.vals.highlight) || '';
+    renderVSceneTabs();
+    renderCatStrip();
+    renderPresetStrip();
+    renderProduct();   // → applyFields → renderVFieldSim
+  }
+
+  /* ---- Field switch panel ---- */
+  function renderVFieldSim(avail, def) {
     const host = document.getElementById('vcard-sim');
     if (!host) return;
-    const T = SIM_TXT[cardLang];
-    const avail = priceAvail();
-    const hiPick = SIM_HI.find(o => sim.hi[o.key]) || null;
-    const promoPick = SIM_PROMO.find(o => sim.promo[o.key]) || null;
+    const T = UI_COPY[cardLang];
+    const dirty = Object.keys(fieldOv).length > 0;
 
-    let html = '<div class="field-sim__title">'+T.title
-      + ' <span class="field-sim__title-hint">· '+T.hint+'</span></div>';
+    let html = '<div class="field-sim__head">'
+      + '<div class="field-sim__title">'+T.fields+'</div>'
+      + '<button class="field-sim__reset" id="vcard-reset" type="button"'
+      + (dirty ? '' : ' aria-disabled="true"')+'>'+T.reset+'</button></div>';
 
-    // Group A · Highlight (max 1 · by priority)
-    html += '<div class="sim-group"><div class="sim-group__head">'
-      + '<span class="sim-group__name">'+T.hi+'</span>'
-      + '<span class="sim-group__rule">'+T.max1+'</span></div>';
-    SIM_HI.forEach(o => {
-      const on = !!sim.hi[o.key];
-      html += simSwitchRow('hi', o, { on:on, pri:o.pri,
-        picked: !!(hiPick && hiPick.key === o.key),
-        folded: on && !!hiPick && hiPick.key !== o.key });
+    V_GROUPS.forEach(g => {
+      html += '<div class="sim-group"><div class="sim-group__head">'
+        + '<span class="sim-group__name">'+g.name[cardLang]+'</span></div>';
+      V_FIELDS.filter(f => f.group === g.key).forEach(f => {
+        const on = vVis(f.key, def[f.key], fieldOv);
+        const gatedOff = (f.kind === 'data') && !avail[f.key];
+        const overridden = (fieldOv[f.key] != null);
+        let cls = 'sim-row';
+        if (on) cls += ' is-picked';
+        if (gatedOff) cls += ' is-disabled';
+        if (overridden) cls += ' is-overridden';
+        const right = gatedOff
+          ? '<span class="sim-row__na">'+T.na+'</span>'
+          : '<button class="sim-sw" type="button" role="switch" aria-checked="'+(on?'true':'false')+'" '
+            + 'aria-label="'+f.label[cardLang]+'" data-field-key="'+f.key+'"></button>';
+        html += '<div class="'+cls+'">'
+          + '<span class="sim-row__label"><span class="sim-row__name">'+f.label[cardLang]+'</span></span>'
+          + right + '</div>';
+      });
+      html += '</div>';
     });
-    html += '</div>';
 
-    // Group B · Single promotion (max 1 · by priority)
-    html += '<div class="sim-group"><div class="sim-group__head">'
-      + '<span class="sim-group__name">'+T.promo+'</span>'
-      + '<span class="sim-group__rule">'+T.max1+'</span></div>';
-    SIM_PROMO.forEach(o => {
-      const on = !!sim.promo[o.key];
-      html += simSwitchRow('promo', o, { on:on, pri:o.pri,
-        picked: !!(promoPick && promoPick.key === o.key),
-        folded: on && !!promoPick && promoPick.key !== o.key });
-    });
-    html += '</div>';
-
-    // Group C · Pricing extras (multi-select)
-    html += '<div class="sim-group"><div class="sim-group__head">'
-      + '<span class="sim-group__name">'+T.price+'</span>'
-      + '<span class="sim-group__rule">'+T.multi+'</span></div>';
-    SIM_PRICE.forEach(o => {
-      const has = avail[o.field];
-      const on = !!sim.price[o.key];
-      html += simSwitchRow('price', o, { on: on && has, disabled: !has,
-        picked: on && has });
-    });
-    html += '</div>';
-
-    html += renderCopilot(hiPick, promoPick, avail);
     host.innerHTML = html;
   }
 
-  // Deterministic explanation of how each slot resolved.
-  function renderCopilot(hiPick, promoPick, avail) {
-    const T = SIM_TXT[cardLang];
-    const hiOn = SIM_HI.filter(o => sim.hi[o.key]);
-    let hiSent;
-    if (!hiPick) {
-      hiSent = '<em>'+T.none+'</em>';
-    } else {
-      hiSent = T.shows+' <b>'+hiPick[cardLang]+'</b> (P'+hiPick.pri+')';
-      const folded = hiOn.filter(o => o.key !== hiPick.key).map(o => o[cardLang]);
-      if (folded.length) hiSent += ' · '+folded.join(T.andSep)+' '+T.folded;
-    }
-    const promoSent = promoPick
-      ? T.shows+' <b>'+promoPick[cardLang]+'</b> (P'+promoPick.pri+')'
-      : '<em>'+T.none+'</em>';
-    const priceParts = SIM_PRICE.map(o => {
-      const has = avail[o.field];
-      if (!has) return o[cardLang]+' <em>('+T.na+')</em>';
-      return sim.price[o.key] ? '<b>'+o[cardLang]+'</b>' : o[cardLang]+' <em>('+T.off+')</em>';
+  // Delegated wiring for the switch panel (toggles + reset). IIFE — DOM exists at parse time.
+  (function wireVFieldSim() {
+    const host = document.getElementById('vcard-sim');
+    if (!host) return;
+    host.addEventListener('click', e => {
+      const sw = e.target.closest('.sim-sw');
+      if (sw) {
+        const key = sw.dataset.fieldKey;
+        const scene = V_SCENES.find(s => s.key === sceneKey) || V_SCENES[0];
+        const avail = vAvail(scene);
+        const def = vDefaults(scene, avail);
+        if ((V_FIELDS.find(f => f.key === key) || {}).kind === 'data' && !avail[key]) return; // gated N/A
+        const nv = !vVis(key, def[key], fieldOv);
+        if (nv === !!def[key]) delete fieldOv[key]; else fieldOv[key] = nv;
+        applyFields();
+        return;
+      }
+      if (e.target.closest('#vcard-reset')) {
+        if (!Object.keys(fieldOv).length) return;
+        fieldOv = {};
+        applyFields();
+      }
     });
-    return '<div class="sim-copilot">'
-      + '<div class="sim-copilot__head"><span class="sim-copilot__dot"></span>'+T.copilot+'</div>'
-      + '<p>'+T.hiLead+' '+hiSent+'</p>'
-      + '<p>'+T.promoLead+' '+promoSent+'</p>'
-      + '<p>'+T.priceLead+' '+priceParts.join(T.andSep)+'</p>'
-      + '</div>';
-  }
+  })();
 
-  /* ================ Types stack (right panel) ================ */
+  /* ================ Common Variants (05) ================ */
 
-  function tvcardHTML(cfg) {
-    // cfg: {catKey, presetIdx, showHi, showColors, showBottom, dim, oos, minimal}
+  // Each common style is the real .vcard component with a fixed data set, so the
+  // documented variants always match the card people actually ship.
+  function commonVariantCard(cfg) {
     const list = D.catalog[cfg.catKey];
     if (!list || !list[cfg.presetIdx]) return '';
     const p = list[cfg.presetIdx];
     const t = p[cardLang];
     const img = D.productImages[p.img] || '';
-    let html = '<div class="tvcard' + (cfg.dim ? ' tvcard--dim' : '') + '">';
+    const oos = !!cfg.oos;
+    const show = k => !!(cfg.show || {})[k];
 
-    // image + fav
-    html += '<div class="tvcard__img">';
-    html += (img ? '<img src="'+img+'" alt="'+p.brand+'">' : '');
-    html += '<span class="tvcard__fav"><img src="../assets/figma-atoms/tag-like/tag-like.svg" alt="Favorite"></span>';
+    let html = '<div class="vcard vcard--static' + (oos ? ' vcard--oos' : '') + '">';
+    html += '<div class="vcard__image">';
+    html += '<div class="vcard__image-inner">' + (img ? '<img src="'+img+'" alt="'+p.brand+'">' : '') + '</div>';
+    if (!cfg.minimal) html += '<button class="vcard__favorite" type="button" aria-label="favorite"><img src="../assets/figma-atoms/tag-like/tag-like.svg" alt="Favorite"></button>';
     html += '</div>';
 
-    // colors row
-    if (cfg.showColors && p.colors && p.colors.length) {
-      html += '<div class="tvcard__colors">';
-      p.colors.slice(0, 4).forEach(c => {
-        html += '<span class="tvcard__color-dot" style="background:'+c+'"></span>';
+    if (show('colors') && p.colors && p.colors.length) {
+      html += '<div class="vcard__colors">';
+      p.colors.forEach(c => {
+        html += '<div class="vcard__color-dot"><span class="vcard__color-swatch" style="--swatch-color:'+c+'"></span></div>';
       });
-      if (p.extraColors > 0 || p.colors.length > 4) {
-        html += '<span class="tvcard__color-dot" style="background:#eee;font-size:6px;display:flex;align-items:center;justify-content:center;color:#666;">+</span>';
+      const extra = p.extraColors || 0;
+      if (extra > 0) {
+        html += '<div class="vcard__color-dot"><span class="vcard__color-swatch vcard__color-swatch--more"></span>'
+             +  '<span class="vcard__color-more-label">'+(extra >= 99 ? '+99' : '+'+extra)+'</span></div>';
       }
       html += '</div>';
     }
 
-    html += '<div class="tvcard__body">';
-
-    if (cfg.showHi && t.highlight && HIGHLIGHT_ENUM.has(t.highlight)) {
-      html += '<span class="tvcard__hi"><img src="../assets/figma-atoms/product-highlights/'+t.highlight+'.svg" alt="'+(HIGHLIGHT_LABEL[t.highlight]||t.highlight)+'"></span>';
+    html += '<div class="vcard__body"><div class="vcard__content-01">';
+    if (show('highlight') && t.highlight && HIGHLIGHT_ENUM.has(t.highlight)) {
+      html += '<span class="vcard__highlight">'+highlightHTML(t.highlight)+'</span>';
     }
+    if (!cfg.minimal) html += '<div class="vcard__brand">'+p.brand+'</div>';
+    html += '<p class="vcard__title">'+t.title+'</p>';
+    if (show('meta')) {
+      html += '<div class="vcard__meta">'
+           +  '<span class="vcard__meta-star"><span>'+p.rating+'</span></span>'
+           +  '<span class="vcard__meta-sep"></span>'
+           +  '<span class="vcard__sold">'+t.sold+'</span>'
+           +  '</div>';
+    }
+    if (show('reviews')) html += '<div class="vcard__reviews">More buying choices</div>';
+    html += '</div>';
 
-    if (cfg.minimal) {
-      // minimal: title + price only
-      html += '<p class="tvcard__title" style="font-weight:600;color:var(--ink);">'+t.title+'</p>';
-      html += '<div class="tvcard__price-row"><span class="tvcard__price">'+p.salePrice+'</span></div>';
-    } else {
-      html += '<div class="tvcard__brand">'+p.brand+'</div>';
-      html += '<p class="tvcard__title">'+t.title+'</p>';
-      html += '<div class="tvcard__price-row">';
-      html += '<span class="tvcard__price">'+p.salePrice+'</span>';
-      if (p.originalPrice) html += '<span class="tvcard__price-was">RRP: <span class="tvcard__oprice">'+p.originalPrice+'</span></span>';
-      html += '</div>';
-      if (cfg.showBottom !== false) {
-        html += '<div class="tvcard__bottom">';
-        html += '<span class="tvcard__seller">'+t.seller+'</span>';
-        if (cfg.oos) {
-          html += '<img class="tvcard__oos--img" src="../assets/figma-atoms/stock/out-of-stock.svg" alt="Out of stock">';
-        } else {
-          html += '<img class="tvcard__cart--img" src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Add to cart">';
-        }
-        html += '</div>';
+    if (!cfg.minimal) {
+      html += '<div class="vcard__content-02"><div class="vcard__content-02-main">';
+      html += '<div class="vcard__content-02-top">';
+      if (show('promotion')) html += '<span class="vcard__promotion">Lightning offers</span>';
+      html += '<div class="vcard__prices">';
+      html += '<span class="vcard__sale-price">'+p.salePrice+'</span>';
+      if (p.originalPrice) html += '<span class="vcard__price-was">RRP: <span class="vcard__original-price">'+p.originalPrice+'</span></span>';
+      if (show('discount') && t.discount) html += '<span class="vcard__discount">'+t.discount+'</span>';
+      html += '</div></div>';
+      html += '<div class="vcard__content-02-bottom">';
+      if (oos) html += '<span class="vcard__stock">Out of stock</span>';
+      if (show('fulfillment') && t.fulfillment) html += '<span class="vcard__fulfillment">'+t.fulfillment+'</span>';
+      if (show('seller') && p.selfOperated) {
+        html += '<span class="vcard__seller-wrap"><img class="vcard__seller-mark" src="../assets/figma-atoms/sold-by-joybuy/joybuy-mark.svg" alt="" width="16" height="16"><span class="vcard__seller">Sold by Joybuy</span></span>';
       }
+      html += '</div></div>';
+      if (oos) {
+        html += '<button class="vcard__notify" type="button">Notify</button>';
+      } else {
+        html += '<button class="vcard__cart" type="button" aria-label="add to cart">'
+             +  '<img src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Add to cart" width="32" height="32">'
+             +  '</button>';
+      }
+      html += '</div>';
     }
 
     html += '</div></div>';
@@ -2140,40 +2349,23 @@
   }
 
   function renderTypesStack() {
-    // Default: full-featured card in beauty category
-    const d1 = document.getElementById('tstack-default');
-    if (d1) d1.innerHTML = tvcardHTML({ catKey:'beauty', presetIdx:0, showHi:true });
-
-    // With colors: 3C category, force showColors
-    const d2 = document.getElementById('tstack-colors');
-    if (d2) d2.innerHTML = tvcardHTML({ catKey:'3c', presetIdx:0, showHi:true, showColors:true });
-
-    // Read-only: dim + SOLD OUT
-    const d3 = document.getElementById('tstack-readonly');
-    if (d3) d3.innerHTML = tvcardHTML({ catKey:'beauty', presetIdx:2, showHi:false, dim:true, oos:true });
-
-    // Minimal: title + price only
-    const d4 = document.getElementById('tstack-minimal');
-    if (d4) d4.innerHTML = tvcardHTML({ catKey:'fashion', presetIdx:0, minimal:true });
-  }
-
-  /* ---- Hydrate main-column Types mcards with real product images.
-   * Each .mcard__img[data-mcard-img="<key>"] gets its placeholder icon
-   * replaced with the base64 image from CARD_DATA.productImages.
-   * Only the image swaps; brand/title/price/HOT badge/cart button stay
-   * hand-drawn for now — those will migrate to Figma atoms in a later pass.
-   */
-  function hydrateMcardImages() {
-    const slots = document.querySelectorAll('.mcard__img[data-mcard-img]');
-    slots.forEach(slot => {
-      const key = slot.getAttribute('data-mcard-img');
-      const src = D.productImages && D.productImages[key];
-      if (!src) return; // leave placeholder icon
-      const img = document.createElement('img');
-      img.src = src;
-      img.alt = key;
-      slot.textContent = '';
-      slot.appendChild(img);
+    const stages = {
+      // Default: every slot on.
+      'tstack-default': { catKey:'beauty', presetIdx:0,
+        show:{ highlight:true, meta:true, reviews:true, promotion:true, discount:true, fulfillment:true, seller:true } },
+      // With colors: 3C SKU, colour swatches under the image.
+      'tstack-colors': { catKey:'3c', presetIdx:0,
+        show:{ colors:true, highlight:true, meta:true, promotion:true, discount:true, fulfillment:true, seller:true } },
+      // Read-only: out of stock — Main image "Out of stock=yes" (photo 50% + 4%
+      // veil), Stock row reads "Out of stock", cart swapped for Notify.
+      'tstack-readonly': { catKey:'beauty', presetIdx:2, oos:true,
+        show:{ meta:true, fulfillment:true } },
+      // Minimal: image + title + price only.
+      'tstack-minimal': { catKey:'fashion', presetIdx:0, minimal:true }
+    };
+    Object.keys(stages).forEach(id => {
+      const host = document.getElementById(id);
+      if (host) host.innerHTML = commonVariantCard(stages[id]);
     });
   }
 
@@ -2189,6 +2381,7 @@
       b.className = 'chip-btn' + (cat === currentCat ? ' is-active' : '');
       b.textContent = (D.dict[cardLang] && D.dict[cardLang]['cat.'+cat]) || cat;
       b.addEventListener('click', () => {
+        lockedHighlight = '';   // category switch leaves the scenario's pinned tag
         currentCat = cat; currentPreset = 0;
         renderCatStrip(); renderPresetStrip(); renderProduct();
       });
@@ -2209,6 +2402,7 @@
         ? '<img src="'+D.productImages[p.img]+'" alt="'+p.brand+'">'
         : '';
       b.addEventListener('click', () => {
+        lockedHighlight = '';   // picking a preset by hand leaves the scenario's pinned tag
         currentPreset = i;
         renderPresetStrip(); renderProduct();
       });
@@ -2226,6 +2420,8 @@
   const USED_KEY = usedHost ? (usedHost.getAttribute('data-card-key') || '') : '';
 
   const UsedCopy = {
+    summary:  { zh: n => '出现在 <b>'+n+'</b> 个真实页面 · 点击卡片查看 Figma 落位',
+                en: n => 'Appears in <b>'+n+'</b> real pages · click a card to view the Figma frame' },
     view:     { zh: '查看页面', en: 'View page' },
     open:     { zh: '在 Figma 打开', en: 'Open in Figma' },
     onPage:   { zh: '同页商卡', en: 'Cards on this page' },
@@ -2273,9 +2469,9 @@
   }
 
   function fillFrame(p) {
-    const lg = usedLanguage();
+    const lg = usedLanguage(), other = lg === 'zh' ? 'en' : 'zh';
     uframe.querySelector('.uframe__title').textContent = p.short[lg];
-    uframe.querySelector('.uframe__sub').textContent = p[lg];
+    uframe.querySelector('.uframe__sub').textContent = p[lg] + ' · ' + p[other];
     const openA = uframe.querySelector('.uframe__open');
     openA.setAttribute('href', PD.deepLink(p.node));
     openA.innerHTML = '<span>' + uEsc(UsedCopy.open[lg]) + '</span>' + uExtSvg;
@@ -2328,7 +2524,7 @@
     const lg = usedLanguage();
     const pages = PD.pagesForCard(USED_KEY);
     if (!pages.length) { usedHost.innerHTML = '<p class="uin-summary">' + uEsc(UsedCopy.empty[lg]) + '</p>'; return; }
-    let html = '<div class="uin-grid">';
+    let html = '<p class="uin-summary">' + UsedCopy.summary[lg](pages.length) + '</p><div class="uin-grid">';
     pages.forEach(p => {
       const owner = p.owner ? '<span class="uin-card__co">· ' + uEsc(p.owner) + '</span>' : '';
       html +=
@@ -2368,18 +2564,19 @@
   }
 
   function setCardLang(next) {
-    cardLang = next;
-    document.querySelectorAll('[data-card-lang]').forEach(b => {
-      b.classList.toggle('is-active', b.dataset.cardLang === next);
-    });
-    // Card content changes: the main .vcard + all types-stack minis
+    cardLang = next === 'en' ? 'en' : 'zh';
+    updateControlCopy();
+    // The main card, common variants and type previews all share the global language.
     applyCardPreviewI18n();
+    renderVSceneTabs();
     renderCatStrip();
+    renderPresetStrip();
     renderProduct();
     renderTypesStack();
   }
 
-  window.addEventListener('joybuy:languagechange', () => {
+  window.addEventListener('joybuy:languagechange', (event) => {
+    setCardLang(event.detail && event.detail.language);
     renderUsedIn();
     if (uframe && uframe.classList.contains('is-open') && uOpenId) {
       const page = PD.pages.filter(item => item.id === uOpenId)[0];
@@ -2387,41 +2584,16 @@
     }
   });
 
-  // Wire toggles
-  document.querySelectorAll('[data-card-lang]').forEach(b => {
-    b.addEventListener('click', () => setCardLang(b.dataset.cardLang));
-  });
-
-  // Field simulator toggles (delegated — #vcard-sim is rebuilt on every apply)
-  const simHost = document.getElementById('vcard-sim');
-  if (simHost) {
-    simHost.addEventListener('click', (e) => {
-      const btn = e.target.closest('.sim-sw');
-      if (!btn) return;
-      const g = btn.dataset.simGroup, k = btn.dataset.simKey;
-      if (!g || !k || !sim[g] || !(k in sim[g])) return;
-      sim[g][k] = !sim[g][k];
-      applySimulator();
-    });
-  }
-
   // Image click cycles preset
   const clickTarget = document.getElementById('vcard-image-click');
   if (clickTarget) {
     clickTarget.addEventListener('click', () => {
       const list = D.catalog[currentCat];
+      lockedHighlight = '';   // same as picking a preset by hand
       currentPreset = (currentPreset + 1) % list.length;
       renderPresetStrip(); renderProduct();
     });
   }
-
-  // Cmd/Ctrl + L → toggle cardLang (fast preview)
-  document.addEventListener('keydown', (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'l') {
-      e.preventDefault();
-      setCardLang(cardLang === 'en' ? 'zh' : 'en');
-    }
-  });
 
   /* ================ Anchor tabs scroll-spy ================ */
   const tabLinks = document.querySelectorAll('.doc-tabs__link[data-tab]');
@@ -2439,13 +2611,12 @@
   window.addEventListener('scroll', updateTabs, { passive: true });
 
   /* ================ Init ================ */
+  updateControlCopy();
   applyCardPreviewI18n();
-  renderCatStrip();
-  renderPresetStrip();
-  renderProduct();
+  renderVSceneTabs();
+  applyVScene('universal');   // sets category/preset + renders strips + card + field panel
   renderTypesStack();
   renderUsedIn();
-  hydrateMcardImages();
   updateTabs();
 })();
 </script>

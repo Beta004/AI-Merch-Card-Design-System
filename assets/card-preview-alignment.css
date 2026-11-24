@@ -1,4 +1,39 @@
 /* Product-card previews use the commerce design system, not the documentation theme. */
+/* Barlow Fix 50 is the Figma product-card typeface. The web build ships Barlow
+   as its closest match, self-hosted so card previews never depend on a CDN. */
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/barlow-400.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/barlow-500.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/barlow-600.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/barlow-700.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 [hidden] { display: none !important; }
 
 #s-overview :is(.vcard, .hcard, .hmini, .hscroll, .campaign, .booking, .sdyn-strip) {
@@ -13,27 +48,81 @@
   --ink-3: #555861;
   --ink-4: #73757d;
   --ink-5: #92949b;
+  --Text-Tertiary: #6E7078;
   --joybuy-red: #e1251b;
   --joybuy-red-600: #c81e15;
   color-scheme: light;
 }
 
+/* Overview layout: preview stage + control panel sit side by side, but the
+   panel WRAPS below the stage as soon as the stage would drop under the widest
+   card (sdyn 448 + 48px stage padding ≈ 500). flex-wrap computes the collapse
+   point from the real available width, so the fixed-width cards can never be
+   squeezed narrower than themselves and clipped by the stage's overflow:hidden
+   — the display bug fixed in the 2026-09 pixel-perfect pass. */
+#s-overview .demo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 32px;
+}
 #s-overview .demo__stage {
+  flex: 1 1 500px;
+  min-width: min(100%, 500px);
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   place-items: center;
-  min-width: 0;
   overflow: hidden;
+  /* Light dotted backdrop so every white card reads as a discrete object
+     (uniform across all 7 pages; overrides per-page stage fills). */
+  background:
+    radial-gradient(circle at 1px 1px, rgba(15, 15, 15, .045) 1px, transparent 1.3px) 0 0 / 16px 16px,
+    #f5f5f6;
+  border: 1px solid #e7e7ea;
+  border-radius: 14px;
+  padding: 32px 24px;
+  box-shadow: none;
+}
+
+/* ============================================================
+   Preview chrome (documentation affordance)
+   Real app scenes have NO card fill — a product card just floats on
+   the app's white background. In these docs we still give every card
+   its own white surface with 8px padding, 8px radius and a soft lift
+   so each component reads as a discrete, tangible object.
+   One shared rule (higher specificity via .demo__stage :is()) owns the
+   uniform skin; the per-type blocks below carry structure only.
+   ============================================================ */
+#s-overview .demo__stage :is(.vcard, .hcard, .hmini, .hscroll, .booking, .sdyn-strip--4) {
+  background: #fff;
+  border: 1px solid rgba(17, 17, 17, .05);
+  border-radius: 8px;      /* every card corner = 8px */
+  padding: 8px;            /* 8px on all sides */
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, .04),
+    0 6px 20px rgba(0, 0, 0, .06),
+    0 20px 40px -20px rgba(0, 0, 0, .08);
 }
 
 #s-overview .demo__stage > * {
   min-width: 0;
 }
 
+/* campaign is the one type mounted into a wrapper div (#campaign-preview)
+   rather than carrying the preview id on the card itself. display:contents
+   removes that wrapper's box so the .campaign card becomes the stage's grid
+   item directly — inheriting the same minmax(0,1fr) column cap + max-width:100%
+   as every other card, so it shrinks to fit instead of clipping at phone widths. */
+#s-overview #campaign-preview {
+  display: contents;
+}
+
 #s-overview .demo__controls {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  min-width: 0;
+  flex: 0 1 320px;
+  min-width: 280px;
 }
 
 #s-overview .demo__controls-block {
@@ -50,53 +139,275 @@
   box-shadow: inset 0 0 0 1px currentColor;
 }
 
-/* Universal 2-column master: 200 frame / 176 image / 12 outer inset. */
+/* ============================================================
+   Universal 2-Column · pixel-perfect to Figma 29416:120349 (Default)
+   Frame 176 · image 176 full-bleed r12 · content inset 6 · Barlow Fix 50
+   Every value transcribed from the Figma node spec; SVG atoms are
+   the native Figma exports (heart #73757D, chip 68×24 #F5F6FA, etc.).
+   ============================================================ */
 #s-overview .vcard {
   box-sizing: border-box;
-  width: 200px;
-  min-height: 514px;
-  padding: 12px 12px 0;
-  border: 0;
-  box-shadow: none;
+  width: 194px;                  /* 176px Figma card + 8px chrome + 1px border each side */
+  min-height: 0;
+  gap: 8px;                      /* content auto-layout gap (image / spu / body) */
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+  /* skin (bg / 1px border / radius:8 / padding:8 / lift) is the shared chrome rule;
+     the 176px image sits full-bleed inside the 8px chrome. Color Options shares that
+     full-bleed left edge (no 6px inset); only the two content containers self-inset 6px. */
 }
 
+/* Image tile: 176×176, radius 12, photo inset 16px (144×144).
+   Figma fill is #fff + a 4% black mask → resolves to #F5F5F5. Base MUST be #fff
+   (a grey base here would double-darken to ~#EBEBEC). */
 #s-overview .vcard__image {
   width: 176px;
   height: 176px;
   aspect-ratio: auto;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+#s-overview .vcard__image::before { background: rgba(0, 0, 0, .04); }
+#s-overview .vcard__image-inner { width: 144px; height: 144px; }
+
+/* Favorite: Figma Tag 40×40 flush to the top-right corner (heart baked #73757d). */
+#s-overview .vcard__favorite { top: 0; right: 0; width: 40px; height: 40px; }
+#s-overview .vcard__favorite img { width: 40px; height: 40px; }
+
+/* SPU color swatches (Figma 5577:17539 · Color Options): 24x24 cells, 2px gap,
+   flush to the card's left edge. The row is a sibling of Product Media and Card
+   Content, so it carries NO 6px content inset; vertical spacing is the 8px card gap. */
+#s-overview .vcard__colors { gap: 2px; padding: 0; align-self: flex-start; }
+#s-overview .vcard__colors:empty { display: none; }   /* no phantom gap when absent */
+
+/* Body: two Figma containers stacked 8px apart; each container owns its 6px inset. */
+#s-overview .vcard__body { padding: 0; gap: 8px; }
+#s-overview .vcard__content-01 { display: flex; flex-direction: column; gap: 4px; padding: 0 6px; }
+#s-overview .vcard__content-02 { display: flex; align-items: flex-end; gap: 4px; padding: 0 6px; }
+#s-overview .vcard__content-02-main { display: flex; flex-direction: column; gap: 8px; flex: 1 1 0; min-width: 0; overflow-wrap: anywhere; }
+#s-overview .vcard__content-02-top,
+#s-overview .vcard__content-02-bottom { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+#s-overview .vcard__content-02-top > *,
+#s-overview .vcard__content-02-bottom > * { min-width: 0; }
+
+/* Product-highlights row: one or two 68×24 chips, 4px apart. */
+:is(#s-overview, #s-types, .side-preview) .hcard__highlights { display: flex; gap: 4px; align-self: flex-start; }
+
+/* Product Highlights — native HTML counterparts for the five compact atoms.
+   Figma: Best Before 31509:124741 · New&Hot 27850:345179 · Top Deal
+   27850:347936 · Private Label 38163:76435 · New 27850:347938. */
+.ph-highlight {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  overflow: clip;
+  border-radius: 4px;
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  white-space: nowrap;
+}
+.ph-highlight--best-before {
+  padding: 4px 6px;
+  background: #ecffee;
+  color: #008011;
+}
+.ph-highlight--new-hot,
+.ph-highlight--top-deal {
+  padding: 3px 5px;
+  background: #1a1a1a;
+  color: #fff;
+}
+.ph-highlight--private-label,
+.ph-highlight--new {
+  padding: 4px 6px;
+  background: #f5f6fa;
+  color: #1a1a1a;
 }
 
-#s-overview .vcard__body {
-  padding: 8px 6px 6px;
+/* Too Good To Waste — shared HTML Product Highlights atom.
+   Figma 28525:159689 (vertical) / 30133:276420 (horizontal):
+   24px chip (#F5F6FA, r4, 12/16 600 #1a1a1a) with a 12/16 500
+   #73757d BBD line 4px below. Legacy hcard classes stay supported. */
+.ph-tgw,
+:is(#s-overview, #s-types, .side-preview) .hcard__highlight--tgw {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  overflow: clip;
+  border-radius: 4px;
+  line-height: normal;
 }
-
-#s-overview .vcard__reviews {
+.ph-tgw__chip,
+:is(#s-overview, #s-types, .side-preview) .hcard__tgw-chip {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 24px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  background: #f5f6fa;
+  color: #1a1a1a;
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.ph-tgw__bbd,
+:is(#s-overview, #s-types, .side-preview) .hcard__tgw-bbd {
   color: #73757d;
-  font-size: 11px;
-  line-height: 15px;
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
-/* Universal horizontal master: 375 frame / 130 image / 12 outer inset. */
-#s-overview .hcard {
+/* Product Highlights — all seven variants are native HTML (.ph-highlight /
+   .ph-tgw / .ph-sponsored), no SVG images. Heights are intrinsic to each class. */
+
+/* Sponsored — Figma 26894:262735, a 16px text-only label (no chip):
+   12/16 Medium #6E7078, single line, ellipsis. .ph-sponsored is the shared class
+   every card organism uses so the label never inherits a card's chip scale. */
+.ph-sponsored {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--Text-Tertiary, #6E7078);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+/* Rating & sold: star 12px, text 12/16 weight 500 #1a1a1a, hairline divider. */
+#s-overview .vcard__meta { gap: 4px; font-size: 12px; line-height: 16px; color: var(--ink); }
+#s-overview .vcard__meta-star { gap: 4px; color: var(--ink); font-weight: 500; }
+#s-overview .vcard__meta-star::before { width: 12px; height: 12px; }
+#s-overview .vcard__meta-sep { height: 8px; background: rgba(0, 0, 0, .12); }
+#s-overview .vcard__sold { white-space: nowrap; }
+
+/* AI Recommendation Reasons — Figma Barlow Fix 50 Medium 12/16 #6E7078.
+   Example copy is the atom's default variant: "More buying choices". */
+#s-overview .vcard__reviews {
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+  color: var(--Text-Tertiary, #6E7078);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+}
+
+/* Price block: 4px between each price line (Figma Price auto-layout). */
+#s-overview .vcard__prices { gap: 4px; }
+
+/* Individual Promotion / Type — Figma Barlow Fix 50 Semibold 12/16 #E1251B.
+   Example copy is the Campaign-Lightning offers variant: "Lightning offers". */
+#s-overview .vcard__promotion {
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  color: var(--joybuy-red);
+  overflow-wrap: anywhere;
+}
+
+/* Sale price £350.00: 16px / 22, weight 700, red — NOT 20/900. */
+#s-overview .vcard__sale-price {
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--joybuy-red);
+}
+
+/* RRP: £500.00 — #1a1a1a, NO strikethrough, 12/16 weight 500. */
+#s-overview .vcard__price-was { color: var(--ink); font-size: 12px; line-height: 16px; font-weight: 500; }
+#s-overview .vcard__original-price { color: var(--ink); text-decoration: none; font-weight: 500; }
+
+/* Save 18% on RRP — #1a1a1a 12/16 weight 500. */
+#s-overview .vcard__discount { color: var(--ink); font-size: 12px; line-height: 16px; font-weight: 500; }
+
+/* Bottle Deposit — 12/16 weight 500 #73757d. */
+#s-overview .vcard__deposit { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink-4); }
+
+/* Fulfillment — 16px icon + 2px gap + 12/16 weight 500 #6E7078. */
+#s-overview .vcard__fulfillment { gap: 2px; font-size: 12px; line-height: 16px; font-weight: 500; color: var(--Text-Tertiary, #6E7078); min-width: 0; }
+
+/* Seller "Sold by Joybuy" — 12/16 weight 500 #1a1a1a. */
+#s-overview .vcard__seller { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink); overflow-wrap: anywhere; }
+
+/* Stock left — Figma Stock Status text 12/16 Medium Text-Tertiary #6E7078. */
+#s-overview .vcard__stock { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--Text-Tertiary, #6E7078); }
+
+/* Service / Country of origin — 16px leading icon + 12/16 Medium #6E7078. */
+#s-overview .vcard__service,
+#s-overview .vcard__country {
+  display: inline-flex; align-items: center; gap: 2px;
+  font-size: 12px; line-height: 16px; font-weight: 500;
+  color: var(--Text-Tertiary, #6E7078);
+  min-width: 0;
+}
+#s-overview .vcard__service img,
+#s-overview .vcard__country img {
+  width: 16px; height: 16px; flex: none; display: block;
+  /* The exported atom SVGs are 98×16 / 80×16 and include baked-in label text.
+     Clip to the leading 16×16 icon so the live text span stays localizable. */
+  object-fit: none; object-position: left center;
+}
+#s-overview .vcard__service span,
+#s-overview .vcard__country span { overflow-wrap: anywhere; }
+#s-overview .vcard__service[data-empty],
+#s-overview .vcard__country[data-empty] { display: none; }
+#s-overview .vcard__stock,
+#s-overview .vcard__fulfillment,
+#s-overview .vcard__seller { overflow-wrap: anywhere; }
+
+/* Performance / energy label — native Figma atom is 24px high. */
+#s-overview .vcard__energy img { height: 24px; }
+
+/* ============================================================
+   Universal horizontal master · pixel-perfect to Figma 22236:148505
+   Frame 375 · image 130 r8 · content column · Barlow.
+   Type ramp is IDENTICAL to the vertical master (same Figma text
+   styles): brand 14/20·700, title 14/20·500, meta/secondary 12/16,
+   price 16/22·700 red, unit/deposit/fulfillment 12/16 #73757d,
+   seller 12/16 #1a1a1a + conditional red brand-mark (1P Joybuy).
+   Card hugs content; the 130px image sets the row-height floor
+   (NO min-height / margin-top:auto — the Figma seller sits right
+   under fulfillment, not pinned to a fixed-height bottom).
+   ============================================================ */
+:is(#s-overview, #s-types, .side-preview) .hcard {
   box-sizing: border-box;
   width: 375px;
   max-width: 100%;
-  min-height: 282px;
   grid-template-columns: 130px minmax(0, 1fr);
   gap: 12px;
-  padding: 12px;
-  border: 0;
-  border-radius: 10px;
-  box-shadow: none;
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+  /* skin owned by shared chrome rule (white bg / 8px pad / 8px radius / lift) */
 }
 
-#s-overview .hcard__image {
+/* Types / side-preview cards keep the Figma 16px inset so the content
+   column lands at exactly 201px (375 − 16×2 − 130 − 12). */
+:is(#s-types, .side-preview) .hcard { padding: 16px; border-radius: 8px; }
+
+/* Image tile 130×130 r8; Figma fill resolves to #F5F5F5; photo inset 13px (104²). */
+:is(#s-overview, #s-types, .side-preview) .hcard__image {
   width: 130px;
   height: 130px;
-  border-radius: 10px;
+  border-radius: 8px;
+  background: #f5f5f5;
+  overflow: hidden;
 }
+:is(#s-overview, #s-types, .side-preview) .hcard__image > img { padding: 13px; }
 
-#s-overview .hcard__favorite {
+/* Favorite (heart, #73757d baked): Figma Tag 40×40 flush top-right. */
+:is(#s-overview, #s-types, .side-preview) .hcard__favorite {
   position: absolute;
   top: 0;
   right: 0;
@@ -108,69 +419,180 @@
   display: grid;
   place-items: center;
 }
+:is(#s-overview, #s-types, .side-preview) .hcard__favorite img { width: 40px; height: 40px; }
 
-#s-overview .hcard__favorite img {
-  width: 40px;
-  height: 40px;
+/* Content column: within-group gap 4 (price group gets +4 above → 8). */
+:is(#s-overview, #s-types, .side-preview) .hcard__body { gap: 4px; }
+
+/* Product-highlights chip is the native 68×24 Figma svg (bg #F5F6FA, r4). */
+:is(#s-overview, #s-types, .side-preview) .hcard__highlight { align-self: flex-start; line-height: 0; }
+:is(#s-overview, #s-types, .side-preview) .hcard__highlight .ph-highlight { height: 24px; }
+
+/* Brand "TCL" — 14/20 weight 700 #1a1a1a. */
+:is(#s-overview, #s-types, .side-preview) .hcard__brand { font-size: 14px; line-height: 20px; font-weight: 700; color: var(--ink); }
+
+/* Title — 14/20 weight 500 #1a1a1a. */
+:is(#s-overview, #s-types, .side-preview) .hcard__title { font-size: 14px; line-height: 20px; font-weight: 500; color: var(--ink); }
+
+/* Rating & sold — star 12, text 12/16 weight 500 #1a1a1a, hairline divider. */
+:is(#s-overview, #s-types, .side-preview) .hcard__meta { gap: 4px; font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink); }
+:is(#s-overview, #s-types, .side-preview) .hcard__meta-star { gap: 4px; color: var(--ink); font-weight: 500; }
+:is(#s-overview, #s-types, .side-preview) .hcard__meta-star::before { width: 12px; height: 12px; }
+:is(#s-overview, #s-types, .side-preview) .hcard__meta-sep { height: 8px; background: rgba(0, 0, 0, .12); }
+:is(#s-overview, #s-types, .side-preview) .hcard__sold { white-space: nowrap; }
+
+/* AiBot review count — link-style underline (Figma 23659:237489). */
+:is(#s-overview, #s-types, .side-preview) .hcard__reviews {
+  color: var(--ink);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
-#s-overview .hcard__body {
-  gap: 3px;
-  min-height: 258px;
+/* Individual promotion "Lightning offers" — 12/16 weight 600 #e1251b. */
+:is(#s-overview, #s-types, .side-preview) .hcard__promotion { margin-top: 4px; font-size: 12px; line-height: 16px; font-weight: 600; color: var(--joybuy-red); }
+
+/* Price rows sit 4px below the promotion (same "Promotions & Prices" group). */
+:is(#s-overview, #s-types, .side-preview) .hcard__prices { margin-top: 0; }
+
+/* Sale price £350.00 — 16/22 weight 700 red (NOT 18/900). */
+:is(#s-overview, #s-types, .side-preview) .hcard__sale-price {
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--joybuy-red);
 }
 
-#s-overview .hcard__highlight { display: none; }
+/* RRP: £500.00 — #1a1a1a, NO strikethrough, 12/16 weight 500. */
+:is(#s-overview, #s-types, .side-preview) .hcard__price-was { color: var(--ink); font-size: 12px; line-height: 16px; font-weight: 500; }
+:is(#s-overview, #s-types, .side-preview) .hcard__original-price { color: var(--ink); text-decoration: none; font-weight: 500; }
 
-#s-overview .hcard__brand {
-  font-size: 14px;
-  line-height: 18px;
+/* Save 18% on RRP — #1a1a1a 12/16 weight 500. */
+:is(#s-overview, #s-types, .side-preview) .hcard__discount { color: var(--ink); font-size: 12px; line-height: 16px; font-weight: 500; }
+
+/* Master promotion "Buy 1 get 1 free" — 12/16 weight 600 #e1251b. */
+:is(#s-overview, #s-types, .side-preview) .hcard__offer { color: var(--joybuy-red); font-size: 12px; line-height: 16px; font-weight: 600; }
+
+/* Bottle Deposit — 12/16 weight 500 #73757d; each gray detail row
+   starts a new group → 8px above (4 body-gap + 4 margin), matching Figma. */
+:is(#s-overview, #s-types, .side-preview) .hcard__deposit { margin-top: 4px; font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink-4); }
+
+/* Stock row — out-of-stock scene only: "Out of stock" 12/16 500 #73757d. */
+:is(#s-overview, #s-types, .side-preview) .hcard__stock {
+  margin-top: 0;
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #73757d;
 }
 
-#s-overview .hcard__title {
-  font-size: 14px;
-  line-height: 20px;
-}
+/* No seller slot (non-1P SKU): the cart button keeps the right edge. */
+:is(#s-overview, #s-types, .side-preview) .hcard__foot .hcard__cart { margin-left: auto; }
 
-#s-overview .hcard__sale-price {
-  color: #e1251b;
-}
+/* Fulfillment — truck icon 16 (#73757d baked) + text 12/16 weight 500 #73757d. */
+:is(#s-overview, #s-types, .side-preview) .hcard__fulfillment { margin-top: 4px; gap: 4px; font-size: 12px; line-height: 16px; font-weight: 500; color: #73757d; }
+:is(#s-overview, #s-types, .side-preview) .hcard__fulfillment::before { width: 16px; height: 16px; flex: 0 0 16px; }
 
-#s-overview .hcard__discount,
-#s-overview .hcard__offer,
-#s-overview .hcard__per-unit,
-#s-overview .hcard__deposit {
-  font-size: 11px;
-  line-height: 15px;
-}
+/* Foot: seller + cart, right under fulfillment (4px rhythm, not pinned). */
+/* Foot: seller + cart; when Notify is present it wraps to its own full row. */
+:is(#s-overview, #s-types, .side-preview) .hcard__foot { margin-top: 4px; flex-wrap: wrap; row-gap: 8px; }
 
-#s-overview .hcard__offer { color: #e1251b; font-weight: 500; }
-#s-overview :is(.hcard__discount, .hcard__per-unit, .hcard__deposit) { color: #555861; }
-#s-overview .hcard__foot { margin-top: auto; }
+/* Seller "Sold by Joybuy" — 12/16 weight 500 #1a1a1a + conditional red mark. */
+:is(#s-overview, #s-types, .side-preview) .hcard__seller { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink); }
+:is(#s-overview, #s-types, .side-preview) .hcard__seller-mark { width: 16px; height: 16px; }
 
-#s-overview .hcard__seller {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
+/* Add-to-cart button 28×28. */
+/* Add-to-cart button 32×32 (Figma Btn_Cart 5551:16902; SVG circle #F5F7FA). */
+:is(#s-overview, #s-types, .side-preview) .hcard__cart { width: 32px; height: 32px; }
 
-.hcard__notify {
-  min-width: 64px;
+/* Notify Button — Figma 5551:26008: 201×32, r=4, bg #F5F6FA,
+   label 14/20 weight 600 #1a1a1a. Sits full-width under the seller row. */
+:is(#s-overview, #s-types, .side-preview) .hcard__notify {
+  width: 100%;
   height: 32px;
   padding: 0 12px;
-  border: 1px solid #d2d4da;
-  border-radius: 16px;
-  background: #fff;
-  color: #303137;
-  font: 600 12px/1 system-ui, sans-serif;
+  border: none;
+  border-radius: 4px;
+  background: #f5f6fa;
+  color: #1a1a1a;
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
   cursor: pointer;
 }
 
-#s-overview .hcard__seller::before {
-  content: "";
-  width: 14px;
-  height: 14px;
-  flex: 0 0 14px;
-  background: url('../assets/figma-atoms/leading-icon/joybuy.svg') center / contain no-repeat;
+/* AI Recommendation Reasons — Figma Default variant (Show AI Recommendation
+   Reasons = true): one gray line under Rating&Sold, 12/16 weight 500 #6e7078. */
+:is(#s-overview, #s-types, .side-preview) .hcard__ai-reason {
+  margin-top: 0;
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #6e7078;
+}
+
+/* SKU property spec row — AiBot_SKUProperty variant (Figma 23659:237489):
+   two values split by the gray hairline from component 23694:93745. */
+:is(#s-overview, #s-types, .side-preview) .hcard__prop-spec {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #6e7078;
+}
+
+/* Divider frame is 5px wide (2px padding + 1px line + 2px padding), so with
+   the 4px flex gap the two values land 13px apart, matching the component. */
+:is(#s-overview, #s-types, .side-preview) .hcard__prop-sep {
+  flex: 0 0 1px;
+  width: 1px;
+  height: 8px;
+  margin: 0 2px;
+  background: rgba(0, 0, 0, .12);
+}
+
+/* AiBot price row — price block + cart, bottom-aligned (Figma 23659:237489).
+   The cart sits beside the price block instead of on its own foot row. */
+:is(#s-overview, #s-types, .side-preview) .hcard__price-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}
+:is(#s-overview, #s-types, .side-preview) .hcard__price-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+:is(#s-overview, #s-types, .side-preview) .hcard__price-block .hcard__prices {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+:is(#s-overview, #s-types, .side-preview) .hcard__price-row .hcard__cart {
+  flex: 0 0 32px;
+  margin-left: 0;
+}
+
+/* Best-before row (extreme variant turns Show BBD on):
+   per Figma "Best before: 12/12/25" — gray helper, not red promotion. */
+:is(#s-overview, #s-types, .side-preview) .hcard__best-before {
+  margin-top: 0;
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #6e7078;
 }
 
 /* Universal horizontal mini master: 375 × 134 / 80 image. */
@@ -181,10 +603,7 @@
   min-height: 134px;
   grid-template-columns: 80px minmax(0, 1fr);
   gap: 8px;
-  padding: 12px;
-  border: 0;
-  border-radius: 10px;
-  box-shadow: none;
+  /* skin owned by shared chrome rule (white bg / 8px pad / 8px radius / lift) */
 }
 
 #s-overview .hmini__image {
@@ -279,10 +698,7 @@
   width: 478px;
   max-width: 100%;
   min-height: 308px;
-  padding: 12px;
-  border: 0;
-  border-radius: 10px;
-  box-shadow: none;
+  /* skin owned by shared chrome rule (white bg / 8px pad / 8px radius / lift) */
 }
 
 #s-overview #hscroll-preview {
@@ -302,14 +718,17 @@
   flex-basis: 146px;
 }
 
-#s-overview .hs-tile {
+/* Horizontal-scroll tiles — pixel spec shared by the overview strip, the Types
+   section, and the right-rail samples (`.hs-tile` is unique to horizontal-scroll,
+   so these rules are safe to apply wherever a tile appears, not just #s-overview). */
+.hs-tile {
   width: 146px;
   min-height: 244px;
   border: 0;
   border-radius: 10px;
 }
 
-#s-overview .hs-tile__img {
+.hs-tile__img {
   position: relative;
   width: 146px;
   height: 146px;
@@ -317,7 +736,7 @@
   padding: 10px;
 }
 
-#s-overview .hs-tile__rank {
+.hs-tile__rank {
   position: absolute;
   top: 0;
   left: 0;
@@ -332,7 +751,7 @@
   line-height: 16px;
 }
 
-#s-overview .hs-tile__favorite {
+.hs-tile__favorite {
   position: absolute;
   top: 0;
   right: 0;
@@ -343,47 +762,67 @@
   background: transparent;
 }
 
-#s-overview .hs-tile__favorite img {
+.hs-tile__favorite img {
   width: 40px;
   height: 40px;
 }
 
-#s-overview .hs-tile__body {
+.hs-tile__body {
   position: relative;
   min-height: 98px;
   padding: 10px 7px 8px;
 }
 
-#s-overview .hs-tile__hi { display: none; }
+/* Field explorer surfaces the highlight chip (a real product-highlights atom)
+   as a togglable slot above the title. Empty state collapses at ID specificity
+   so it beats the generic .hs-tile [data-field][data-empty] collapse rule. */
+.hs-tile__hi {
+  display: block;
+  align-self: flex-start;
+  line-height: 0;
+  margin-bottom: 3px;
+}
+.hs-tile__hi[data-empty] { display: none; }
 
-#s-overview .hs-tile__title {
+.hs-tile__title {
   min-height: 40px;
   color: #1a1a1a;
   font-size: 14px;
   line-height: 20px;
 }
 
-#s-overview .hs-tile__prices {
+.hs-tile__prices {
   flex-direction: column;
   align-items: flex-start;
   gap: 1px;
   margin-top: 8px;
 }
 
-#s-overview .hs-tile__price {
+.hs-tile__price {
   color: #e1251b;
   font-size: 16px;
   line-height: 20px;
 }
 
-#s-overview .hs-tile__oprice,
-#s-overview .hs-tile__discount {
+.hs-tile__oprice,
+.hs-tile__discount {
   color: #303137;
   font-size: 11px;
   line-height: 15px;
 }
+/* Discount + promotion share the bottom band with the absolute cart/notify
+   control — reserve right padding so text never runs under it. */
+.hs-tile__discount { padding-right: 42px; }
 
-#s-overview .hs-tile__cart {
+.hs-tile__promo {
+  margin-top: 3px;
+  line-height: 0;
+  padding-right: 42px;
+}
+.hs-tile__promo[data-empty] { display: none; }
+.hs-tile__promo img { height: 16px; width: auto; display: block; }
+
+.hs-tile__cart {
   position: absolute;
   right: 6px;
   bottom: 6px;
@@ -394,22 +833,52 @@
   background: transparent;
 }
 
-#s-overview .hs-tile__cart img {
+.hs-tile__cart img {
   width: 100%;
   height: 100%;
 }
 
+/* Notify Button — Figma 5551:25998 within frame 5614:26382.
+   A full-width 32px action below price, not an outlined price-row pill. */
 .hs-tile__notify {
+  position: static;
+  display: flex;
+  flex: 0 0 32px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 32px;
+  margin-top: 8px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 4px;
+  background: #f5f7fa;
+  color: #1a1a1a;
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.hs-tile__notify:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.hs-tile--notify .hs-tile__body {
+  min-height: 0;
+  padding-right: 6px;
+  padding-bottom: 6px;
+  padding-left: 6px;
+}
+.hs-tile--notify .hs-tile__img img { opacity: .5; }
+.hs-tile--notify .hs-tile__img::after {
+  content: "";
   position: absolute;
-  right: 6px;
-  bottom: 8px;
-  height: 28px;
-  padding: 0 10px;
-  border: 1px solid #d2d4da;
-  border-radius: 14px;
-  background: #fff;
-  color: #303137;
-  font: 600 11px/1 system-ui, sans-serif;
+  inset: 0;
+  background: rgba(0, 0, 0, .04);
+  pointer-events: none;
 }
 
 /* Campaign master: 375 × 358 with an intentionally clipped third tile. */
@@ -425,126 +894,6 @@
   padding: 0 16px 16px;
 }
 
-#s-overview .campaign__banner,
-#s-overview .campaign--sale .campaign__banner,
-#s-overview .campaign--brand .campaign__banner,
-#s-overview .campaign--seasonal .campaign__banner,
-#s-overview .campaign--urgency .campaign__banner {
-  height: 72px;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 17px 0 8px;
-  color: #1a1a1a;
-  background: transparent;
-}
-
-#s-overview .campaign__title {
-  font-size: 16px;
-  line-height: 20px;
-}
-
-#s-overview .campaign__subtitle {
-  margin-top: 3px;
-  color: #555861;
-  font-size: 14px;
-  line-height: 18px;
-}
-
-#s-overview .campaign__countdown-row,
-#s-overview .campaign__footer {
-  display: none;
-}
-
-#s-overview .campaign__header-action {
-  position: absolute;
-  top: 22px;
-  right: 16px;
-  width: 34px;
-  height: 34px;
-  border: 0;
-  border-radius: 50%;
-  background: #fff;
-  color: #1a1a1a;
-  display: grid;
-  place-items: center;
-  font-size: 26px;
-  line-height: 1;
-}
-
-#s-overview .campaign__products {
-  display: flex;
-  gap: 8px;
-  padding: 0;
-  background: transparent;
-  overflow: hidden;
-}
-
-#s-overview .campaign__tile {
-  position: relative;
-  flex: 0 0 146px;
-  height: 270px;
-  border: 0;
-  border-radius: 8px;
-  background: #fff;
-}
-
-#s-overview .campaign__tile-img {
-  width: 146px;
-  height: 146px;
-  aspect-ratio: auto;
-}
-
-#s-overview .campaign__tile-img img {
-  object-fit: contain;
-  padding: 10px;
-}
-
-#s-overview .campaign__tile-body {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  min-height: 0;
-  padding: 10px 7px 8px;
-}
-
-#s-overview .campaign__tile-title {
-  margin: 0;
-  min-height: 40px;
-  font-size: 14px;
-  line-height: 20px;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-}
-
-#s-overview .campaign__tile-price {
-  margin-top: auto;
-  padding: 0;
-  color: #e1251b;
-  text-align: left;
-  font-size: 16px;
-  line-height: 20px;
-}
-
-#s-overview .campaign__tile-rrp {
-  margin-top: 2px;
-  color: #303137;
-  font-size: 11px;
-  line-height: 15px;
-}
-
-#s-overview .campaign__tile-cart {
-  position: absolute;
-  right: 7px;
-  bottom: 7px;
-  width: 36px;
-  height: 36px;
-  border: 0;
-  padding: 0;
-  background: transparent;
-}
-
 .campaign.campaign--product,
 #s-overview .campaign.campaign--product {
   display: grid;
@@ -553,14 +902,16 @@
   box-sizing: border-box;
   width: 375px;
   max-width: 100%;
-  height: auto;
-  min-height: 196px;
-  height: 240px;
-  padding: 12px;
-  border: 0;
-  border-radius: 12px;
+  height: auto;                    /* override the obsolete #s-overview .campaign banner height:358px */
+  min-height: 240px;               /* content-driven: grows for field-heavy variants, never squashes the title */
+  padding: 8px;                    /* uniform 8px preview chrome */
+  border: 1px solid rgba(17, 17, 17, .05);
+  border-radius: 8px;              /* every card corner = 8px */
   background: #fff;
-  box-shadow: none;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, .04),
+    0 6px 20px rgba(0, 0, 0, .06),
+    0 20px 40px -20px rgba(0, 0, 0, .08);
   color: #1a1a1a;
   overflow: hidden;
 }
@@ -574,9 +925,9 @@
 .campaign-product__favorite { position: absolute; top: 0; right: 0; width: 40px; height: 40px; padding: 0; border: 0; background: transparent; }
 .campaign-product__favorite img { width: 40px; height: 40px; }
 .campaign-product__body { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 144px; gap: 4px; padding-bottom: 36px; }
-.campaign-product__highlight { align-self: flex-start; max-height: 16px; width: auto; }
+.campaign-product__highlight { align-self: flex-start; line-height: 0; }
 .campaign-product__brand { font-size: 13px; font-weight: 700; line-height: 18px; }
-.campaign-product__title { margin: 0; font-size: 13px; line-height: 18px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.campaign-product__title { flex: none; margin: 0; font-size: 13px; line-height: 18px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 .campaign-product__rating,
 .campaign-product__promotion,
 .campaign-product__fulfillment,
@@ -598,191 +949,37 @@
   .campaign-product__image { width: 112px; height: 112px; }
 }
 
-/* Booking master: 375 × 196 / 130 image. */
-#s-overview .booking {
+/* Booking master: 375 × 196 / 130 image.
+   Container skin + all field styling now live in organisms/booking-card.html inline CSS
+   (rebuilt to Figma node 22303-189590). The shared chrome rule at the top of this file
+   supplies the preview plate (white bg / 8px padding / 8px radius / soft lift); nothing
+   booking-specific is needed here anymore. */
+
+/* Small-image dynamic master: 456 × 176 / four 102px image slots.
+   De-scoped from #s-overview (like `.hs-tile*` above): these tile-sizing rules must also
+   drive the Types-section variant stages + any rail sample. `.sdyn*` is unique to
+   small-dynamic, so this is safe. The white preview plate stays owned by the shared
+   #s-overview .demo__stage chrome rule for the interactive stage; the Types section
+   supplies its own stage skin. */
+.sdyn-strip--4 {
   box-sizing: border-box;
-  width: 375px;
-  max-width: 100%;
-  min-height: 196px;
-  grid-template-columns: 130px minmax(0, 1fr);
-  gap: 12px;
-  padding: 12px;
-  border: 0;
-  border-radius: 10px;
-  box-shadow: none;
-}
-
-#s-overview .booking__image {
-  width: 130px;
-  height: 130px;
-  border-radius: 10px;
-}
-
-#s-overview .booking__image img {
-  object-fit: contain;
-  padding: 10px;
-}
-
-#s-overview .booking__ribbon,
-#s-overview .booking__deposit,
-#s-overview .booking__ended-msg {
-  display: none;
-}
-
-#s-overview .booking__body {
-  gap: 3px;
-}
-
-#s-overview .booking__brand { order: 1; }
-#s-overview .booking__title { order: 2; }
-#s-overview .booking__reserved { order: 3; }
-#s-overview .booking__state-chip { order: 4; }
-#s-overview .booking__countdown-wrap { order: 5; }
-#s-overview .booking__price-line { order: 6; }
-#s-overview .booking__deposit { order: 7; }
-#s-overview .booking__ended-msg { order: 8; }
-#s-overview .booking__cta-row { order: 9; }
-
-#s-overview .booking__brand {
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 18px;
-}
-
-#s-overview .booking__title {
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 20px;
-}
-
-#s-overview .booking__state-chip {
-  padding: 0;
-  border-radius: 0;
-  background: transparent;
-  color: #1a1a1a;
-  font-size: 11px;
-  line-height: 15px;
-}
-
-#s-overview .booking__state-chip::before { display: none; }
-
-#s-overview .booking__countdown-wrap {
-  gap: 4px;
-  color: #73757d;
-}
-
-#s-overview .booking__countdown-cell {
-  min-width: 0;
-  padding: 0;
-  background: transparent;
-  color: #73757d;
-  font: inherit;
-}
-
-#s-overview .booking__price-line {
-  gap: 4px;
-  margin-top: 0;
-}
-
-#s-overview .booking__price-label { display: none; }
-
-#s-overview .booking--auction .booking__price-label,
-#s-overview .booking--auction .booking__price-next,
-#s-overview .booking--dim .booking__price-label {
-  display: inline;
-}
-
-#s-overview .booking--auction .booking__price-line {
-  display: block;
-}
-
-#s-overview .booking--auction .booking__body { gap: 2px; }
-
-#s-overview .booking--auction .booking__price-line > * {
-  display: block;
-}
-
-#s-overview .booking--auction :is(.booking__price-current, .booking__price-next, .booking__rrp) {
-  max-width: 112px;
-}
-
-#s-overview .booking__price-current {
-  color: #e1251b;
-  font-size: 18px;
-  line-height: 22px;
-}
-
-#s-overview .booking--auction .booking__price-current { color: #e1251b; }
-
-#s-overview .booking--auction .booking__price-next {
-  font-size: 10px;
-  white-space: nowrap;
-}
-
-#s-overview .booking--dim { opacity: 1; }
-#s-overview .booking--dim .booking__image img { opacity: .5; filter: grayscale(.45); }
-
-#s-overview .booking__rrp {
-  width: 100%;
-  color: #303137;
-  font-size: 11px;
-  line-height: 15px;
-}
-
-#s-overview .booking__reserved {
-  color: #73757d;
-  font-size: 11px;
-  line-height: 15px;
-}
-
-#s-overview .booking__cta-row {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  margin: 0;
-}
-
-#s-overview .booking__cta {
-  flex: none;
-  min-width: 93px;
-  min-height: 40px;
-  padding: 8px 12px;
-  background: #f4f4f6;
-  color: #1a1a1a;
-}
-
-#s-overview .booking--live .booking__cta {
-  background: #e1251b;
-  color: #fff;
-}
-
-#s-overview .booking--dim .booking__cta {
-  background: #f4f4f6;
-  color: #92949b;
-}
-
-/* Small-image dynamic master: 456 × 176 / four 102px image slots. */
-#s-overview .sdyn-strip--4 {
-  box-sizing: border-box;
-  width: 456px;
+  width: 448px;                 /* 4×102 tiles + 3×8 gaps + 8px chrome each side */
   max-width: 100%;
   min-height: 176px;
   grid-template-columns: repeat(4, 102px);
   gap: 8px;
-  padding: 12px;
-  border: 0;
-  border-radius: 10px;
   overflow: hidden;
+  /* skin owned by shared chrome rule (white bg / 8px pad / 8px radius / lift) */
 }
 
-#s-overview .sdyn-strip--4 .sdyn__image {
+.sdyn-strip--4 .sdyn__image {
   width: 102px;
   height: 102px;
   aspect-ratio: auto;
   border-radius: 10px;
 }
 
-#s-overview .sdyn-strip--4 .sdyn__price {
+.sdyn-strip--4 .sdyn__price {
   padding: 10px 0 0;
   color: #1a1a1a;
   text-align: left;
@@ -790,12 +987,12 @@
   line-height: 20px;
 }
 
-#s-overview .sdyn-strip--4 .sdyn:first-child .sdyn__price,
-#s-overview .sdyn-strip--4 .sdyn:last-child .sdyn__price {
+.sdyn-strip--4 .sdyn:first-child .sdyn__price,
+.sdyn-strip--4 .sdyn:last-child .sdyn__price {
   color: #e1251b;
 }
 
-#s-overview .sdyn__original-price {
+.sdyn__original-price {
   padding-top: 2px;
   color: #303137;
   font-size: 11px;
@@ -808,6 +1005,15 @@
   .site--card-detail .site-main__inner {
     min-width: 0;
     max-width: 100%;
+  }
+
+  /* Phone-width guard: documentation blocks (type-block variant stages,
+     anatomy grids, wide spec tables) must never push the whole page into
+     horizontal scroll. clip (not hidden) avoids creating a scroll container
+     or disturbing the sticky top nav. Inner tables keep their own
+     overflow-x:auto affordance. */
+  .site--card-detail {
+    overflow-x: clip;
   }
 
   .site--card-detail .site-toc {
@@ -860,15 +1066,16 @@
     min-width: 0;
   }
 
-  #s-overview .sdyn-strip--4 {
+  /* de-scoped (see note above): keep the Types-section strip responsive too */
+  .sdyn-strip--4 {
     width: 100%;
     min-width: 0;
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
-  #s-overview .sdyn-strip--4 .sdyn { min-width: 0; }
+  .sdyn-strip--4 .sdyn { min-width: 0; }
 
-  #s-overview .sdyn-strip--4 .sdyn__image {
+  .sdyn-strip--4 .sdyn__image {
     width: 100%;
     height: auto;
     aspect-ratio: 1;
@@ -881,4 +1088,62 @@
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
+}
+
+/* Unified commerce-card typography: Barlow Fix 50 for every preview field.
+   Target descendants directly so local font shorthands (countdowns, CTAs,
+   numeric rows) cannot fall back to documentation or mono fonts. */
+.site--card-detail :is(
+  .vcard,
+  .hcard,
+  .hmini,
+  .hscroll,
+  .hs-tile,
+  .campaign,
+  .campaign-product,
+  .booking,
+  .sdyn-strip,
+  .sdyn,
+  .mcard
+),
+.site--card-detail :is(
+  .vcard,
+  .hcard,
+  .hmini,
+  .hscroll,
+  .hs-tile,
+  .campaign,
+  .campaign-product,
+  .booking,
+  .sdyn-strip,
+  .sdyn,
+  .mcard
+) *,
+.site--card-detail :is(
+  .vcard,
+  .hcard,
+  .hmini,
+  .hscroll,
+  .hs-tile,
+  .campaign,
+  .campaign-product,
+  .booking,
+  .sdyn-strip,
+  .sdyn,
+  .mcard
+) *::before,
+.site--card-detail :is(
+  .vcard,
+  .hcard,
+  .hmini,
+  .hscroll,
+  .hs-tile,
+  .campaign,
+  .campaign-product,
+  .booking,
+  .sdyn-strip,
+  .sdyn,
+  .mcard
+) *::after {
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
 }

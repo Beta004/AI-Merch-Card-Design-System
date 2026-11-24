@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>原子组件 · 商卡设计系统</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="19 个业务原子组件，每个原子直接平铺展示 Structure + 全部 Types，来源 Figma App Business Components。">
+<meta name="description" content="33 个平台原子、149 个变体，对齐 Figma 34 个顶层原子 / 148 个变体，直接穷举展示 Structure、Types 和源文案。">
 <link rel="stylesheet" href="../assets/tokens.css">
 <style>
   /* =====================================================
@@ -192,7 +192,7 @@
     border-left: 2px solid var(--outline-strong);
   }
 
-  /* Main image uses size specifications, not Figma variants. */
+  /* Main image is represented as one merged atom with all Figma size variants. */
   .image-specs {
     display: grid;
     gap: 12px;
@@ -441,9 +441,16 @@
     margin-bottom: 10px;
   }
   .atom-variant__img img {
-    max-width: 48px; max-height: 48px;
+    max-width: 112px; max-height: 112px;
     display: block;
   }
+  /* Wide text atoms (Rating & Sold 99×16, Reviews, Viewed) must render at their
+     native 1:1 size — the 112px cap would shrink the 12/16 type. The variant
+     tile grows to fit instead of clipping its neighbours. */
+  .atom-variant:has(> .atom-variant__img > img[src*="rating-sold/"]) {
+    grid-column: span 2;
+  }
+  .atom-variant__img img[src*="rating-sold/"] { max-width: none; max-height: none; }
   .atom-variant__img--empty {
     background:
       repeating-linear-gradient(45deg,
@@ -464,6 +471,31 @@
     max-width: 100%;
     font-family: var(--f-mono);
     letter-spacing: 0;
+  }
+  .atom-variant__copy {
+    margin-top: 3px;
+    max-width: 100%;
+    max-height: 72px;
+    overflow: hidden;
+    color: var(--ink-5);
+    font-size: 9.5px;
+    line-height: 1.35;
+    text-align: center;
+    word-break: break-word;
+  }
+
+  /* Text-only product-highlights atom (Sponsored): 12/16 Medium #6E7078, Figma 26894:262735. */
+  .atom-variant__img .ph-sponsored {
+    display: inline-block;
+    overflow: hidden;
+    color: var(--Text-Tertiary, #6E7078);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: "Barlow", var(--f-sans);
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px;
   }
 
   /* Pending state — for atoms whose SVGs aren't exported yet */
@@ -537,7 +569,7 @@
 
       <header class="ov-head">
         <h1 class="ov-head__title">原子组件</h1>
-        <p class="ov-head__subtitle">19 个业务原子组件，跟 Figma <em>App Business Components</em> 目录 1:1 对齐。每个原子按自身语义记录尺寸规格或 Types；可导出的变体图片直接来自 Figma 源文件。</p>
+        <p class="ov-head__subtitle">33 个平台原子、149 个变体，跟 <em>App Business Components · Product Card Atomic Components</em> 对齐（Main image 三个尺寸集合并展示，自营标签图标单独拆出）。每个变体同时展示 Figma 命名与源文案，图片直接导出自 Figma 源文件。</p>
       </header>
 
     </div>
@@ -635,6 +667,7 @@
           html += '      <div class="atom-variant">'
                +  '        <div class="atom-variant__img"><div class="atom-variant__img--empty"></div></div>'
                +  '        <div class="atom-variant__name">' + esc(v.label) + '</div>'
+               +  (v.copy && v.copy.length ? '<div class="atom-variant__copy">' + esc(v.copy.join(' / ')) + '</div>' : '')
                +  '      </div>';
         });
         html += '    </div>';
@@ -646,12 +679,19 @@
         html += '    <div class="atom-block__grid">';
         a.variants.forEach(function (v) {
           html += '      <div class="atom-variant">';
-          if (v.svg) {
+          if (v.text) {
+            // Text-only atom (Sponsored): render the live label, not the baked svg,
+            // so the 12/16 Medium #6E7078 spec is what people actually see.
+            html += '        <div class="atom-variant__img"><span class="ph-sponsored">' + esc(v.copy && v.copy[0] || v.label) + '</span></div>';
+          } else if (v.svg) {
             html += '        <div class="atom-variant__img"><img src="' + esc(v.svg) + '" alt="' + esc(v.label) + '"></div>';
           } else {
             html += '        <div class="atom-variant__img"><div class="atom-variant__img--empty"></div></div>';
           }
           html += '        <div class="atom-variant__name">' + esc(v.label) + '</div>';
+          if (v.copy && v.copy.length) {
+            html += '        <div class="atom-variant__copy">' + esc(v.copy.join(' / ')) + '</div>';
+          }
           html += '      </div>';
         });
         html += '    </div>';
@@ -753,7 +793,7 @@
 
   var pct = totalVariants === 0 ? 0 : Math.round(exportedVariants / totalVariants * 100);
   document.getElementById('foot-progress').innerHTML =
-    '19 个原子 · <strong>' + exportedVariants + ' / ' + totalVariants
+    D.atoms.length + ' 个原子 · <strong>' + exportedVariants + ' / ' + totalVariants
     + '</strong> 个变体已从 Figma 拉取 (' + pct + '%)';
 
   function renderImageSpecs(atom) {

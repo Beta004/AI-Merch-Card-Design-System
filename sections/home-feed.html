@@ -231,13 +231,14 @@
   }
 
   /* Slot 4 · Rating · sold */
+  /* Rating & Sold — Figma atom 6311:16045: 12px star, 12/16 Medium #1A1A1A. */
   .hcard__meta {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 11px; color: var(--ink-3);
+    display: flex; align-items: center; gap: 4px;
+    font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink);
   }
   .hcard__meta-star {
-    display: inline-flex; align-items: center; gap: 2px;
-    color: var(--ink); font-weight: 700;
+    display: inline-flex; align-items: center; gap: 4px;
+    color: var(--ink); font-weight: 500;
   }
   .hcard__meta-star::before {
     content: "";
@@ -249,8 +250,9 @@
   .hcard__meta-sep {
     display: inline-block;
     width: 1px; height: 8px;
-    background: var(--outline-strong);
+    background: rgba(0, 0, 0, .12);
   }
+  .hcard__sold { white-space: nowrap; }
 
   /* Slot 5 · Promotion (red) */
   .hcard__promotion {
@@ -595,6 +597,8 @@
   .tvcard__body { padding: 5px 8px 8px; display: flex; flex-direction: column; gap: 2px; }
   .tvcard__hi { align-self: flex-start; line-height: 0; margin-bottom: 1px; }
   .tvcard__hi img { display: block; height: 10px; width: auto; }
+  /* Sponsored is a 16px text-only atom (no chip) — keep it on the text baseline. */
+  :is(.tvcard__hi, .hcard__highlight) .ph-sponsored { line-height: 16px; }
   .tvcard__brand { font-size: 10px; font-weight: 700; color: var(--ink); line-height: 1.15; }
   .tvcard__title {
     margin: 0; font-size: 9px; color: var(--ink-2); line-height: 1.3;
@@ -1148,14 +1152,45 @@
   var cardLang = 'en';
 
   var HIGHLIGHT_ENUM = new Set([
-    'best-before','best-seller','blockbuster','clearance',
-    'hot-deal','new','plus-price','sponsored','top-deal'
+    'sponsored','best-before','new-hot','top-deal',
+    'private-label','new','too-good-to-waste'
   ]);
   var HIGHLIGHT_LABEL = {
-    'best-before':'Best before', 'best-seller':'Best seller', 'blockbuster':'Blockbuster',
-    'clearance':'Clearance', 'hot-deal':'Hot deal', 'new':'New',
-    'plus-price':'Plus price', 'sponsored':'Sponsored', 'top-deal':'Top deal'
+    'sponsored':'Sponsored', 'best-before':'Best Before',
+    'new-hot':'New&Hot', 'top-deal':'Top Deal',
+    'private-label':'Private Label', 'new':'New',
+    'too-good-to-waste':'Too Good To Waste'
   };
+  // All seven Product Highlights variants are native HTML (Figma atoms):
+  // Sponsored 26894:262735 · Best Before 31509:124741 · New&Hot 27850:345179 ·
+  // Top Deal 27850:347936 · Private Label 38163:76435 · New 27850:347938 ·
+  // Too Good To Waste 28525:159689.
+  var HIGHLIGHT_TEXT = {
+    'sponsored':'Sponsored', 'best-before':'Life 3d+',
+    'new-hot':'New&Hot', 'top-deal':'Top Deal',
+    'private-label':'Private Label', 'new':'New',
+    'too-good-to-waste':'Too Good To Waste'
+  };
+  var HIGHLIGHT_NODE = {
+    'sponsored':'26894:262735', 'best-before':'31509:124741',
+    'new-hot':'27850:345179', 'top-deal':'27850:347936',
+    'private-label':'38163:76435', 'new':'27850:347938',
+    'too-good-to-waste':'28525:159689'
+  };
+  function highlightHTML(key) {
+    if (!HIGHLIGHT_ENUM.has(key)) return '';
+    if (key === 'too-good-to-waste') {
+      return '<span class="ph-tgw" data-figma-node="'+HIGHLIGHT_NODE[key]+'">'
+        + '<span class="ph-tgw__chip">Too Good To Waste</span>'
+        + '<span class="ph-tgw__bbd">BBD: 27-12-2025</span>'
+        + '</span>';
+    }
+    if (key === 'sponsored') {
+      return '<span class="ph-sponsored" data-figma-node="'+HIGHLIGHT_NODE[key]+'">Sponsored</span>';
+    }
+    return '<span class="ph-highlight ph-highlight--'+key+'" data-figma-node="'+HIGHLIGHT_NODE[key]+'">'
+      + HIGHLIGHT_TEXT[key] + '</span>';
+  }
 
   var HERO_CHROME = {
     en: { title: 'Home', rec: 'Recommended', near: 'Nearby', live: 'Live' },
@@ -1179,13 +1214,13 @@
       html += '<div class="tvcard__colors">';
       p.colors.slice(0, 4).forEach(function (c) { html += '<span class="tvcard__color-dot" style="background:' + c + '"></span>'; });
       if (p.extraColors > 0 || p.colors.length > 4) {
-        html += '<span class="tvcard__color-dot" style="background:#eee;font-size:6px;display:flex;align-items:center;justify-content:center;color:#666;">+</span>';
+        html += '<span class="tvcard__color-dot" style="background:#eee;font-size:6px;display:flex;align-items:center;justify-content:center;color:#666;">'+(p.extraColors >= 99 ? '+99' : '+8')+'</span>';
       }
       html += '</div>';
     }
     html += '<div class="tvcard__body">';
     if (cfg.showHi && t.highlight && HIGHLIGHT_ENUM.has(t.highlight)) {
-      html += '<span class="tvcard__hi"><img src="../assets/figma-atoms/product-highlights/' + t.highlight + '.svg" alt="' + (HIGHLIGHT_LABEL[t.highlight] || t.highlight) + '"></span>';
+      html += '<span class="tvcard__hi">' + highlightHTML(t.highlight) + '</span>';
     }
     if (cfg.minimal) {
       html += '<p class="tvcard__title" style="font-weight:600;color:var(--ink);">' + t.title + '</p>';
@@ -1199,7 +1234,7 @@
       html += '</div>';
       if (cfg.showBottom !== false) {
         html += '<div class="tvcard__bottom">';
-        html += '<span class="tvcard__seller">' + t.seller + '</span>';
+        if (p.selfOperated) html += '<span class="tvcard__seller">Sold by Joybuy</span>';
         if (cfg.oos) {
           html += '<img class="tvcard__oos--img" src="../assets/figma-atoms/stock/out-of-stock.svg" alt="Out of stock">';
         } else {

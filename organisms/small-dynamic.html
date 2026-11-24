@@ -118,19 +118,6 @@
     border-bottom: 1px solid var(--outline);
     margin-bottom: 16px;
   }
-  .side-preview__lang {
-    display: inline-flex; padding: 2px;
-    border: 1px solid var(--outline); border-radius: var(--r-pill);
-    background: var(--surface); letter-spacing: 0;
-  }
-  .side-preview__lang button {
-    all: unset; cursor: pointer;
-    padding: 3px 8px; border-radius: var(--r-pill);
-    font-size: 10px; font-weight: 700;
-    color: var(--ink-4); transition: background .12s ease, color .12s ease;
-    text-transform: none;
-  }
-  .side-preview__lang button.is-active { background: var(--ink); color: #fff; }
   .side-preview__items { display: flex; flex-direction: column; gap: 20px; }
   .side-preview__item { display: flex; flex-direction: column; gap: 8px; }
   .side-preview__item-label {
@@ -166,7 +153,6 @@
     border: 1px solid var(--outline);
   }
   .sdyn-strip--3 { grid-template-columns: repeat(3, 1fr); max-width: 320px; }
-  .sdyn-strip--6 { grid-template-columns: repeat(6, 1fr); max-width: 400px; }
   .sdyn-strip--2 { grid-template-columns: repeat(2, 1fr); max-width: 220px; }
 
   .sdyn {
@@ -203,79 +189,6 @@
     line-height: 1.1;
   }
   .sdyn__price[data-empty] { display: none; }
-  .sdyn__label {
-    padding: 0 4px 4px;
-    font-size: 10px; color: var(--ink-3);
-    text-align: center;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    line-height: 1.3;
-  }
-  .sdyn__label[data-empty] { display: none; }
-
-  /* Badge — small pill top-right */
-  .sdyn__badge {
-    position: absolute; top: 4px; right: 4px;
-    padding: 1px 4px; border-radius: 2px;
-    background: var(--joybuy-red); color: #fff;
-    font-size: 9px; font-weight: 800; letter-spacing: .04em;
-    line-height: 1.3;
-    text-transform: uppercase;
-    z-index: 2;
-  }
-  .sdyn__badge[data-empty] { display: none; }
-  .sdyn__badge--dark { background: var(--ink); }
-  .sdyn__badge--gold { background: #c8a05a; }
-
-  /* Ribbon — angled top-left tag */
-  .sdyn__ribbon {
-    position: absolute; top: 0; left: 0;
-    padding: 2px 8px 2px 5px;
-    background: var(--joybuy-red); color: #fff;
-    font-size: 9px; font-weight: 800; letter-spacing: .04em;
-    line-height: 1.4;
-    clip-path: polygon(0 0, 100% 0, 88% 100%, 0 100%);
-    display: inline-flex; align-items: center;
-    z-index: 2;
-  }
-  .sdyn__ribbon[data-empty] { display: none; }
-  .sdyn__ribbon--live::before {
-    content: "";
-    width: 5px; height: 5px; border-radius: 50%;
-    background: #fff;
-    animation: sdyn-pulse 1.4s infinite ease-in-out;
-    margin-right: 3px;
-    display: inline-block;
-    flex-shrink: 0;
-  }
-  .sdyn__ribbon--new { background: #16a34a; }
-  .sdyn__ribbon--hot { background: #f97316; }
-  @keyframes sdyn-pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
-
-  /* Sold-out modifier — dim + overlay */
-  .sdyn--sold-out .sdyn__image::after {
-    content: "SOLD OUT";
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(0,0,0,.55); color: #fff;
-    font-size: 10px; font-weight: 800; letter-spacing: .08em;
-    z-index: 3;
-  }
-  .sdyn--sold-out { opacity: .85; }
-  .sdyn--sold-out .sdyn__price { color: var(--ink-5); text-decoration: line-through; }
-
-  /* Brand-entry variant — no price row, label larger */
-  .sdyn--brand .sdyn__image { padding: 10px; }
-  .sdyn--brand .sdyn__label {
-    font-size: 11px; font-weight: 600;
-    color: var(--ink-2);
-    padding: 4px 4px 6px;
-  }
-
-  /* Density modifier for 6-col — tighter type */
-  .sdyn-strip--6 .sdyn__price { font-size: 10px; padding: 3px 2px 1px; }
-  .sdyn-strip--6 .sdyn__label { font-size: 9px; padding: 0 3px 3px; }
-  .sdyn-strip--6 .sdyn__badge { font-size: 8px; padding: 0 3px; }
-  .sdyn-strip--6 .sdyn__ribbon { font-size: 8px; padding: 1px 6px 1px 4px; }
 
   /* ============ Demo area (same shell as horizontal-mini) ============ */
   .demo {
@@ -304,20 +217,6 @@
   .demo__controls-hint {
     font-size: 12px; color: var(--ink-4); line-height: 1.6;
     margin-top: 4px;
-  }
-  .lang-toggle {
-    display: inline-flex; padding: 3px;
-    border: 1px solid var(--outline); border-radius: var(--r-pill);
-    background: var(--surface);
-  }
-  .lang-toggle__btn {
-    all: unset; cursor: pointer;
-    padding: 5px 14px; border-radius: var(--r-pill);
-    font-size: 12px; font-weight: 600;
-    color: var(--ink-4); transition: background .12s ease, color .12s ease;
-  }
-  .lang-toggle__btn.is-active {
-    background: var(--ink); color: #fff;
   }
   .chip-strip {
     display: flex; gap: 6px; flex-wrap: wrap;
@@ -604,9 +503,188 @@
     content: "·"; position: absolute; left: 6px; color: var(--ink-5);
     font-weight: 700;
   }
+
+  /* ============ Field explorer · scenario tabs + field switches + copilot ============
+     (visual system shared verbatim with vertical/horizontal/mini/scroll/campaign rollout) ---- */
+  .field-sim { border-top: 1px dashed var(--outline); padding-top: 18px; }
+  .field-sim__title {
+    font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-4); margin-bottom: 4px;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .field-sim__title-hint { font-size: 11px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--ink-5); }
+  .sim-group { margin-top: 16px; }
+  .sim-group__head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+  .sim-group__name { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
+  .sim-group__rule { font-size: 10.5px; color: var(--ink-5); white-space: nowrap; }
+  .sim-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 7px 0;
+  }
+  .sim-row + .sim-row { border-top: 1px solid var(--surface-2); }
+  .sim-row__label { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink-2); }
+  .sim-row__pri {
+    font-size: 9.5px; font-weight: 700; letter-spacing: .03em;
+    color: var(--ink-5); background: var(--surface-2);
+    border-radius: 4px; padding: 1px 5px;
+  }
+  .sim-row__na { font-size: 10px; color: var(--ink-5); }
+  .sim-row.is-picked .sim-row__label { color: var(--ink); font-weight: 600; }
+  .sim-row.is-picked .sim-row__pri { color: var(--accent); background: var(--accent-50); }
+  .sim-row.is-folded .sim-row__label { color: var(--ink-4); }
+  .sim-row.is-disabled { opacity: .5; }
+  /* switch */
+  .sim-sw {
+    all: unset; cursor: pointer; box-sizing: border-box; flex: none;
+    width: 36px; height: 20px; border-radius: var(--r-pill);
+    background: var(--outline); position: relative; transition: background .15s ease;
+  }
+  .sim-sw::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25);
+    transition: transform .15s ease;
+  }
+  .sim-sw[aria-checked="true"] { background: var(--accent); }
+  .sim-sw[aria-checked="true"]::after { transform: translateX(16px); }
+  .sim-sw[aria-disabled="true"] { cursor: not-allowed; opacity: .55; }
+  /* copilot */
+  .sim-copilot {
+    margin-top: 16px; padding: 13px 14px;
+    border: 1px solid var(--outline); border-radius: var(--r-md);
+    background: var(--surface-2);
+  }
+  .sim-copilot__head {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  .sim-copilot__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+  .sim-copilot p { margin: 0 0 6px; font-size: 12px; line-height: 1.65; color: var(--ink-3); }
+  .sim-copilot p:last-child { margin-bottom: 0; }
+  .sim-copilot b { color: var(--ink); font-weight: 600; }
+  .sim-copilot em { font-style: normal; color: var(--ink-4); }
+  /* scenario tabs */
+  .scene-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .scene-tab {
+    all: unset; cursor: pointer; box-sizing: border-box;
+    padding: 7px 13px; border-radius: 8px;
+    font-size: 12.5px; font-weight: 600; line-height: 1.15;
+    color: var(--ink-3); background: var(--surface);
+    border: 1px solid var(--outline);
+    transition: all .12s ease;
+  }
+  .scene-tab:hover { border-color: var(--outline-strong); }
+  .scene-tab.is-active { color: #fff; background: var(--ink); border-color: var(--ink); }
+  .scene-tab__sub { font-size: 10px; font-weight: 500; opacity: .7; margin-left: 5px; }
+  /* reset + stacked label */
+  .field-sim__head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+  .field-sim__reset {
+    all: unset; cursor: pointer; flex: none;
+    font-size: 11px; font-weight: 600; color: var(--ink-4);
+    padding: 4px 10px; border-radius: var(--r-pill);
+    border: 1px solid var(--outline); background: var(--surface);
+    transition: all .12s ease;
+  }
+  .field-sim__reset:hover { color: var(--accent); border-color: var(--accent-100); background: var(--accent-50); }
+  .field-sim__reset[aria-disabled="true"] { opacity: .4; cursor: default; }
+  .field-sim__reset[aria-disabled="true"]:hover { color: var(--ink-4); border-color: var(--outline); background: var(--surface); }
+  .sim-row__label { flex-direction: column; align-items: flex-start; gap: 1px; }
+  .sim-row__name { display: flex; align-items: center; gap: 6px; }
+  .sim-row__scene { font-size: 10px; color: var(--ink-5); }
+  .sim-row__ov {
+    font-size: 9px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-50);
+    border-radius: 4px; padding: 1px 5px;
+  }
+  .sim-row.is-picked .sim-row__name { color: var(--ink); font-weight: 600; }
 </style>
 <link rel="stylesheet" href="../assets/card-detail-template.css">
   <link rel="stylesheet" href="../assets/card-preview-alignment.css">
+<style>
+  /* ===================================================================
+     Live-config panel v2 · shared with the vertical-card detail page.
+     Grouped field cards, single-line rows, no helper captions.
+     The reset button only appears once a field has been overridden.
+     =================================================================== */
+  #s-overview .demo__controls { gap: 24px; }
+  #s-overview .demo__controls-block + .demo__controls-block {
+    padding-top: 22px;
+    border-top: 1px solid var(--outline);
+  }
+  #s-overview .demo__controls-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    color: var(--ink-4);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .scene-tabs { display: flex; flex-wrap: wrap; gap: 7px; }
+  .scene-tab {
+    padding: 8px 13px; border-radius: 8px;
+    font-size: 12.5px; font-weight: 600; line-height: 1.25;
+  }
+  /* the qualifier keeps same-name scenarios (Dutch auction states) apart */
+  .scene-tab__sub {
+    font-size: 10px; font-weight: 500; opacity: .65;
+    margin-left: 5px; letter-spacing: 0; text-transform: none;
+  }
+
+  .field-sim { padding-top: 22px; border-top: 1px solid var(--outline); }
+  .field-sim__head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 12px;
+  }
+  .field-sim__title {
+    display: block; font-size: 13px; font-weight: 700; color: var(--ink);
+    margin-bottom: 0;
+  }
+  .field-sim__title-hint { display: none; }
+  .field-sim__reset {
+    font-size: 11px; font-weight: 600; color: var(--ink-4);
+    padding: 4px 9px; border-radius: 6px;
+  }
+  .field-sim__reset[aria-disabled="true"] {
+    visibility: hidden; pointer-events: none;
+  }
+
+  .sim-group {
+    margin-top: 8px; overflow: hidden;
+    border: 1px solid var(--outline); border-radius: 9px;
+    background: var(--surface);
+  }
+  .sim-group__head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 12px; margin-bottom: 0;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--outline);
+  }
+  .sim-group__name {
+    font-size: 11px; font-weight: 700; letter-spacing: .04em;
+    color: var(--ink-3); text-transform: uppercase;
+  }
+  .sim-group__rule { display: none; }
+  .sim-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; min-height: 44px; padding: 10px 12px; box-sizing: border-box;
+  }
+  .sim-row__label {
+    display: block; min-width: 0;
+    font-size: 13px; line-height: 1.35; color: var(--ink-2);
+  }
+  .sim-row__name { display: flex; align-items: center; gap: 7px; }
+  .sim-row__scene, .sim-row__ov { display: none; }
+  .sim-row.is-picked .sim-row__name { color: var(--ink); font-weight: 600; }
+  .sim-row.is-overridden .sim-row__name::after {
+    content: ''; width: 5px; height: 5px; flex: none;
+    border-radius: 50%; background: var(--accent);
+  }
+  .sim-row.is-disabled { background: var(--surface-2); opacity: 1; }
+  .sim-row.is-disabled .sim-row__name { color: var(--ink-5); }
+  .sim-row__na { font-size: 10.5px; color: var(--ink-5); white-space: nowrap; }
+  .sim-copilot { display: none; }
+</style>
 </head>
 <body>
 <div class="site site--card-detail">
@@ -675,23 +753,14 @@
             <div id="sdyn-preview" class="sdyn-strip sdyn-strip--4"></div>
           </div>
 
-          <div class="demo__controls">
+          <div class="demo__controls" data-global-i18n="off">
             <div class="demo__controls-block">
-              <div class="demo__controls-title">语言 · Language</div>
-              <div class="lang-toggle" id="lang-toggle">
-                <button class="lang-toggle__btn is-active" data-lang="en">EN</button>
-                <button class="lang-toggle__btn" data-lang="zh">中文</button>
-              </div>
+              <div class="demo__controls-title" data-control-title="scene">业务场景</div>
+              <div class="scene-tabs" id="sdyn-scene-tabs"></div>
             </div>
-            <div class="demo__controls-block">
-              <div class="demo__controls-title">变体 · Variant</div>
-              <div class="chip-strip" id="variant-strip"></div>
+            <div class="demo__controls-block field-sim" data-global-i18n="off">
+              <div id="sdyn-sim"></div>
             </div>
-            <div class="demo__controls-block">
-              <div class="demo__controls-title">分类 · Category</div>
-              <div class="chip-strip" id="cat-strip"></div>
-            </div>
-            <div class="demo__controls-hint">变体只改变价格第二行是否出现；商品图片、卡片数量与间距保持不变。</div>
           </div>
         </div>
       </section>
@@ -890,10 +959,6 @@
     <div class="side-preview">
       <div class="side-preview__head">
         <span>Types Preview</span>
-        <span class="side-preview__lang" id="sp-lang">
-          <button data-sp-lang="en" class="is-active">EN</button>
-          <button data-sp-lang="zh">中</button>
-        </span>
       </div>
       <div class="side-preview__items">
         <div class="side-preview__item">
@@ -923,29 +988,82 @@
     { key:'food',      label:'食品' }
   ];
 
-  const VARIANTS = [
-    { key:'reference', label:'With reference price' },
-    { key:'priceOnly', label:'Price only' }
+  /* ---- Field explorer model ----------------------------------------------------------
+   * Small Dynamic is the leanest card in the system: the Figma master has ONLY two slots
+   * — product image + price — with an optional reference-price (RRP/WAS) second line.
+   * So the explorer is deliberately minimal: image is a locked/required slot; price and
+   * reference price are the only toggles. Scenes map the card's four real entry-point
+   * contexts (from its own header chip) to a product category + a price layout. A genuine
+   * dependency the other cards lack: reference price CANNOT show while price is off, so it
+   * gates to N/A — the one place N/A gating actually fires in this rollout.
+   * It is a strip organism (like horizontal-scroll): applyFields() re-renders the whole
+   * four-tile strip with one resolved visibility profile, not per-slot setField mutation. */
+  const SD_SCENES = [
+    { key:'channel', cat:'beauty',  label:{ en:'Channel deals', zh:'频道快捷' }, sub:{ en:'with RRP',    zh:'带参考价' }, on:{ image:true, price:true,  referencePrice:true  } },
+    { key:'live',    cat:'3c',      label:{ en:'Live list',     zh:'直播清单' }, sub:{ en:'price only',  zh:'仅价格'   }, on:{ image:true, price:true,  referencePrice:false } },
+    { key:'brand',   cat:'fashion', label:{ en:'Brand hall',    zh:'品牌入口' }, sub:{ en:'image only',  zh:'仅图片'   }, on:{ image:true, price:false, referencePrice:false } },
+    { key:'store',   cat:'food',    label:{ en:'Store front',   zh:'店铺装修' }, sub:{ en:'with RRP',    zh:'带参考价' }, on:{ image:true, price:true,  referencePrice:true  } }
   ];
+  const SD_GROUPS = [
+    { key:'media', name:{ en:'Media',  zh:'图像' } },
+    { key:'price', name:{ en:'Price',  zh:'价格' } }
+  ];
+  const SD_FIELDS = [
+    { name:'image',          group:'media', kind:'locked', label:{ en:'Product image',   zh:'商品图' } },
+    { name:'price',          group:'price', kind:'data',   label:{ en:'Price',           zh:'主价格' } },
+    { name:'referencePrice', group:'price', kind:'data',   label:{ en:'Reference price', zh:'参考价' } }
+  ];
+  const SD_TXT = {
+    en: { title:'Field explorer', hint:'toggle each field', reset:'Reset', copilot:'Field copilot',
+          dataK:'data field', reqK:'required', na:'—',
+          lead:'The <b>__S__</b> strip surfaces', none:'image only', andSep:', ',
+          depNote:'Reference price stays hidden until price is shown.',
+          ovNote:'Edited from the scene default — Reset to restore.' },
+    zh: { title:'字段浏览器', hint:'逐个字段开关', reset:'重置', copilot:'字段助手',
+          dataK:'数据字段', reqK:'必填', na:'—',
+          lead:'<b>__S__</b> 条目显示', none:'仅图片', andSep:'、',
+          depNote:'价格隐藏时，参考价一并收起。',
+          ovNote:'已从场景默认改动 —— 点重置恢复。' }
+  };
 
-  let cardLang    = 'en';
-  let currentCat  = 'beauty';
-  let currentVar  = 'reference';
+  let cardLang = (window.JoybuySite && window.JoybuySite.getLanguage()) || 'zh';
 
-  /* ================ Utility — build one .sdyn tile HTML ================ */
+  /* Live-config panel copy follows the global documentation language. */
+  const UI_COPY = {
+    en: { scene:'Scenario', category:'Category', preset:'Product preset', fields:'Field controls', reset:'Reset', na:'N/A' },
+    zh: { scene:'业务场景', category:'品类', preset:'商品预设', fields:'字段控制', reset:'重置', na:'无数据' }
+  };
+  function updateControlCopy() {
+    document.querySelectorAll('[data-control-title]').forEach(el => {
+      const key = el.dataset.controlTitle;
+      el.textContent = (UI_COPY[cardLang] && UI_COPY[cardLang][key]) || key;
+    });
+  }
+  let sceneKey = 'channel';
+  let fieldOv  = {};
+
+  /* ================ Utility — build one .sdyn tile HTML ================
+   * Figma master has two slots: product image + price (with optional RRP line).
+   * cfg.show = resolved visibility profile; cfg.withFields tags slots with data-field
+   * (explorer preview only). Hidden optional slots are OMITTED (never data-empty), so the
+   * strip has no stray gaps and the showcase stays field-marker-free. Back-compat: callers
+   * may still pass cfg.showOriginal instead of a full show map. */
   function sdynHTML(cfg) {
-    // Figma mini has two slots only: product picture and price.
     const p = cfg.product;
     if (!p) return '';
-    const t = p[cardLang] || {};
+    const show = cfg.show || { image:true, price:true, referencePrice:!!cfg.showOriginal };
+    const wf = cfg.withFields;
+    const fld = n => wf ? ' data-field="'+n+'"' : '';
     const img = D.productImages[p.img] || '';
     let html = '<div class="sdyn" title="'+(p.brand||'')+'">';
-    html += '<div class="sdyn__image">';
+    html += '<div class="sdyn__image"'+fld('image')+'>';
     if (img) html += '<img src="'+img+'" alt="'+(p.brand||'')+'">';
     html += '</div>';
-    html += '<div class="sdyn__price">'+p.salePrice+'</div>';
-    if (cfg.showOriginal && p.originalPrice) {
-      html += '<div class="sdyn__original-price">RRP: '+p.originalPrice+'</div>';
+    if (show.price) {
+      html += '<div class="sdyn__price"'+fld('price')+'>'+p.salePrice+'</div>';
+      if (show.referencePrice && p.originalPrice) {
+        html += '<div class="sdyn__original-price"'+fld('referencePrice')+'>RRP: '+p.originalPrice+'</div>';
+      }
     }
     html += '</div>';
     return html;
@@ -971,47 +1089,136 @@
     return out;
   }
 
-  function renderPreview() {
+  function renderPreview() { applyFields(); }  /* legacy alias — kept for any external caller */
+
+  /* ================ Field explorer engine ================ */
+  function sdScene() { return SD_SCENES.filter(s => s.key === sceneKey)[0] || SD_SCENES[0]; }
+  function sdVis(name, def, ov) { return (ov[name] == null) ? !!def : !!ov[name]; }
+  function sdSceneProducts(scene) { return firstNProducts(scene.cat, 4); }
+
+  // Which data fields the scene's four tiles actually carry (catalog invariant: all carry both).
+  function sdAvail(scene) {
+    const ps = sdSceneProducts(scene);
+    return {
+      image: true,
+      price:          ps.length > 0 && ps.every(p => !!p.salePrice),
+      referencePrice: ps.length > 0 && ps.every(p => !!p.originalPrice)
+    };
+  }
+  // Scene default visibility: scene.on wins, data fields ANDed with availability; image locked on.
+  function sdDefaults(scene, avail) {
+    const on = scene.on || {};
+    return {
+      image: true,
+      price:          !!on.price && avail.price,
+      referencePrice: !!on.referencePrice && avail.referencePrice
+    };
+  }
+
+  /* Resolve → re-render the whole four-tile strip with one visibility profile ---- */
+  function applyFields() {
+    const scene = sdScene();
+    const avail = sdAvail(scene);
+    const def   = sdDefaults(scene, avail);
+    const show  = {
+      image: true,
+      price:          sdVis('price', def.price, fieldOv),
+      referencePrice: sdVis('referencePrice', def.referencePrice, fieldOv)
+    };
+    if (!show.price) show.referencePrice = false;   // dependency: RRP needs a visible price row
     const host = document.getElementById('sdyn-preview');
+    if (host) {
+      host.className = 'sdyn-strip sdyn-strip--4';
+      host.innerHTML = sdSceneProducts(scene)
+        .map(product => sdynHTML({ product, show, withFields: true })).join('');
+    }
+    const gated = { referencePrice: !avail.referencePrice || !show.price };
+    renderSdFieldSim(avail, def, show, gated);
+  }
+
+  /* ================ Field panel (groups + switches + reset + copilot) ================ */
+  function renderSdFieldSim(avail, def, show, gated) {
+    const host = document.getElementById('sdyn-sim');
     if (!host) return;
-    host.className = 'sdyn-strip sdyn-strip--4';
-    host.innerHTML = firstNProducts(currentCat, 4).map(product => sdynHTML({
-      product,
-      showOriginal: currentVar === 'reference'
-    })).join('');
+    const T = SD_TXT[cardLang] || SD_TXT.en;
+    const dirty = Object.keys(fieldOv).length > 0;
+
+    const UI = UI_COPY[cardLang];
+    let html = '<div class="field-sim__head">' +
+      '<div class="field-sim__title">' + UI.fields + '</div>' +
+      '<button class="field-sim__reset" id="sdyn-reset" type="button"' +
+      (dirty ? '' : ' aria-disabled="true"') + '>' + UI.reset + '</button></div>';
+
+    SD_GROUPS.forEach(g => {
+      html += '<div class="sim-group"><div class="sim-group__head">' +
+        '<span class="sim-group__name">' + g.name[cardLang] + '</span></div>';
+      SD_FIELDS.filter(f => f.group === g.key).forEach(f => {
+        const locked = f.kind === 'locked';
+        const isData = f.kind === 'data';
+        const na  = isData && (gated[f.name] || !avail[f.name]);
+        const on  = locked ? true : sdVis(f.name, def[f.name], fieldOv);
+        const overridden = !locked && fieldOv[f.name] != null && (!!fieldOv[f.name] !== !!def[f.name]);
+        const cls = 'sim-row' + (on ? ' is-picked' : '') + ((na || locked) ? ' is-disabled' : '')
+          + (overridden ? ' is-overridden' : '');
+        html += '<div class="' + cls + '"><div class="sim-row__label">' +
+          '<span class="sim-row__name">' + f.label[cardLang] + '</span></div>';
+        html += na
+          ? '<span class="sim-row__na">' + T.na + '</span>'
+          : '<button class="sim-sw" role="switch" data-field-key="' + f.name + '"' +
+              (locked ? ' aria-disabled="true"' : '') +
+              ' aria-checked="' + (on ? 'true' : 'false') + '" aria-label="' + f.label[cardLang] + '"></button>';
+        html += '</div>';
+      });
+      html += '</div>';
+    });
+
+    host.innerHTML = html;
   }
 
-  function renderCatStrip() {
-    const strip = document.getElementById('cat-strip');
-    strip.innerHTML = '';
-    CATS.forEach(c => {
-      const btn = document.createElement('button');
-      btn.className = 'chip-btn' + (c.key === currentCat ? ' is-active' : '');
-      btn.textContent = c.label;
-      btn.addEventListener('click', () => {
-        currentCat = c.key;
-        renderCatStrip();
-        renderPreview();
-      });
-      strip.appendChild(btn);
-    });
+  /* ================ Scenario tabs ================ */
+  function renderSdSceneTabs() {
+    const host = document.getElementById('sdyn-scene-tabs');
+    if (!host) return;
+    host.innerHTML = SD_SCENES.map(s =>
+      '<button class="scene-tab' + (s.key === sceneKey ? ' is-active' : '') + '" type="button" data-scene="' + s.key + '">' +
+      s.label[cardLang] + '<span class="scene-tab__sub">' + s.sub[cardLang] + '</span></button>'
+    ).join('');
   }
 
-  function renderVariantStrip() {
-    const strip = document.getElementById('variant-strip');
-    strip.innerHTML = '';
-    VARIANTS.forEach(v => {
-      const btn = document.createElement('button');
-      btn.className = 'chip-btn' + (v.key === currentVar ? ' is-active' : '');
-      btn.textContent = v.label;
-      btn.addEventListener('click', () => {
-        currentVar = v.key;
-        renderVariantStrip();
-        renderPreview();
-      });
-      strip.appendChild(btn);
-    });
+  function applySdScene(key) {
+    if (!SD_SCENES.some(s => s.key === key)) return;
+    sceneKey = key;
+    fieldOv = {};                 // switching scenario clears overrides
+    renderSdSceneTabs();
+    applyFields();
   }
+
+  (function wireSdFieldSim() {
+    const tabs = document.getElementById('sdyn-scene-tabs');
+    if (tabs) tabs.addEventListener('click', e => {
+      const b = e.target.closest('.scene-tab');
+      if (b) applySdScene(b.getAttribute('data-scene'));
+    });
+    const sim = document.getElementById('sdyn-sim');
+    if (sim) sim.addEventListener('click', e => {
+      const sw = e.target.closest('.sim-sw');
+      if (sw && sw.getAttribute('aria-disabled') !== 'true') {
+        const key = sw.getAttribute('data-field-key');
+        const scene = sdScene();
+        const def = sdDefaults(scene, sdAvail(scene));
+        const next = !sdVis(key, def[key], fieldOv);
+        if (next === !!def[key]) delete fieldOv[key];   // back to scene default → clear override
+        else fieldOv[key] = next;
+        applyFields();
+        return;
+      }
+      if (e.target.closest('#sdyn-reset')) {
+        if (Object.keys(fieldOv).length === 0) return;
+        fieldOv = {};
+        applyFields();
+      }
+    });
+  })();
 
   /* ================ Used In · 出现在 (data-driven cards + Figma lightbox) ================
    * Reads PAGES_DATA.pagesForCard(cardKey) — the SAME source as the Pages Overview.
@@ -1156,33 +1363,30 @@
     });
   }
   renderUsedIn();
+  window.addEventListener('joybuy:languagechange', (event) => {
+    setCardLang(event.detail && event.detail.language);
+    renderUsedIn();
+    if (uframe && uframe.classList.contains('is-open') && uOpenId) {
+      const page = PD.pages.filter(item => item.id === uOpenId)[0];
+      if (page) fillFrame(page);
+    }
+  });
 
   function setCardLang(lang) {
-    cardLang = lang;
-    document.querySelectorAll('.lang-toggle__btn').forEach(b => b.classList.toggle('is-active', b.dataset.lang === lang));
-    document.querySelectorAll('#sp-lang [data-sp-lang]').forEach(b => b.classList.toggle('is-active', b.dataset.spLang === lang));
-    renderPreview();
+    cardLang = lang === 'en' ? 'en' : 'zh';
+    updateControlCopy();
+    renderSdSceneTabs();
+    applyFields();
     renderTypeBlocks();
     renderPreviewStack();
   }
-  document.getElementById('lang-toggle').addEventListener('click', e => {
-    const btn = e.target.closest('.lang-toggle__btn');
-    if (!btn) return;
-    setCardLang(btn.dataset.lang);
-  });
-  document.getElementById('sp-lang').addEventListener('click', e => {
-    const btn = e.target.closest('[data-sp-lang]');
-    if (!btn) return;
-    setCardLang(btn.dataset.spLang);
-  });
-
   /* ================ Static "Types" showcase ================ */
   function renderTypeBlocks() {
     const products = firstNProducts('beauty', 4);
     const reference = document.getElementById('type-reference');
-    if (reference) reference.innerHTML = stripHTML(products.map(product => sdynHTML({ product, showOriginal:true })).join(''));
+    if (reference) reference.innerHTML = stripHTML(products.map(product => sdynHTML({ product, show:{ image:true, price:true, referencePrice:true }, withFields:false })).join(''));
     const priceOnly = document.getElementById('type-price-only');
-    if (priceOnly) priceOnly.innerHTML = stripHTML(products.map(product => sdynHTML({ product, showOriginal:false })).join(''));
+    if (priceOnly) priceOnly.innerHTML = stripHTML(products.map(product => sdynHTML({ product, show:{ image:true, price:true, referencePrice:false }, withFields:false })).join(''));
   }
 
   /* ================ Small anatomy-cell image ================ */
@@ -1198,9 +1402,9 @@
   function renderPreviewStack() {
     const products = firstNProducts('beauty', 4);
     const s1 = document.getElementById('sp-1');
-    if (s1) s1.innerHTML = stripHTML(products.map(product => sdynHTML({ product, showOriginal:true })).join(''));
+    if (s1) s1.innerHTML = stripHTML(products.map(product => sdynHTML({ product, show:{ image:true, price:true, referencePrice:true }, withFields:false })).join(''));
     const s2 = document.getElementById('sp-2');
-    if (s2) s2.innerHTML = stripHTML(products.map(product => sdynHTML({ product, showOriginal:false })).join(''));
+    if (s2) s2.innerHTML = stripHTML(products.map(product => sdynHTML({ product, show:{ image:true, price:true, referencePrice:false }, withFields:false })).join(''));
   }
 
   /* ================ Sticky tab scroll-spy ================ */
@@ -1215,9 +1419,9 @@
   window.addEventListener('scroll', updateTabs, { passive: true });
 
   /* ================ Init ================ */
-  renderVariantStrip();
-  renderCatStrip();
-  renderPreview();
+  updateControlCopy();
+  renderSdSceneTabs();
+  applyFields();
   renderTypeBlocks();
   renderAnatomyImage();
   renderPreviewStack();

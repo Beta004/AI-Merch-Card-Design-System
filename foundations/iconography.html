@@ -335,12 +335,12 @@
 
       <!-- Search filter (sticky) -->
       <div class="search-bar">
-        <input id="search-input" class="search-bar__input" type="search" placeholder="搜索图标名 · 如 best-seller / campaign / rrp …" autocomplete="off" spellcheck="false">
+        <input id="search-input" class="search-bar__input" type="search" placeholder="搜索图标名 · 如 sponsored / lightning-offers / rrp …" autocomplete="off" spellcheck="false">
         <span id="search-hits" class="search-bar__hits">105 icons</span>
       </div>
 
       <div id="empty-state" class="empty-state empty-state--hidden">
-        没有找到与 <code id="empty-q"></code> 匹配的图标。试试 <code>best-seller</code>、<code>campaign</code>、<code>rrp</code>。
+        没有找到与 <code id="empty-q"></code> 匹配的图标。试试 <code>sponsored</code>、<code>lightning-offers</code>、<code>rrp</code>。
       </div>
 
       <!-- ============== 01 Overview ============== -->
@@ -372,7 +372,7 @@
           <h2 class="section__title">Highlights · 亮点标签</h2>
         </div>
         <p class="section__lede">
-          用户扫视商卡时最先捕获的视觉锚点。Product Highlights 走枚举驱动（9 枚 SVG 对应 9 个 enum key），
+          用户扫视商卡时最先捕获的视觉锚点。Product Highlights 走枚举驱动（7 枚 SVG 对应 7 个 Figma 变体），
           AI Recommendation 与 Dietary Badges 是补充分组。
         </p>
         <div class="cat-list" id="cat-list-highlights"></div>
@@ -440,31 +440,31 @@ const CATALOG = {
   highlights: {
     label: '亮点标签',
     en: 'Highlights',
-    desc: '产品亮点、AI 推荐、饮食标识、心愿标签 — 4 家族 · 22 图标。',
+    desc: '产品亮点、AI 推荐、饮食标识、心愿标签 — 4 家族 · 28 图标。',
     families: [
       {
         key: 'product-highlights',
         label: 'Product Highlights',
-        desc: '9 枚枚举驱动的商品亮点 · 按 enum key 一一对应，绝不换标签图。',
-        files: ['best-before','best-seller','blockbuster','clearance','hot-deal','new','plus-price','sponsored','top-deal']
+        desc: '7 枚 Figma 商品亮点 · Sponsored / Best Before / New&Hot / Top Deal / Private Label / New / Too Good To Waste。',
+        files: ["sponsored", "best-before", "new-hot", "top-deal", "private-label", "new", "too-good-to-waste"]
       },
       {
         key: 'ai-recommendation',
         label: 'AI Recommendation',
-        desc: 'AI 推荐理由标签 · 与产品亮点二选一，同一张商卡不并存。',
-        files: ['ai-recommendation-reasons','best-seller']
+        desc: 'Figma AI Recommendation Reasons 全 10 变体 · 与 Product Highlights 二选一，同一张商卡不并存。',
+        files: ["type-more-buying-choices", "type-spu-spu", "type-ai-review-summary-ai", "type-ai-selling-points-ai", "type-bestseller", "type-last-30d-price-30", "type-previously-purchased", "type-previously-added-to-cart", "type-bought-from-this-store-before", "type-added-from-this-store-before"]
       },
       {
         key: 'dietary-badges',
         label: 'Dietary Badges',
         desc: '食品类目的饮食属性标识 · 素食/清真/无麸质 · 冷冻/有机等。',
-        files: ['dairy-free','frozen','gluten-free','halal','number','organic','vegan','vegetarian']
+        files: ["frozen", "vegetarian", "vegan", "gluten-free", "dairy-free", "organic", "halal", "number"]
       },
       {
         key: 'tag-like',
         label: 'Tag · Like',
         desc: '收藏/心愿标签 · 3 态 · 未收藏 / 已收藏 / 加载中。',
-        files: ['loading','tag-like','tag-liked']
+        files: ["property-1-tag-like", "property-1-tag-liked", "property-1-loading"]
       }
     ]
   },
@@ -477,106 +477,112 @@ const CATALOG = {
         key: 'btn-cart',
         label: 'Btn · Add to Cart',
         desc: '加购按钮全 11 态 · Default / Hover / Loading / Added / Result-1 / Result-Multi / Press / Success-N / Success-1 / Success-Loading / View-Detail。',
-        files: ['add-success-1','add-success-loading','add-success-n','btn-add-press','btn-add-result-mul','btn-add-result1','btn-add-to-cart','btn-add-to-cart-added','btn-add-to-cart-hover','btn-add-to-cart-loading','btn-view-detail']
+        files: ["btn-add-to-cart", "add-success-1", "add-success-n", "add-success-loading", "btn-add-result1", "btn-add-result-mul", "btn-add-to-cart-added", "btn-add-to-cart-loading", "btn-add-to-cart-hover", "btn-add-press", "btn-view-detail"]
       }
     ]
   },
   fulfillment: {
     label: '履约库存',
     en: 'Fulfillment · Stock',
-    desc: '物流承诺、卖家类型、库存状态。3 家族 · 6 图标。',
+    desc: '物流承诺、卖家类型、库存状态。4 家族 · 7 图标。',
     families: [
       {
         key: 'fulfillment-time',
         label: 'Fulfillment Time',
         desc: '履约时间提示 · 分自营与 POP 两种卡车图标。',
-        files: ['joybuy','pop']
+        files: ["fulfillment-type-joybuy", "fulfillment-type-pop"]
       },
       {
         key: 'leading-icon',
         label: 'Leading Icon',
         desc: '卖家标识前置图标 · Joybuy 自营 vs POP 第三方。',
-        files: ['joybuy','pop']
+        files: ["delivery-by-joybuy", "delivery-by-pop"]
+      },
+      {
+        key: 'sold-by-joybuy',
+        label: 'Sold by Joybuy',
+        desc: '自营标签 · 仅自营 SKU 显示，非自营整个槽位收起。',
+        files: ["sold-by-joybuy"]
       },
       {
         key: 'stock',
         label: 'Stock',
         desc: '库存状态标签 · 低库存红色警示 / 脱销灰底遮罩。',
-        files: ['low-stock','out-of-stock']
+        files: ["low-stock-no-out-of-stock-yes", "low-stock-yes-out-of-stock-no"]
       }
     ]
   },
   price: {
     label: '价格营销',
     en: 'Price · Promotion',
-    desc: '价格主行、副行、总促、单个促销活动、Plus 会员价 · 5 家族 · 48 图标。',
+    desc: '价格主行、副行、总促、单个促销活动、Plus 会员价 · 5 家族 · 57 图标。',
     families: [
       {
         key: 'price',
         label: 'Price · 主行',
-        desc: '售价主行的 11 种排布 · 单价 / 起价 / 区间 / 折扣百分比 / Save 金额 / RRP 划线 / Plus 会员价等。',
-        files: ['default','price-sale-plus-new-rrp','price-sale-plus-new-was','range','rrp','sale-percent-rrp','sale-percent-was','sale-save-rrp','sale-save-was','starting-price','was']
+        desc: 'Figma Price 全 10 个变体 · Range / Starting price / Sale-Save / Sale-percent / Bought separately / Default。',
+        files: ["type-range-pricetype", "type-starting-price-pricetype", "type-sale-save-pricetype-rrp", "type-sale-save-pricetype-was", "type-sale-percent-pricetype-rrp", "type-bought-separately-pricetype", "type-sale-percent-pricetype-was", "type-pricetype-rrp", "type-pricetype-was", "type-default-pricetype"]
       },
       {
         key: 'price-second-line',
         label: 'Price · 副行',
         desc: '价格辅助副行 · RRP / Was / PPR 折扣 · 分横向与竖向两套。',
-        files: ['ppr-discount1-horizontal','ppr-discount1-vertical','ppr-discount2-horizontal','ppr-discount2-vertical','rrp-horizontal','was-discount1-horizontal','was-discount1-vertical','was-discount2-horizontal','was-discount2-vertical','was-horizontal']
+        files: ["type-rrp-direction-horizontal", "type-was-direction-horizontal", "type-ppr-discount1-direction-horizontal", "type-was-discount1-direction-horizontal", "type-ppr-discount2-direction-horizontal", "type-was-discount2-direction-horizontal", "type-ppr-discount1-direction-vertical", "type-was-discount1-direction-vertical", "type-ppr-discount2-direction-vertical", "type-was-discount2-direction-vertical", "type-bought-separately-rrp-direction-vertical"]
       },
       {
         key: 'plus-price',
         label: 'Plus · 会员价',
         desc: 'Plus 会员专享价 · 与总促搭配的 3 种版式。',
-        files: ['no-total-promotion-horizontal','no-total-promotion-vertical','with-total-promotion-default']
+        files: ["type-no-total-promotion-direction-vertical", "type-with-total-promotion-direction-default", "type-no-total-promotion-direction-horizontal"]
       },
       {
         key: 'total-promotion',
         label: 'Total Promotion',
-        desc: '整卡叠加的总促标签 · 满减 / N 件 M 折 / 买赠 / 积分 / 虚拟礼包 5 类。',
-        files: ['15-00-off-over-100-00','3-for-2','buy-1-get-1-free','buy-2-get-30-off','pay-after-promotion','points','virtual-gift-3-00-in-gifts','virtual-gift-3-gifts','virtual-gift-free-gift','virtual-gift-gift-up-to-3-00','virtual-gift-pick-3-gifts']
+        desc: 'Figma Total Promotion 全 19 变体 · 满减 / N 件 M 折 / 买赠 / 积分 / 虚拟礼包等。',
+        files: ["type-pay-after-promotion", "type-buy-2-get-30-off", "type-15-00-off-over-100-00", "type-buy-1-get-1-free", "type-3-for-2", "type-virtual-gift-3-00-in-gifts", "type-virtual-gift-gift-up-to-3-00", "type-virtual-gift-pick-3-gifts", "type-virtual-gift-3-gifts", "type-points", "type-repeat-save-up-to-7", "type-limited-time-discount", "type-virtual-gift-free-gift", "type-spend-get-gift-1", "type-spend-get-gift-2", "type-spend-get-gift-3", "type-spend-get-gift-4", "type-spend-get-gift-5", "type-spend-get-gift-6"]
       },
       {
         key: 'individual-promotion',
         label: 'Individual Promotion',
-        desc: '单个营销活动标 · 快闪 / 限时 / 新品 / 首发 / 早鸟 / 清仓 / 价格保护 13 变体。',
-        files: ['campaign-happy-hour','campaign-lightning-offers','campaign-price-match','campaign-welcome-offer','clearance-sale','compaign-everyday-low-price','early-access','type-contract','type-launch-contract-limit-time','type-launch-contract','type-new-launch-limit-time','type-new-launch','type-pre-sale']
+        desc: 'Figma Individual Promotion 全 14 变体 · Campaign / Pre-sale / Launch / Contract 等。',
+        files: ["type-campaign-price-match", "type-campaign-lightning-offers", "type-compaign-everyday-low-price", "type-campaign-happy-hour", "type-campaign-welcome-offer", "type-clearance-sale", "type-type-pre-sale", "type-pre-sale-with-time", "type-early-access", "type-new-launch", "type-new-launch-limit-time", "type-launch-contract", "type-launch-contract-limit-time", "type-contract"]
       }
     ]
   },
   attribute: {
     label: '属性辅助',
     en: 'Attribute · Helper',
-    desc: '颜色球、能效标、评分、标题、原始属性、图片容器 · 6 家族 · 21 图标。',
+    desc: '颜色球、能效标、评分、标题、原始属性 · 5 家族 · 18 图标。',
     families: [
       {
         key: 'color',
         label: 'Color',
         desc: '商品可选颜色球组合 · 默认 / +99 更多 / +1 更多 / 脱销 4 变体。',
-        files: ['default','more-1','more-99','out-of-stock']
+        files: ["default", "out-of-stock", "more-1", "more-99"]
       },
       {
         key: 'energy',
         label: 'Energy',
         desc: '能效等级标 · 默认 / 长文字 / 2 型 / 4 型 4 变体。',
-        files: ['default','longtext','variant2','variant4']
+        files: ["property-1-default", "property-1-longtext", "property-1-variant2", "property-1-variant4"]
       },
       {
         key: 'rating-sold',
         label: 'Rating · Sold',
-        desc: '评分、销量、浏览量 · 拆星单元 star 独立使用。',
-        files: ['rate-sold','sold','star','variant','variant5','viewed']
+        desc: 'Figma Rating&Sold 全 5 变体 · rate&sold / Variant5 / sold / Viewed / 月黑。',
+        files: ["rate-sold", "variant5", "sold", "viewed", "variant"]
       },
       {
         key: 'title',
         label: 'Title',
         desc: '标题占位骨架图 · 1/2/3 行 · 用在骨架屏和 anatomy schematic。',
-        files: ['1','2','3']
+        files: ["1", "2", "3"]
       },
       {
         key: 'attributes',
         label: 'Attributes',
         desc: '通用属性组件 · 复合列表变体两种。',
-        files: ['component-11','component-12']
+        files: ["property-1-component-11", "property-1-component-12"]
       }
     ]
   }

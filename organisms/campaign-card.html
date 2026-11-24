@@ -118,19 +118,6 @@
     border-bottom: 1px solid var(--outline);
     margin-bottom: 16px;
   }
-  .side-preview__lang {
-    display: inline-flex; padding: 2px;
-    border: 1px solid var(--outline); border-radius: var(--r-pill);
-    background: var(--surface); letter-spacing: 0;
-  }
-  .side-preview__lang button {
-    all: unset; cursor: pointer;
-    padding: 3px 8px; border-radius: var(--r-pill);
-    font-size: 10px; font-weight: 700;
-    color: var(--ink-4); transition: background .12s ease, color .12s ease;
-    text-transform: none;
-  }
-  .side-preview__lang button.is-active { background: var(--ink); color: #fff; }
   .side-preview__items { display: flex; flex-direction: column; gap: 20px; }
   .side-preview__item { display: flex; flex-direction: column; gap: 8px; }
   .side-preview__item-label {
@@ -167,146 +154,6 @@
     box-shadow: var(--shadow-1);
   }
   .campaign [data-field][data-empty] { display: none; }
-
-  /* Slot 1 · banner-bg — theme colored header */
-  .campaign__banner {
-    padding: 18px 16px 14px;
-    color: #fff;
-    background: linear-gradient(135deg, var(--joybuy-red) 0%, #a01810 100%);
-    position: relative;
-  }
-  /* Theme variants */
-  .campaign--sale .campaign__banner {
-    background: linear-gradient(135deg, #E1251B 0%, #7a0f0a 100%);
-    color: #fff;
-  }
-  .campaign--brand .campaign__banner {
-    background: linear-gradient(135deg, #f5eadd 0%, #e0c7a0 100%);
-    color: #2a1f14;
-  }
-  .campaign--seasonal .campaign__banner {
-    background: linear-gradient(135deg, #f4a460 0%, #b8541a 100%);
-    color: #fff;
-  }
-  .campaign--urgency .campaign__banner {
-    background: linear-gradient(135deg, #1a1a1a 0%, #4a1010 100%);
-    color: #fff;
-    border-bottom: 1px solid rgba(255,255,255,.08);
-  }
-
-  /* Slot 2 · title */
-  .campaign__title {
-    margin: 0;
-    font-size: 18px; font-weight: 800;
-    letter-spacing: -.01em;
-    line-height: 1.2;
-  }
-
-  /* Slot 3 · subtitle */
-  .campaign__subtitle {
-    font-size: 12px; opacity: .92;
-    margin-top: 4px;
-    line-height: 1.4;
-  }
-
-  /* Slot 4 · countdown chip */
-  .campaign__countdown-row {
-    display: flex; align-items: center; gap: 8px;
-    margin-top: 10px;
-  }
-  .campaign__countdown-label {
-    font-size: 11px; opacity: .85;
-    letter-spacing: .02em;
-  }
-  .campaign__countdown {
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 3px 10px; border-radius: 4px;
-    background: rgba(0,0,0,.35); color: #fff;
-    font-family: var(--f-mono); font-size: 12px; font-weight: 700;
-    font-variant-numeric: tabular-nums;
-  }
-  .campaign--brand .campaign__countdown {
-    background: rgba(42,31,20,.85); color: #fff;
-  }
-  .campaign--urgency .campaign__countdown {
-    background: var(--joybuy-red);
-    color: #fff;
-    font-size: 13px; padding: 4px 12px;
-    box-shadow: 0 0 12px rgba(225,37,27,.5);
-  }
-  .campaign__countdown--ended {
-    background: rgba(0,0,0,.5); opacity: .7;
-  }
-
-  /* Slot 5 · CTA button */
-  .campaign__cta {
-    all: unset; cursor: pointer;
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 6px 14px;
-    border-radius: var(--r-pill);
-    background: #fff;
-    color: var(--joybuy-red);
-    font-size: 12px; font-weight: 700;
-    margin-left: auto;
-    transition: transform .12s ease;
-  }
-  .campaign__cta::after { content: "→"; font-weight: 600; }
-  .campaign__cta:hover { transform: translateX(2px); }
-  .campaign--brand .campaign__cta {
-    background: #2a1f14; color: #fff;
-  }
-  .campaign--urgency .campaign__cta {
-    background: var(--joybuy-red); color: #fff;
-    box-shadow: 0 2px 8px rgba(225,37,27,.4);
-  }
-
-  /* Slot 6 · product-strip */
-  .campaign__products {
-    display: grid;
-    gap: 6px;
-    padding: 10px;
-    background: var(--surface);
-  }
-  .campaign__products[data-count="2"] { grid-template-columns: repeat(2, 1fr); }
-  .campaign__products[data-count="3"] { grid-template-columns: repeat(3, 1fr); }
-  .campaign__products[data-count="4"] { grid-template-columns: repeat(4, 1fr); }
-
-  .campaign__tile {
-    background: #fff;
-    border: 1px solid var(--outline);
-    border-radius: 6px;
-    overflow: hidden;
-    display: flex; flex-direction: column;
-  }
-  .campaign__tile-img {
-    aspect-ratio: 1 / 1;
-    background: var(--surface-2);
-    overflow: hidden;
-  }
-  .campaign__tile-img img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .campaign__tile-price {
-    font-size: 12px; font-weight: 900;
-    color: var(--joybuy-red);
-    padding: 4px 4px 5px;
-    text-align: center;
-    font-variant-numeric: tabular-nums;
-    line-height: 1.2;
-  }
-
-  /* Slot 7 · footer-link */
-  .campaign__footer {
-    display: flex; align-items: center; justify-content: center;
-    padding: 8px 12px 10px;
-    background: var(--surface);
-    border-top: 1px solid var(--outline-soft);
-    font-size: 11px; color: var(--ink-4);
-    letter-spacing: .01em;
-  }
-  .campaign__footer::after { content: " →"; margin-left: 2px; }
 
   /* ============ Demo area ============ */
   .demo {
@@ -619,9 +466,188 @@
     content: "·"; position: absolute; left: 6px; color: var(--ink-5);
     font-weight: 700;
   }
+
+  /* ============ Field explorer · scenario tabs + field switches + copilot ============
+     (visual system shared verbatim with vertical/horizontal/mini/scroll rollout) ---- */
+  .field-sim { border-top: 1px dashed var(--outline); padding-top: 18px; }
+  .field-sim__title {
+    font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-4); margin-bottom: 4px;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .field-sim__title-hint { font-size: 11px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--ink-5); }
+  .sim-group { margin-top: 16px; }
+  .sim-group__head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+  .sim-group__name { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
+  .sim-group__rule { font-size: 10.5px; color: var(--ink-5); white-space: nowrap; }
+  .sim-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 7px 0;
+  }
+  .sim-row + .sim-row { border-top: 1px solid var(--surface-2); }
+  .sim-row__label { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink-2); }
+  .sim-row__pri {
+    font-size: 9.5px; font-weight: 700; letter-spacing: .03em;
+    color: var(--ink-5); background: var(--surface-2);
+    border-radius: 4px; padding: 1px 5px;
+  }
+  .sim-row__na { font-size: 10px; color: var(--ink-5); }
+  .sim-row.is-picked .sim-row__label { color: var(--ink); font-weight: 600; }
+  .sim-row.is-picked .sim-row__pri { color: var(--accent); background: var(--accent-50); }
+  .sim-row.is-folded .sim-row__label { color: var(--ink-4); }
+  .sim-row.is-disabled { opacity: .5; }
+  /* switch */
+  .sim-sw {
+    all: unset; cursor: pointer; box-sizing: border-box; flex: none;
+    width: 36px; height: 20px; border-radius: var(--r-pill);
+    background: var(--outline); position: relative; transition: background .15s ease;
+  }
+  .sim-sw::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25);
+    transition: transform .15s ease;
+  }
+  .sim-sw[aria-checked="true"] { background: var(--accent); }
+  .sim-sw[aria-checked="true"]::after { transform: translateX(16px); }
+  .sim-sw[aria-disabled="true"] { cursor: not-allowed; opacity: .55; }
+  /* copilot */
+  .sim-copilot {
+    margin-top: 16px; padding: 13px 14px;
+    border: 1px solid var(--outline); border-radius: var(--r-md);
+    background: var(--surface-2);
+  }
+  .sim-copilot__head {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  .sim-copilot__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+  .sim-copilot p { margin: 0 0 6px; font-size: 12px; line-height: 1.65; color: var(--ink-3); }
+  .sim-copilot p:last-child { margin-bottom: 0; }
+  .sim-copilot b { color: var(--ink); font-weight: 600; }
+  .sim-copilot em { font-style: normal; color: var(--ink-4); }
+  /* scenario tabs */
+  .scene-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .scene-tab {
+    all: unset; cursor: pointer; box-sizing: border-box;
+    padding: 7px 13px; border-radius: 8px;
+    font-size: 12.5px; font-weight: 600; line-height: 1.15;
+    color: var(--ink-3); background: var(--surface);
+    border: 1px solid var(--outline);
+    transition: all .12s ease;
+  }
+  .scene-tab:hover { border-color: var(--outline-strong); }
+  .scene-tab.is-active { color: #fff; background: var(--ink); border-color: var(--ink); }
+  .scene-tab__sub { font-size: 10px; font-weight: 500; opacity: .7; margin-left: 5px; }
+  /* reset + stacked label */
+  .field-sim__head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+  .field-sim__reset {
+    all: unset; cursor: pointer; flex: none;
+    font-size: 11px; font-weight: 600; color: var(--ink-4);
+    padding: 4px 10px; border-radius: var(--r-pill);
+    border: 1px solid var(--outline); background: var(--surface);
+    transition: all .12s ease;
+  }
+  .field-sim__reset:hover { color: var(--accent); border-color: var(--accent-100); background: var(--accent-50); }
+  .field-sim__reset[aria-disabled="true"] { opacity: .4; cursor: default; }
+  .field-sim__reset[aria-disabled="true"]:hover { color: var(--ink-4); border-color: var(--outline); background: var(--surface); }
+  .sim-row__label { flex-direction: column; align-items: flex-start; gap: 1px; }
+  .sim-row__name { display: flex; align-items: center; gap: 6px; }
+  .sim-row__scene { font-size: 10px; color: var(--ink-5); }
+  .sim-row__ov {
+    font-size: 9px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-50);
+    border-radius: 4px; padding: 1px 5px;
+  }
+  .sim-row.is-picked .sim-row__name { color: var(--ink); font-weight: 600; }
 </style>
 <link rel="stylesheet" href="../assets/card-detail-template.css">
   <link rel="stylesheet" href="../assets/card-preview-alignment.css">
+<style>
+  /* ===================================================================
+     Live-config panel v2 · shared with the vertical-card detail page.
+     Grouped field cards, single-line rows, no helper captions.
+     The reset button only appears once a field has been overridden.
+     =================================================================== */
+  #s-overview .demo__controls { gap: 24px; }
+  #s-overview .demo__controls-block + .demo__controls-block {
+    padding-top: 22px;
+    border-top: 1px solid var(--outline);
+  }
+  #s-overview .demo__controls-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    color: var(--ink-4);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .scene-tabs { display: flex; flex-wrap: wrap; gap: 7px; }
+  .scene-tab {
+    padding: 8px 13px; border-radius: 8px;
+    font-size: 12.5px; font-weight: 600; line-height: 1.25;
+  }
+  /* the qualifier keeps same-name scenarios (Dutch auction states) apart */
+  .scene-tab__sub {
+    font-size: 10px; font-weight: 500; opacity: .65;
+    margin-left: 5px; letter-spacing: 0; text-transform: none;
+  }
+
+  .field-sim { padding-top: 22px; border-top: 1px solid var(--outline); }
+  .field-sim__head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 12px;
+  }
+  .field-sim__title {
+    display: block; font-size: 13px; font-weight: 700; color: var(--ink);
+    margin-bottom: 0;
+  }
+  .field-sim__title-hint { display: none; }
+  .field-sim__reset {
+    font-size: 11px; font-weight: 600; color: var(--ink-4);
+    padding: 4px 9px; border-radius: 6px;
+  }
+  .field-sim__reset[aria-disabled="true"] {
+    visibility: hidden; pointer-events: none;
+  }
+
+  .sim-group {
+    margin-top: 8px; overflow: hidden;
+    border: 1px solid var(--outline); border-radius: 9px;
+    background: var(--surface);
+  }
+  .sim-group__head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 12px; margin-bottom: 0;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--outline);
+  }
+  .sim-group__name {
+    font-size: 11px; font-weight: 700; letter-spacing: .04em;
+    color: var(--ink-3); text-transform: uppercase;
+  }
+  .sim-group__rule { display: none; }
+  .sim-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; min-height: 44px; padding: 10px 12px; box-sizing: border-box;
+  }
+  .sim-row__label {
+    display: block; min-width: 0;
+    font-size: 13px; line-height: 1.35; color: var(--ink-2);
+  }
+  .sim-row__name { display: flex; align-items: center; gap: 7px; }
+  .sim-row__scene, .sim-row__ov { display: none; }
+  .sim-row.is-picked .sim-row__name { color: var(--ink); font-weight: 600; }
+  .sim-row.is-overridden .sim-row__name::after {
+    content: ''; width: 5px; height: 5px; flex: none;
+    border-radius: 50%; background: var(--accent);
+  }
+  .sim-row.is-disabled { background: var(--surface-2); opacity: 1; }
+  .sim-row.is-disabled .sim-row__name { color: var(--ink-5); }
+  .sim-row__na { font-size: 10.5px; color: var(--ink-5); white-space: nowrap; }
+  .sim-copilot { display: none; }
+</style>
 </head>
 <body>
 <div class="site site--card-detail">
@@ -687,12 +713,14 @@
             <div id="campaign-preview"></div>
           </div>
 
-          <div class="demo__controls">
+          <div class="demo__controls" data-global-i18n="off">
             <div class="demo__controls-block">
-              <div class="demo__controls-title">变体 · Variant</div>
-              <div class="chip-strip" id="theme-strip"></div>
+              <div class="demo__controls-title" data-control-title="scene">业务场景</div>
+              <div class="scene-tabs" id="campaign-scene-tabs"></div>
             </div>
-            <div class="demo__controls-hint">变体来自 Figma 母组件；它们改变排行标签、商品亮点和库存操作，不改变卡片主题皮肤。</div>
+            <div class="demo__controls-block field-sim" data-global-i18n="off">
+              <div id="campaign-sim"></div>
+            </div>
           </div>
         </div>
       </section>
@@ -740,7 +768,7 @@
 
           <div class="type-block">
             <div class="type-block__label">Bestseller</div>
-            <div class="type-block__hint">增加榜单序号与 Best seller 亮点。</div>
+            <div class="type-block__hint">增加榜单序号与 Top Deal 亮点。</div>
             <div class="type-block__stage" id="type-bestseller"></div>
           </div>
 
@@ -869,10 +897,6 @@
     <div class="side-preview">
       <div class="side-preview__head">
         <span>Types Preview</span>
-        <span class="side-preview__lang" id="sp-lang">
-          <button data-sp-lang="en" class="is-active">EN</button>
-          <button data-sp-lang="zh">中</button>
-        </span>
       </div>
       <div class="side-preview__items">
         <div class="side-preview__item">
@@ -896,68 +920,323 @@
 <script src="../assets/pages-data.js"></script>
 <script src="../assets/nav.js"></script>
 <script>
-  /* ================ Interactive preview state ================ */
+  /* ================ Data + state ================ */
   const D = window.CARD_DATA;
 
-  const THEMES = [
-    { key:'default', label:'Default' },
-    { key:'bestseller', label:'Bestseller' },
-    { key:'outofstock', label:'Out of stock' }
-  ];
-  let currentTheme = 'default';
-  let cardLang = 'en';
-
-  function campaignHTML(variant) {
-    const product = D.catalog.appliance[0];
-    const text = product[cardLang] || product.en;
-    const image = D.productImages[product.img] || '';
-    const isBest = variant === 'bestseller';
-    const isOut = variant === 'outofstock';
-    const rank = isBest ? '<span class="campaign-product__rank">1</span>' : '';
-    const highlight = isBest ? '<img class="campaign-product__highlight" src="../assets/figma-atoms/product-highlights/best-seller.svg" alt="Best seller">' : '';
-    const stock = isOut
-      ? '<span class="campaign-product__stock">'+(cardLang === 'zh' ? '缺货' : 'Out of stock')+'</span>'
-      : '<span class="campaign-product__stock">'+(cardLang === 'zh' ? '仅剩 10 件' : 'Only 10 left')+'</span>';
-    const action = isOut
-      ? '<button class="campaign-product__notify" type="button">'+(cardLang === 'zh' ? '到货通知' : 'Notify')+'</button>'
-      : '<button class="campaign-product__cart" type="button" aria-label="Add to cart"><img src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt=""></button>';
-    return '<article class="campaign campaign--product'+(isOut ? ' campaign--out' : '')+'">'
-      + '<div class="campaign-product__image">'+rank+'<span class="campaign-product__discount">20% off</span>'
-      + (image ? '<img src="'+image+'" alt="'+product.brand+'">' : '')
-      + '<button class="campaign-product__favorite" type="button" aria-label="Add to wishlist"><img src="../assets/figma-atoms/tag-like/tag-like.svg" alt=""></button></div>'
-      + '<div class="campaign-product__body">'+highlight+'<div class="campaign-product__brand">'+product.brand+'</div>'
-      + '<p class="campaign-product__title">'+text.title+'</p>'
-      + '<div class="campaign-product__rating">★ 4.5 · '+(cardLang === 'zh' ? '48 小时内 200 人浏览' : '200 viewed in 48 hours')+'</div>'
-      + '<div class="campaign-product__promotion">'+(cardLang === 'zh' ? '促销后到手 £339.99' : 'Pay £339.99 after promotion')+'</div>'
-      + '<div class="campaign-product__fulfillment">'+(cardLang === 'zh' ? '今日送达' : 'Get it by today')+'</div>'
-      + '<div class="campaign-product__price"><b>£350.00</b><span>RRP: £500.00</span></div>'+stock+action+'</div></article>';
+  const HIGHLIGHT_ENUM = new Set([
+    'sponsored','best-before','new-hot','top-deal',
+    'private-label','new','too-good-to-waste'
+  ]);
+  const HIGHLIGHT_LABEL = {
+    'sponsored':'Sponsored', 'best-before':'Best Before',
+    'new-hot':'New&Hot', 'top-deal':'Top Deal',
+    'private-label':'Private Label', 'new':'New',
+    'too-good-to-waste':'Too Good To Waste'
+  };
+  // All seven Product Highlights variants are native HTML (Figma atoms):
+  // Sponsored 26894:262735 · Best Before 31509:124741 · New&Hot 27850:345179 ·
+  // Top Deal 27850:347936 · Private Label 38163:76435 · New 27850:347938 ·
+  // Too Good To Waste 28525:159689.
+  const HIGHLIGHT_TEXT = {
+    'sponsored':'Sponsored', 'best-before':'Life 3d+',
+    'new-hot':'New&Hot', 'top-deal':'Top Deal',
+    'private-label':'Private Label', 'new':'New',
+    'too-good-to-waste':'Too Good To Waste'
+  };
+  const HIGHLIGHT_NODE = {
+    'sponsored':'26894:262735', 'best-before':'31509:124741',
+    'new-hot':'27850:345179', 'top-deal':'27850:347936',
+    'private-label':'38163:76435', 'new':'27850:347938',
+    'too-good-to-waste':'28525:159689'
+  };
+  function highlightHTML(key) {
+    if (!HIGHLIGHT_ENUM.has(key)) return '';
+    if (key === 'too-good-to-waste') {
+      return '<span class="ph-tgw" data-figma-node="'+HIGHLIGHT_NODE[key]+'">'
+        + '<span class="ph-tgw__chip">Too Good To Waste</span>'
+        + '<span class="ph-tgw__bbd">BBD: 27-12-2025</span>'
+        + '</span>';
+    }
+    if (key === 'sponsored') {
+      return '<span class="ph-sponsored" data-figma-node="'+HIGHLIGHT_NODE[key]+'">Sponsored</span>';
+    }
+    return '<span class="ph-highlight ph-highlight--'+key+'" data-figma-node="'+HIGHLIGHT_NODE[key]+'">'
+      + HIGHLIGHT_TEXT[key] + '</span>';
   }
 
-  function renderPreview() {
-    const preview = document.getElementById('campaign-preview');
-    if (preview) preview.innerHTML = campaignHTML(currentTheme);
-  }
+  /* ================ Field-explorer state ================ */
+  let cardLang = (window.JoybuySite && window.JoybuySite.getLanguage()) || 'zh';
 
-  function renderThemeStrip() {
-    const strip = document.getElementById('theme-strip');
-    strip.innerHTML = '';
-    THEMES.forEach(variant => {
-      const btn = document.createElement('button');
-      btn.className = 'chip-btn' + (variant.key === currentTheme ? ' is-active' : '');
-      btn.textContent = variant.label;
-      btn.addEventListener('click', () => {
-        currentTheme = variant.key;
-        renderThemeStrip();
-        renderPreview();
-      });
-      strip.appendChild(btn);
+  /* Live-config panel copy follows the global documentation language. */
+  const UI_COPY = {
+    en: { scene:'Scenario', category:'Category', preset:'Product preset', fields:'Field controls', reset:'Reset', na:'N/A' },
+    zh: { scene:'业务场景', category:'品类', preset:'商品预设', fields:'字段控制', reset:'重置', na:'无数据' }
+  };
+  function updateControlCopy() {
+    document.querySelectorAll('[data-control-title]').forEach(el => {
+      const key = el.dataset.controlTitle;
+      el.textContent = (UI_COPY[cardLang] && UI_COPY[cardLang][key]) || key;
     });
   }
+  let sceneKey = 'deal';
+  let fieldOv = {};   // { fieldName: bool } — per-field overrides atop the scene default
+
+  /* ================ Scenario model ================
+   * Campaign is a SINGLE-product card. Each scenario pins one real catalog product
+   * + a field-visibility profile (on{}). Two field kinds:
+   *   · data    — sourced from product data (highlight / ratingSold / discount /
+   *               referencePrice); every catalog product carries all four, so they
+   *               are always available and N/A gating never fires (asserted by smoke).
+   *   · context — synthetic decorations a scenario introduces (ranking badge,
+   *               wishlist heart, promotion line, notify swap). */
+  const C_SCENES = [
+    { key:'deal', label:{en:'Big Deal', zh:'大促'}, sub:{en:'Flagship markdown', zh:'主推单品'},
+      cat:'appliance', idx:0,
+      on:{ rank:false, highlight:false, favorite:true, ratingSold:true, discount:true, referencePrice:true, promotion:true, fulfillment:true, notify:false } },
+    { key:'ranking', label:{en:'Ranking', zh:'榜单'}, sub:{en:'Top seller #1', zh:'热销榜首'},
+      cat:'3c', idx:0, rank:'1',
+      on:{ rank:true, highlight:true, favorite:false, ratingSold:true, discount:true, referencePrice:true, promotion:false, fulfillment:true, notify:false } },
+    { key:'brandday', label:{en:'Brand Day', zh:'品牌日'}, sub:{en:'Full-price prestige', zh:'原价臻选'},
+      cat:'beauty', idx:0,
+      on:{ rank:false, highlight:true, favorite:true, ratingSold:true, discount:false, referencePrice:false, promotion:true, fulfillment:true, notify:false } },
+    { key:'flashsale', label:{en:'Flash Sale', zh:'限时闪购'}, sub:{en:'Scarcity + deal', zh:'限量特价'},
+      cat:'beauty', idx:3, stock:{en:'Only 10 left', zh:'Only 10 left'},
+      on:{ rank:false, highlight:true, favorite:false, ratingSold:true, discount:true, referencePrice:true, promotion:true, fulfillment:true, notify:false } },
+    { key:'restock', label:{en:'Out of stock', zh:'缺货补货'}, sub:{en:'Notify me', zh:'到货通知'},
+      cat:'3c', idx:1,
+      on:{ rank:false, highlight:false, favorite:true, ratingSold:true, discount:false, referencePrice:true, promotion:false, fulfillment:false, notify:true } }
+  ];
+
+  const C_GROUPS = [
+    { key:'merch',   name:{en:'Merchandising', zh:'营销标签'} },
+    { key:'price',   name:{en:'Price', zh:'价格'} },
+    { key:'fulfill', name:{en:'Fulfilment & action', zh:'履约与操作'} }
+  ];
+
+  // kind: data (from product) | context (scenario-introduced)
+  const C_FIELDS = [
+    { name:'rank',           group:'merch',   kind:'context', label:{en:'Ranking badge', zh:'排行序号'} },
+    { name:'highlight',      group:'merch',   kind:'data',    label:{en:'Highlight chip', zh:'商品亮点'} },
+    { name:'favorite',       group:'merch',   kind:'context', label:{en:'Wishlist heart', zh:'收藏心标'} },
+    { name:'ratingSold',     group:'merch',   kind:'data',    label:{en:'Rating · sold', zh:'评分 · 销量'} },
+    { name:'discount',       group:'price',   kind:'data',    label:{en:'Discount tag', zh:'折扣标签'} },
+    { name:'referencePrice', group:'price',   kind:'data',    label:{en:'Reference price', zh:'参考价'} },
+    { name:'promotion',      group:'price',   kind:'context', label:{en:'Promotion line', zh:'促销文案'} },
+    { name:'fulfillment',    group:'fulfill', kind:'data',    label:{en:'Fulfillment', zh:'履约时效'} },
+    { name:'notify',         group:'fulfill', kind:'context', label:{en:'Notify · out of stock', zh:'到货通知 · 缺货'} }
+  ];
+
+  const C_TXT = {
+    en: { title:'Field explorer', hint:'toggle any slot', reset:'Reset', copilot:'Field copilot',
+          dataK:'data field', ctxK:'context field', na:'not in data',
+          lead:'The <b>__S__</b> card surfaces', none:'no optional slots', andSep:', ',
+          ovNote:'You overrode the scenario default — <b>Reset</b> restores it.' },
+    zh: { title:'字段探索器', hint:'逐个开关字段', reset:'重置', copilot:'字段助手',
+          dataK:'数据字段', ctxK:'场景字段', na:'数据缺失',
+          lead:'<b>__S__</b> 场景显示', none:'无可选字段', andSep:'、',
+          ovNote:'你覆盖了场景默认值 —— 点<b>重置</b>可复原。' }
+  };
+
+  const cScene = () => C_SCENES.find(s => s.key === sceneKey) || C_SCENES[0];
+  const cProduct = scene => (D.catalog[scene.cat] || [])[scene.idx];
+  function cVis(name, def, ov) { return (ov[name] == null) ? !!def : !!ov[name]; }
+
+  // Compute an integer "% off" from sale vs. reference price (drives the discount tag).
+  function pctOff(p) {
+    const num = s => parseFloat(String(s == null ? '' : s).replace(/[^0-9.]/g, ''));
+    const s = num(p.salePrice), o = num(p.originalPrice);
+    if (!s || !o || o <= s) return null;
+    return Math.round((1 - s / o) * 100);
+  }
+
+  // Which DATA fields the scene's product actually carries (all five, always, here).
+  function cAvail(scene) {
+    const p = cProduct(scene);
+    if (!p) return { highlight:false, ratingSold:false, discount:false, referencePrice:false, fulfillment:false };
+    const t = p[cardLang] || p.en;
+    return {
+      highlight: !!(t.highlight && HIGHLIGHT_ENUM.has(t.highlight)),
+      ratingSold: !!(p.rating && t.sold),
+      discount: pctOff(p) != null,
+      referencePrice: !!p.originalPrice,
+      fulfillment: !!t.fulfillment
+    };
+  }
+
+  // Scenario default: scene.on wins; data fields fall back to availability; context off.
+  function cDefaults(scene, avail) {
+    const def = {};
+    C_FIELDS.forEach(f => {
+      const isData = f.kind === 'data';
+      if (scene.on && scene.on[f.name] != null) def[f.name] = !!scene.on[f.name] && (isData ? !!avail[f.name] : true);
+      else if (isData) def[f.name] = !!avail[f.name];
+      else def[f.name] = false;
+    });
+    return def;
+  }
+
+  /* ================ Card builder ================
+   * Hidden optional slots are OMITTED (not emitted as data-empty placeholders) so the
+   * adjacent-sibling rank+discount offset (.rank + .discount { left: 28px }) can never
+   * mis-fire on an invisible sibling. Only registered toggleable fields carry data-field;
+   * only the explorer preview passes withFields:true. */
+  function campaignHTML(p, opts) {
+    opts = opts || {};
+    if (!p) return '';
+    const t = p[cardLang] || p.en;
+    const image = D.productImages[p.img] || '';
+    const show = opts.show || {};
+    const wf = opts.withFields === true;
+    const fld = n => wf ? (' data-field="' + n + '"') : '';
+    const hiKey = t.highlight;
+    const showHi = !!show.highlight && hiKey && HIGHLIGHT_ENUM.has(hiKey);
+    const notify = !!opts.notify;
+    const pct = pctOff(p);
+
+    let stockTxt = '';
+    if (notify) stockTxt = 'Out of stock';
+    else if (opts.stock) stockTxt = opts.stock[cardLang] || opts.stock.en;
+
+    let html = '<article class="campaign campaign--product' + (notify ? ' campaign--out' : '') + '">';
+    // image column: rank + discount tags, product image, wishlist heart
+    html += '<div class="campaign-product__image">';
+    if (show.rank) html += '<span class="campaign-product__rank"' + fld('rank') + '>' + (opts.rank || '1') + '</span>';
+    if (show.discount && pct != null) html += '<span class="campaign-product__discount"' + fld('discount') + '>' + '20% off' + '</span>';
+    html += image ? '<img src="' + image + '" alt="' + p.brand + '">' : '';
+    if (show.favorite) html += '<button class="campaign-product__favorite" type="button" aria-label="Add to wishlist"' + fld('favorite') + '><img src="../assets/figma-atoms/tag-like/tag-like.svg" alt=""></button>';
+    html += '</div>';
+    // body column
+    html += '<div class="campaign-product__body">';
+    if (showHi) {
+      html += '<span class="campaign-product__highlight"' + fld('highlight') + '>' + highlightHTML(hiKey) + '</span>';
+    }
+    html += '<div class="campaign-product__brand">' + p.brand + '</div>';
+    html += '<p class="campaign-product__title">' + t.title + '</p>';
+    if (show.ratingSold) html += '<div class="campaign-product__rating"' + fld('ratingSold') + '>★ ' + p.rating + ' · ' + t.sold + '</div>';
+    if (show.promotion && t.promotion) html += '<div class="campaign-product__promotion"' + fld('promotion') + '>' + t.promotion + '</div>';
+    if (show.fulfillment && t.fulfillment) html += '<div class="campaign-product__fulfillment"' + fld('fulfillment') + '>' + t.fulfillment + '</div>';
+    html += '<div class="campaign-product__price"><b>' + p.salePrice + '</b>';
+    if (show.referencePrice && p.originalPrice) html += '<span' + fld('referencePrice') + '>' + p.originalPrice + '</span>';
+    html += '</div>';
+    if (stockTxt) html += '<span class="campaign-product__stock">' + stockTxt + '</span>';
+    if (notify) html += '<button class="campaign-product__notify" type="button"' + fld('notify') + '>' + 'Notify' + '</button>';
+    else html += '<button class="campaign-product__cart" type="button" aria-label="Add to cart"' + fld('notify') + '><img src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt=""></button>';
+    html += '</div></article>';
+    return html;
+  }
+
+  /* ================ Apply resolved fields → re-render the single card ================ */
+  function applyFields() {
+    const scene = cScene();
+    const avail = cAvail(scene);
+    const def = cDefaults(scene, avail);
+    const show = {};
+    C_FIELDS.forEach(f => show[f.name] = cVis(f.name, def[f.name], fieldOv));
+    const el = document.getElementById('campaign-preview');
+    if (el) el.innerHTML = campaignHTML(cProduct(scene), {
+      show: show, withFields: true, rank: scene.rank || '1', notify: show.notify, stock: scene.stock
+    });
+    renderCFieldSim(avail, def);
+  }
+
+  /* ================ Field panel (groups + switches + reset + copilot) ================ */
+  function renderCFieldSim(avail, def) {
+    const host = document.getElementById('campaign-sim');
+    if (!host) return;
+    const T = C_TXT[cardLang] || C_TXT.en;
+    const dirty = Object.keys(fieldOv).length > 0;
+
+    const UI = UI_COPY[cardLang];
+    let html = '<div class="field-sim__head">' +
+      '<div class="field-sim__title">' + UI.fields + '</div>' +
+      '<button class="field-sim__reset" id="campaign-reset" type="button"' +
+      (dirty ? '' : ' aria-disabled="true"') + '>' + UI.reset + '</button></div>';
+
+    C_GROUPS.forEach(g => {
+      html += '<div class="sim-group"><div class="sim-group__head">' +
+        '<span class="sim-group__name">' + g.name[cardLang] + '</span></div>';
+      C_FIELDS.filter(f => f.group === g.key).forEach(f => {
+        const isData = f.kind === 'data';
+        const na = isData && !avail[f.name];
+        const on = cVis(f.name, def[f.name], fieldOv);
+        const overridden = fieldOv[f.name] != null && (!!fieldOv[f.name] !== !!def[f.name]);
+        const cls = 'sim-row' + (on ? ' is-picked' : '') + (na ? ' is-disabled' : '')
+          + (overridden ? ' is-overridden' : '');
+        html += '<div class="' + cls + '"><div class="sim-row__label">' +
+          '<span class="sim-row__name">' + f.label[cardLang] + '</span></div>';
+        html += na
+          ? '<span class="sim-row__na">' + T.na + '</span>'
+          : '<button class="sim-sw" role="switch" data-field-key="' + f.name + '" aria-checked="' + (on ? 'true' : 'false') + '" aria-label="' + f.label[cardLang] + '"></button>';
+        html += '</div>';
+      });
+      html += '</div>';
+    });
+
+    host.innerHTML = html;
+  }
+
+  /* ================ Scenario tabs ================ */
+  function renderCSceneTabs() {
+    const host = document.getElementById('campaign-scene-tabs');
+    if (!host) return;
+    host.innerHTML = C_SCENES.map(s =>
+      '<button class="scene-tab' + (s.key === sceneKey ? ' is-active' : '') + '" type="button" data-scene="' + s.key + '">' +
+      s.label[cardLang] + '<span class="scene-tab__sub">' + s.sub[cardLang] + '</span></button>'
+    ).join('');
+  }
+
+  function applyCScene(key) {
+    if (!C_SCENES.some(s => s.key === key)) return;
+    sceneKey = key;
+    fieldOv = {};                 // switching scenario clears overrides
+    renderCSceneTabs();
+    applyFields();
+  }
+
+  (function wireCFieldSim() {
+    const tabs = document.getElementById('campaign-scene-tabs');
+    if (tabs) tabs.addEventListener('click', e => {
+      const b = e.target.closest('.scene-tab');
+      if (b) applyCScene(b.getAttribute('data-scene'));
+    });
+    const sim = document.getElementById('campaign-sim');
+    if (sim) sim.addEventListener('click', e => {
+      const sw = e.target.closest('.sim-sw');
+      if (sw && sw.getAttribute('aria-disabled') !== 'true') {
+        const key = sw.getAttribute('data-field-key');
+        const scene = cScene();
+        const def = cDefaults(scene, cAvail(scene));
+        const next = !cVis(key, def[key], fieldOv);
+        if (next === !!def[key]) delete fieldOv[key];   // back to scene default → clear override
+        else fieldOv[key] = next;
+        applyFields();
+        return;
+      }
+      if (e.target.closest('#campaign-reset')) {
+        if (Object.keys(fieldOv).length === 0) return;
+        fieldOv = {};
+        applyFields();
+      }
+    });
+  })();
+
+  /* ================ Static callers: Types section + right-rail samples ================
+   * These render the three canonical Figma variants (Default / Bestseller / Out of stock)
+   * on one consistent product; they carry NO data-field — only the explorer preview
+   * (#campaign-preview) is field-driven, keeping the toggle scope isolated. */
+  const FULL_SHOW = { rank:false, highlight:false, favorite:true, ratingSold:true, discount:true, referencePrice:true, promotion:true, fulfillment:true, notify:false };
+  function typeShow(over) { return Object.assign({}, FULL_SHOW, over || {}); }
+  const VARIANT_STAGES = [
+    ['type-default',    typeShow({}),                                                              { stock:{en:'Only 10 left', zh:'Only 10 left'} }],
+    ['type-bestseller', typeShow({ rank:true, highlight:true }),                                    { rank:'1', stock:{en:'Only 10 left', zh:'Only 10 left'} }],
+    ['type-outofstock', typeShow({ notify:true, discount:false, promotion:false, fulfillment:false }), { notify:true }]
+  ];
 
   function renderTypeBlocks() {
-    [['type-default','default'], ['type-bestseller','bestseller'], ['type-outofstock','outofstock']].forEach(([id, variant]) => {
-      const mount = document.getElementById(id);
-      if (mount) mount.innerHTML = campaignHTML(variant);
+    const p = D.catalog.appliance[0];
+    VARIANT_STAGES.forEach(([id, show, extra]) => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = campaignHTML(p, Object.assign({ show: show, withFields: false }, extra));
     });
   }
   /* ================ Used In · 出现在 (data-driven cards + Figma lightbox) ================
@@ -1103,39 +1382,33 @@
     });
   }
   renderUsedIn();
+  window.addEventListener('joybuy:languagechange', (event) => {
+    setCardLang(event.detail && event.detail.language);
+    renderUsedIn();
+    if (uframe && uframe.classList.contains('is-open') && uOpenId) {
+      const page = PD.pages.filter(item => item.id === uOpenId)[0];
+      if (page) fillFrame(page);
+    }
+  });
 
   function setCardLang(lang) {
-    cardLang = lang;
-    document.querySelectorAll('.lang-toggle__btn').forEach(b => b.classList.toggle('is-active', b.dataset.lang === lang));
-    document.querySelectorAll('#sp-lang [data-sp-lang]').forEach(b => b.classList.toggle('is-active', b.dataset.spLang === lang));
-    renderPreview();
+    cardLang = lang === 'en' ? 'en' : 'zh';
+    updateControlCopy();
+    renderCSceneTabs();
+    applyFields();
     renderTypeBlocks();
     renderPreviewStack();
   }
-  const langToggleEl = document.getElementById('lang-toggle');
-  if (langToggleEl) {
-    langToggleEl.addEventListener('click', e => {
-      const btn = e.target.closest('.lang-toggle__btn');
-      if (!btn) return;
-      setCardLang(btn.dataset.lang);
-    });
-  }
-  document.getElementById('sp-lang').addEventListener('click', e => {
-    const btn = e.target.closest('[data-sp-lang]');
-    if (!btn) return;
-    setCardLang(btn.dataset.spLang);
-  });
 
   /* ================ Right-rail variant preview ================ */
   function renderPreviewStack() {
-    const map = [
-      ['sp-1', 'default'],
-      ['sp-2', 'bestseller'],
-      ['sp-3', 'outofstock']
-    ];
-    map.forEach(([mountId, variant]) => {
+    const p = D.catalog.appliance[0];
+    const map = [['sp-1', 0], ['sp-2', 1], ['sp-3', 2]];
+    map.forEach(([mountId, vi]) => {
       const el = document.getElementById(mountId);
-      if (el) el.innerHTML = campaignHTML(variant);
+      if (!el) return;
+      const [, show, extra] = VARIANT_STAGES[vi];
+      el.innerHTML = campaignHTML(p, Object.assign({ show: show, withFields: false }, extra));
     });
   }
 
@@ -1151,8 +1424,9 @@
   window.addEventListener('scroll', updateTabs, { passive: true });
 
   /* ================ Init ================ */
-  renderThemeStrip();
-  renderPreview();
+  updateControlCopy();
+  renderCSceneTabs();
+  applyFields();
   renderTypeBlocks();
   renderPreviewStack();
   updateTabs();

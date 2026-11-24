@@ -28,6 +28,8 @@
   --outline:           #E5E6EA;
   --outline-strong:    #D2D4DA;
   --outline-soft:      #F1F2F4;
+  /* Figma Stroke / Outline 200 — product-card swatch stroke */
+  --Stroke-Outline200: #E0E1E5;
 
   /* Backgrounds */
   --bg:                #FAFAFB;
@@ -98,6 +100,7 @@
   --outline:           #292A31;
   --outline-strong:    #3B3D46;
   --outline-soft:      #202127;
+  --Stroke-Outline200: #3B3D46;
 
   --bg:                #09090B;
   --surface:           #111116;

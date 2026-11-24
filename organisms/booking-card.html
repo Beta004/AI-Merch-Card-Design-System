@@ -118,19 +118,6 @@
     border-bottom: 1px solid var(--outline);
     margin-bottom: 16px;
   }
-  .side-preview__lang {
-    display: inline-flex; padding: 2px;
-    border: 1px solid var(--outline); border-radius: var(--r-pill);
-    background: var(--surface); letter-spacing: 0;
-  }
-  .side-preview__lang button {
-    all: unset; cursor: pointer;
-    padding: 3px 8px; border-radius: var(--r-pill);
-    font-size: 10px; font-weight: 700;
-    color: var(--ink-4); transition: background .12s ease, color .12s ease;
-    text-transform: none;
-  }
-  .side-preview__lang button.is-active { background: var(--ink); color: #fff; }
   .side-preview__items { display: flex; flex-direction: column; gap: 20px; }
   .side-preview__item { display: flex; flex-direction: column; gap: 8px; }
   .side-preview__item-label {
@@ -151,129 +138,102 @@
     overflow: hidden;
   }
   /* zoom shrinks the real (tall) booking card to fit the narrow rail; collapses layout box too.
-     Booking is taller/wider than hcard (120px image + 6-row body, max-width 380px) → use .5
-     so 360×.5 = 180px effective width, clear of the ~199px stage even with the --live/--auction shadow. */
-  .side-preview__scale { width: 360px; zoom: .5; }
+     Booking is a fixed 375px component → render it at native 375 and scale by .5
+     so 375×.5 = 187.5px effective width, clear of the ~199px stage even with shadow. */
+  .side-preview__scale { width: 375px; zoom: .5; }
   .state-legend[hidden] { display: none !important; }
 
-  /* ============ Booking · Auction card ============
-     8 slots · 120×120 image + 6-段 body · state 驱动 ribbon / chip / 颜色 / CTA. */
+  /* ============ Booking · Reservation / Auction card ============
+     Figma node 22303-189590 · 375×196 · 130 image + body field-stack.
+     Body order: brand · title(2ln) · [rating | stock] ·
+     [promo] · time(clock icon) · foot{ price+RRP  /  CTA }.
+     Price color by type: Reservation = red · Happy Hour = purple · Dutch = orange (↘). */
   .booking {
-    display: grid; grid-template-columns: 120px 1fr; gap: 12px;
+    display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 12px;
+    align-items: stretch; box-sizing: border-box;
     background: var(--surface); border: 1px solid var(--outline);
-    border-radius: var(--r-md); padding: 12px;
-    position: relative; max-width: 380px;
-    transition: border-color .15s ease, box-shadow .15s ease;
+    border-radius: 8px; padding: 8px;
+    position: relative; width: 375px; max-width: 100%; min-height: 196px;
   }
-  .booking--live    { border-color: var(--joybuy-red); border-width: 1.5px; box-shadow: 0 0 0 3px rgba(225, 37, 27, .06); }
-  .booking--auction { border-color: #7c3aed;           border-width: 1.5px; box-shadow: 0 0 0 3px rgba(124, 58, 237, .06); }
-  .booking--dim     { opacity: .55; }
   .booking [data-field][data-empty] { display: none; }
 
-  /* Slot 1 · image + ribbon */
+  /* Image (left) + discount tag */
   .booking__image {
-    position: relative; width: 120px; height: 120px; aspect-ratio: 1;
-    border-radius: var(--r-sm); overflow: hidden;
-    background: var(--surface-2); flex-shrink: 0;
+    position: relative; width: 130px; height: 130px; align-self: start; flex-shrink: 0;
+    border-radius: 8px; overflow: hidden; background: var(--surface-2);
+    display: flex; align-items: center; justify-content: center;
   }
-  .booking__image img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .booking__ribbon {
-    position: absolute; top: 8px; left: 8px;
-    padding: 2px 6px; border-radius: 3px;
-    background: var(--joybuy-red); color: #fff;
-    font-size: 10px; font-weight: 800;
-    letter-spacing: .06em; text-transform: uppercase; line-height: 1.4;
+  .booking__image img { width: 104px; height: 104px; object-fit: contain; display: block; }
+  .booking__disc {
+    position: absolute; top: 6px; left: 6px;
+    padding: 1px 6px; border-radius: 4px;
+    background: #fff; color: var(--ink);
+    font-size: 11px; font-weight: 700; line-height: 16px;
+    font-variant-numeric: tabular-nums;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .12);
   }
-  .booking__ribbon--soon    { background: var(--ink-3); }
-  .booking__ribbon--auction { background: #7c3aed; }
-  .booking__ribbon--ended   { background: var(--ink-5); }
 
-  .booking__body { display: flex; flex-direction: column; gap: 6px; min-width: 0; position: relative; }
-
-  /* Slot 2 · state chip */
-  .booking__state-chip {
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 3px 8px; border-radius: 999px;
-    font-size: 11px; font-weight: 700; letter-spacing: .02em;
-    align-self: flex-start; line-height: 1.3;
-  }
-  .booking__state-chip::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-  .booking__state-chip--soon    { background: var(--surface-2); color: var(--ink-3); }
-  .booking__state-chip--live    { background: var(--joybuy-red); color: #fff; }
-  .booking__state-chip--live::before  { background: #fff; animation: booking-pulse 1.2s infinite; }
-  .booking__state-chip--auction { background: #7c3aed; color: #fff; }
-  .booking__state-chip--auction::before { background: #fff; }
-  .booking__state-chip--ended   { background: var(--surface-3); color: var(--ink-4); }
-  @keyframes booking-pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
-
-  /* Slot 3 · title */
+  /* Body (right) */
+  .booking__body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .booking__brand { font-size: 14px; font-weight: 700; color: var(--ink); line-height: 18px; }
   .booking__title {
-    margin: 0; font-size: 14px; font-weight: 600;
-    color: var(--ink); line-height: 18px;
+    margin: 0; font-size: 14px; font-weight: 400; color: var(--ink-2); line-height: 18px;
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
 
-  /* Slot 4 · countdown */
-  .booking__countdown-wrap { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--ink-4); line-height: 1.4; }
-  .booking__countdown-label { flex-shrink: 0; }
-  .booking__countdown { display: inline-flex; gap: 3px; font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
-  .booking__countdown-cell {
-    min-width: 24px; padding: 2px 4px;
-    background: var(--ink); color: #fff;
-    border-radius: 3px; text-align: center;
-    font-size: 12px; font-weight: 700; line-height: 1.2;
+  /* Meta rows (icon-leading, gray) */
+  .booking__rating,
+  .booking__stock,
+  .booking__reserved,
+  .booking__time {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 11px; line-height: 16px; color: var(--ink-4);
+    font-variant-numeric: tabular-nums; min-width: 0;
   }
-  .booking--auction .booking__countdown-cell { background: #7c3aed; }
-  .booking--live    .booking__countdown-cell { background: var(--joybuy-red); }
-  .booking__countdown-sep { color: var(--ink-4); font-weight: 700; align-self: center; font-size: 10px; }
+  .booking__rating img,
+  .booking__stock img,
+  .booking__time img,
+  .booking__promo img { height: 16px; width: auto; display: block; }
+  .booking__disc img { height: 20px; width: auto; display: block; }
+  .booking__cta img { height: 32px; width: auto; display: block; }
 
-  /* Slot 5 · price */
-  .booking__price-line { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
-  .booking__price-label { font-size: 10px; color: var(--ink-4); text-transform: uppercase; letter-spacing: .04em; line-height: 1.4; }
-  .booking__price-current { font-size: 18px; font-weight: 900; color: var(--ink); line-height: 22px; font-variant-numeric: tabular-nums; }
-  .booking--auction .booking__price-current { color: #7c3aed; }
-  .booking--live    .booking__price-current { color: var(--joybuy-red); }
-  .booking__price-next { font-size: 11px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
-
-  /* Slot 6 · deposit */
-  .booking__deposit {
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 3px 8px; border-radius: 4px;
-    background: var(--joybuy-red-50); color: var(--joybuy-red);
-    font-size: 11px; font-weight: 600; line-height: 1.4;
-    align-self: flex-start;
+  /* Foot: price block (left) + CTA (right), bottom-pinned.
+     Wrap-robust: if a long price + button can't share a line, the button drops
+     to its own right-aligned line instead of overlapping the price. */
+  .booking__foot {
+    margin-top: auto; display: flex; flex-wrap: wrap;
+    align-items: flex-end; justify-content: flex-end;
+    column-gap: 8px; row-gap: 6px; padding-top: 4px;
   }
-  .booking__deposit b { font-weight: 800; font-variant-numeric: tabular-nums; }
-
-  /* Slot 7 · reserved count */
-  .booking__reserved { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--ink-4); font-variant-numeric: tabular-nums; line-height: 1.4; }
-  .booking__reserved::before {
-    content: ""; display: inline-block; width: 10px; height: 10px; flex-shrink: 0;
-    background:
-      radial-gradient(circle at 30% 35%, var(--ink-4) 0 2px, transparent 2.5px),
-      radial-gradient(circle at 70% 35%, var(--ink-4) 0 2px, transparent 2.5px),
-      radial-gradient(circle at 50% 85%, var(--ink-4) 0 3px, transparent 3.5px);
-    background-repeat: no-repeat;
+  .booking__price-wrap { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1 0 auto; }
+  .booking__price-line { display: flex; align-items: center; gap: 3px; }
+  .booking__arrow { width: 13px; height: 13px; flex-shrink: 0; display: none; }
+  .booking__price-current {
+    font-size: 18px; font-weight: 800; color: var(--joybuy-red);
+    line-height: 22px; font-variant-numeric: tabular-nums;
   }
-  .booking__reserved b { color: var(--ink-2); font-weight: 700; }
+  .booking__rrp { font-size: 11px; color: var(--ink-3); line-height: 15px; font-variant-numeric: tabular-nums; }
+  .booking__rrp b { font-weight: 400; }
 
-  /* Slot 8 · CTA */
-  .booking__cta-row { display: flex; gap: 8px; margin-top: 4px; }
+  /* Type-driven price color + auction down-arrow */
+  .booking--happyhour .booking__price-current { color: #4843B8; }
+  .booking--auction   .booking__price-current { color: #ee7700; }
+  .booking--auction   .booking__arrow { display: inline-block; }
+
+  /* CTA (secondary) */
   .booking__cta {
-    display: inline-flex; align-items: center; justify-content: center;
-    padding: 8px 14px; border-radius: var(--r-sm);
-    background: var(--joybuy-red); color: #fff;
-    font-size: 13px; font-weight: 700;
-    border: 0; cursor: pointer; flex: 1;
-    transition: background .12s ease, color .12s ease, border-color .12s ease;
+    flex: none; display: inline-flex; align-items: center; justify-content: center;
+    min-width: 88px; min-height: 40px; padding: 8px 14px;
+    border-radius: 8px; border: 1px solid transparent;
+    background: var(--surface-2); color: var(--ink);
+    font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;
+    transition: background .12s ease, border-color .12s ease, color .12s ease;
   }
-  .booking__cta:hover { background: var(--joybuy-red-600); }
-  .booking--auction .booking__cta { background: #7c3aed; }
-  .booking--auction .booking__cta:hover { background: #6d28d9; }
-  .booking__cta--ghost { background: transparent; color: var(--ink-4); border: 1px solid var(--outline); }
-  .booking__cta--ghost:hover { background: var(--surface-2); color: var(--ink-2); }
-  .booking--dim .booking__cta { background: var(--surface-3); color: var(--ink-4); }
-  .booking__ended-msg { font-size: 12px; color: var(--ink-4); line-height: 1.4; margin-top: 2px; }
+  .booking__cta:hover { background: var(--surface-3); }
+  /* CTA uses the exported Figma Notify Button atom. */
+  .booking__cta--bid { background: #FFF5E6; color: #EE7700; }
+  .booking__cta--bid:hover { background: #FFECD1; }
+  .booking__cta:disabled { color: var(--ink-4); background: var(--surface-2); cursor: default; }
 
   /* ============ Demo area ============ */
   .demo {
@@ -294,18 +254,6 @@
     color: var(--ink-4); text-transform: uppercase; margin-bottom: 8px;
   }
   .demo__controls-hint { font-size: 12px; color: var(--ink-4); line-height: 1.6; }
-  .lang-toggle {
-    display: inline-flex; padding: 3px;
-    border: 1px solid var(--outline); border-radius: var(--r-pill);
-    background: var(--surface);
-  }
-  .lang-toggle__btn {
-    all: unset; cursor: pointer;
-    padding: 5px 14px; border-radius: var(--r-pill);
-    font-size: 12px; font-weight: 600;
-    color: var(--ink-4); transition: background .12s ease, color .12s ease;
-  }
-  .lang-toggle__btn.is-active { background: var(--ink); color: #fff; }
   .chip-strip { display: flex; gap: 6px; flex-wrap: wrap; }
   .chip-btn {
     all: unset; cursor: pointer;
@@ -317,6 +265,91 @@
   }
   .chip-btn:hover { border-color: var(--outline-strong); }
   .chip-btn.is-active { color: var(--accent); background: var(--accent-50); border-color: var(--accent-100); }
+
+  /* ---- Scenario tabs (场景) — primary switch, sits above field toggles ---- */
+  .scene-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .scene-tab {
+    all: unset; cursor: pointer; box-sizing: border-box;
+    padding: 7px 13px; border-radius: 8px;
+    font-size: 12.5px; font-weight: 600; line-height: 1.15;
+    color: var(--ink-3); background: var(--surface);
+    border: 1px solid var(--outline);
+    transition: all .12s ease;
+  }
+  .scene-tab:hover { border-color: var(--outline-strong); }
+  .scene-tab.is-active { color: #fff; background: var(--ink); border-color: var(--ink); }
+  .scene-tab__sub { font-size: 10px; font-weight: 500; opacity: .7; margin-left: 5px; }
+
+  /* ---- Field simulator (switches + copilot) — shared visual with vertical card ---- */
+  .field-sim { border-top: 1px dashed var(--outline); padding-top: 18px; }
+  .field-sim__head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+  .field-sim__title {
+    font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-4);
+    display: flex; align-items: center; gap: 7px;
+  }
+  .field-sim__title-hint { font-size: 11px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--ink-5); }
+  .field-sim__reset {
+    all: unset; cursor: pointer; flex: none;
+    font-size: 11px; font-weight: 600; color: var(--ink-4);
+    padding: 4px 10px; border-radius: var(--r-pill);
+    border: 1px solid var(--outline); background: var(--surface);
+    transition: all .12s ease;
+  }
+  .field-sim__reset:hover { color: var(--accent); border-color: var(--accent-100); background: var(--accent-50); }
+  .field-sim__reset[aria-disabled="true"] { opacity: .4; cursor: default; }
+  .field-sim__reset[aria-disabled="true"]:hover { color: var(--ink-4); border-color: var(--outline); background: var(--surface); }
+  .sim-group { margin-top: 14px; }
+  .sim-group__head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 2px; }
+  .sim-group__name { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
+  .sim-group__rule { font-size: 10.5px; color: var(--ink-5); white-space: nowrap; }
+  .sim-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 7px 0;
+  }
+  .sim-row + .sim-row { border-top: 1px solid var(--surface-2); }
+  .sim-row__label { display: flex; flex-direction: column; gap: 1px; font-size: 12.5px; color: var(--ink-2); }
+  .sim-row__name { display: flex; align-items: center; gap: 6px; }
+  .sim-row__scene { font-size: 10px; color: var(--ink-5); }
+  .sim-row__ov {
+    font-size: 9px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-50);
+    border-radius: 4px; padding: 1px 5px;
+  }
+  .sim-row__na { font-size: 10px; color: var(--ink-5); }
+  .sim-row.is-picked .sim-row__name { color: var(--ink); font-weight: 600; }
+  .sim-row.is-disabled { opacity: .5; }
+  /* switch */
+  .sim-sw {
+    all: unset; cursor: pointer; box-sizing: border-box; flex: none;
+    width: 36px; height: 20px; border-radius: var(--r-pill);
+    background: var(--outline); position: relative; transition: background .15s ease;
+  }
+  .sim-sw::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25);
+    transition: transform .15s ease;
+  }
+  .sim-sw[aria-checked="true"] { background: var(--accent); }
+  .sim-sw[aria-checked="true"]::after { transform: translateX(16px); }
+  .sim-sw[aria-disabled="true"] { cursor: not-allowed; opacity: .55; }
+  /* copilot */
+  .sim-copilot {
+    margin-top: 16px; padding: 13px 14px;
+    border: 1px solid var(--outline); border-radius: var(--r-md);
+    background: var(--surface-2);
+  }
+  .sim-copilot__head {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  .sim-copilot__dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+  .sim-copilot p { margin: 0 0 6px; font-size: 12px; line-height: 1.65; color: var(--ink-3); }
+  .sim-copilot p:last-child { margin-bottom: 0; }
+  .sim-copilot b { color: var(--ink); font-weight: 600; }
+  .sim-copilot em { font-style: normal; color: var(--ink-4); }
 
   /* ============ 02 Structure ============ */
   .anatomy-wrap {
@@ -420,7 +453,7 @@
 
   /* ============ 03 Types ============ */
   .types-stack {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
     gap: 20px;
   }
   .type-block {
@@ -441,7 +474,7 @@
     padding: 20px 16px;
     display: flex; justify-content: center;
   }
-  .type-block__stage .booking { width: 100%; max-width: 360px; }
+  .type-block__stage .booking { width: 375px; max-width: 100%; margin: 0 auto; }
 
   /* ===== Used In · 出现在 — compact page cards + Figma lightbox ===== */
   .uin-summary { font-size: 13px; color: var(--ink-4); margin: 2px 0 15px; }
@@ -554,6 +587,90 @@
 </style>
 <link rel="stylesheet" href="../assets/card-detail-template.css">
   <link rel="stylesheet" href="../assets/card-preview-alignment.css">
+<style>
+  /* ===================================================================
+     Live-config panel v2 · shared with the vertical-card detail page.
+     Grouped field cards, single-line rows, no helper captions.
+     The reset button only appears once a field has been overridden.
+     =================================================================== */
+  #s-overview .demo__controls { gap: 24px; }
+  #s-overview .demo__controls-block + .demo__controls-block {
+    padding-top: 22px;
+    border-top: 1px solid var(--outline);
+  }
+  #s-overview .demo__controls-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    color: var(--ink-4);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .scene-tabs { display: flex; flex-wrap: wrap; gap: 7px; }
+  .scene-tab {
+    padding: 8px 13px; border-radius: 8px;
+    font-size: 12.5px; font-weight: 600; line-height: 1.25;
+  }
+  /* the qualifier keeps same-name scenarios (Dutch auction states) apart */
+  .scene-tab__sub {
+    font-size: 10px; font-weight: 500; opacity: .65;
+    margin-left: 5px; letter-spacing: 0; text-transform: none;
+  }
+
+  .field-sim { padding-top: 22px; border-top: 1px solid var(--outline); }
+  .field-sim__head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 12px;
+  }
+  .field-sim__title {
+    display: block; font-size: 13px; font-weight: 700; color: var(--ink);
+    margin-bottom: 0;
+  }
+  .field-sim__title-hint { display: none; }
+  .field-sim__reset {
+    font-size: 11px; font-weight: 600; color: var(--ink-4);
+    padding: 4px 9px; border-radius: 6px;
+  }
+  .field-sim__reset[aria-disabled="true"] {
+    visibility: hidden; pointer-events: none;
+  }
+
+  .sim-group {
+    margin-top: 8px; overflow: hidden;
+    border: 1px solid var(--outline); border-radius: 9px;
+    background: var(--surface);
+  }
+  .sim-group__head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 12px; margin-bottom: 0;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--outline);
+  }
+  .sim-group__name {
+    font-size: 11px; font-weight: 700; letter-spacing: .04em;
+    color: var(--ink-3); text-transform: uppercase;
+  }
+  .sim-group__rule { display: none; }
+  .sim-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; min-height: 44px; padding: 10px 12px; box-sizing: border-box;
+  }
+  .sim-row__label {
+    display: block; min-width: 0;
+    font-size: 13px; line-height: 1.35; color: var(--ink-2);
+  }
+  .sim-row__name { display: flex; align-items: center; gap: 7px; }
+  .sim-row__scene, .sim-row__ov { display: none; }
+  .sim-row.is-picked .sim-row__name { color: var(--ink); font-weight: 600; }
+  .sim-row.is-overridden .sim-row__name::after {
+    content: ''; width: 5px; height: 5px; flex: none;
+    border-radius: 50%; background: var(--accent);
+  }
+  .sim-row.is-disabled { background: var(--surface-2); opacity: 1; }
+  .sim-row.is-disabled .sim-row__name { color: var(--ink-5); }
+  .sim-row__na { font-size: 10.5px; color: var(--ink-5); white-space: nowrap; }
+  .sim-copilot { display: none; }
+</style>
 </head>
 <body>
 <div class="site site--card-detail">
@@ -612,7 +729,7 @@
         </div>
         <p class="section__lede">
           预约商卡由两个维度共同决定：业务类型（常规预约 / 荷兰拍 / 荷兰拍预约态 / Happy Hour）与售卖状态（未预约 / 抢购中 / 已结束）。
-          两个维度共同驱动价格、时间、预约信息和 CTA。
+          两个维度共同驱动价格、时间、库存与 CTA。
         </p>
 
         <div class="demo" style="margin-top: 8px;">
@@ -620,31 +737,22 @@
             <div id="preview-slot"></div>
           </div>
 
-          <div class="demo__controls">
+          <div class="demo__controls" data-global-i18n="off">
             <div class="demo__controls-block">
-              <div class="demo__controls-title">业务类型 · Business type</div>
-              <div class="chip-strip" id="business-strip"></div>
+              <div class="demo__controls-title" data-control-title="scene">业务场景</div>
+              <div class="scene-tabs" id="scene-tabs"></div>
             </div>
             <div class="demo__controls-block">
-              <div class="demo__controls-title">状态 · State</div>
-              <div class="chip-strip" id="state-strip"></div>
-            </div>
-            <div class="demo__controls-block">
-              <div class="demo__controls-title">语言 · Language</div>
-              <div class="lang-toggle" id="lang-toggle">
-                <button class="lang-toggle__btn is-active" data-lang="en">EN</button>
-                <button class="lang-toggle__btn" data-lang="zh">中文</button>
-              </div>
-            </div>
-            <div class="demo__controls-block">
-              <div class="demo__controls-title">分类 · Category</div>
+              <div class="demo__controls-title" data-control-title="category">品类</div>
               <div class="chip-strip" id="cat-strip"></div>
             </div>
             <div class="demo__controls-block">
-              <div class="demo__controls-title">预设 · Preset</div>
+              <div class="demo__controls-title" data-control-title="preset">商品预设</div>
               <div class="chip-strip" id="preset-strip"></div>
             </div>
-            <div class="demo__controls-hint">Figma 将业务类型与售卖状态分成两个维度；任意组合都会同步更新价格、倒计时、预约信息和 CTA。</div>
+            <div class="demo__controls-block field-sim" data-global-i18n="off">
+              <div id="bk-sim"></div>
+            </div>
           </div>
         </div>
 
@@ -675,7 +783,7 @@
           <h2 class="section__title">Structure · 骨架</h2>
         </div>
         <p class="section__lede">
-          10 个 Figma 槽位：折扣、商品图、品牌、商品名、评分/销量、预约信息、限时信息、价格、预约/库存信息与按钮。
+          9 个 Figma 槽位：折扣、商品图、品牌、商品名、评分/销量、库存、限时信息、价格与按钮。
           业务类型决定信息结构，售卖状态只驱动时间、价格与 CTA，不额外发明重复状态标签。
         </p>
 
@@ -692,7 +800,6 @@
                 <div class="schematic-slot"><span class="schematic-slot__idx">4</span>countdown HH:MM:SS</div>
                 <div class="schematic-slot"><span class="schematic-slot__idx">5</span>price · next tier</div>
                 <div class="schematic-slot"><span class="schematic-slot__idx">6</span>deposit info (opt.)</div>
-                <div class="schematic-slot"><span class="schematic-slot__idx">7</span>reserved count (opt.)</div>
                 <div class="schematic-slot"><span class="schematic-slot__idx">8</span>CTA · state-driven</div>
               </div>
             </div>
@@ -728,30 +835,25 @@
             <div class="anatomy-cell">
               <div class="anatomy-cell__head"><span class="anatomy-cell__idx">4</span><span class="anatomy-cell__slot">countdown</span></div>
               <div class="anatomy-cell__stage">
-                <div class="mini-countdown"><span>02</span><span>:</span><span>14</span><span>:</span><span>32</span></div>
+                <div class="mini-countdown"><span>23</span><span>:</span><span>10</span><span>:</span><span>20</span></div>
               </div>
               <div class="anatomy-cell__atom">等分格 · 黑底白字 · mono · 每秒滚动</div>
             </div>
             <div class="anatomy-cell">
               <div class="anatomy-cell__head"><span class="anatomy-cell__idx">5</span><span class="anatomy-cell__slot">price</span></div>
               <div class="anatomy-cell__stage">
-                <div class="mini-price-block"><b>£58</b><small>next £57 / min</small></div>
+                <div class="mini-price-block"><b>£350.00</b><small>RRP: £500.00</small></div>
               </div>
               <div class="anatomy-cell__atom">18/900 · 拍卖态色调随 state · 下一档小字</div>
             </div>
             <div class="anatomy-cell">
               <div class="anatomy-cell__head"><span class="anatomy-cell__idx">6</span><span class="anatomy-cell__slot">deposit</span></div>
-              <div class="anatomy-cell__stage"><span class="mini-deposit">定金 £10 · 尾款 £48</span></div>
+              <div class="anatomy-cell__stage"><span class="mini-deposit">Excl. deposit £0.15</span></div>
               <div class="anatomy-cell__atom">红底红字 tint · 11/600 · 仅预售用</div>
             </div>
             <div class="anatomy-cell">
-              <div class="anatomy-cell__head"><span class="anatomy-cell__idx">7</span><span class="anatomy-cell__slot">reserved</span></div>
-              <div class="anatomy-cell__stage"><span class="mini-reserved">已有 <b style="color: var(--ink-2);">1,284</b> 人预约</span></div>
-              <div class="anatomy-cell__atom">社交证明 · 灰字 11/400 · 数字加粗</div>
-            </div>
-            <div class="anatomy-cell">
               <div class="anatomy-cell__head"><span class="anatomy-cell__idx">8</span><span class="anatomy-cell__slot">cta</span></div>
-              <div class="anatomy-cell__stage"><span class="mini-cta">Reserve for £10</span></div>
+              <div class="anatomy-cell__stage"><span class="mini-cta">Notify</span></div>
               <div class="anatomy-cell__atom">主 CTA · label 随 state 切换 · 结束态灰化</div>
             </div>
           </div>
@@ -765,11 +867,10 @@
             <tr><td>3</td><td><code>brand</code></td><td>是</td><td>品牌名称单独一行</td></tr>
             <tr><td>4</td><td><code>title</code></td><td>是</td><td>商品名称，最多两行</td></tr>
             <tr><td>5</td><td><code>rating</code>, <code>sold</code></td><td>否</td><td>评分、销量或浏览量</td></tr>
-            <tr><td>6</td><td><code>reservation</code></td><td>是</td><td>业务类型与预约状态信息</td></tr>
+            <tr><td>6</td><td><code>stock</code></td><td>否</td><td>库存紧张时显示 <code>Only 10 left</code></td></tr>
             <tr><td>7</td><td><code>launchTime</code></td><td>否</td><td>新发布限时 / 开始或结束时间</td></tr>
             <tr><td>8</td><td><code>price</code></td><td>是</td><td>当前价；荷兰拍与结束态补充价格语义</td></tr>
-            <tr><td>9</td><td><code>reservationMeta</code></td><td>是</td><td>预约量、倒计时或库存量按状态切换</td></tr>
-            <tr><td>10</td><td><code>button</code></td><td>是</td><td>Remind me / Buy now / Place bid / Ended</td></tr>
+                        <tr><td>9</td><td><code>button</code></td><td>是</td><td>固定使用 Figma Notify Button 文案 <code>Notify</code></td></tr>
           </tbody>
         </table>
       </section>
@@ -785,17 +886,17 @@
         <div class="types-stack" style="margin-top: 20px;">
           <div class="type-block">
             <div class="type-block__label">Reservation · 常规预约</div>
-            <div class="type-block__hint">预约量、开售时间、价格与 Remind me 操作。</div>
+            <div class="type-block__hint">库存、开售时间、价格与 Notify 操作。</div>
             <div class="type-block__stage" id="type-regular"></div>
           </div>
           <div class="type-block">
             <div class="type-block__label">Dutch Auctions · 荷兰拍</div>
-            <div class="type-block__hint">本次拍卖价、上次拍卖价与下一次降价倒计时。</div>
+            <div class="type-block__hint">当前价、RRP 参考价与下一次降价时间。</div>
             <div class="type-block__stage" id="type-dutch"></div>
           </div>
           <div class="type-block">
             <div class="type-block__label">Dutch Auction Reserved · 荷兰拍预约态</div>
-            <div class="type-block__hint">荷兰拍开始前的预约状态，强调预约量和开始时间。</div>
+            <div class="type-block__hint">荷兰拍开始前的预约状态，强调库存和开始时间。</div>
             <div class="type-block__stage" id="type-dutch-reserved"></div>
           </div>
           <div class="type-block">
@@ -813,8 +914,7 @@
           <h2 class="section__title">Data Contract · 数据契约</h2>
         </div>
         <p class="section__lede">
-          Booking 卡在 <code>Product</code> 基础上增加 <code>state</code> / <code>startsAt</code> / <code>endsAt</code> /
-          <code>bidCurrent</code> / <code>bidStep</code> / <code>reservedCount</code> 六字段。
+          Booking 卡在 <code>Product</code> 基础上增加 <code>state</code> / <code>startsAt</code> / <code>endsAt</code> 三字段；所有可见文案均来自 Figma 原子组件。
           业务标签由 <code>type</code> 派生，时间、价格与 CTA 由 <code>state</code> 驱动，两者不能混用。
         </p>
 
@@ -825,21 +925,19 @@
             <tr><td><code>state</code></td><td>unreserved / purchasing / ended</td><td>活动服务</td><td>必填 · 决定时间与 CTA 状态</td><td>枚举 key</td></tr>
             <tr><td><code>startsAt</code></td><td>ISO · <code>2026-08-30T18:00:00Z</code></td><td>后端</td><td>未预约状态显示开售时间</td><td>-</td></tr>
             <tr><td><code>endsAt</code></td><td>ISO · <code>2026-08-30T22:00:00Z</code></td><td>后端</td><td>抢购中状态显示倒计时</td><td>-</td></tr>
-            <tr><td><code>title</code></td><td>string · 2-line clamp</td><td>SKU · name（可含 brand 前缀）</td><td>不渲染</td><td>en / zh</td></tr>
-            <tr><td><code>priceCurrent</code></td><td>string · <code>£58.00</code></td><td>定价 / 拍卖服务</td><td>必填 · Auction 每 30s 拉取一次</td><td>货币符号 i18n</td></tr>
-            <tr><td><code>depositAmount</code>, <code>finalAmount</code></td><td>string · <code>£10</code> / <code>£48</code></td><td>定价服务</td><td>空则不显示 deposit 行</td><td>货币符号 i18n</td></tr>
-            <tr><td><code>bidCurrent</code>, <code>bidStep</code></td><td>string · <code>£58</code> / <code>-£1 / min</code></td><td>拍卖服务</td><td>仅 auction 状态用</td><td>货币符号 i18n</td></tr>
-            <tr><td><code>reservedCount</code></td><td>number · <code>1284</code></td><td>后端</td><td>&lt; 100 或空则隐藏（社交证明太弱）</td><td>数字复用 · unit i18n</td></tr>
-            <tr><td><code>ctaLabel</code>, <code>ctaHref</code></td><td>string · <code>Reserve for £10</code></td><td>前端 state 映射</td><td>必填 · 结束态换 ghost 按钮</td><td>en / zh</td></tr>
+            <tr><td><code>title</code></td><td>string · Figma 3 个变体文案</td><td>SKU · name</td><td>不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
+            <tr><td><code>priceCurrent</code></td><td>string · Figma 示例 <code>£350.00</code></td><td>定价 / 拍卖服务</td><td>必填</td><td>货币符号 i18n</td></tr>
+            <tr><td><code>deposit</code></td><td>enum · Figma 示例 <code>Excl. deposit £0.15</code></td><td>定价服务</td><td>空则不显示 deposit 行</td><td>预览仅使用 Figma 源文案</td></tr>
+            <tr><td><code>ctaLabel</code>, <code>ctaHref</code></td><td>enum · 固定 <code>Notify</code></td><td>Notify Button atom</td><td>必填</td><td>预览仅使用 Figma 源文案</td></tr>
           </tbody>
         </table>
 
         <table class="table" style="margin-top: 24px;">
           <thead><tr><th>state</th><th>业务标签</th><th>时间信息</th><th>价格信息</th><th>CTA 默认</th></tr></thead>
           <tbody>
-            <tr><td><code>unreserved</code></td><td>保留业务类型</td><td>开始时间 / 下次拍卖</td><td>当前价 + 参考价</td><td>Remind me / Reserve</td></tr>
-            <tr><td><code>purchasing</code></td><td>保留业务类型</td><td>距结束倒计时</td><td>当前价；荷兰拍显示下一档</td><td>Buy now / Place bid</td></tr>
-            <tr><td><code>ended</code></td><td>保留业务类型</td><td>隐藏倒计时</td><td>最终价格</td><td>禁用 Ended</td></tr>
+            <tr><td><code>unreserved</code></td><td>保留业务类型</td><td>开始时间 / 下次拍卖</td><td>当前价 + 参考价</td><td>Notify</td></tr>
+            <tr><td><code>purchasing</code></td><td>保留业务类型</td><td>距结束倒计时</td><td>当前价；荷兰拍显示下一档</td><td>Notify</td></tr>
+            <tr><td><code>ended</code></td><td>保留业务类型</td><td>隐藏倒计时</td><td>最终价格</td><td>Notify</td></tr>
           </tbody>
         </table>
       </section>
@@ -876,7 +974,7 @@
               <li>商品有明确开售 / 结束时间点</li>
               <li>用户需要提前"注册"或参与竞价</li>
               <li>倒计时是核心决策信号</li>
-              <li>需要展示预约 / 参与人数作为社交证明</li>
+              <li>需要展示库存紧张感作为稀缺信号</li>
               <li>业务类型与三种售卖状态需要分别建模</li>
             </ul>
           </div>
@@ -898,7 +996,7 @@
             <ul class="compare__list">
               <li>业务标签只由 <code>type</code> 决定，不能被售卖状态覆盖</li>
               <li>未预约显示开始时间，抢购中显示倒计时，结束态隐藏时间</li>
-              <li>reservedCount &lt; 100 直接隐藏 · 别显示"已有 3 人预约"这类反社交证明</li>
+              <li>库存文案仅使用 Figma Stock 的 <code>Only 10 left / Out of stock</code>，不要发明预约量文案</li>
               <li>倒计时精度到秒 · JS 层做客户端滚动 · 不要 fetch 更新</li>
               <li>荷兰拍必配"下一档 £YYY"提示 · 让用户知道降价节奏</li>
             </ul>
@@ -939,10 +1037,6 @@
     <div class="side-preview">
       <div class="side-preview__head">
         <span>Types Preview</span>
-        <span class="side-preview__lang" id="sp-lang">
-          <button data-sp-lang="en" class="is-active">EN</button>
-          <button data-sp-lang="zh">中</button>
-        </span>
       </div>
       <div class="side-preview__items">
         <div class="side-preview__item">
@@ -982,8 +1076,8 @@
 
   // Kept for template parity with sibling pages, even though highlight is not used here.
   const HIGHLIGHT_ENUM = new Set([
-    'best-before','best-seller','blockbuster','clearance',
-    'hot-deal','new','plus-price','sponsored','top-deal'
+    'sponsored','best-before','new-hot','top-deal',
+    'private-label','new','too-good-to-waste'
   ]);
 
   const BUSINESS_TYPES = [
@@ -995,50 +1089,101 @@
   const STATE_ORDER = ['unreserved','purchasing','ended'];
   const STATE_STRIP_LABEL = { unreserved:'Unreserved', purchasing:'Purchasing', ended:'Ended' };
 
+  /* ---- Field explorer · scenarios + field registry (fields per Figma node 22303-189590) ----
+   * BK_SCENES collapse the meaningful business-type × state combos into 5 named real scenarios
+   * (the raw 4×3 matrix has nonsensical cells). Clicking a scenario tab drives the live card AND
+   * resets field overrides to that scenario's canonical field set. */
+  const BK_SCENES = [
+    { key:'reservation', cfg:{ type:'regular',      state:'unreserved' }, label:{ en:'Reservation', zh:'预约' },   sub:{ en:'Regular',  zh:'常规' } },
+    { key:'happy',       cfg:{ type:'happyHour',     state:'unreserved' }, label:{ en:'Happy Hour',  zh:'月黑' },   sub:{ en:'Flash',    zh:'秒杀' } },
+    { key:'dutchSoon',   cfg:{ type:'dutchReserved', state:'unreserved' }, label:{ en:'Dutch',       zh:'荷兰拍' }, sub:{ en:'Upcoming', zh:'预告' } },
+    { key:'dutchLive',   cfg:{ type:'dutch',         state:'purchasing' }, label:{ en:'Dutch',       zh:'荷兰拍' }, sub:{ en:'Bidding',  zh:'抢购' } },
+    { key:'dutchEnded',  cfg:{ type:'dutch',         state:'ended' },      label:{ en:'Dutch',       zh:'荷兰拍' }, sub:{ en:'Ended',    zh:'结束' } }
+  ];
+
+  // Each toggleable field + the scenarios it appears in by default + whether it needs price data.
+  // gated:true → needs real data (discount / RRP); disabled + N/A when the preset lacks it.
+  // gated:false → carries a constant label, so it can be forced on in ANY scenario to preview it.
+  const BK_FIELDS = [
+    { key:'disc',     label:{ en:'Discount tag',    zh:'折扣标签' }, scene:{ en:'When sale < RRP',       zh:'有折扣时' },      gated:true  },
+    { key:'rating',   label:{ en:'Rating · sold',   zh:'评分 · 销量' }, scene:{ en:'Reservation',          zh:'预约' },          gated:false },
+    { key:'stock',    label:{ en:'Stock left',      zh:'库存紧张' }, scene:{ en:'Happy Hour',           zh:'月黑' },          gated:false },
+    { key:'promo',    label:{ en:'Pre-sale tag',    zh:'预售标' },   scene:{ en:'Reservation',          zh:'预约' },          gated:false },
+    { key:'time',     label:{ en:'Schedule time',   zh:'时间行' },   scene:{ en:'Happy Hour · Dutch',   zh:'月黑 · 荷兰拍' },  gated:false },
+    { key:'rrp',      label:{ en:'Reference price', zh:'划线价' },   scene:{ en:'All · relabeled Dutch',zh:'全部 · 荷兰拍改标' }, gated:true  }
+  ];
+
+  const BK_SIM_TXT = {
+    en: { title:'Field explorer', hint:'toggle any field · reset to type default',
+          fields:'Fields', reset:'Reset to default', sceneLead:'appears in: ',
+          copilot:'Field Copilot', lead:'shows these fields', ovNote:'edited',
+          andSep:' · ', none:'no optional fields', na:'N/A' },
+    zh: { title:'字段探索器', hint:'任意字段可开关 · 一键重置为本类默认',
+          fields:'字段', reset:'重置为本类默认', sceneLead:'出现场景：',
+          copilot:'字段助手', lead:'显示以下字段', ovNote:'已改',
+          andSep:' · ', none:'无可选字段', na:'不适用' }
+  };
+
+  // Resolve a field's visibility: override wins, else scenario/data default.
+  function bkVis(name, def, ov){ return (ov[name] == null) ? !!def : !!ov[name]; }
+
   function bookingState(type, state) {
     const isDutch = type === 'dutch' || type === 'dutchReserved';
     const isHappy = type === 'happyHour';
-    const typeLabel = {
-      regular:{ en:'RESERVATION', zh:'预约' },
-      dutch:{ en:'DUTCH AUCTION', zh:'荷兰拍' },
-      dutchReserved:{ en:'DUTCH AUCTION', zh:'荷兰拍预约' },
-      happyHour:{ en:'HAPPY HOUR', zh:'月黑' }
-    }[type];
+    const isReg   = type === 'regular';
     const ended = state === 'ended';
     const purchasing = state === 'purchasing';
+
+    // modifier drives price color: red (default) · purple (happy) · orange + ↘ (dutch)
+    const modifier = isDutch ? 'booking--auction' : isHappy ? 'booking--happyhour' : '';
+
+    // Price atom only defines RRP / WAS; booking previews stay on RRP.
+    const refLabel = { en:'RRP', zh:'RRP' };
+
+    // CTA uses the Figma Notify Button atom in every state.
+    const cta = { en:'Notify', zh:'Notify' };
+    const ctaClass = 'booking__cta';
+    const ctaDisabled = false;
+
+    // Scheduled time uses the Figma new-launch-limit-time atom copy.
+    const timeLabel = { en:'Starts at Aug 26, 00:00', zh:'Starts at Aug 26, 00:00' };
+
     return {
-      ribbonLabel: ended ? { en:'ENDED', zh:'已结束' } : typeLabel,
-      chipLabel: type === 'regular' ? { en:'New launch', zh:'新品首发' }
-        : type === 'dutch' ? { en:'Dutch Auction', zh:'荷兰拍' }
-        : type === 'dutchReserved' ? { en:'Dutch Auction · Reservation', zh:'荷兰拍 · 预约态' }
-        : { en:'Happy Hour', zh:'月黑' },
-      cdLabel: ended ? { en:'', zh:'' } : purchasing ? { en:'Ends in', zh:'距结束' } : (isDutch ? { en:'Next auction', zh:'下次拍卖' } : { en:'Starts at', zh:'开始时间' }),
-      priceLabel: ended
-        ? (isDutch ? { en:'Final Bid Price', zh:'最终拍卖价' } : { en:'Final price', zh:'最终价格' })
-        : isDutch ? { en:'Current auction price', zh:'本次拍卖价' } : { en:'Price', zh:'价格' },
-      ctaLabel: ended ? { en:'Ended', zh:'已结束' } : purchasing
-        ? (isDutch ? { en:'Place bid', zh:'拍下' } : { en:'Buy now', zh:'立即抢购' })
-        : (isHappy ? { en:'Reserve', zh:'预约' } : { en:'Remind me', zh:'预约提醒' }),
-      chipClass: ended ? 'booking__state-chip--ended' : purchasing ? 'booking__state-chip--live' : 'booking__state-chip--soon',
-      ribbonClass: ended ? 'booking__ribbon--ended' : isDutch ? 'booking__ribbon--auction' : 'booking__ribbon--soon',
-      modifier: [ended ? 'booking--dim' : '', purchasing ? 'booking--live' : '', isDutch ? 'booking--auction' : '', isHappy ? 'booking--happyhour' : ''].filter(Boolean).join(' '),
-      offsetSec: purchasing ? 4*3600 + 12*60 + 45 : 2*86400 + 14*3600 + 32*60 + 8,
-      showCountdown: !ended,
-      staticTime: state === 'unreserved' && (type === 'regular' || type === 'dutchReserved'),
-      referenceLabel: isDutch ? { en:'First price', zh:'原价' } : { en:'RRP', zh:'RRP' },
-      showDeposit: false,
-      showReserved: !ended,
-      showBidNext: isDutch && !ended,
-      showEndedMsg: ended
+      modifier,
+      showRating: isReg && !ended,          // ★ 4.5 | 100k+ sold — Reservation only
+      showStock:  isHappy,                   // Figma Stock: Only 10 left
+      stockLabel: { en:'Only 10 left', zh:'Only 10 left' },
+      showReserved: false,                   // Reservation count is outside the Figma atomic library
+      showPromo: isReg && !ended,            // Pre-sale — Reservation only
+      promoLabel: { en:'Pre-sale', zh:'Pre-sale' },
+      showTime: isHappy || isDutch,          // 🕐 time line — Happy Hour + Dutch only (Reservation has none)
+      timeLabel,
+      refLabel,
+      cta, ctaClass, ctaDisabled,
+      isDutch
     };
   }
 
   /* ================ Preview state ================ */
-  let cardLang     = 'en';
+  let cardLang     = (window.JoybuySite && window.JoybuySite.getLanguage()) || 'zh';
+
+  /* Live-config panel copy follows the global documentation language. */
+  const UI_COPY = {
+    en: { scene:'Scenario', category:'Category', preset:'Product preset', fields:'Field controls', reset:'Reset', na:'N/A' },
+    zh: { scene:'业务场景', category:'品类', preset:'商品预设', fields:'字段控制', reset:'重置', na:'无数据' }
+  };
+  function updateControlCopy() {
+    document.querySelectorAll('[data-control-title]').forEach(el => {
+      const key = el.dataset.controlTitle;
+      el.textContent = (UI_COPY[cardLang] && UI_COPY[cardLang][key]) || key;
+    });
+  }
   let currentCat   = '3c';
   let currentPreset= 0;
   let currentType  = 'regular';
   let currentState = 'unreserved';
+  let sceneKey     = 'reservation';       // active scenario tab
+  let fieldOv      = {};                   // field key -> true/false; absent = follow scenario default
 
   /* ================ Helpers ================ */
   function pad2(n){ return n < 10 ? '0'+n : ''+n; }
@@ -1084,97 +1229,65 @@
 
   /* ================ Booking HTML factory (shared by preview + type variants) ================ */
   function bookingHTML(cfg) {
-    // cfg: {catKey, presetIdx, state, endsSec}
+    // cfg: {catKey, presetIdx, type, state, ov?}  — ov = per-field visibility override map
     const list = D.catalog[cfg.catKey];
     if (!list || !list[cfg.presetIdx]) return '';
     const p = list[cfg.presetIdx];
     const t = p[cardLang];
     const s = bookingState(cfg.type, cfg.state);
     const img = D.productImages[p.img] || '';
-    const endAt = Date.now() + (cfg.endsSec == null ? s.offsetSec : cfg.endsSec) * 1000;
+    const L = cardLang;
+    const OVR = cfg.ov || {};   // field explorer overrides (empty for static type/rail blocks)
 
-    let html = '<div class="booking' + (s.modifier ? ' ' + s.modifier : '') + '" data-cd-endat="' + endAt + '" data-cd-state="' + cfg.state + '">';
+    // Discount tag (computed from sale vs RRP) — gated by data AND override
+    let discHTML = '';
+    if (bkVis('disc', true, OVR)) {
+      discHTML = '<span class="booking__disc" data-field="disc"><img src="../assets/figma-atoms/tag-discount/tag-discount.svg" alt="20% off"></span>';
+    }
 
-    // Slot 1 · image + ribbon
+    let html = '<div class="booking' + (s.modifier ? ' ' + s.modifier : '') + '" data-cd-state="' + cfg.state + '">';
+
+    // Image (left) + discount tag
     html += '<div class="booking__image">';
-    html += (img ? '<img src="'+img+'" alt="'+p.brand+'">' : '');
-    html += '<span class="booking__ribbon' + (s.ribbonClass ? ' ' + s.ribbonClass : '') + '" data-field="ribbon">' + s.ribbonLabel[cardLang] + '</span>';
+    html += (img ? '<img src="' + img + '" alt="' + p.brand + '">' : '');
+    html += discHTML;
     html += '</div>';
 
-    // Body
+    // Body (right)
     html += '<div class="booking__body">';
-
-    // Slot 2 · state chip
-    html += '<span class="booking__state-chip ' + s.chipClass + '" data-field="stateChip">' + s.chipLabel[cardLang] + '</span>';
-
-    // Slot 3 · brand + title
     html += '<div class="booking__brand" data-field="brand">' + p.brand + '</div>';
     html += '<h3 class="booking__title" data-field="title">' + t.title + '</h3>';
 
-    // Slot 4 · countdown
-    if (s.showCountdown) {
-      html += '<div class="booking__countdown-wrap" data-field="countdown">';
-      html += '<span class="booking__countdown-label">' + s.cdLabel[cardLang] + '</span>';
-      html += s.staticTime
-        ? '<span class="booking__countdown">Aug 26, 00:00</span>'
-        : '<span class="booking__countdown" data-cd-target>' + countdownHTML(cfg.endsSec == null ? s.offsetSec : cfg.endsSec, cfg.state === 'unreserved') + '</span>';
-      html += '</div>';
+    // rating (Reservation) — exported Rating & Sold atom
+    if (bkVis('rating', s.showRating, OVR)) {
+      html += '<div class="booking__rating" data-field="rating"><img src="../assets/figma-atoms/rating-sold/rate-sold.svg" alt="4.5 · 100k+ sold"></div>';
+    }
+    // stock (Happy Hour) — Figma Stock copy
+    if (bkVis('stock', s.showStock, OVR)) {
+      html += '<div class="booking__stock" data-field="stock">' + s.stockLabel[L] + '</div>';
+    }
+    // promo (Reservation) — exported Figma Individual Promotion atom
+    if (bkVis('promo', s.showPromo, OVR)) {
+      html += '<div class="booking__promo" data-field="promo"><img src="../assets/figma-atoms/individual-promotion/type-pre-sale.svg" alt="Pre-sale"></div>';
+    }
+    // time line — exported Figma new-launch-limit-time atom
+    if (bkVis('time', s.showTime, OVR)) {
+      html += '<div class="booking__time" data-field="time"><img src="../assets/figma-atoms/individual-promotion/new-launch-limit-time.svg" alt="' + s.timeLabel[L] + '"></div>';
     }
 
-    // Slot 5 · price + optional next-tier
+    // Foot: price block (left) + CTA (right)
+    html += '<div class="booking__foot">';
+    html += '<div class="booking__price-wrap">';
     html += '<div class="booking__price-line">';
-    html += '<span class="booking__price-label">' + s.priceLabel[cardLang] + '</span>';
     html += '<span class="booking__price-current" data-field="priceCurrent">' + p.salePrice + '</span>';
-    if (s.showBidNext) {
-      const num = parseFloat(p.salePrice.replace(/[^\d.]/g,''));
-      const sym = (p.salePrice.match(/[^\d.,\s]/) || ['£'])[0];
-      const stepped = sym + Math.max(0, num - 1).toFixed(2);
-      const suf = cardLang === 'en' ? ' / min' : ' / 分钟';
-      html += '<span class="booking__price-next" data-field="priceNext">' + (cardLang === 'en' ? 'Next ' + stepped + '/min' : '下一档 ' + stepped + '/分钟') + '</span>';
-    }
-    if (p.originalPrice) {
-      html += '<span class="booking__rrp">' + s.referenceLabel[cardLang] + ': ' + p.originalPrice + '</span>';
-    }
     html += '</div>';
-
-    // Slot 6 · deposit (pre-sale only)
-    if (s.showDeposit) {
-      const num = parseFloat(p.salePrice.replace(/[^\d.]/g,''));
-      const sym = (p.salePrice.match(/[^\d.,\s]/) || ['£'])[0];
-      const dep = sym + (num * 0.2).toFixed(2);
-      const fin = sym + (num * 0.8).toFixed(2);
-      html += '<span class="booking__deposit" data-field="deposit">';
-      html += cardLang === 'en'
-        ? 'Pay <b>' + dep + '</b> deposit · balance <b>' + fin + '</b>'
-        : '支付 <b>' + dep + '</b> 定金 · 尾款 <b>' + fin + '</b>';
-      html += '</span>';
+    if (p.originalPrice && bkVis('rrp', true, OVR)) {
+      html += '<div class="booking__rrp" data-field="rrp"><b>' + s.refLabel[L] + ':</b> ' + p.originalPrice + '</div>';
     }
-
-    // Slot 7 · reserved / bidders (social proof, hide if < 100)
-    if (s.showReserved) {
-      const n = Math.round(parseFloat(p.rating) * 400 + cfg.presetIdx * 132);
-      if (n >= 100) {
-        const formatted = n.toLocaleString('en-US');
-        html += '<span class="booking__reserved" data-field="reserved">';
-        if (cardLang === 'en') {
-          html += '<b>' + formatted + '</b> ' + (cfg.type === 'dutch' ? 'bidders' : 'reservations');
-        } else {
-          html += (cfg.type === 'dutch' ? '当前 <b>'+formatted+'</b> 人竞拍' : '已有 <b>'+formatted+'</b> 人预约');
-        }
-        html += '</span>';
-      }
-    }
-
-    // Ended sub-caption above CTA
-    if (s.showEndedMsg) {
-      html += '<div class="booking__ended-msg">' + (cardLang === 'en' ? 'This drop has ended.' : '本场已结束。') + '</div>';
-    }
-
-    // Slot 8 · CTA (ghost for ended)
-    html += '<div class="booking__cta-row">';
-    const ctaCls = cfg.state === 'ended' ? 'booking__cta booking__cta--ghost' : 'booking__cta';
-    html += '<button type="button" class="' + ctaCls + '" data-field="ctaLabel"' + (cfg.state === 'ended' ? ' disabled aria-disabled="true"' : '') + '>' + s.ctaLabel[cardLang] + '</button>';
-    html += '</div>';
+    html += '</div>'; // /.booking__price-wrap
+    html += '<button type="button" class="' + s.ctaClass + '" data-field="ctaLabel"'
+      + (s.ctaDisabled ? ' disabled aria-disabled="true"' : '') + '><img src="../assets/figma-atoms/notify-button/notify-button.svg" alt="' + s.cta[L] + '"></button>';
+    html += '</div>'; // /.booking__foot
 
     html += '</div>'; // /.booking__body
     html += '</div>'; // /.booking
@@ -1188,7 +1301,8 @@
       catKey: currentCat,
       presetIdx: currentPreset,
       type: currentType,
-      state: currentState
+      state: currentState,
+      ov: fieldOv
     });
   }
 
@@ -1198,7 +1312,7 @@
       { id:'type-regular', cfg:{ catKey:'beauty', presetIdx:0, type:'regular', state:'unreserved' } },
       { id:'type-dutch', cfg:{ catKey:'fashion', presetIdx:0, type:'dutch', state:'purchasing' } },
       { id:'type-dutch-reserved', cfg:{ catKey:'3c', presetIdx:0, type:'dutchReserved', state:'unreserved' } },
-      { id:'type-happyhour', cfg:{ catKey:'food', presetIdx:0, type:'happyHour', state:'purchasing' } }
+      { id:'type-happyhour', cfg:{ catKey:'food', presetIdx:0, type:'happyHour', state:'unreserved' } }
     ];
     targets.forEach(t => {
       const el = document.getElementById(t.id);
@@ -1215,7 +1329,7 @@
       ['sp-1', { catKey:'beauty', presetIdx:0, type:'regular', state:'unreserved' }],
       ['sp-2', { catKey:'fashion', presetIdx:0, type:'dutch', state:'purchasing' }],
       ['sp-3', { catKey:'3c', presetIdx:0, type:'dutchReserved', state:'unreserved' }],
-      ['sp-4', { catKey:'food', presetIdx:0, type:'happyHour', state:'purchasing' }]
+      ['sp-4', { catKey:'food', presetIdx:0, type:'happyHour', state:'unreserved' }]
     ];
     map.forEach(([id, cfg]) => {
       const el = document.getElementById(id);
@@ -1223,34 +1337,127 @@
     });
   }
 
-  /* ================ Control strips ================ */
-  function renderBusinessStrip() {
-    const strip = document.getElementById('business-strip');
-    strip.innerHTML = '';
-    BUSINESS_TYPES.forEach(type => {
+  /* ================ Field explorer · scenario tabs + field toggles + reset ================ */
+
+  // Which gated fields (need real price data) does the current preset actually carry?
+  function bkAvail() {
+    const p = (D.catalog[currentCat] || [])[currentPreset];
+    if (!p) return { disc:false, rrp:false };
+    const sv = parseFloat((p.salePrice || '').replace(/[^\d.]/g, ''));
+    const rrpNum = parseFloat((p.originalPrice || '').replace(/[^\d.]/g, ''));
+    const pct = (sv && rrpNum && rrpNum > sv) ? Math.round((1 - sv / rrpNum) * 100) : 0;
+    return { disc: pct > 0, rrp: !!p.originalPrice };
+  }
+
+  // The scenario's canonical field defaults (before any override).
+  function bkDefaults() {
+    const s = bookingState(currentType, currentState);
+    const a = bkAvail();
+    return {
+      disc: a.disc, rating: s.showRating, stock: s.showStock,
+      promo: s.showPromo, time: s.showTime, rrp: a.rrp
+    };
+  }
+
+  function renderSceneTabs() {
+    const host = document.getElementById('scene-tabs');
+    if (!host) return;
+    host.innerHTML = '';
+    BK_SCENES.forEach(sc => {
       const btn = document.createElement('button');
-      btn.className = 'chip-btn' + (type.key === currentType ? ' is-active' : '');
-      btn.textContent = type.label;
-      btn.addEventListener('click', () => {
-        currentType = type.key;
-        renderBusinessStrip();
-        renderPreview();
-      });
-      strip.appendChild(btn);
+      btn.type = 'button';
+      btn.className = 'scene-tab' + (sc.key === sceneKey ? ' is-active' : '');
+      btn.innerHTML = sc.label[cardLang] + '<span class="scene-tab__sub">' + sc.sub[cardLang] + '</span>';
+      btn.addEventListener('click', () => applyScene(sc.key));
+      host.appendChild(btn);
     });
   }
 
-  function renderStateStrip() {
-    const strip = document.getElementById('state-strip');
-    strip.innerHTML = '';
-    STATE_ORDER.forEach(key => {
-      const btn = document.createElement('button');
-      btn.className = 'chip-btn' + (key === currentState ? ' is-active' : '');
-      btn.textContent = STATE_STRIP_LABEL[key];
-      btn.addEventListener('click', () => { currentState = key; renderStateStrip(); renderPreview(); });
-      strip.appendChild(btn);
-    });
+  // Scenario switch drives the live card AND resets overrides to that type's default field set.
+  function applyScene(key) {
+    const sc = BK_SCENES.find(s => s.key === key);
+    if (!sc) return;
+    sceneKey = key;
+    currentType = sc.cfg.type;
+    currentState = sc.cfg.state;
+    fieldOv = {};
+    renderSceneTabs();
+    renderPreview();
+    renderFieldSim();
   }
+
+  function renderFieldSim() {
+    const host = document.getElementById('bk-sim');
+    if (!host) return;
+    const T = BK_SIM_TXT[cardLang];
+    const avail = bkAvail();
+    const def = bkDefaults();
+    const hasOv = Object.keys(fieldOv).length > 0;
+
+    const UI = UI_COPY[cardLang];
+    let html = '<div class="field-sim__head">'
+      + '<div class="field-sim__title">' + UI.fields + '</div>'
+      + '<button class="field-sim__reset" type="button" id="bk-reset" aria-disabled="'
+        + (hasOv ? 'false' : 'true') + '">' + UI.reset + '</button>'
+      + '</div>';
+
+    html += '<div class="sim-group"><div class="sim-group__head">'
+      + '<span class="sim-group__name">' + T.fields + '</span></div>';
+
+    BK_FIELDS.forEach(f => {
+      const gatedOff = f.gated && !avail[f.key];
+      const baseDef = f.gated ? true : def[f.key];
+      const on = gatedOff ? false : bkVis(f.key, baseDef, fieldOv);
+      const overridden = fieldOv[f.key] != null;
+      let cls = 'sim-row';
+      if (on) cls += ' is-picked';
+      if (gatedOff) cls += ' is-disabled';
+      if (overridden && !gatedOff) cls += ' is-overridden';
+      const right = gatedOff
+        ? '<span class="sim-row__na">' + T.na + '</span>'
+        : '<button class="sim-sw" type="button" role="switch" aria-checked="' + (on ? 'true' : 'false') + '" '
+          + 'aria-label="' + f.label[cardLang] + '" data-field-key="' + f.key + '"></button>';
+      html += '<div class="' + cls + '">'
+        + '<span class="sim-row__label">'
+        +   '<span class="sim-row__name">' + f.label[cardLang] + '</span>'
+        + '</span>'
+        + right + '</div>';
+    });
+    html += '</div>';
+
+    host.innerHTML = html;
+  }
+
+  // Deterministic explanation: which fields the current scenario shows (bold = manually changed).
+  // Delegated handler: field switches + reset button.
+  (function wireFieldSim(){
+    const host = document.getElementById('bk-sim');
+    if (!host) return;
+    host.addEventListener('click', e => {
+      const sw = e.target.closest('.sim-sw');
+      if (sw && sw.getAttribute('aria-disabled') !== 'true') {
+        const key = sw.getAttribute('data-field-key');
+        const f = BK_FIELDS.find(x => x.key === key);
+        if (!f) return;
+        const def = bkDefaults();
+        const baseDef = f.gated ? true : def[key];
+        const newVal = sw.getAttribute('aria-checked') !== 'true';
+        // if the new value equals the scenario default, drop the override (follow default again)
+        if (newVal === !!baseDef) delete fieldOv[key];
+        else fieldOv[key] = newVal;
+        renderPreview();
+        renderFieldSim();
+        return;
+      }
+      const reset = e.target.closest('#bk-reset');
+      if (reset && reset.getAttribute('aria-disabled') !== 'true') {
+        fieldOv = {};
+        renderPreview();
+        renderFieldSim();
+      }
+    });
+  })();
+
   function renderCatStrip() {
     const strip = document.getElementById('cat-strip');
     strip.innerHTML = '';
@@ -1260,7 +1467,7 @@
       btn.textContent = c.label;
       btn.addEventListener('click', () => {
         currentCat = c.key; currentPreset = 0;
-        renderCatStrip(); renderPresetStrip(); renderPreview();
+        renderCatStrip(); renderPresetStrip(); renderPreview(); renderFieldSim();
       });
       strip.appendChild(btn);
     });
@@ -1273,7 +1480,7 @@
       const btn = document.createElement('button');
       btn.className = 'chip-btn' + (idx === currentPreset ? ' is-active' : '');
       btn.textContent = p.brand;
-      btn.addEventListener('click', () => { currentPreset = idx; renderPresetStrip(); renderPreview(); });
+      btn.addEventListener('click', () => { currentPreset = idx; renderPresetStrip(); renderPreview(); renderFieldSim(); });
       strip.appendChild(btn);
     });
   }
@@ -1421,26 +1628,24 @@
     });
   }
   renderUsedIn();
+  window.addEventListener('joybuy:languagechange', (event) => {
+    setCardLang(event.detail && event.detail.language);
+    renderUsedIn();
+    if (uframe && uframe.classList.contains('is-open') && uOpenId) {
+      const page = PD.pages.filter(item => item.id === uOpenId)[0];
+      if (page) fillFrame(page);
+    }
+  });
 
   function setCardLang(lang) {
-    cardLang = lang;
-    document.querySelectorAll('.lang-toggle__btn').forEach(b => b.classList.toggle('is-active', b.dataset.lang === lang));
-    document.querySelectorAll('#sp-lang [data-sp-lang]').forEach(b => b.classList.toggle('is-active', b.dataset.spLang === lang));
+    cardLang = lang === 'en' ? 'en' : 'zh';
+    updateControlCopy();
+    renderSceneTabs();
+    renderFieldSim();
     renderPreview();
     renderTypeBlocks();
     renderPreviewStack();
   }
-  document.getElementById('lang-toggle').addEventListener('click', e => {
-    const btn = e.target.closest('.lang-toggle__btn');
-    if (!btn) return;
-    setCardLang(btn.dataset.lang);
-  });
-  document.getElementById('sp-lang').addEventListener('click', e => {
-    const btn = e.target.closest('[data-sp-lang]');
-    if (!btn) return;
-    setCardLang(btn.dataset.spLang);
-  });
-
   /* ================ Global countdown tick — every card with data-cd-endat ================ */
   function tickAllCountdowns() {
     document.querySelectorAll('.booking[data-cd-endat]').forEach(card => {
@@ -1471,10 +1676,11 @@
   window.addEventListener('scroll', updateTabs, { passive: true });
 
   /* ================ Init ================ */
-  renderBusinessStrip();
-  renderStateStrip();
+  updateControlCopy();
+  renderSceneTabs();
   renderCatStrip();
   renderPresetStrip();
+  renderFieldSim();
   renderPreview();
   renderTypeBlocks();
   renderPreviewStack();

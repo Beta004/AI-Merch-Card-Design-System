@@ -68,13 +68,13 @@
     ['选型指南——业务场景 × 页面/楼层 决策矩阵；变更记录——按版本追踪迭代。', 'A scenario-to-page decision guide plus a versioned changelog.'],
     ['这里收纳 Joybuy 站内所有商品卡片：从最小原子（价格、图片、按钮）一路往上，到楼层与页面里被组装的商卡实例。 目标是让设计师、产品、工程师在同一份规范上对齐，减少沟通与走查成本。', 'This system contains every Joybuy product-card pattern, from foundational atoms such as price, image, and button through complete cards assembled in sections and pages. It gives design, product, and engineering one shared source of truth.'],
     ['The single source of truth for how a product looks anywhere it appears.', 'The single source of truth for how a product looks anywhere it appears.'],
-    ['浏览 19 个原子组件 →', 'Browse 19 atomic components →'],
+    ['浏览 32 个原子组件 →', 'Browse 32 atomic components →'],
     ['看 Vertical Card 详情', 'View Vertical Card'],
     ['信息架构', 'Information Architecture'],
     ['每张商卡的详情结构', 'Product Card Documentation Template'],
     ['三轮迭代累计交付：', 'Delivered across three iterations:'],
     ['导航骨架、概览、Foundations 全 3 页、原子组件浏览器、商卡 7/7 全上线', 'navigation, overview, all three Foundations pages, the atomic-component browser, and all seven product cards'],
-    ['原子组件（', 'Atomic components ('], ['19 原子 · 105 变体', '19 atoms · 105 variants'],
+    ['原子组件（', 'Atomic components ('], ['33 原子 · 149 变体', '33 atoms · 149 variants'],
     ['）+ 商卡（', ') + Product cards ('], ['7 张详情页', '7 detail pages'],
     ['，Vertical / Horizontal / Mini / Scroll / Campaign / Booking / Small Dynamic）+ Foundations（Tokens · Typography · Iconography）全部按 Figma 源图落地。', ', Vertical / Horizontal / Mini / Scroll / Campaign / Booking / Small Dynamic) + Foundations (Tokens · Typography · Iconography), all aligned with Figma.'],
     ['视觉：亮色为主 · 曜石暗色可切换 · 克制彩色点缀', 'Visual language: light-first · optional obsidian dark mode · restrained color accents'],
@@ -110,12 +110,12 @@
     ['在商卡里，字号 × 字重 × 颜色 × 行距的组合被高度收敛。以下 6 种是"看到就一眼认出"的用途型样式。', 'Product cards use a tightly constrained combination of size, weight, color, and line height. The six styles below should be recognizable at a glance.'],
     ['Iconography · 105 Figma-exported SVGs · click to copy path', '105 SVGs exported from Figma · select an icon to copy its path'],
     ['全部图标由 Figma REST API 从 Joybuy 商卡组件库导出为 SVG，落在 site/assets/figma-atoms/ category / name .svg 。 点任意图标即可复制 var() -可用的相对路径。禁止手绘 icon 二次修改，改动请在 Figma 源文件里更新后重新导出。', 'All icons are exported as SVG from the Joybuy product-card library through the Figma REST API. Select an icon to copy its relative asset path. Do not redraw icons locally; update the Figma source and export again.'],
-    ['用户扫视商卡时最先捕获的视觉锚点。Product Highlights 走枚举驱动（9 枚 SVG 对应 9 个 enum key）， AI Recommendation 与 Dietary Badges 是补充分组。', 'The first visual anchors users notice while scanning a card. Product Highlights are enum-driven, with nine SVGs mapped to nine keys; AI Recommendation and Dietary Badges provide supporting groups.'],
+    ['用户扫视商卡时最先捕获的视觉锚点。Product Highlights 走枚举驱动（7 枚 SVG 对应 7 个 Figma 变体）， AI Recommendation 与 Dietary Badges 是补充分组。', 'The first visual anchors users notice while scanning a card. Product Highlights are enum-driven, with seven SVGs mapped to seven Figma variants; AI Recommendation and Dietary Badges provide supporting groups.'],
     ['直接与用户手指发生交互的按钮 · 加购按钮全 11 状态、收藏/点赞按钮的 3 状态。', 'Controls users interact with directly, including all 11 add-to-cart states and three favorite states.'],
     ['物流承诺、卖家类型、库存状态相关的图形。灰阶为主，用来在信息层次上把"次级信息"和主内容拉开距离。', 'Graphics for fulfillment promises, seller types, and stock states. A grayscale treatment keeps this supporting information below primary content.'],
     ['价格主行、促销副行、大促标签等富含数字的组合。这些 SVG 内含 tabular-nums 版式，直接嵌入卡片无需二次排版。', 'Number-heavy combinations for primary price, secondary promotion lines, and campaign labels. These SVGs already use tabular figures and need no extra layout work.'],
     ['颜色/能效/等级等属性型图形，用于辅助信息展示。使用频率较低但每张商卡都可能出现一到两个。', 'Supporting graphics for color, energy rating, and other attributes. They appear less often, but one or two may be present on any card.'],
-    ['19 个业务原子组件，跟 Figma App Business Components 目录 1:1 对齐。每个原子按自身语义记录尺寸规格或 Types；可导出的变体图片直接来自 Figma 源文件。', 'Nineteen business atoms aligned 1:1 with the Figma App Business Components library. Each atom documents either size specifications or Types according to its semantics; exportable variant artwork comes directly from Figma.'],
+    ['32 个业务原子组件、148 个 Figma 变体，跟 App Business Components · Product Card Atomic Components 对齐。每个变体同时展示 Figma 命名与源文案，图片直接导出自 Figma 源文件。', 'Thirty-two business atoms and 148 Figma variants aligned with App Business Components · Product Card Atomic Components. Each variant shows its Figma name and source copy; artwork is exported directly from Figma.'],
     ['标签角标', 'Tags & Badges'], ['图片容器', 'Image Containers'], ['文本信息', 'Product Information'],
     ['价格促销', 'Pricing & Promotions'], ['状态物流', 'Status & Fulfillment'], ['交互', 'Interaction'],
     ['附着在商品图或商品卡角落的图标 / 徽标类原子，用于快速传达商品状态、荣誉标识或个性化属性。', 'Icons and badges attached to product imagery or card corners to communicate status, recognition, or personalized attributes at a glance.'],
@@ -127,15 +127,14 @@
     ['7 张商卡，每种对应特定的浏览场景与信息密度诉求。从最常用的双列信息流商卡，到活动落地页的强化倒计时形态。将根据业务实践持续更新商卡类型，敬请留意变更记录。', 'Seven product-card patterns for different browsing contexts and information-density needs, from the common two-column feed card to campaign and countdown experiences.'],
     ['图文并重的默认商卡形态。覆盖首页、搜索、类目、购物车、店铺等基础浏览场景。', 'Default product-card patterns that balance imagery and information across home, search, category, cart, and store experiences.'],
     ['强化特定售卖形态的场景化商卡。活动氛围、倒计时售卖、入口曝光。', 'Scenario-specific cards for campaign atmosphere, countdown selling, and high-density entry points.'],
-    ['最常用的商品卡片，在首页信息流、分类页、搜索结果双列视图里以 176px 宽出现。 图片主导（1:1 正方形），信息层次从上到下：品牌 → 标题 → 评分销量 → 价格与折扣 → 促销 → 履约 → 售卖方 + 加购。', 'The most common product card, used at 176 px in two-column home, category, and search feeds. A square image leads, followed by brand, title, rating and sales, pricing, promotion, fulfillment, seller, and cart action.'],
-    ['11 个槽位，从上到下垂直堆叠。图像区固定 1:1，其他槽位按内容自适应高度。非必填字段值为空时整行不渲染，也不留 gap 空隙。', 'Eleven vertically stacked slots. The image stays square while all other slots size to content. Empty optional fields collapse without leaving gaps.'],
+    ['最常用的商品卡片，在首页信息流、分类页、搜索结果双列视图里以 200px 卡片框架出现，其中商品图片容器固定为 176×176。 图片下方由两个内容容器组成：Container 01（亮点 → 品牌 → 标题 → 评分/销量 → AI 推荐理由，间距 4px）与 Container 02（左右 padding 6px；上组：Individual Promotion / Type 单促/业务类型 → 价格 → 总促，下组：库存 → 履约时效 → 自营标签 → 服务 → 原产地 → 性能，组内间距 4px，组间 8px；加购按钮在右侧，与左列间距 4px），两容器间距 8px。', 'The most common product card, used at 200 px in two-column home, category, and search feeds, with a fixed 176×176 product image. Below the image, two content containers stack 8 px apart: Container 01 (highlight → brand → title → rating/sales → AI reason, 4 px gaps) and Container 02 (6 px horizontal padding; top group: Individual Promotion / Type → price → master promotion; bottom group: stock → fulfillment → self-operated tag → service → country of origin → performance, 4 px gaps within each group and 8 px between groups; cart button on the right, 4 px from the left column).'],
     ['同一骨架下已投放的变体。差异在于「显示哪些槽位」和「加购按钮的形态」，价格与图片主体保持一致。', 'Released variants share one structure and differ only in visible slots and cart-button state; price and imagery remain consistent.'],
     ['每个字段的来源、类型、异常兜底与多语言约定。前后端联调、埋点、A/B 都以本表为准。', 'This contract defines source, type, fallback, and localization behavior for implementation, analytics, and experiments.'],
     ['这张卡片被 3 个楼层和 4 个页面复用。改动骨架或字段规则时，需要同步 review 下列位置。', 'This card is reused across three sections and four pages. Review every location below when changing its structure or field rules.'],
     ['选卡先看展示位与信息密度需求，再看是否需要「操作」（加购 / 收藏）。', 'Choose a card by placement and information density first, then by required actions such as cart or favorite.'],
     ['结构主图直接嵌入 App Business Components 文件的 Vertical card 节点。变体截图在上方 Types 段单独提供。', 'The structure is embedded directly from the Vertical Card node in App Business Components. Variant previews are documented in the Types section.'],
     ['图像置左、内容右侧堆叠的商品卡片。适合列表流场景，1 行显示 1 张卡， 最常出现在购物车、收藏夹、订单列表、搜索建议下拉。相比双列版信息层次更紧凑，商品图片使用 130×130 规格。', 'A one-per-row product card with a 130×130 product image on the left and stacked content on the right. It is designed for carts, favorites, order lists, and search suggestions.'],
-    ['8 个槽位 · 图像左对齐固定 130×130，内容区在右侧垂直堆叠。 非必填字段值为空时整行不渲染，也不留 gap 空隙；本卡片默认没有单价/押金行。', 'Eight slots with a fixed 130×130 image and a vertical content stack. Empty optional rows collapse, and unit-price or deposit rows are omitted by default.'],
+    ['8 个槽位 · 图像左对齐固定 130×130，内容区在右侧垂直堆叠。 非必填字段值为空时整行不渲染，也不留 gap 空隙；本卡片默认没有押金行。', 'Eight slots with a fixed 130×130 image and a vertical content stack. Empty optional rows collapse, and deposit rows are omitted by default.'],
     ['横向卡有 4 种常用形态，全部来自同一份数据模型，靠开关字段和状态类切换。', 'Four common horizontal-card variants share one data model and switch through field visibility and state classes.'],
     ['与双列卡共享 Product 类型，本卡片默认省略 colors / perUnit / deposit ， 其余字段与 Vertical Card 完全一致。', 'Shares the Product type with Vertical Card while omitting colors, perUnit, and deposit by default.'],
     ['横向卡出现在需要用户"逐条浏览、逐条操作"的列表场景。', 'Use the horizontal card in lists where users review and act on items one by one.'],
@@ -180,14 +179,19 @@
     ['仅 3C 数码 与 大家电 显示配色控件；其余品类隐藏。', 'Color controls appear only for Digital and Appliances; all other categories hide them.'],
     ['点击缩略图切换商品，或直接点击卡片主图循环预设。', 'Select a thumbnail to switch products, or select the card image to cycle through presets.'],
     ['只切换商卡内容语言，不影响全站文档语言。', 'Changes product-card content only; the documentation language is controlled globally.'],
-    ['这张卡的 11 个槽位分别由哪些原子组件填充。所有原子图像直接来自 Figma 源文件，与商卡视觉严格一致。点击原子名可跳到原子浏览器查看全部变体。', 'These eleven slots map directly to Figma atoms. Every atomic visual comes from the source file; select an atom name to inspect all of its variants.'],
+    ['这张卡的 17 个槽位分别由哪些原子组件填充。所有原子图像直接来自 Figma 源文件，与商卡视觉严格一致。点击原子名可跳到原子浏览器查看全部变体。', 'These seventeen slots map directly to Figma atoms. Every atomic visual comes from the source file; select an atom name to inspect all of its variants.'],
     ['商品图', 'Product image'], ['色板', 'Color swatches'], ['亮点', 'Highlight'], ['品牌', 'Brand'],
-    ['标题', 'Title'], ['营销标', 'Promotion'], ['价格行', 'Price row'], ['单价 / 押金', 'Unit price / deposit'],
-    ['履约', 'Fulfillment'], ['1 行变体', '1-line variant'], ['2 行变体', '2-line variant'],
+    ['标题', 'Title'], ['单促/业务类型', 'Individual Promotion / Type'], ['价格行', 'Price row'], ['押金', 'Deposit'],
+    ['履约时效', 'Fulfillment time'], ['自营标签', 'Self-operated tag'], ['服务', 'Service'], ['原产地', 'Country of origin'],
+    ['性能', 'Performance'], ['少库存', 'Low stock'], ['总促', 'Master promotion'], ['AI 推荐理由', 'AI reason'],
+    ['1 行变体', '1-line variant'], ['2 行变体', '2-line variant'],
     ['3 变体', '3 variants'], ['4 变体', '4 variants'], ['6 变体', '6 variants'],
-    ['9 变体', '9 variants'], ['11 变体', '11 variants'], ['最常用', 'Most used'],
+    ['7 变体', '7 variants'], ['14 变体', '14 variants'], ['19 变体', '19 variants'], ['11 变体', '11 variants'], ['最常用', 'Most used'],
     ['下架 · 断货', 'Delisted · sold out'], ['榜单 · 关联推荐', 'Ranking · related recommendations'],
     ['商品主档', 'Product catalog'], ['CDN 首图', 'Primary CDN image'], ['价格服务实时', 'Real-time pricing service'],
+    ['Card Content Container 01（容器 01）· 纵向 gap 4 · 左右 padding 6', 'Card Content Container 01 · vertical gap 4 · horizontal padding 6'],
+    ['Card Content Container 02（容器 02）· 左右 padding 6 · 左列纵向 gap 4 / 8 · 按钮右列 gap 4', 'Card Content Container 02 · horizontal padding 6 · left column vertical gap 4 / 8 · button column gap 4'],
+    ['Media（媒体）· 商品图 / 色板', 'Media · product image / color swatches'],
     ['价格服务', 'Pricing service'], ['价格服务计算', 'Calculated by pricing service'], ['运营 CMS', 'Operations CMS'],
     ['评价服务', 'Review service'], ['订单服务', 'Order service'], ['营销服务', 'Promotion service'],
     ['履约服务', 'Fulfillment service'], ['商户档', 'Merchant profile'], ['SKU 主档', 'SKU catalog'], ['SKU 计数', 'SKU count'],
@@ -254,11 +258,11 @@
     , ['荷兰拍、闪购活动列表入口 · Urgency 主题 · 深黑 + 强倒计时 + "仅剩 2 小时"文案 · 强冲动型转化位。', 'An Urgency theme for Dutch auctions and flash-sale entries, using a dark surface, strong countdown, and impulse-led copy.']
     , ['选活动商卡当', 'Choose Campaign Card when'], ['选普通商品楼层当', 'Choose a standard product section when']
     , ['灰底 ribbon + 距开抢倒计时 + 定金 chip + reserved count。CTA " Reserve for £X " 收定金。', 'Gray ribbon, countdown to launch, deposit chip, reservation count, and a Reserve for £X CTA.']
-    , ['红边 + 距结束倒计时 + 主 CTA "Buy now" + 当前销量 chip。Live 圆点脉动 · 倒计时也变红。', 'Red accent, countdown to end, Buy now CTA, sales chip, and a pulsing Live indicator.']
+    , ['红边 + 距结束倒计时 + 主 CTA "Notify" + 当前销量 chip。Live 圆点脉动 · 倒计时也变红。', 'Red accent, countdown to end, Notify CTA, sales chip, and a pulsing Live indicator.']
     , ['紫边 + 紫倒计时 + 当前价（每分钟 −£1） + 下一档 £YYY + "Place bid" CTA + 当前竞拍人数。', 'Purple accent and countdown, current price with the next price tier, Place bid CTA, and active bidder count.']
     , ['.booking--dim 55% 透明度 + "This drop has ended" 说明 + "See similar →" ghost 按钮。倒计时行完全隐藏。', 'Uses .booking--dim at 55% opacity with an ended message and See similar ghost action; the countdown is hidden.']
     , ['Apple 新品、Diptyque 限量首发。 state=soon · ribbon 灰 · CTA 收定金。 用户预约成功后同一张卡切到 state=live 状态。', 'For Apple launches and Diptyque limited releases. state=soon uses a gray ribbon and deposit CTA, then switches to state=live after launch.']
-    , ['大促主会场"整点抢"栏目。 state=live · ribbon 红 · 倒计时红调脉动。 CTA 直接 "Buy now" 跳到收银台。', 'For hourly drops in major campaigns. state=live uses a red ribbon and pulsing countdown, with Buy now linking directly to checkout.']
+    , ['大促主会场"整点抢"栏目。 state=live · ribbon 红 · 倒计时红调脉动。 CTA 使用 Figma Notify Button。', 'For hourly drops in major campaigns. state=live uses a red ribbon and pulsing countdown, using the Figma Notify Button atom.']
     , ['每分钟 -£1 的荷兰拍。 state=auction · ribbon 紫 · 当前价随时间下滑 · 用户可锁定当前档位出价。', 'For Dutch auctions that drop by £1 per minute. state=auction uses purple, lowers the price over time, and lets users lock the current tier.']
     , ['已结束的场次归档。 state=ended · dim 55% · "See similar →" 引流到常规商卡。 保留在池内供 SEO 与用户回访使用。', 'Archived events use state=ended at 55% opacity with See similar linking to standard cards, while remaining available for SEO and revisits.']
     , ['选 Booking / Auction 当', 'Choose Booking / Auction when'], ['选 Vertical / Horizontal 当', 'Choose Vertical / Horizontal when']
@@ -297,7 +301,7 @@
     , ['物流承诺、卖家类型、库存状态。3 家族 · 6 图标。', 'Delivery promises, seller types, and stock states. 3 families · 6 icons.']
     , ['价格主行、副行、总促、单个促销活动、Plus 会员价 · 5 家族 · 48 图标。', 'Primary and secondary prices, order-level and item promotions, and Plus pricing · 5 families · 48 icons.']
     , ['颜色球、能效标、评分、标题、原始属性、图片容器 · 6 家族 · 21 图标。', 'Color swatches, energy labels, ratings, titles, raw attributes, and image containers · 6 families · 21 icons.']
-    , ['9 枚枚举驱动的商品亮点 · 按 enum key 一一对应，绝不换标签图。', 'Nine enum-driven product highlights mapped one-to-one to enum keys; never substitute badge artwork.']
+    , ['7 枚 Figma 商品亮点 · Sponsored / Best Before / New&Hot / Top Deal / Private Label / New / Too Good To Waste。', 'Seven Figma product highlights: Sponsored, Best Before, New&Hot, Top Deal, Private Label, New, and Too Good To Waste.']
     , ['2 变体', '2 variants'], ['8 变体', '8 variants'], ['10 变体', '10 variants'], ['13 变体', '13 variants']
     , ['AI 推荐理由标签 · 与产品亮点二选一，同一张商卡不并存。', 'AI recommendation reason badge; mutually exclusive with product highlights on the same card.']
     , ['食品类目的饮食属性标识 · 素食/清真/无麸质 · 冷冻/有机等。', 'Dietary labels for food, including vegetarian, halal, gluten-free, frozen, and organic.']
@@ -305,7 +309,7 @@
     , ['履约时间提示 · 分自营与 POP 两种卡车图标。', 'Fulfillment timing with separate truck icons for first-party and marketplace sellers.']
     , ['卖家标识前置图标 · Joybuy 自营 vs POP 第三方。', 'Leading seller icon distinguishing Joybuy first-party from third-party marketplace sellers.']
     , ['库存状态标签 · 低库存红色警示 / 脱销灰底遮罩。', 'Stock-state labels: red warning for low stock and a gray overlay for sold out.']
-    , ['售价主行的 11 种排布 · 单价 / 起价 / 区间 / 折扣百分比 / Save 金额 / RRP 划线 / Plus 会员价等。', 'Eleven primary-price layouts covering unit, starting, range, percentage discount, savings, struck-through RRP, and Plus price.']
+    , ['Figma Price 全 10 个变体 · Range / Starting price / Sale-Save / Sale-percent / Bought separately / Default。', 'All 10 Figma Price variants: Range, Starting price, Sale-Save, Sale-percent, Bought separately, and Default.']
     , ['价格辅助副行 · RRP / Was / PPR 折扣 · 分横向与竖向两套。', 'Secondary price rows for RRP, Was, and PPR discount in horizontal and vertical layouts.']
     , ['Plus 会员专享价 · 与总促搭配的 3 种版式。', 'Three Plus member-price layouts paired with order-level promotions.']
     , ['整卡叠加的总促标签 · 满减 / N 件 M 折 / 买赠 / 积分 / 虚拟礼包 5 类。', 'Card-level promotion labels for threshold discounts, multibuy, gifts, points, and virtual bundles.']
@@ -447,7 +451,7 @@
     , ['首页大促 / 频道页头部 / 品牌日', 'Home campaign / Channel header / Brand day']
     , ['品牌入口 / 频道快捷 / 直播清单 / 店铺装修', 'Brand entry / Channel shortcut / Live list / Store decoration']
     , ['Sale 大促', 'Sale'], ['Brand 品牌日', 'Brand Day'], ['Seasonal 季节', 'Seasonal'], ['Urgency 闪购', 'Urgency']
-    , ['· 9 变体', '· 9 variants'], ['· 6 变体', '· 6 variants'], ['· 4 变体', '· 4 variants'], ['· 3 变体', '· 3 variants']
+    , ['· 7 变体', '· 7 variants'], ['· 6 变体', '· 6 variants'], ['· 4 变体', '· 4 variants'], ['· 3 变体', '· 3 variants']
     , ['· 2 行 clamp 13/500', '· Two-line clamp at 13/500'], ['· 单行 14/700', '· Single line at 14/700'], ['· ★ + 已售', '· ★ + sold count'], ['· 卡车 + 灰字', '· Truck + gray text']
     , ['· 12px 高', '· 12 px high'], ['· 无分隔线 · 一行', '· No divider · One line'], ['浮在 body 右上', 'Floats at the body top-right']
     , ['主题背景', 'Theme background'], ['高 60~90px · 4 种主题渐变 · 承载所有 slogan 文字', '60–90 px high · Four theme gradients · Contains all slogan copy']
@@ -568,7 +572,7 @@
     , ['别用 title 完整名称塞进 label · 只放品牌名或活动名，一行必截', 'Do not put a full title in label; use only the brand or campaign name and always truncate to one line']
 
     /* Inline fragments split by preserved code, links, or component names. */
-    , ['19 个原子 ·', '19 atoms ·']
+    , ['32 个原子 ·', '32 atoms ·']
     , ['没有找到与', 'No icons match'], ['。 点任意图标即可复制', '. Select any icon to copy its']
     , ['是"视觉一模一样"的底线—— 商卡里的每一个图标都必须来自这份目录， 不允许用 Unicode 字符（如 ★）或 CSS 手绘（如', 'is the baseline for pixel-perfect consistency. Every product-card icon must come from this catalog; never use Unicode characters such as ★ or hand-drawn CSS such as']
     , ['Tokens 是设计系统的基础层：颜色、字号、圆角、阴影、间距等都以 CSS 变量的形式落在', 'Tokens are the foundation of the design system. Colors, type sizes, radii, shadows, and spacing are defined as CSS variables in']
@@ -582,7 +586,7 @@
     , ['双重信号', 'Dual signal'], ['社交证明 · 灰字 11/400 · 数字加粗', 'Social proof · Gray 11/400 text · Bold count']
     , ['主 CTA · label 随 state 切换 · 结束态灰化', 'Primary CTA · Label follows state · Muted when ended']
     , ['枚举 + 由前端映射派生其他字段。', 'enum; derive all other fields from a frontend mapping.'], ['不允许', 'Not allowed']
-    , ['状态。', 'state.'], ['· ribbon 红 · 倒计时红调脉动。 CTA 直接 "Buy now" 跳到收银台。', '· Red ribbon and pulsing countdown. “Buy now” links directly to checkout.']
+    , ['状态。', 'state.'], ['· ribbon 红 · 倒计时红调脉动。 CTA 使用 Figma Notify Button。', '· Red ribbon and pulsing countdown. using the Figma Notify Button atom.']
     , ['· ribbon 紫 · 当前价随时间下滑 · 用户可锁定当前档位出价。', '· Purple ribbon; the current price drops over time and users can bid at the current tier.']
     , ['ribbon 与 state-chip 必须来自同一个', 'ribbon and state-chip must come from the same']
     , ['别把 ribbon 颜色写死 · 一定要', 'Do not hard-code ribbon colors; always']
@@ -616,7 +620,7 @@
     , ['· 商品图', '· Product image'], ['Product Image 商品图片', 'Product Image'], ['· 色板', '· Color swatches']
     , ['· 亮点', '· Highlights'], ['· 品牌', '· Brand'], ['· 1 行变体', '· One-line variant'], ['· 标题', '· Title']
     , ['· 2 行变体', '· Two-line variant'], ['· 营销标', '· Promotion'], ['· 价格行', '· Price row']
-    , ['· 单价 / 押金', '· Unit price / Deposit'], ['· 履约', '· Fulfillment'], ['· 11 变体', '· 11 variants']
+    , ['· 押金', '· Deposit'], ['· 履约', '· Fulfillment'], ['· 11 变体', '· 11 variants']
     , ['全部图标由 Figma REST API 从 Joybuy 商卡组件库导出为 SVG，落在', 'All icons are exported as SVG from the Joybuy product-card library through the Figma REST API and stored in']
     , ['hover 抬起、', 'for hover elevation,'], ['Joybuy 字体系统由两个 token 家族撑起：', 'The Joybuy type system uses two token families:']
     , ['商卡里 rating · sold 组合展示评分（', 'In product cards, rating · sold displays the rating (']
@@ -632,11 +636,11 @@
     , ['与', 'and'], ['楼层标题 +', 'Section title +'], ['—— 直接复用 SKU', '— directly reuse the SKU']
     , ['Small Dynamic 与 Mini / Horizontal 共享', 'Small Dynamic shares the'], ['image 铺满 ·', 'Full-bleed image ·']
     , ['1:1 方形 ·', '1:1 square ·'], ['/ 数量 ·', '/ quantity ·'], ['带脉冲圆点 ·', 'with a pulsing dot ·']
-    , ['单价（如', 'Unit price (for example'], ['"Sold by …" 文本标签 +', '“Sold by …” text label +']
+    , ['"Sold by …" 文本标签 +', '“Sold by …” text label +']
     , ['3 层阴影：', 'Three shadow levels:']
     , ['切换', 'Switch'], ['Ribbon 与 state-chip', 'Ribbon and state-chip']
     , ['4 个状态变体共享 8 槽位骨架 ·', 'Four state variants share the same eight-slot structure ·']
-    , ['Apple 新品、Diptyque 限量首发。', 'Apple launches and Diptyque limited releases.']
+    , ['Apple 新品、Figma 标题变体首发。', 'Apple launches and Figma title variants.']
     , ['SKU 目录', 'SKU catalog'], ['类型，本卡片默认省略', 'type; this card omits']
     , ['共享', 'shares'], ['的 flex 容器， 槽', 'flex container, with the'], ['横滑楼层是"容器 + N 张商卡"的组合，自身字段极少，主内容全在', 'A horizontal section combines a container with N product cards. It owns very few fields; primary content lives in']
     , ['左上角标 · clip-path 斜切 ·', 'Top-left ribbon · Angled with clip-path ·']
