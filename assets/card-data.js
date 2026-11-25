@@ -548,6 +548,39 @@
     'Notify Button': ['Notify']
   };
 
+  // Localized preview copy for the card-only language switch. Figma source strings
+  // remain the English master; this map provides the corresponding Chinese demo copy.
+  const PREVIEW_COPY_ZH = {
+    'Seeded Sourdough Bread\nSystem': '发酵酸种面包\n套装',
+    'French Door Refrigerator Freeze Ice & Water': '法式双开门冰箱\n制冰饮水',
+    'iPhone 16 Pro Max 256GB Black Titanium': 'iPhone 16 Pro Max 256GB 黑色钛金属',
+    '100k+ sold': '已售 10万+',
+    'Save 18% on RRP': 'RRP 立省 18%',
+    '18% off': '立减 18%',
+    'Save £20.00 on RRP': 'RRP 立省 £20.00',
+    'Save £20': '立省 £20',
+    'Excl. deposit £0.15': '不含押金 £0.15',
+    'Price match Amazon': '亚马逊同价',
+    'Lightning offers': '限时闪购',
+    'Everyday low price': '天天低价',
+    'Happy hour': '限时秒杀',
+    'Welcome offer': '新人礼',
+    'Outlet': '奥莱',
+    'Pre-sale': '预售',
+    'Early access': '提前购',
+    'Coming soon': '即将开始',
+    'Contract': '合约机',
+    'Get it by today': '今日送达'
+  };
+  Object.keys(catalog).forEach(function (cat) {
+    catalog[cat].forEach(function (p) {
+      if (!p.zh) return;
+      ['title', 'sold', 'discount', 'deposit', 'promotion', 'fulfillment'].forEach(function (key) {
+        if (p.zh[key] && PREVIEW_COPY_ZH[p.zh[key]]) p.zh[key] = PREVIEW_COPY_ZH[p.zh[key]];
+      });
+    });
+  });
+
   root.CARD_DATA = {
     dict: dict,
     productImages: productImages,
@@ -568,6 +601,7 @@
    * hand-written string can never slip back into a preview unnoticed. */
   const ATOM_COPY_SET = new Set();
   Object.keys(atomCopy).forEach(k => atomCopy[k].forEach(v => ATOM_COPY_SET.add(v)));
+  Object.keys(PREVIEW_COPY_ZH).forEach(k => ATOM_COPY_SET.add(PREVIEW_COPY_ZH[k]));
 
   function copyAudit() {
     const issues = [];

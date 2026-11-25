@@ -887,6 +887,7 @@
   /* ================ Field-explorer state ================ */
   let cardLang = (window.JoybuySite && window.JoybuySite.getLanguage()) || 'zh';
 
+  let previewLang = 'en';
   /* Live-config panel copy follows the global documentation language. */
   const UI_COPY = {
     en: { scene:'Scenario', category:'Category', preset:'Product preset', fields:'Field controls', reset:'Reset', na:'N/A' },
@@ -987,7 +988,7 @@
   function tileHTML(p, opts) {
     opts = opts || {};
     if (!p) return '';
-    const t = p[cardLang] || p.en;
+    const t = p[previewLang] || p.en;
     const img = D.productImages[p.img] || '';
     const brand = p.brand || '';
     const show = opts.show || {};
@@ -1033,7 +1034,7 @@
   // Build a full strip from a resolved tile list + a show profile.
   function stripHTML(list, show, withFields) {
     let html = '<div class="hscroll"><div class="hscroll__track" tabindex="0" aria-label="' +
-      (cardLang === 'zh' ? '横向商品列表' : 'Horizontal product list') + '">';
+      (previewLang === 'zh' ? '横向商品列表' : 'Horizontal product list') + '">';
     list.forEach(item => {
       html += tileHTML(item.p, {
         show: show, withFields: withFields, rank: item.rank,
@@ -1324,6 +1325,13 @@
     });
   }
   renderUsedIn();
+  window.addEventListener('joybuy:card-preview-language', (event) => {
+    previewLang = event.detail && event.detail.language === 'zh' ? 'zh' : 'en';
+    applyFields();
+    renderTypeBlocks();
+    renderPreviewStack();
+  });
+
   window.addEventListener('joybuy:languagechange', (event) => {
     setCardLang(event.detail && event.detail.language);
     renderUsedIn();
@@ -1364,5 +1372,6 @@
 <script src="../assets/card-detail-template.js"></script>
 <script src="../assets/card-preview-controls.js"></script>
 <script src="../assets/atom-map-preview.js"></script>
+<script src="../assets/card-preview-language.js"></script>
 </body>
 </html>

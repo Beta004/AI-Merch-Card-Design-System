@@ -1242,7 +1242,7 @@
   // Resolve a field's visibility: override wins, else scenario/data default.
   function bkVis(name, def, ov){ return (ov[name] == null) ? !!def : !!ov[name]; }
 
-  function bookingState(type, state) {
+  function bookingState(type, state, lang) {
     const isDutch = type === 'dutch' || type === 'dutchReserved';
     const isHappy = type === 'happyHour';
     const isReg   = type === 'regular';
@@ -1253,6 +1253,7 @@
     const modifier = isDutch ? 'booking--auction' : isHappy ? 'booking--happyhour' : '';
 
     // Price atom only defines RRP / WAS; booking previews stay on RRP.
+    const L = lang || cardLang;
     const refLabel = { en:'RRP', zh:'RRP' };
 
     // CTA copy per state (Figma booking cards):
@@ -1269,7 +1270,7 @@
     // Scheduled time uses the Figma new-launch-limit-time atom copy.
     const timeLabel = { en:'Starts at Aug 26, 00:00', zh:'Starts at Aug 26, 00:00' };
 
-    return {
+    return { L,
       modifier,
       showRating: isReg && !ended,          // ★ 4.5 | 100k+ sold — Reservation only
       showStock:  isHappy,                   // Figma Stock · 月黑: Only 12 items left
@@ -1289,6 +1290,7 @@
   /* ================ Preview state ================ */
   let cardLang     = (window.JoybuySite && window.JoybuySite.getLanguage()) || 'zh';
 
+  let previewLang = 'en';
   /* Live-config panel copy follows the global documentation language. */
   const UI_COPY = {
     en: { scene:'Scenario', state:'Sale state', category:'Category', preset:'Product preset', fields:'Field controls', reset:'Reset', na:'N/A' },
@@ -1361,10 +1363,10 @@
     const list = D.catalog[cfg.catKey];
     if (!list || !list[cfg.presetIdx]) return '';
     const p = list[cfg.presetIdx];
-    const t = p[cardLang];
-    const s = bookingState(cfg.type, cfg.state);
+    const t = p[previewLang];
+    const s = bookingState(cfg.type, cfg.state, previewLang);
     const img = D.productImages[p.img] || '';
-    const L = cardLang;
+    const L = previewLang;
     const OVR = cfg.ov || {};   // field explorer overrides (empty for static type/rail blocks)
 
     // Figma Tag-discount 5532:14407 — native text, no image asset.
@@ -1803,6 +1805,13 @@
     });
   }
   renderUsedIn();
+  window.addEventListener('joybuy:card-preview-language', (event) => {
+    previewLang = event.detail && event.detail.language === 'zh' ? 'zh' : 'en';
+    renderPreview();
+    renderTypeBlocks();
+    renderPreviewStack();
+  });
+
   window.addEventListener('joybuy:languagechange', (event) => {
     setCardLang(event.detail && event.detail.language);
     renderUsedIn();
@@ -1866,5 +1875,6 @@
 <script src="../assets/card-detail-template.js"></script>
 <script src="../assets/card-preview-controls.js"></script>
 <script src="../assets/atom-map-preview.js"></script>
+<script src="../assets/card-preview-language.js"></script>
 </body>
 </html>

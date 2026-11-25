@@ -1805,6 +1805,7 @@
 
   /* Product previews follow the global documentation language. */
   let cardLang = (window.JoybuySite && window.JoybuySite.getLanguage()) || 'zh';
+  let previewLang = 'en';
   let currentCat = 'beauty';
   let currentPreset = 0;
   let lockedHighlight = '';   // scenario-pinned highlight enum (e.g. Sponsored); '' = follow data
@@ -2284,7 +2285,7 @@
 
   function renderProduct() {
     const p = D.catalog[currentCat][currentPreset];
-    const t = p[cardLang];
+    const t = p[previewLang];
     // Always-on base fields — owned by the category / preset picker.
     setField('brand', p.brand);
     setField('title', t.title);
@@ -2307,7 +2308,7 @@
   // Which data-kind fields does the current preset actually carry (in this scene)?
   function vAvail(scene) {
     const p = D.catalog[currentCat][currentPreset];
-    const t = p[cardLang];
+    const t = p[previewLang];
     return {
       colors:      !!(p.colors && p.colors.length) && (['3c','appliance','fashion'].indexOf(currentCat) !== -1),
       highlight:   !!(t.highlight && HIGHLIGHT_ENUM.has(t.highlight)),
@@ -2337,7 +2338,7 @@
   function applyFields() {
     const scene = V_SCENES.find(s => s.key === sceneKey) || V_SCENES[0];
     const p = D.catalog[currentCat][currentPreset];
-    const t = p[cardLang];
+    const t = p[previewLang];
     const avail = vAvail(scene);
     const def   = vDefaults(scene, avail);
     const vis   = k => vVis(k, def[k], fieldOv);
@@ -2346,11 +2347,11 @@
     const stockTxt = 'Only 10 left';
     const rankTxt  = '1';   // Figma Tag-number: rank number only
     // Figma atom default variant: Type=More buying choices — Barlow Fix 50 Medium 12/16 #6E7078.
-    const reasonTxt = 'More buying choices';
+    const reasonTxt = previewLang === 'zh' ? '更多购买选择' : 'More buying choices';
     // Figma atom: Individual Promotion / Type (5551:17019) — the dropdown picks one of
     // the 14 real variants; the default is Campaign-Lightning offers.
     const promoKey  = promoVariantKey || DEFAULT_PROMO_KEY;
-    const depositVal = (scene.vals && scene.vals.deposit) ? scene.vals.deposit[cardLang] : t.deposit;
+    const depositVal = (scene.vals && scene.vals.deposit) ? scene.vals.deposit[previewLang] : t.deposit;
 
     // Data-kind slots — value from preset, visibility from resolved default/override.
     renderColors(vis('colors'), p.colors, p.extraColors);
@@ -2535,7 +2536,7 @@
     const list = D.catalog[cfg.catKey];
     if (!list || !list[cfg.presetIdx]) return '';
     const p = list[cfg.presetIdx];
-    const t = p[cardLang];
+    const t = p[previewLang];
     const img = D.productImages[p.img] || '';
     const oos = !!cfg.oos;
     const show = k => !!(cfg.show || {})[k];
@@ -2840,6 +2841,12 @@
     renderTypesStack();
   }
 
+  window.addEventListener('joybuy:card-preview-language', (event) => {
+    previewLang = event.detail && event.detail.language === 'zh' ? 'zh' : 'en';
+    renderProduct();
+    renderTypesStack();
+  });
+
   window.addEventListener('joybuy:languagechange', (event) => {
     setCardLang(event.detail && event.detail.language);
     renderUsedIn();
@@ -2876,5 +2883,6 @@
 </script>
 <script src="../assets/card-preview-controls.js"></script>
 <script src="../assets/atom-map-preview.js"></script>
+<script src="../assets/card-preview-language.js"></script>
 </body>
 </html>

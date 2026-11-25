@@ -1225,6 +1225,7 @@
 
   let cardLang = (window.JoybuySite && window.JoybuySite.getLanguage()) || 'zh';
 
+  let previewLang = 'en';
   /* Live-config panel copy follows the global documentation language. */
   const UI_COPY = {
     en: { scene:'Scenario', category:'Category', preset:'Product preset', fields:'Field controls', reset:'Reset', na:'N/A' },
@@ -1319,7 +1320,7 @@
   // Which data-kind fields does the current preset actually carry?
   function mAvail(scene) {
     const p = D.catalog[currentCat][currentPreset];
-    const t = p[cardLang];
+    const t = p[previewLang];
     return {
       highlight:   !!(t.highlight && HIGHLIGHT_ENUM.has(t.highlight)),
       meta:        !!(p.rating && t.sold),
@@ -1346,7 +1347,7 @@
   function applyFields() {
     const scene = M_SCENES.find(s => s.key === sceneKey) || M_SCENES[0];
     const p = D.catalog[currentCat][currentPreset];
-    const t = p[cardLang];
+    const t = p[previewLang];
     const avail = mAvail(scene);
     const def = mDefaults(scene, avail);
     const vis = k => mVis(k, def[k], fieldOv);
@@ -1668,6 +1669,13 @@
     });
   }
   renderUsedIn();
+  window.addEventListener('joybuy:card-preview-language', (event) => {
+    previewLang = event.detail && event.detail.language === 'zh' ? 'zh' : 'en';
+    renderProduct();
+    renderTypeBlocks();
+    renderPreviewStack();
+  });
+
   window.addEventListener('joybuy:languagechange', (event) => {
     setCardLang(event.detail && event.detail.language);
     renderUsedIn();
@@ -1706,7 +1714,7 @@
     const list = D.catalog[cfg.catKey];
     if (!list || !list[cfg.presetIdx]) return '';
     const p = list[cfg.presetIdx];
-    const t = p[cardLang];
+    const t = p[previewLang];
     const img = D.productImages[p.img] || '';
     let html = '<div class="hmini">';
 
@@ -1790,5 +1798,6 @@
 <script src="../assets/card-detail-template.js"></script>
 <script src="../assets/card-preview-controls.js"></script>
 <script src="../assets/atom-map-preview.js"></script>
+<script src="../assets/card-preview-language.js"></script>
 </body>
 </html>

@@ -1253,6 +1253,7 @@
 
   let cardLang = (window.JoybuySite && window.JoybuySite.getLanguage()) || 'zh';
 
+  let previewLang = 'en';
   /* Live-config panel copy follows the global documentation language. */
   const UI_COPY = {
     en: { scene:'Scenario', category:'Category', preset:'Product preset', fields:'Field controls', reset:'Reset', na:'N/A' },
@@ -1336,7 +1337,7 @@
 
   function productProperties(catKey) {
     const value = PRODUCT_PROPERTIES[catKey] || PRODUCT_PROPERTIES.beauty;
-    return value[cardLang];
+    return value[previewLang];
   }
 
   // AiBot SKU property row is two values with a divider in between
@@ -1375,7 +1376,7 @@
   // Which data-kind fields does the current preset actually carry (in this scene)?
   function hAvail(scene) {
     const p = D.catalog[currentCat][currentPreset];
-    const t = p[cardLang];
+    const t = p[previewLang];
     const isExt = scene.variant === 'extreme';
     return {
       highlight:   isExt ? true : (!!t.highlight && HIGHLIGHT_ENUM.has(t.highlight)),
@@ -1406,13 +1407,13 @@
     const scene = H_SCENES.find(s => s.key === sceneKey) || H_SCENES[0];
     const variant = scene.variant || 'default';
     const p = D.catalog[currentCat][currentPreset];
-    const t = p[cardLang];
+    const t = p[previewLang];
     const avail = hAvail(scene);
     const def   = hDefaults(scene, avail);
     const vis   = k => hVis(k, def[k], fieldOv);
     const isProps = variant === 'properties';
     const isExt   = variant === 'extreme';
-    const zh = cardLang === 'zh';
+    const zh = previewLang === 'zh';
 
     // Base fields — variant-aware (reviews mode / out-of-stock label).
     setField('brand', p.brand);
@@ -1448,7 +1449,7 @@
       : 'sponsored';
     setField('highlight', vis('highlight') ? (isExt ? extHighlight : t.highlight) : '');
     const promoVal = isProps ? productProperties(currentCat)
-                     : (scene.promo ? scene.promo[cardLang] : '');
+                     : (scene.promo ? scene.promo[previewLang] : '');
     setField('promotion', vis('promotion') ? promoVal : '');
     setField('offer',     vis('offer') ? t.promotion : '');
 
@@ -1762,6 +1763,13 @@
     });
   }
   renderUsedIn();
+  window.addEventListener('joybuy:card-preview-language', (event) => {
+    previewLang = event.detail && event.detail.language === 'zh' ? 'zh' : 'en';
+    renderProduct();
+    renderTypeBlocks();
+    renderPreviewStack();
+  });
+
   window.addEventListener('joybuy:languagechange', (event) => {
     setCardLang(event.detail && event.detail.language);
     renderUsedIn();
@@ -1786,7 +1794,7 @@
     const list = D.catalog[cfg.catKey];
     if (!list || !list[cfg.presetIdx]) return '';
     const p = list[cfg.presetIdx];
-    const t = p[cardLang];
+    const t = p[previewLang];
     const img = D.productImages[p.img] || '';
     const dim = cfg.mode === 'oos' ? ' hcard--dim' : '';
 
@@ -1941,5 +1949,6 @@
 <script src="../assets/card-detail-template.js"></script>
 <script src="../assets/card-preview-controls.js"></script>
 <script src="../assets/atom-map-preview.js"></script>
+<script src="../assets/card-preview-language.js"></script>
 </body>
 </html>

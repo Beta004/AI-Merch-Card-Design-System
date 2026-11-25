@@ -1026,6 +1026,7 @@
 
   let cardLang = (window.JoybuySite && window.JoybuySite.getLanguage()) || 'zh';
 
+  let previewLang = 'en';
   /* Live-config panel copy follows the global documentation language. */
   const UI_COPY = {
     en: { scene:'Scenario', category:'Category', preset:'Product preset', fields:'Field controls', reset:'Reset', na:'N/A' },
@@ -1361,6 +1362,13 @@
     });
   }
   renderUsedIn();
+  window.addEventListener('joybuy:card-preview-language', (event) => {
+    previewLang = event.detail && event.detail.language === 'zh' ? 'zh' : 'en';
+    applyFields();
+    renderTypeBlocks();
+    renderPreviewStack();
+  });
+
   window.addEventListener('joybuy:languagechange', (event) => {
     setCardLang(event.detail && event.detail.language);
     renderUsedIn();
@@ -1428,5 +1436,6 @@
 <script src="../assets/card-detail-template.js"></script>
 <script src="../assets/card-preview-controls.js"></script>
 <script src="../assets/atom-map-preview.js"></script>
+<script src="../assets/card-preview-language.js"></script>
 </body>
 </html>

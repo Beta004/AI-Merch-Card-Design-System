@@ -1067,6 +1067,7 @@
   /* ================ Field-explorer state ================ */
   let cardLang = (window.JoybuySite && window.JoybuySite.getLanguage()) || 'zh';
 
+  let previewLang = 'en';
   /* Live-config panel copy follows the global documentation language. */
   const UI_COPY = {
     en: { scene:'Scenario', category:'Category', preset:'Product preset', fields:'Field controls', reset:'Reset', na:'N/A' },
@@ -1153,7 +1154,7 @@
   function cAvail(scene) {
     const p = cProduct(scene);
     if (!p) return { highlight:false, ratingSold:false, discount:false, referencePrice:false, fulfillment:false };
-    const t = p[cardLang] || p.en;
+    const t = p[previewLang] || p.en;
     return {
       highlight: !!(t.highlight && HIGHLIGHT_ENUM.has(t.highlight)),
       ratingSold: !!(p.rating && t.sold),
@@ -1185,7 +1186,7 @@
   function campaignHTML(p, opts) {
     opts = opts || {};
     if (!p) return '';
-    const t = p[cardLang] || p.en;
+    const t = p[previewLang] || p.en;
     const image = D.productImages[p.img] || '';
     const show = opts.show || {};
     const wf = opts.withFields === true;
@@ -1197,7 +1198,7 @@
 
     let stockTxt = '';
     if (notify) stockTxt = 'Out of stock';
-    else if (opts.stock) stockTxt = opts.stock[cardLang] || opts.stock.en;
+    else if (opts.stock) stockTxt = opts.stock[previewLang] || opts.stock.en;
 
     let html = '<article class="campaign campaign--product' + (notify ? ' campaign--out' : '') + '">';
     // image column: rank and discount are mutually exclusive.
@@ -1506,6 +1507,13 @@
     });
   }
   renderUsedIn();
+  window.addEventListener('joybuy:card-preview-language', (event) => {
+    previewLang = event.detail && event.detail.language === 'zh' ? 'zh' : 'en';
+    applyFields();
+    renderTypeBlocks();
+    renderPreviewStack();
+  });
+
   window.addEventListener('joybuy:languagechange', (event) => {
     setCardLang(event.detail && event.detail.language);
     renderUsedIn();
@@ -1558,5 +1566,6 @@
 <script src="../assets/card-detail-template.js"></script>
 <script src="../assets/card-preview-controls.js"></script>
 <script src="../assets/atom-map-preview.js"></script>
+<script src="../assets/card-preview-language.js"></script>
 </body>
 </html>
