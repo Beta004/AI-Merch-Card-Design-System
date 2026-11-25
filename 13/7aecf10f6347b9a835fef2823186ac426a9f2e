@@ -1,0 +1,21 @@
+assets/nav.js
+  s_459e3abe8ffeab::t_de5990a7e9c192 631-690,704
+assets/tokens.css
+  s_459e3abe8ffeab::t_0b4f39ad8c9eeb 1099-1134,1148-1158
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.6",
+  "base_commit_sha": "137aecf10f6347b9a835fef2823186ac426a9f2e",
+  "prompts": {},
+  "sessions": {
+    "s_459e3abe8ffeab": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a04784-e805-7271-99e6-dcd4e95afed6",
+        "model": "kimi-k3-joybuilder"
+      },
+      "human_author": "Beta004 <chenyongtian004@gmail.com>"
+    }
+  }
+}
