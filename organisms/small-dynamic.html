@@ -155,18 +155,13 @@
   .sdyn-strip--3 { grid-template-columns: repeat(3, 1fr); max-width: 320px; }
   .sdyn-strip--2 { grid-template-columns: repeat(2, 1fr); max-width: 220px; }
 
+  /* 静态预览瓦片：不使用 pointer / 悬浮位移，避免暗示“可点击” */
   .sdyn {
     background: var(--surface);
     border-radius: var(--r-sm);
     overflow: hidden;
     position: relative;
-    cursor: pointer;
-    transition: transform .12s ease, box-shadow .12s ease;
     display: flex; flex-direction: column;
-  }
-  .sdyn:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-1);
   }
   .sdyn__image {
     aspect-ratio: 1;
@@ -180,13 +175,14 @@
     max-width: 100%; max-height: 100%;
     object-fit: contain;
   }
+  /* Price — Figma Pricing atom 5577:19658 · System/16px-Bold (16/700/22). */
   .sdyn__price {
     padding: 4px 3px 2px;
-    font-size: 11px; font-weight: 900;
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 16px; font-weight: 700; line-height: 22px; letter-spacing: 0;
     color: var(--joybuy-red);
     text-align: center;
     font-variant-numeric: tabular-nums;
-    line-height: 1.1;
   }
   .sdyn__price[data-empty] { display: none; }
 
@@ -601,6 +597,7 @@
 </style>
 <link rel="stylesheet" href="../assets/card-detail-template.css">
   <link rel="stylesheet" href="../assets/card-preview-alignment.css">
+  <link rel="stylesheet" href="../assets/atom-map-preview.css">
 <style>
   /* ===================================================================
      Live-config panel v2 · shared with the vertical-card detail page.
@@ -793,7 +790,7 @@
                   <div class="sdyn__image"><img id="anatomy-img" src="" alt=""></div>
                 </div>
               </div>
-              <div class="anatomy-cell__atom">1:1 方形 · <code>object-fit: contain</code> · 浅灰图片底</div>
+              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="main-image">Product Image</button> · 1:1 方形 · <code>object-fit: contain</code> · 浅灰图片底</div>
             </div>
 
             <div class="anatomy-cell">
@@ -803,7 +800,7 @@
                   <div class="sdyn__price">£58</div>
                 </div>
               </div>
-              <div class="anatomy-cell__atom">主价格必填；参考价按 Figma 价格原子选择显示或隐藏。</div>
+              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="price">Price</button> + <button class="atom-map-trigger" type="button" data-atom-preview="price-second-line">Second Line</button> · 主价格必填；参考价按 Figma 价格原子选择显示或隐藏。</div>
             </div>
           </div>
         </div>
@@ -976,6 +973,7 @@
 
 <script src="../assets/card-data.js"></script>
 <script src="../assets/pages-data.js"></script>
+<script src="../assets/atoms-data.js"></script>
 <script src="../assets/nav.js"></script>
 <script>
   /* ================ Interactive preview state ================ */
@@ -1429,5 +1427,6 @@
 </script>
 <script src="../assets/card-detail-template.js"></script>
 <script src="../assets/card-preview-controls.js"></script>
+<script src="../assets/atom-map-preview.js"></script>
 </body>
 </html>

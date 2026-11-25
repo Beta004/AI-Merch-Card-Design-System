@@ -140,7 +140,6 @@
   /* strip is wider than the rail — allow horizontal scroll inside the stage;
      small zoom keeps a couple of tiles visible and halves height so nothing clips vertically */
   .side-preview__scale { width: 380px; zoom: .5; }
-  #s-structure .anatomy-wrap { display: none; }
 
   /* ============ .hscroll — the organism container ============
      6 slots: theme-band (bg overlay) · header (title+more) ·
@@ -198,12 +197,23 @@
   .hs-tile__img { aspect-ratio: 1 / 1; background: #f5f5f5; overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 8px; }
   .hs-tile__img img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
   .hs-tile__body { padding: 6px 8px 8px; display: flex; flex-direction: column; gap: 3px; }
+  /* All seven Product Highlights variants are native HTML atoms (Barlow Fix 50). */
   .hs-tile__hi { align-self: flex-start; line-height: 0; }
   .hs-tile__hi[data-empty] { display: none; }
+  .hs-tile__hi .ph-highlight { height: 16px; }
+  .hs-tile__hi .ph-sponsored { line-height: 16px; }
   .hs-tile__title { margin: 0; font-size: 11px; font-weight: 500; color: var(--ink-2); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 30px; }
   .hs-tile__prices { display: flex; align-items: baseline; gap: 4px; margin-top: 2px; }
-  .hs-tile__price { font-size: 13px; font-weight: 900; color: var(--joybuy-red); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
-  .hs-tile__oprice { font-size: 9px; color: var(--ink-5); text-decoration: line-through; font-variant-numeric: tabular-nums; }
+  /* Price — Figma Pricing atom 5577:19658 · System/16px-Bold (16/700/22). */
+  .hs-tile__price {
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 16px; font-weight: 700; line-height: 22px; letter-spacing: 0;
+    color: var(--joybuy-red); font-variant-numeric: tabular-nums;
+  }
+  .hs-tile__oprice {
+    font-size: 12px; font-weight: 500; line-height: 16px;
+    color: var(--ink); text-decoration: none; font-variant-numeric: tabular-nums;
+  }
   .hs-tile [data-field][data-empty] { display: none; }
 
   /* ============ Demo area ============ */
@@ -459,6 +469,7 @@
 </style>
 <link rel="stylesheet" href="../assets/card-detail-template.css">
   <link rel="stylesheet" href="../assets/card-preview-alignment.css">
+  <link rel="stylesheet" href="../assets/atom-map-preview.css">
 <style>
   /* ===================================================================
      Live-config panel v2 · shared with the vertical-card detail page.
@@ -641,13 +652,13 @@
           </div>
 
           <div class="anatomy-grid">
-            <div class="anatomy-cell"><div class="anatomy-cell__head"><span class="anatomy-cell__idx">1</span><span class="anatomy-cell__slot">sequence label</span></div><div class="anatomy-cell__stage">1</div><div class="anatomy-cell__atom">左上顺序标签，可按业务隐藏。</div></div>
-            <div class="anatomy-cell"><div class="anatomy-cell__head"><span class="anatomy-cell__idx">2</span><span class="anatomy-cell__slot">product image</span></div><div class="anatomy-cell__stage"><div class="anatomy-cell__stage-mini-tile"></div></div><div class="anatomy-cell__atom">146×146 商品图片容器。</div></div>
-            <div class="anatomy-cell"><div class="anatomy-cell__head"><span class="anatomy-cell__idx">3</span><span class="anatomy-cell__slot">title</span></div><div class="anatomy-cell__stage">Product title</div><div class="anatomy-cell__atom">最多两行，超出截断。</div></div>
-            <div class="anatomy-cell"><div class="anatomy-cell__head"><span class="anatomy-cell__idx">4</span><span class="anatomy-cell__slot">price</span></div><div class="anatomy-cell__stage">£58.00</div><div class="anatomy-cell__atom">主价格必填，可带参考价。</div></div>
-            <div class="anatomy-cell"><div class="anatomy-cell__head"><span class="anatomy-cell__idx">5</span><span class="anatomy-cell__slot">membership</span></div><div class="anatomy-cell__stage">PLUS</div><div class="anatomy-cell__atom">会员身份或会员价，可选。</div></div>
-            <div class="anatomy-cell"><div class="anatomy-cell__head"><span class="anatomy-cell__idx">6</span><span class="anatomy-cell__slot">master promotion</span></div><div class="anatomy-cell__stage">Buy 1 get 1 free</div><div class="anatomy-cell__atom">总促字段，可选，空值整行收起。</div></div>
-            <div class="anatomy-cell"><div class="anatomy-cell__head"><span class="anatomy-cell__idx">7</span><span class="anatomy-cell__slot">button</span></div><div class="anatomy-cell__stage">Add / Notify</div><div class="anatomy-cell__atom">库存驱动加购或到货通知。</div></div>
+            <div class="anatomy-cell"><div class="anatomy-cell__head"><span class="anatomy-cell__idx">1</span><span class="anatomy-cell__slot">sequence label</span></div><div class="anatomy-cell__stage">1</div><div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="tag-number">Tag Number</button> · 左上顺序标签，可按业务隐藏。</div></div>
+            <div class="anatomy-cell"><div class="anatomy-cell__head"><span class="anatomy-cell__idx">2</span><span class="anatomy-cell__slot">product image</span></div><div class="anatomy-cell__stage"><div class="anatomy-cell__stage-mini-tile"></div></div><div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="main-image">Product Image</button> · 146×146 商品图片容器。</div></div>
+            <div class="anatomy-cell"><div class="anatomy-cell__head"><span class="anatomy-cell__idx">3</span><span class="anatomy-cell__slot">title</span></div><div class="anatomy-cell__stage">Product title</div><div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="title">Title</button> · 最多两行，超出截断。</div></div>
+            <div class="anatomy-cell"><div class="anatomy-cell__head"><span class="anatomy-cell__idx">4</span><span class="anatomy-cell__slot">price</span></div><div class="anatomy-cell__stage">£58.00</div><div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="price">Price</button> + <button class="atom-map-trigger" type="button" data-atom-preview="price-second-line">Second Line</button> · 主价格必填，可带参考价。</div></div>
+            <div class="anatomy-cell"><div class="anatomy-cell__head"><span class="anatomy-cell__idx">5</span><span class="anatomy-cell__slot">membership</span></div><div class="anatomy-cell__stage">PLUS</div><div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="plus-price">Plus Price</button> · 会员身份或会员价，可选。</div></div>
+            <div class="anatomy-cell"><div class="anatomy-cell__head"><span class="anatomy-cell__idx">6</span><span class="anatomy-cell__slot">master promotion</span></div><div class="anatomy-cell__stage">Buy 1 get 1 free</div><div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="total-promotion">Total Promotion</button> · 总促字段，可选，空值整行收起。</div></div>
+            <div class="anatomy-cell"><div class="anatomy-cell__head"><span class="anatomy-cell__idx">7</span><span class="anatomy-cell__slot">button</span></div><div class="anatomy-cell__stage">Add / Notify</div><div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="btn-cart">Btn Cart</button> + <button class="atom-map-trigger" type="button" data-atom-preview="notify-button">Notify Button</button> · 库存驱动加购或到货通知。</div></div>
           </div>
         </div>
 
@@ -834,6 +845,7 @@
 
 <script src="../assets/card-data.js"></script>
 <script src="../assets/pages-data.js"></script>
+<script src="../assets/atoms-data.js"></script>
 <script src="../assets/nav.js"></script>
 <script>
   /* ================ Data + state ================ */
@@ -1347,5 +1359,6 @@
 </script>
 <script src="../assets/card-detail-template.js"></script>
 <script src="../assets/card-preview-controls.js"></script>
+<script src="../assets/atom-map-preview.js"></script>
 </body>
 </html>

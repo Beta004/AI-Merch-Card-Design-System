@@ -423,6 +423,7 @@
   }
   .atom-variant {
     display: flex; flex-direction: column;
+    scroll-margin-top: calc(var(--global-header-offset) + 112px);
     align-items: center;
     padding: 14px 8px 10px;
     background: #fbfbfc;
@@ -433,6 +434,11 @@
   .atom-variant:hover {
     background: #fff;
     border-color: var(--outline);
+  }
+  .atom-variant:target {
+    border-color: var(--accent);
+    background: var(--accent-50);
+    box-shadow: 0 0 0 2px var(--accent-100);
   }
   .atom-variant__img {
     width: 100%;
@@ -678,7 +684,7 @@
       } else {
         html += '    <div class="atom-block__grid">';
         a.variants.forEach(function (v) {
-          html += '      <div class="atom-variant">';
+          html += '      <div class="atom-variant" id="atom-' + esc(a.slug) + '-' + esc(v.key) + '">';
           if (v.text) {
             // Text-only atom (Sponsored): render the live label, not the baked svg,
             // so the 12/16 Medium #6E7078 spec is what people actually see.

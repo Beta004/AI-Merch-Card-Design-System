@@ -1,0 +1,117 @@
+/* Shared atomic mapping preview for product-card detail pages. */
+  /* Atomic mapping: one quiet, hover/tap-accessible preview for every atom. */
+  .atom-map-preview { position: relative; display: inline-block; }
+  .anatomy-cell__atom .atom-map-trigger {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-bottom: 1px dotted var(--ink-5);
+    background: transparent;
+    color: var(--ink-3);
+    font: inherit;
+    line-height: inherit;
+    cursor: pointer;
+    transition: color .12s ease, border-bottom-color .12s ease;
+  }
+  .anatomy-cell__atom .atom-map-trigger:hover,
+  .atom-map-preview.is-open .atom-map-trigger {
+    color: var(--joybuy-red);
+    border-bottom-color: var(--joybuy-red);
+  }
+  .anatomy-cell__atom .atom-map-trigger:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  .atom-map-popover {
+    position: absolute;
+    z-index: 70;
+    top: calc(100% + 10px);
+    left: 0;
+    box-sizing: border-box;
+    width: min(344px, calc(100vw - 56px));
+    padding: 14px;
+    border: 1px solid var(--outline);
+    border-radius: 10px;
+    background: var(--surface);
+    box-shadow: 0 12px 32px rgba(17, 20, 24, .10);
+  }
+  .atom-map-popover[hidden] { display: none; }
+  .atom-map-popover--many { width: min(520px, calc(100vw - 56px)); }
+  .atom-map-popover__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 18px;
+  }
+  .atom-map-popover__count {
+    color: var(--ink-5);
+    font-size: 11px;
+    font-weight: 400;
+    white-space: nowrap;
+  }
+  .atom-map-popover__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-rows: 1fr;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .atom-map-popover--many .atom-map-popover__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-height: min(360px, calc(100vh - 180px));
+    padding: 1px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  .anatomy-cell__atom a.atom-map-option {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 6px 9px;
+    border: 1px solid var(--outline-soft);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--ink-3);
+    font-size: 10.5px;
+    font-weight: 400;
+    line-height: 1.35;
+    text-align: center;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    transition: border-color .12s ease, background .12s ease, color .12s ease;
+  }
+  .anatomy-cell__atom a.atom-map-option:hover {
+    border-color: var(--accent);
+    background: var(--accent-50);
+    color: var(--accent);
+  }
+  .anatomy-cell__atom a.atom-map-option:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .atom-map-option__preview {
+    display: flex;
+    width: 100%;
+    height: 52px;
+    min-width: 0;
+    align-items: center;
+    justify-content: center;
+  }
+  .atom-map-option__preview img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 52px;
+  }
+
+

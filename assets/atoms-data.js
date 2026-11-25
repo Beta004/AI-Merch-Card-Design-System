@@ -137,6 +137,7 @@
       {
         slug: 'leading-icon', name_cn: '前置图标', name_en: 'Leading icon',
         figma_node: '29004:171936', group: 'text',
+        note: 'Fulfillment Time 的卡车图标变体（Joybuy / POP）；本身不含文案，商卡预览直接引用 delivery-by-joybuy.svg / delivery-by-pop.svg。',
         variants: [
           { key:'delivery-by-joybuy', label:"Delivery by=Joybuy", copy:[], svg:'../assets/figma-atoms/leading-icon/delivery-by-joybuy.svg' },
           { key:'delivery-by-pop', label:"Delivery by=POP", copy:[], svg:'../assets/figma-atoms/leading-icon/delivery-by-pop.svg' }
@@ -302,7 +303,7 @@
       {
         slug: 'fulfillment-time', name_cn: '履约时效', name_en: 'Fulfillment Time',
         figma_node: '30176:215168', group: 'status',
-        note: 'Figma 当前 Joybuy / POP 两个变体都使用文案 Get it by today；不允许自行改写冷链、隔日达等履约文案。',
+        note: 'Figma 当前 Joybuy / POP 两个变体都使用文案 Get it by today，只有前置卡车图标不同（见 Leading icon）；不允许自行改写冷链、隔日达等履约文案。',
         variants: [
           { key:'fulfillment-type-joybuy', label:"Fulfillment Type=Joybuy", copy:["Get it by today"], svg:'../assets/figma-atoms/fulfillment-time/fulfillment-type-joybuy.svg' },
           { key:'fulfillment-type-pop', label:"Fulfillment Type=POP", copy:["Get it by today"], svg:'../assets/figma-atoms/fulfillment-time/fulfillment-type-pop.svg' }

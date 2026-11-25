@@ -192,14 +192,13 @@
   }
   .hcard__body [data-field][data-empty] { display: none; }
 
-  /* Slot 1 · Highlight (SVG chip) */
+  /* Slot 1 · Highlight — all seven variants are native HTML atoms (Barlow Fix 50). */
   .hcard__highlight {
     align-self: flex-start;
     line-height: 0;
   }
   .hcard__highlight[data-empty] { display: none; }
-  .hcard__highlight img { display: block; height: 14px; width: auto; }
-  /* Sponsored is a 16px text-only atom — keep it on the text baseline, not line-height:0. */
+  .hcard__highlight .ph-highlight { height: 24px; }
   .hcard__highlight .ph-sponsored { line-height: 16px; }
 
   /* Slot 2 · Brand */
@@ -255,9 +254,12 @@
     gap: 0;
     margin-top: 2px;
   }
+  /* Price — Figma Pricing atom 5577:19658 · System/16px-Bold (16/700/22). */
   .hcard__sale-price {
-    font-size: 18px; font-weight: 900;
-    color: var(--ink); line-height: 22px;
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 16px; font-weight: 700; line-height: 22px;
+    letter-spacing: 0;
+    color: var(--ink);
     font-variant-numeric: tabular-nums;
   }
   .hcard__price-was {
@@ -279,8 +281,12 @@
     content: "";
     display: inline-block;
     width: 16px; height: 16px;
-    background: url('../assets/figma-atoms/leading-icon/joybuy.svg') left center/contain no-repeat;
+    background: url('../assets/figma-atoms/leading-icon/delivery-by-joybuy.svg') left center/contain no-repeat;
     flex-shrink: 0;
+  }
+  /* Fulfillment Time · Fulfillment Type=POP — same copy, POP truck icon. */
+  .hcard__fulfillment.is-pop::before {
+    background-image: url('../assets/figma-atoms/leading-icon/delivery-by-pop.svg');
   }
 
   /* Slot 8 · Seller + cart button */
@@ -698,6 +704,7 @@
 </style>
 <link rel="stylesheet" href="../assets/card-detail-template.css">
   <link rel="stylesheet" href="../assets/card-preview-alignment.css">
+  <link rel="stylesheet" href="../assets/atom-map-preview.css">
 <style>
   /* ===================================================================
      Live-config panel v2 · shared with the vertical-card detail page.
@@ -871,7 +878,7 @@
                 <div class="hcard__discount" data-field="discount">Save £20</div>
                 <div class="hcard__offer" data-field="offer">Happy hour</div>
                 <div class="hcard__deposit" data-field="deposit"></div>
-                <div class="hcard__fulfillment" data-field="fulfillment">Get it by today</div>
+                <div class="hcard__fulfillment" data-field="fulfillment" data-fulfillment-type="Joybuy">Get it by today</div>
                 <div class="hcard__foot">
                   <span class="hcard__seller-wrap">
                     <img class="hcard__seller-mark" src="../assets/figma-atoms/sold-by-joybuy/joybuy-mark.svg" alt="">
@@ -941,7 +948,7 @@
             <div class="anatomy-cell">
               <div class="anatomy-cell__head"><span class="anatomy-cell__idx">1</span><span class="anatomy-cell__slot">highlight</span></div>
               <div class="anatomy-cell__stage">
-                <img src="../assets/figma-atoms/product-highlights/new-hot.svg" alt="Product Highlights atom">
+                <span class="ph-highlight ph-highlight--new-hot" data-figma-node="27850:345179">New&Hot</span>
               </div>
               <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-product-highlights">Product Highlights</a> · 7 变体</div>
             </div>
@@ -951,7 +958,7 @@
               <div class="anatomy-cell__stage">
                 <img src="../assets/figma-atoms/title/1.svg" alt="Title Row 1">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-title">Title Row 1</a> · 单行 14/700</div>
+              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="brand-default">Brand-Default</button> · <a href="../atoms/index.html#atom-title">Title Row 1</a> · 单行 14/700</div>
             </div>
 
             <div class="anatomy-cell">
@@ -999,7 +1006,7 @@
               <div class="anatomy-cell__stage">
                 <img src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Add to Cart">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-btn-cart">Btn Add to Cart</a> · 32×32</div>
+              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="sold-by-joybuy">Sold by Joybuy</button> + <a href="../atoms/index.html#atom-btn-cart">Btn Add to Cart</a> · 32×32</div>
             </div>
           </div>
         </div>
@@ -1014,7 +1021,7 @@
             <tr><td>3</td><td><code>title</code></td><td>是</td><td>13/500 · 2 line clamp · 超出省略</td></tr>
             <tr><td>4</td><td><code>rating</code>, <code>sold</code></td><td>否</td><td>Rating &amp; Sold 原子 · 星形 SVG + tabular-nums</td></tr>
             <tr><td>5</td><td><code>promotion</code></td><td>否</td><td>红字营销标 · 空则整行折叠</td></tr>
-            <tr><td>6</td><td><code>salePrice</code>, <code>originalPrice</code></td><td>salePrice 必填</td><td>18/900 售价 · 下一行 RRP 划线灰字</td></tr>
+            <tr><td>6</td><td><code>salePrice</code>, <code>originalPrice</code></td><td>salePrice 必填</td><td>16/700/22 售价 · 下一行 RRP 12/500/16 #1A1A1A（无删除线）</td></tr>
             <tr><td>7</td><td><code>fulfillment</code></td><td>是</td><td>灰字履约信息 · 前置 Figma 卡车图标 · 高度对齐</td></tr>
             <tr><td>8</td><td><code>seller</code></td><td>是</td><td>灰字 · 尾部椭圆截断 · 右侧固定 28×28 加购按钮</td></tr>
           </tbody>
@@ -1069,7 +1076,7 @@
             <tr><td><code>img</code></td><td>string</td><td>SKU 图库</td><td>骨架图</td><td>-</td></tr>
             <tr><td><code>brand</code></td><td>string · Figma 示例 <code>Apple</code></td><td>SKU · brand</td><td>不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
             <tr><td><code>title</code></td><td>string · Figma 3 个变体文案</td><td>SKU · name</td><td>不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
-            <tr><td><code>highlight</code></td><td>enum · sponsored / best-before / new-hot / top-deal / private-label / new / too-good-to-waste</td><td>运营 CMS</td><td>不渲染</td><td>enum key，标签图跟 Figma SVG</td></tr>
+            <tr><td><code>highlight</code></td><td>enum · sponsored / best-before / new-hot / top-deal / private-label / new / too-good-to-waste</td><td>运营 CMS</td><td>不渲染</td><td>enum key，标签图跟 Figma SVG；<code>best-before</code>（最佳保质期 Life 3d+）与 <code>too-good-to-waste</code>（临期不浪费）仅在生鲜 / 食品 SKU 命中</td></tr>
             <tr><td><code>rating</code>, <code>sold</code></td><td>number · <code>4.5</code>, string · <code>100k+ sold</code></td><td>用户评价</td><td>不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
             <tr><td><code>promotion</code></td><td>enum · Figma 14 个变体</td><td>运营 CMS</td><td>不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
             <tr><td><code>salePrice</code>, <code>originalPrice</code></td><td>string · <code>£350.00</code> / <code>£500.00</code></td><td>定价服务</td><td>salePrice 必填 · originalPrice 空则不渲染 RRP 行</td><td>货币符号 i18n</td></tr>
@@ -1190,6 +1197,7 @@
 
 <script src="../assets/card-data.js"></script>
 <script src="../assets/pages-data.js"></script>
+<script src="../assets/atoms-data.js"></script>
 <script src="../assets/nav.js"></script>
 <script>
   /* ================ Interactive preview state ================ */
@@ -1317,12 +1325,14 @@
   // Resolve a field's visibility: override wins, else scenario/data default.
   function hVis(name, def, ov){ return (ov[name] == null) ? !!def : !!ov[name]; }
 
+  // Component 71 (Figma 23659:239135) is the only SKU-property atom: its two
+  // variants carry "125g " and "125g " + "Red". The divider is a hairline, not copy.
   const PRODUCT_PROPERTIES = {
-    '3c':        { en:'125g · Red', zh:'125g · Red' },
-    appliance:   { en:'125g · Red', zh:'125g · Red' },
-    beauty:      { en:'125g · Red', zh:'125g · Red' },
-    fashion:     { en:'125g · Red', zh:'125g · Red' },
-    food:        { en:'125g · Red', zh:'125g · Red' }
+    '3c':        { en:'125g | Red', zh:'125g | Red' },
+    appliance:   { en:'125g | Red', zh:'125g | Red' },
+    beauty:      { en:'125g | Red', zh:'125g | Red' },
+    fashion:     { en:'125g | Red', zh:'125g | Red' },
+    food:        { en:'125g | Red', zh:'125g | Red' }
   };
 
   function productProperties(catKey) {
@@ -1334,8 +1344,8 @@
   // (Figma component 23694:93745). The data is authored as "A · B".
   function productPropertyParts(catKey) {
     const value = productProperties(catKey);
-    const parts = value.split(/\s*·\s*/);
-    return parts.length > 1 ? parts : [value, ''];
+    const parts = value.split(/\s*\|\s*/);
+    return parts.length > 1 ? parts.map(s => s.trim()) : [value.trim(), ''];
   }
 
   function setField(name, value) {
@@ -1432,7 +1442,12 @@
     }
 
     // Merch — highlight (extreme uses Too Good To Waste), individual promo, master promo.
-    setField('highlight', vis('highlight') ? (isExt ? 'too-good-to-waste' : t.highlight) : '');
+    // Out-of-stock scene pins a highlight: the expiry badge (Too Good To Waste) is
+    // grocery-only, so non-grocery SKUs fall back to a generic badge.
+    const extHighlight = (D.highlightPolicy && D.highlightPolicy.groceryCategories.indexOf(currentCat) !== -1)
+      ? 'too-good-to-waste'
+      : 'sponsored';
+    setField('highlight', vis('highlight') ? (isExt ? extHighlight : t.highlight) : '');
     const promoVal = isProps ? productProperties(currentCat)
                      : (scene.promo ? scene.promo[cardLang] : '');
     setField('promotion', vis('promotion') ? promoVal : '');
@@ -1447,6 +1462,10 @@
     // render it, 3P SKUs drop the whole slot (and out-of-stock hides it too).
     const isJoybuy = !!p.selfOperated;
     setField('fulfillment', vis('fulfillment') ? t.fulfillment : '');
+    document.querySelectorAll('#hcard-preview [data-field="fulfillment"]').forEach(el => {
+      el.classList.toggle('is-pop', p.fulfillmentType === 'POP');
+      el.setAttribute('data-fulfillment-type', p.fulfillmentType === 'POP' ? 'POP' : 'Joybuy');
+    });
     setField('seller', (vis('seller') && isJoybuy) ? 'Sold by Joybuy' : '');
 
     const sw = document.querySelector('#hcard-preview .hcard__seller-wrap');
@@ -1800,11 +1819,12 @@
     if (cfg.mode !== 'properties') html += '<div class="hcard__brand">'+p.brand+'</div>';
     html += '<p class="hcard__title">'+t.title+'</p>';
     html += '<div class="hcard__meta">';
-    html += '<span class="hcard__meta-star">'+p.rating+'</span>';
     if (cfg.mode === 'properties') {
-      // AiBot: reviews read as a link-style label (underlined) — Figma 23659:237489.
-      html += '<span class="hcard__reviews">'+'189 Reviews'+'</span>';
+      // AiBot (Figma 23659:237489) uses Rating & Sold · Property 1=Variant5:
+      // 4.5 · 189 Reviews · 100k+ sold, exported as one atom SVG.
+      html += '<span class="hcard__meta-rating"><img src="../assets/figma-atoms/rating-sold/variant5.svg" alt="4.5 · 189 Reviews · 100k+ sold"></span>';
     } else {
+      html += '<span class="hcard__meta-star">'+p.rating+'</span>';
       html += '<span class="hcard__meta-sep"></span>';
       html += '<span>'+t.sold+'</span>';
     }
@@ -1850,7 +1870,7 @@
       if (t.discount) html += '<div class="hcard__discount">'+t.discount+'</div>';
     }
     if (cfg.mode === 'default' || cfg.mode === 'oos') {
-      html += '<div class="hcard__fulfillment">'+t.fulfillment+'</div>';
+      html += '<div class="hcard__fulfillment' + (p.fulfillmentType === 'POP' ? ' is-pop' : '') + '">'+t.fulfillment+'</div>';
     }
     // Out-of-stock scene swaps the fulfilment line for the Stock row.
     if (cfg.mode === 'extreme') {
@@ -1921,5 +1941,6 @@
 </script>
 <script src="../assets/card-detail-template.js"></script>
 <script src="../assets/card-preview-controls.js"></script>
+<script src="../assets/atom-map-preview.js"></script>
 </body>
 </html>

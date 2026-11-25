@@ -118,7 +118,6 @@
     aspect-ratio: 1 / 1;
     background: #f5f5f5;
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
   }
   .vcard__image::before {
     content: '';
@@ -153,16 +152,6 @@
     display: block; pointer-events: none;
     flex-shrink: 0;
   }
-  .vcard__hint {
-    position: absolute; left: 0; right: 0; bottom: 0;
-    padding: 4px 0; text-align: center;
-    background: rgba(0,0,0,.55); color: #fff;
-    font-size: 10px; letter-spacing: .04em;
-    opacity: 0; transition: opacity .15s ease;
-    z-index: 2;
-  }
-  .vcard__image:hover .vcard__hint { opacity: 1; }
-
   /* Figma 5577:17539 · Color Options sits on the same level as Product Media and
      Card Content: 24x24 cells, 2px gap, flush to the card's left edge (the row
      carries NO 6px content inset); vertical spacing comes from the 8px card gap.
@@ -272,22 +261,25 @@
   .vcard__prices {
     display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
   }
+  /* Price — Figma Pricing atom 5577:19658 · System/16px-Bold (16/700/22). */
   .vcard__sale-price {
-    font-size: 20px; font-weight: 900;
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 16px; font-weight: 700; line-height: 22px;
+    letter-spacing: 0;
     color: var(--joybuy-red);
     font-variant-numeric: tabular-nums;
-    letter-spacing: -.02em;
-    line-height: 1.15;
   }
+  /* Price (second line) — 12/500/16 #1a1a1a, no strikethrough. */
   .vcard__original-price {
-    font-size: 12px; color: var(--ink-5);
-    text-decoration: line-through;
+    font-size: 12px; font-weight: 500; line-height: 16px;
+    color: var(--ink);
+    text-decoration: none;
     font-variant-numeric: tabular-nums;
   }
   .vcard__discount {
     display: inline-block;
-    font-size: 12px; font-weight: 500;
-    color: var(--ink-2);
+    font-size: 12px; font-weight: 500; line-height: 16px;
+    color: var(--ink);
     background: transparent;
     padding: 0;
     align-self: flex-start;
@@ -306,11 +298,17 @@
     content: "";
     display: inline-block;
     width: 16px; height: 16px;
-    background: url('../assets/figma-atoms/leading-icon/joybuy.svg') center/contain no-repeat;
+    background: url('../assets/figma-atoms/leading-icon/delivery-by-joybuy.svg') center/contain no-repeat;
     flex-shrink: 0;
   }
+  /* Fulfillment Time atom has a Joybuy and a POP variant; the truck icon follows the
+     delivery type while the copy stays "Get it by today" in both. */
+  .vcard__fulfillment.is-pop::before {
+    background-image: url('../assets/figma-atoms/leading-icon/delivery-by-pop.svg');
+  }
   .vcard__price-was {
-    font-size: 12px; color: var(--ink-5);
+    font-size: 12px; font-weight: 500; line-height: 16px;
+    color: var(--ink);
     font-variant-numeric: tabular-nums;
   }
   .vcard__price-was .vcard__original-price::before { content: none; }
@@ -855,37 +853,8 @@
     border-top: none;
   }
 
-  /* 头部：由 [index · title 横排] 改为 [eyebrow / title / lede 上下堆叠] */
-  #s-overview .section__head {
-    display: block;
-    margin-bottom: 20px;
-  }
-  #s-overview .section__index {
-    display: block;
-    font-family: var(--f-mono);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: .16em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 14px;
-    min-width: 0;
-  }
-  #s-overview .section__title {
-    font-size: 34px;
-    font-weight: 700;
-    letter-spacing: -.02em;
-    line-height: 1.15;
-    color: var(--ink);
-  }
-  #s-overview .section__lede {
-    margin: 16px 0 0 0;
-    max-width: 660px;
-    font-size: 15px;
-    line-height: 1.75;
-    color: var(--ink-3);
-  }
-
+  /* Section head — 与 02–08 保持一致：[index · title 横排]，
+     字号与间距统一走共享 tokens.css 的 .section__head 规范。 */
   /* 展示区 */
   #s-overview .demo {
     margin-top: 48px !important;
@@ -907,16 +876,12 @@
     justify-content: center;
     position: relative;
   }
-  /* 悬浮卡片有一点点柔阴影，像 arco preview */
+  /* 预览卡片只有静态柔阴影 —— 不做悬浮位移，避免暗示“可点击” */
   #s-overview .demo__stage .vcard {
     box-shadow:
       0 1px 2px rgba(0,0,0,.04),
       0 6px 24px rgba(0,0,0,.06),
       0 24px 48px -18px rgba(0,0,0,.08);
-    transition: transform .35s cubic-bezier(.2,.7,.2,1);
-  }
-  #s-overview .demo__stage .vcard:hover {
-    transform: translateY(-2px);
   }
 
   /* 右：控件区更松散、更"规范"化 */
@@ -981,7 +946,6 @@
   @media (max-width: 900px) {
     #s-overview .demo { grid-template-columns: 1fr; gap: 32px; }
     #s-overview .demo__stage { padding: 48px 24px; min-height: 0; }
-    #s-overview .section__title { font-size: 26px; }
   }
 
   /* ================================================================
@@ -1127,6 +1091,24 @@
   .sim-row.is-disabled { background: var(--surface-2); }
   .sim-row.is-disabled .sim-row__name { color: var(--ink-5); }
   .sim-row__na { font-size: 10.5px; color: var(--ink-5); white-space: nowrap; }
+  /* Variant dropdown (单促 / 总促) — lists every Figma variant of the atom. */
+  .sim-row__select { flex: 0 1 auto; min-width: 0; max-width: 210px; }
+  .sim-select {
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 11px; line-height: 16px; font-weight: 500;
+    color: var(--ink-2);
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    border-radius: 6px;
+    padding: 5px 8px;
+    width: 100%; max-width: 100%;
+    cursor: pointer;
+    text-overflow: ellipsis;
+  }
+  .sim-select:hover:not(:disabled) { border-color: var(--outline-strong); }
+  .sim-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .sim-select:disabled { color: var(--ink-5); background: var(--surface-2); cursor: not-allowed; }
+  .sim-row.is-disabled .sim-select { opacity: .7; }
   /* switch */
   .sim-sw {
     all: unset; cursor: pointer; box-sizing: border-box; flex: none;
@@ -1144,6 +1126,7 @@
 
 </style>
   <link rel="stylesheet" href="../assets/card-preview-alignment.css">
+  <link rel="stylesheet" href="../assets/atom-map-preview.css">
 </head>
 <body>
 <div class="site site--card-detail">
@@ -1189,24 +1172,19 @@
           <span class="section__index">01</span>
           <h2 class="section__title">Overview · 概览</h2>
         </div>
-        <p class="section__lede">
-          最常用的商品卡片，在首页信息流、分类页、搜索结果双列视图里以 200px 卡片框架出现，其中商品图片容器固定为 176×176。
-          商品图与商品信息同层还排布 Color Options 色板行（Figma 5577:17539）：24×24 色单元、2px 间距、左对齐卡片且无左右 padding，与上下各 8px。
-          色板下方是两个内容容器：Container 01（亮点 → 品牌 → 标题 → 评分/销量 → AI 推荐理由，间距 4px）与 Container 02（左右 padding 6px；上组：Individual Promotion / Type 单促/业务类型 → 价格 → 总促，下组：库存 → 履约时效 → 自营标签 → 服务 → 原产地 → 性能，组内间距 4px，组间 8px；加购按钮在右侧，与左列间距 4px），两容器间距 8px。
-        </p>
+        <p class="section__lede">最常用的商品卡片，在首页信息流、分类页、搜索结果双列视图里以 200px 卡片框架出现，其中商品图片容器固定为 176×176。</p>
 
         <div class="demo" style="margin-top: 8px;">
           <!-- 左侧：卡片预览 -->
           <div class="demo__stage">
             <div class="vcard" id="vcard">
-              <div class="vcard__image" id="vcard-image-click">
+              <div class="vcard__image">
                 <div class="vcard__image-inner" id="vcard-image"></div>
                 <span class="vcard__rank" data-field="rankBadge" data-empty="1"></span>
                 <span class="vcard__dietary" id="vcard-dietary" data-empty="1"></span>
-                <button class="vcard__favorite" aria-label="favorite" onclick="event.stopPropagation()">
+                <button class="vcard__favorite" aria-label="favorite">
                   <img src="../assets/figma-atoms/tag-like/tag-like.svg" alt="Favorite">
                 </button>
-                <span class="vcard__hint" data-i18n="c1.imgHint">Click to swap</span>
               </div>
               <div class="vcard__colors" id="vcard-colors"></div>
               <div class="vcard__body">
@@ -1240,14 +1218,14 @@
                     <!-- Part 2 · Stock / Fulfillment / Self-operated / Service / Country / Performance -->
                     <div class="vcard__content-02-bottom">
                       <span class="vcard__stock" data-field="stock" data-empty="1"></span>
-                      <span class="vcard__fulfillment" data-field="fulfillment">Get it by today</span>
+                      <span class="vcard__fulfillment" data-field="fulfillment" data-fulfillment-type="Joybuy">Get it by today</span>
                       <span class="vcard__seller-wrap">
                         <img class="vcard__seller-mark" src="../assets/figma-atoms/sold-by-joybuy/joybuy-mark.svg" alt="" width="16" height="16">
                         <span class="vcard__seller" data-field="seller">Sold by Joybuy</span>
                       </span>
                       <span class="vcard__service" data-field="service" data-empty="1">
                         <img src="../assets/figma-atoms/service/install-and-recyle.svg" alt="" width="16" height="16">
-                        <span data-field="serviceText">Install &amp; Recycle</span>
+                        <span data-field="serviceText">Install &amp; Recyle</span>
                       </span>
                       <span class="vcard__country" data-field="country" data-empty="1">
                         <img src="../assets/figma-atoms/country-of-origin/from-wales.svg" alt="" width="16" height="16">
@@ -1376,17 +1354,17 @@
               <tr><td>1</td><td><code>image</code></td><td>是</td><td>1:1 比例，缺失时显示灰底占位</td></tr>
               <tr><td>2</td><td><code>colors</code> + <code>extraColors</code></td><td>否</td><td>与商品图 / 商品信息同层；间距 8px，无左右 padding；24×24 色单元 · 2px 间距，更多色只显示 <code>+8 / +99</code></td></tr>
               <tr><td colspan="4" style="background: var(--surface-2); font-size: 11px; font-weight: 700; color: var(--ink-3); letter-spacing: .02em;">Card Content Container 01（容器 01）· 纵向 gap 4 · 左右 padding 6</td></tr>
-              <tr><td>3</td><td><code>highlight</code></td><td>否</td><td>enum → Figma SVG 标签，缺失整行不渲染</td></tr>
+              <tr><td>3</td><td><code>highlight</code></td><td>否</td><td>enum → Figma SVG 标签，缺失整行不渲染；最佳保质期 / 临期不浪费仅生鲜·食品 SKU</td></tr>
               <tr><td>4</td><td><code>brand</code></td><td>否</td><td>14/20 700；缺失不渲染，&gt;12 字省略</td></tr>
               <tr><td>5</td><td><code>title</code></td><td>是</td><td>14/20 500；2 行截断，第 3 行 <code>…</code></td></tr>
               <tr><td>6</td><td><code>rating</code> + <code>soldCount</code></td><td>否</td><td>销量 &lt;100 时隐藏</td></tr>
               <tr><td>7</td><td><code>aiReasons</code></td><td>否</td><td>AI Recommendation Reasons；12/16 500 <code>#6E7078</code>；最多 2 行</td></tr>
               <tr><td colspan="4" style="background: var(--surface-2); font-size: 11px; font-weight: 700; color: var(--ink-3); letter-spacing: .02em;">Card Content Container 02（容器 02）· 左右 padding 6 · 左列纵向 gap 4 / 8 · 按钮右列 gap 4</td></tr>
-              <tr><td>8</td><td><code>promotion</code></td><td>否</td><td>Individual Promotion / Type 单促/业务类型；Barlow Fix 50 Semibold 12/16 600 <code>#E1251B</code>（如 <code>Lightning offers</code>）；空值整行折叠</td></tr>
-              <tr><td>9</td><td><code>salePrice</code> / <code>originalPrice</code> · <code>discount</code> / <code>deposit</code></td><td>是 / 否</td><td>价格块内部 gap 4；原价加 <code>RRP:</code> 前缀，折扣、押金各自独立行</td></tr>
-              <tr><td>10</td><td><code>totalPromo</code></td><td>否</td><td>Master Promotion；Figma SVG atom；空值折叠</td></tr>
+              <tr><td>8</td><td><code>promotion</code></td><td>否</td><td>Individual Promotion / Type 单促/业务类型；Barlow Fix 50 Semibold 12/16 600 <code>#E1251B</code>（如 <code>Lightning offers</code>）；字段面板可下拉切换全部 14 个 Figma 变体；空值整行折叠</td></tr>
+              <tr><td>9</td><td><code>salePrice</code> / <code>originalPrice</code> · <code>discount</code> / <code>deposit</code></td><td>是 / 否</td><td>价格块内部 gap 4；售价 16/700/22，划线价 12/500/16 #1A1A1A（无删除线），原价加 <code>RRP:</code> 前缀，折扣、押金各自独立行</td></tr>
+              <tr><td>10</td><td><code>totalPromo</code></td><td>否</td><td>Master Promotion；Figma SVG atom；字段面板可下拉切换全部 19 个 Figma 变体；空值折叠</td></tr>
               <tr><td>11</td><td><code>stock</code></td><td>否</td><td>Stock left；Barlow Fix 50 Medium 12/16 500 <code>var(--Text-Tertiary, #6E7078)</code>；空值折叠</td></tr>
-              <tr><td>12</td><td><code>fulfillment</code></td><td>否</td><td>12/16 500 <code>#6E7078</code>，前置 16px 卡车图标</td></tr>
+            <tr><td>12</td><td><code>fulfillment</code></td><td>否</td><td>12/16 500 <code>#6E7078</code>，前置 16px 卡车图标（Joybuy / POP 两个变体）</td></tr>
               <tr><td>13</td><td><code>seller</code></td><td>否</td><td>Official self-operated tag；12/16 500；1P 显示 Joybuy 红标</td></tr>
               <tr><td>14</td><td><code>service</code></td><td>否</td><td>Service；16px 图标 + 12/16 500 <code>#6E7078</code>；空值折叠</td></tr>
               <tr><td>15</td><td><code>country</code></td><td>否</td><td>Country of origin；16px 国旗 + 12/16 500 <code>#6E7078</code>；空值折叠</td></tr>
@@ -1403,14 +1381,14 @@
             <span class="anatomy__title-en">Which Figma atom fills each slot</span>
           </div>
           <p class="anatomy__lede">
-            这张卡的 17 个槽位分别由哪些原子组件填充。所有原子图像直接来自 Figma 源文件，与商卡视觉严格一致。点击原子名可跳到原子浏览器查看全部变体。
+            这张卡的 17 个槽位分别由哪些原子组件填充。所有原子图像直接来自 Figma 源文件，与商卡视觉严格一致。悬停原子名查看全部类型；点击具体类型可跳到原子浏览器查看详情。
           </p>
           <div class="anatomy-grid">
 
             <div class="anatomy-cell">
               <div class="anatomy-cell__head"><span class="anatomy-cell__idx">1</span><span class="anatomy-cell__slot">image</span><span>· 商品图</span></div>
               <div class="anatomy-cell__stage anatomy-cell__stage--placeholder">176px · 1:1 容器</div>
-              <div class="anatomy-cell__atom">Main image · <a href="../atoms/index.html#atom-main-image">Product Image 商品图片</a></div>
+              <div class="anatomy-cell__atom">Main image · <button class="atom-map-trigger" type="button" data-atom-preview="main-image">Product Image 商品图片</button></div>
             </div>
 
             <div class="anatomy-cell">
@@ -1418,21 +1396,23 @@
               <div class="anatomy-cell__stage">
                 <img src="../assets/figma-atoms/color/default.svg" alt="Color atom - default variant">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-color">Color · SPU 色板</a> · 4 变体 · 24×24 单元 / 2px 间距</div>
+              <div class="anatomy-cell__atom">
+<button class="atom-map-trigger" type="button" data-atom-preview="color">Color · SPU 色板</button> · 4 变体 · 24×24 单元 / 2px 间距
+              </div>
             </div>
 
             <div class="anatomy-cell">
               <div class="anatomy-cell__head"><span class="anatomy-cell__idx">3</span><span class="anatomy-cell__slot">highlight</span><span>· 亮点</span></div>
               <div class="anatomy-cell__stage">
-                <img src="../assets/figma-atoms/product-highlights/new-hot.svg" alt="Product Highlights atom - New&Hot variant">
+                <span class="ph-highlight ph-highlight--new-hot" data-figma-node="27850:345179">New&Hot</span>
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-product-highlights">Product Highlights · 商品亮点</a> · 7 变体</div>
+              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="product-highlights">Product Highlights · 商品亮点</button> · 7 变体</div>
             </div>
 
             <div class="anatomy-cell">
               <div class="anatomy-cell__head"><span class="anatomy-cell__idx">4</span><span class="anatomy-cell__slot">brand</span><span>· 品牌</span></div>
               <div class="anatomy-cell__stage"><span style="font-size: 14px; font-weight: 700; color: var(--ink);">TCL</span></div>
-              <div class="anatomy-cell__atom">Brand · 品牌名 · 14/20 700</div>
+              <div class="anatomy-cell__atom">Brand · <button class="atom-map-trigger" type="button" data-atom-preview="brand-default">品牌名</button> · 14/20 700</div>
             </div>
 
             <div class="anatomy-cell">
@@ -1440,7 +1420,7 @@
               <div class="anatomy-cell__stage">
                 <img src="../assets/figma-atoms/title/2.svg" alt="Title atom - 2 line variant">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-title">Title · 商品标题</a> · 2 行变体</div>
+              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="title">Title · 商品标题</button> · 2 行变体</div>
             </div>
 
             <div class="anatomy-cell">
@@ -1448,7 +1428,7 @@
               <div class="anatomy-cell__stage">
                 <img src="../assets/figma-atoms/rating-sold/rate-sold.svg" alt="Rating & Sold atom">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-rating-sold">Rating &amp; Sold · 评分销量</a></div>
+              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="rating-sold">Rating &amp; Sold · 评分销量</button></div>
             </div>
 
             <div class="anatomy-cell">
@@ -1456,7 +1436,7 @@
               <div class="anatomy-cell__stage">
                 <img src="../assets/figma-atoms/ai-recommendation/more-buying-choices.svg" alt="AI Recommendation Reasons atom - More buying choices variant">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-ai-recommendation">AI Recommendation Reasons</a> · 12/16 500 <code>#6E7078</code></div>
+              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="ai-recommendation">AI Recommendation Reasons</button> · 12/16 500 <code>#6E7078</code></div>
             </div>
 
             <div class="anatomy-cell">
@@ -1464,7 +1444,7 @@
               <div class="anatomy-cell__stage">
                 <img src="../assets/figma-atoms/individual-promotion/campaign-lightning-offers.svg" alt="Individual Promotion atom">
               </div>
-              <div class="anatomy-cell__atom" data-global-i18n="off"><a href="../atoms/index.html#atom-individual-promotion">Individual Promotion / Type</a></div>
+              <div class="anatomy-cell__atom" data-global-i18n="off"><button class="atom-map-trigger" type="button" data-atom-preview="individual-promotion">Individual Promotion / Type</button></div>
             </div>
 
             <div class="anatomy-cell">
@@ -1473,7 +1453,7 @@
                 <img src="../assets/figma-atoms/price/default.svg" alt="Price atom">
                 <img src="../assets/figma-atoms/price-second-line/rrp-horizontal.svg" alt="Price second line atom">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-price">Price · 售价</a> + <a href="../atoms/index.html#atom-price-second-line">Price second line · RRP 副行</a></div>
+              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="price">Price · 售价</button> + <button class="atom-map-trigger" type="button" data-atom-preview="price-second-line">Price second line · RRP 副行</button></div>
             </div>
 
             <div class="anatomy-cell">
@@ -1481,7 +1461,7 @@
               <div class="anatomy-cell__stage">
                 <img src="../assets/figma-atoms/total-promotion/buy-1-get-1-free.svg" alt="Total Promotion atom">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-total-promotion">Total Promotion · 总促</a> · Master Promotion</div>
+              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="total-promotion">Total Promotion · 总促</button> · Master Promotion</div>
             </div>
 
             <div class="anatomy-cell">
@@ -1489,7 +1469,7 @@
               <div class="anatomy-cell__stage">
                 <img src="../assets/figma-atoms/stock/low-stock.svg" alt="Stock atom - low stock variant">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-stock">Stock · 少库存</a> · 12/16 500 <code>#6E7078</code></div>
+              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="stock">Stock · 少库存</button> · 12/16 500 <code>#6E7078</code></div>
             </div>
 
             <div class="anatomy-cell">
@@ -1497,7 +1477,7 @@
               <div class="anatomy-cell__stage">
                 <img src="../assets/figma-atoms/fulfillment-time/joybuy.svg" alt="Fulfillment Time atom - Joybuy variant">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-fulfillment-time">Fulfillment Time · 履约时效</a> · 2 变体</div>
+              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="fulfillment-time">Fulfillment Time · 履约时效</button> · 2 变体</div>
             </div>
 
             <div class="anatomy-cell">
@@ -1506,15 +1486,15 @@
                 <img src="../assets/figma-atoms/sold-by-joybuy/joybuy-mark.svg" alt="Sold by Joybuy mark" width="16" height="16">
                 <span style="font-size:12px; line-height:16px; font-weight:500; color:var(--ink);">Sold by Joybuy</span>
               </div>
-              <div class="anatomy-cell__atom">Official self-operated tag · 自营标签 · 12/16 500</div>
+              <div class="anatomy-cell__atom">Official self-operated tag · <button class="atom-map-trigger" type="button" data-atom-preview="sold-by-joybuy">自营标签</button> · 12/16 500</div>
             </div>
 
             <div class="anatomy-cell">
               <div class="anatomy-cell__head"><span class="anatomy-cell__idx">14</span><span class="anatomy-cell__slot">service</span><span>· 服务</span></div>
               <div class="anatomy-cell__stage">
-                <img src="../assets/figma-atoms/service/install-recycle.svg" alt="Service atom - Install and Recycle">
+                <img src="../assets/figma-atoms/service/install-and-recyle.svg" alt="Service atom - Install & Recyle">
               </div>
-              <div class="anatomy-cell__atom">Service · 服务 · 16px icon + 12/16 500 <code>#6E7078</code></div>
+              <div class="anatomy-cell__atom">Service · <button class="atom-map-trigger" type="button" data-atom-preview="service">服务</button> · 16px icon + 12/16 500 <code>#6E7078</code></div>
             </div>
 
             <div class="anatomy-cell">
@@ -1522,7 +1502,7 @@
               <div class="anatomy-cell__stage">
                 <img src="../assets/figma-atoms/country-of-origin/from-wales.svg" alt="Country of origin atom - From Wales">
               </div>
-              <div class="anatomy-cell__atom">Country of origin · 原产地 · 16px flag + 12/16 500 <code>#6E7078</code></div>
+              <div class="anatomy-cell__atom">Country of origin · <button class="atom-map-trigger" type="button" data-atom-preview="country-of-origin">原产地</button> · 16px flag + 12/16 500 <code>#6E7078</code></div>
             </div>
 
             <div class="anatomy-cell">
@@ -1530,7 +1510,7 @@
               <div class="anatomy-cell__stage">
                 <img src="../assets/figma-atoms/energy/default.svg" alt="Energy atom - default variant">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-energy">Energy · 能效</a> · Performance · 24px</div>
+              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="energy">Energy · 能效</button> · Performance · 24px</div>
             </div>
 
             <div class="anatomy-cell">
@@ -1538,7 +1518,7 @@
               <div class="anatomy-cell__stage">
                 <img src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Btn Cart atom - default variant">
               </div>
-              <div class="anatomy-cell__atom"><a href="../atoms/index.html#atom-btn-cart">Btn_Cart · 加购按钮</a> · 11 变体</div>
+              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="btn-cart">Btn_Cart · 加购按钮</button> · 11 变体</div>
             </div>
 
 
@@ -1633,19 +1613,19 @@
             <tr><td colspan="5" style="background: var(--surface-2); font-size: 11px; font-weight: 700; color: var(--ink-3); letter-spacing: .02em;">Card Content Container 01（容器 01）· 纵向 gap 4 · 左右 padding 6</td></tr>
             <tr><td><code>brand</code></td><td>string · Figma 示例 <code>Apple</code></td><td>商品主档</td><td>可选；缺失不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
             <tr><td><code>title</code></td><td>string</td><td>商品主档</td><td>必填，缺失禁投</td><td>en / zh 双语，缺失回退英文</td></tr>
-            <tr><td><code>highlight</code></td><td>enum · sponsored / best-before / new-hot / top-deal / private-label / new / too-good-to-waste</td><td>运营 CMS</td><td>不渲染</td><td>enum key，标签图跟 Figma SVG</td></tr>
+            <tr><td><code>highlight</code></td><td>enum · sponsored / best-before / new-hot / top-deal / private-label / new / too-good-to-waste</td><td>运营 CMS</td><td>不渲染</td><td>enum key，标签图跟 Figma SVG；<code>best-before</code>（最佳保质期 Life 3d+）与 <code>too-good-to-waste</code>（临期不浪费）仅在生鲜 / 食品 SKU 命中</td></tr>
             <tr><td><code>rating</code></td><td>number · Figma 示例 <code>4.5</code></td><td>评价服务</td><td>缺失不渲染</td><td>数字通用</td></tr>
             <tr><td><code>soldCount</code></td><td>string · Figma 示例 <code>100k+ sold</code></td><td>订单服务</td><td>缺失不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
             <tr><td><code>aiReasons</code></td><td>enum · AI Recommendation Reasons 10 个 Figma 变体</td><td>AI 推荐服务</td><td>不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
             <tr><td colspan="5" style="background: var(--surface-2); font-size: 11px; font-weight: 700; color: var(--ink-3); letter-spacing: .02em;">Card Content Container 02（容器 02）· 左右 padding 6 · 左列纵向 gap 4 / 8 · 按钮右列 gap 4</td></tr>
-            <tr><td><code>promotion</code><br>Individual Promotion / Type</td><td>enum · Figma 14 个变体</td><td>营销服务</td><td>不渲染</td><td>预览仅使用 Figma 源文案；12/16 600 <code>#E1251B</code></td></tr>
+            <tr><td><code>promotion</code><br>Individual Promotion / Type</td><td>enum · Figma 14 个变体</td><td>营销服务</td><td>不渲染</td><td>预览仅使用 Figma 源文案；12/16 600 <code>#E1251B</code>；字段面板下拉可直接切换变体</td></tr>
             <tr><td><code>salePrice</code></td><td>string · Figma 示例 <code>£350.00</code></td><td>价格服务实时</td><td>必填，缺失禁投</td><td>符号跟随站点区域</td></tr>
             <tr><td><code>originalPrice</code></td><td>string · Figma 示例 <code>£500.00</code></td><td>价格服务</td><td>无折扣时不渲染</td><td>符号跟随站点区域</td></tr>
             <tr><td><code>discount</code></td><td>enum · <code>Save 18% on RRP / 18% off / Save £20.00 on RRP / Save £20</code></td><td>价格服务计算</td><td>无折扣时不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
             <tr><td><code>deposit</code></td><td>enum · Figma 示例 <code>Excl. deposit £0.15</code></td><td>价格服务</td><td>非押金商品不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
-            <tr><td><code>totalPromo</code><br>Master Promotion</td><td>enum · Figma 19 个变体</td><td>营销服务</td><td>不渲染</td><td>Figma SVG atom</td></tr>
+            <tr><td><code>totalPromo</code><br>Master Promotion</td><td>enum · Figma 19 个变体</td><td>营销服务</td><td>不渲染</td><td>Figma SVG atom；字段面板下拉可直接切换变体</td></tr>
             <tr><td><code>stock</code><br>Stock left</td><td>enum · <code>Only 10 left / Out of stock</code></td><td>库存服务</td><td>不渲染</td><td>预览仅使用 Figma 源文案；12/16 500 <code>#6E7078</code></td></tr>
-            <tr><td><code>fulfillmentType</code></td><td>enum · <code>Joybuy / POP</code></td><td>履约服务</td><td>不渲染</td><td>固定渲染 Figma 文案 <code>Get it by today</code></td></tr>
+            <tr><td><code>fulfillmentType</code></td><td>enum · <code>Joybuy / POP</code></td><td>履约服务</td><td>不渲染</td><td>只切换 Fulfillment Time 的卡车图标变体；文案固定 <code>Get it by today</code></td></tr>
             <tr><td><code>selfOperated</code><br>Official self-operated tag</td><td>boolean</td><td>商户档</td><td><code>false</code> 或缺失时整个槽位不渲染</td><td><code>true</code> 固定渲染 <code>Sold by Joybuy</code></td></tr>
             <tr><td><code>service</code><br>Service</td><td>enum · <code>Install &amp; Recyle / Gift wrapping</code></td><td>服务能力</td><td>不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
             <tr><td><code>country</code><br>Country of origin</td><td>enum · <code>From Wales / From United Kingdom / From Scotland / From England / From Ireland</code></td><td>商品主档</td><td>不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
@@ -1801,6 +1781,7 @@
 </div>
 
 <script src="../assets/card-data.js"></script>
+<script src="../assets/atoms-data.js"></script>
 <script src="../assets/pages-data.js"></script>
 <script src="../assets/nav.js"></script>
 <script>
@@ -1892,6 +1873,95 @@
     'private-label':'38163:76435', 'new':'27850:347938',
     'too-good-to-waste':'28525:159689'
   };
+  /* ================ Promotion atoms (variant pickers) ================
+   * Figma 5532:14930 → component set "Individual Promotion" (5551:17019), 14 variants.
+   * Figma 5532:15024 → component set "Total Promotion" (28444:79591), 19 variants.
+   * Each entry keeps the Figma node id and the exact source copy, so the dropdown
+   * can only ever switch to a real atom variant. */
+  const PROMO_VARIANTS = [
+    { key:'campaign-price-match', node:'19382:141360', copy:['Price match Amazon'] },
+    { key:'campaign-lightning-offers', node:'5532:14983', copy:['Lightning offers'] },
+    { key:'compaign-everyday-low-price', node:'19382:151294', copy:['Everyday low price'] },
+    { key:'campaign-happy-hour', node:'5551:17013', copy:['Happy hour'] },
+    { key:'campaign-welcome-offer', node:'5551:17018', copy:['Welcome offer'] },
+    { key:'clearance-sale', node:'24865:196706', copy:['Outlet'] },
+    { key:'type-pre-sale', node:'5551:24817', copy:['Pre-sale'] },
+    { key:'pre-sale-with-time', node:'35028:426951', copy:['Pre-sale','Ends in 23:10:20'] },
+    { key:'early-access', node:'27850:365768', copy:['Early access'] },
+    { key:'new-launch', node:'5551:24825', copy:['Coming soon'] },
+    { key:'new-launch-limit-time', node:'5551:25570', copy:['Coming soon','Starts at Aug 26, 00:00'] },
+    { key:'launch-and-contract', node:'5551:24837', copy:['Coming soon','Contract'] },
+    { key:'launch-and-contract-limit-time', node:'6417:16583', copy:['Coming soon','Contract','Starts at Aug 26, 00:00'] },
+    { key:'contract', node:'5551:24831', copy:['Contract'] }
+  ];
+
+  const TOTAL_PROMO_VARIANTS = [
+    { key:'pay-after-promotion', node:'28444:79590', copy:'Pay £339.99 after promotion', svg:'../assets/figma-atoms/total-promotion/type-pay-after-promotion.svg' },
+    { key:'buy-2-get-30-off', node:'28444:79589', copy:'Buy 2 Get 30% Off', svg:'../assets/figma-atoms/total-promotion/type-buy-2-get-30-off.svg' },
+    { key:'15-00-off-over-100-00', node:'28444:79588', copy:'£15.00 Off over £100.00', svg:'../assets/figma-atoms/total-promotion/type-15-00-off-over-100-00.svg' },
+    { key:'buy-1-get-1-free', node:'28444:79587', copy:'Buy 1 get 1 free', svg:'../assets/figma-atoms/total-promotion/type-buy-1-get-1-free.svg' },
+    { key:'3-for-2', node:'28444:79585', copy:'3 for 2', svg:'../assets/figma-atoms/total-promotion/type-3-for-2.svg' },
+    { key:'virtual-gift-3-00-in-gifts', node:'28444:79586', copy:'£3.00 in gifts', svg:'../assets/figma-atoms/total-promotion/type-virtual-gift-3-00-in-gifts.svg' },
+    { key:'virtual-gift-gift-up-to-3-00', node:'32864:273273', copy:'Gift up to £3.00', svg:'../assets/figma-atoms/total-promotion/type-virtual-gift-gift-up-to-3-00.svg' },
+    { key:'virtual-gift-pick-3-gifts', node:'32864:273285', copy:'Pick 3 gifts', svg:'../assets/figma-atoms/total-promotion/type-virtual-gift-pick-3-gifts.svg' },
+    { key:'virtual-gift-3-gifts', node:'32864:273287', copy:'3 gifts', svg:'../assets/figma-atoms/total-promotion/type-virtual-gift-3-gifts.svg' },
+    { key:'points', node:'28444:79584', copy:'+500 pts = £5 off', svg:'../assets/figma-atoms/total-promotion/type-points.svg' },
+    { key:'repeat-and-save-up-to-7', node:'38279:83440', copy:'Repeat & Save up to 7%', svg:'../assets/figma-atoms/total-promotion/type-repeat-save-up-to-7.svg' },
+    { key:'limited-time-discount', node:'38982:159857', copy:'Limited-time discount £5', svg:'../assets/figma-atoms/total-promotion/type-limited-time-discount.svg' },
+    { key:'virtual-gift-free-gift', node:'32873:280909', copy:'Free gift', svg:'../assets/figma-atoms/total-promotion/type-virtual-gift-free-gift.svg' },
+    { key:'spend-get-gift-1', node:'39157:338996', copy:'Buy £100, £50 gift', svg:'../assets/figma-atoms/total-promotion/type-spend-get-gift-1.svg' },
+    { key:'spend-get-gift-2', node:'39157:338998', copy:'Buy £100, £50 gifts', svg:'../assets/figma-atoms/total-promotion/type-spend-get-gift-2.svg' },
+    { key:'spend-get-gift-3', node:'39157:339000', copy:'Buy £100, pick £50 gift', svg:'../assets/figma-atoms/total-promotion/type-spend-get-gift-3.svg' },
+    { key:'spend-get-gift-4', node:'39157:339002', copy:'Buy £100, pick 3 gifts', svg:'../assets/figma-atoms/total-promotion/type-spend-get-gift-4.svg' },
+    { key:'spend-get-gift-5', node:'39157:339004', copy:'Buy £100, 3 gifts', svg:'../assets/figma-atoms/total-promotion/type-spend-get-gift-5.svg' },
+    { key:'spend-get-gift-6', node:'39157:339006', copy:'Buy £100, free gift', svg:'../assets/figma-atoms/total-promotion/type-spend-get-gift-6.svg' }
+  ];
+
+  const DEFAULT_PROMO_KEY = 'campaign-lightning-offers';
+  const DEFAULT_TOTAL_PROMO_KEY = 'buy-1-get-1-free';
+
+  // Render the Individual Promotion atom: red main copy + optional gray time line.
+  function promoHTML(variant) {
+    if (!variant) return '';
+    const main = '<span class="ph-promo__main">' + variant.copy[0] + '</span>';
+    const rest = variant.copy.slice(1).map(t => '<span class="ph-promo__sub">' + t + '</span>').join('');
+    return '<span class="ph-promo" data-figma-node="' + variant.node + '">' + main + rest + '</span>';
+  }
+
+  function setPromotion(key) {
+    const variant = PROMO_VARIANTS.find(v => v.key === key) || null;
+    document.querySelectorAll('[data-field="promotion"]').forEach(el => {
+      if (variant) { el.innerHTML = promoHTML(variant); el.removeAttribute('data-empty'); }
+      else { el.innerHTML = ''; el.setAttribute('data-empty', '1'); }
+    });
+  }
+
+  // Render the Total Promotion atom from its exported Figma SVG.
+  function setTotalPromo(key) {
+    const variant = TOTAL_PROMO_VARIANTS.find(v => v.key === key) || null;
+    document.querySelectorAll('[data-field="totalPromo"]').forEach(el => {
+      if (variant) {
+        el.innerHTML = '<img src="' + variant.svg + '" alt="' + variant.copy + '">';
+        el.removeAttribute('data-empty');
+      } else {
+        el.innerHTML = '';
+        el.setAttribute('data-empty', '1');
+      }
+    });
+  }
+
+  // Dropdown markup for one atom family.
+  function variantSelectHTML(variants, selectedKey, fieldKey, enabled, ariaLabel) {
+    const options = variants.map(v => {
+      const selected = (selectedKey && v.key === selectedKey) ? ' selected' : '';
+      const label = Array.isArray(v.copy) ? v.copy.join(' · ') : v.copy;
+      return '<option value="' + v.key + '"' + selected + ' title="' + v.node + '">' + label + '</option>';
+    }).join('');
+    return '<label class="sim-row__select"><select class="sim-select" data-select-key="' + fieldKey + '"'
+      + (enabled ? '' : ' disabled') + ' aria-label="' + ariaLabel + '">'
+      + '<option value="">默认</option>' + options + '</select></label>';
+  }
+
   function highlightHTML(key) {
     if (!HIGHLIGHT_ENUM.has(key)) return '';
     if (key === 'too-good-to-waste') {
@@ -1980,6 +2050,8 @@
   // Field explorer state
   let sceneKey = 'universal';   // active scenario tab
   let fieldOv  = {};            // field key -> true/false; absent = follow scenario default
+  let promoVariantKey = '';         // Individual Promotion variant picked in the dropdown ('' = default)
+  let totalPromoVariantKey = '';    // Total Promotion variant picked in the dropdown ('' = default)
 
   // Resolve a field's visibility: override wins, else scenario/data default.
   function vVis(name, def, ov){ return (ov[name] == null) ? !!def : !!ov[name]; }
@@ -2131,18 +2203,23 @@
     const rankTxt  = '1';   // Figma Tag-number: rank number only
     // Figma atom default variant: Type=More buying choices — Barlow Fix 50 Medium 12/16 #6E7078.
     const reasonTxt = 'More buying choices';
-    // Figma atom: Individual Promotion / Type — Campaign-Lightning offers, Barlow Fix 50 Semibold 12/16 #E1251B.
-    const promoVal  = 'Lightning offers';
+    // Figma atom: Individual Promotion / Type (5551:17019) — the dropdown picks one of
+    // the 14 real variants; the default is Campaign-Lightning offers.
+    const promoKey  = promoVariantKey || DEFAULT_PROMO_KEY;
     const depositVal = (scene.vals && scene.vals.deposit) ? scene.vals.deposit[cardLang] : t.deposit;
 
     // Data-kind slots — value from preset, visibility from resolved default/override.
     renderColors(vis('colors'), p.colors, p.extraColors);
     setField('highlight',     (vis('highlight') && avail.highlight) ? (lockedHighlight || t.highlight) : '');
-    setField('promotion',     vis('promotion') ? promoVal : '');
+    setPromotion(vis('promotion') ? promoKey : '');
     setField('originalPrice', vis('rrp') ? p.originalPrice : '');
     setField('discount',      vis('discount') ? t.discount : '');
     setField('deposit',       vis('deposit') ? depositVal : '');
     setField('fulfillment',   vis('fulfillment') ? t.fulfillment : '');
+    document.querySelectorAll('[data-field="fulfillment"]').forEach(el => {
+      el.classList.toggle('is-pop', p.fulfillmentType === 'POP');
+      el.setAttribute('data-fulfillment-type', p.fulfillmentType === 'POP' ? 'POP' : 'Joybuy');
+    });
     setField('seller',        (vis('seller') && p.selfOperated) ? 'Sold by Joybuy' : '');
 
     // Context-kind slots — constant atom/label, visibility per scenario.
@@ -2150,7 +2227,7 @@
     setDietary(vis('dietary'), scene.dietary || ['Vegan', 'GlutenFree']);
     setField('reviews',       vis('aiReasons') ? reasonTxt : '');
     setAtom('presaleTag',     vis('presaleTag'));
-    setAtom('totalPromo',     vis('totalPromo'));
+    setTotalPromo(vis('totalPromo') ? (totalPromoVariantKey || DEFAULT_TOTAL_PROMO_KEY) : '');
     setField('stock',         vis('stock') ? stockTxt : '');
     setSlot('service',        vis('service'));
     setField('serviceText',   vis('service') ? 'Install & Recyle' : '');
@@ -2199,6 +2276,8 @@
     const s = V_SCENES.find(x => x.key === key) || V_SCENES[0];
     sceneKey = key;
     fieldOv = {};
+    promoVariantKey = '';
+    totalPromoVariantKey = '';
     currentCat = s.cat;
     currentPreset = s.preset;
     lockedHighlight = (s.vals && s.vals.highlight) || '';
@@ -2213,7 +2292,7 @@
     const host = document.getElementById('vcard-sim');
     if (!host) return;
     const T = UI_COPY[cardLang];
-    const dirty = Object.keys(fieldOv).length > 0;
+    const dirty = Object.keys(fieldOv).length > 0 || !!promoVariantKey || !!totalPromoVariantKey;
 
     let html = '<div class="field-sim__head">'
       + '<div class="field-sim__title">'+T.fields+'</div>'
@@ -2227,16 +2306,25 @@
         const on = vVis(f.key, def[f.key], fieldOv);
         const gatedOff = (f.kind === 'data') && !avail[f.key];
         const overridden = (fieldOv[f.key] != null);
+        // 单促 / 总促 get a variant dropdown listing every Figma variant of the atom.
+        let variantControl = '';
+        if (f.key === 'promotion') {
+          variantControl = variantSelectHTML(PROMO_VARIANTS, promoVariantKey, 'promotion', on && !gatedOff, f.label[cardLang]);
+        } else if (f.key === 'totalPromo') {
+          variantControl = variantSelectHTML(TOTAL_PROMO_VARIANTS, totalPromoVariantKey, 'totalPromo', on && !gatedOff, f.label[cardLang]);
+        }
+        const variantPicked = (f.key === 'promotion' && promoVariantKey) || (f.key === 'totalPromo' && totalPromoVariantKey);
         let cls = 'sim-row';
         if (on) cls += ' is-picked';
         if (gatedOff) cls += ' is-disabled';
-        if (overridden) cls += ' is-overridden';
+        if (overridden || variantPicked) cls += ' is-overridden';
         const right = gatedOff
           ? '<span class="sim-row__na">'+T.na+'</span>'
           : '<button class="sim-sw" type="button" role="switch" aria-checked="'+(on?'true':'false')+'" '
             + 'aria-label="'+f.label[cardLang]+'" data-field-key="'+f.key+'"></button>';
         html += '<div class="'+cls+'">'
           + '<span class="sim-row__label"><span class="sim-row__name">'+f.label[cardLang]+'</span></span>'
+          + variantControl
           + right + '</div>';
       });
       html += '</div>';
@@ -2249,6 +2337,15 @@
   (function wireVFieldSim() {
     const host = document.getElementById('vcard-sim');
     if (!host) return;
+    host.addEventListener('change', e => {
+      const sel = e.target.closest('.sim-select');
+      if (!sel) return;
+      const key = sel.dataset.selectKey;
+      if (key === 'promotion') promoVariantKey = sel.value;
+      else if (key === 'totalPromo') totalPromoVariantKey = sel.value;
+      else return;
+      applyFields();
+    });
     host.addEventListener('click', e => {
       const sw = e.target.closest('.sim-sw');
       if (sw) {
@@ -2263,8 +2360,10 @@
         return;
       }
       if (e.target.closest('#vcard-reset')) {
-        if (!Object.keys(fieldOv).length) return;
+        if (!Object.keys(fieldOv).length && !promoVariantKey && !totalPromoVariantKey) return;
         fieldOv = {};
+        promoVariantKey = '';
+        totalPromoVariantKey = '';
         applyFields();
       }
     });
@@ -2318,7 +2417,13 @@
     if (show('reviews')) html += '<div class="vcard__reviews">More buying choices</div>';
     html += '</div>';
 
-    if (!cfg.minimal) {
+    if (cfg.minimal) {
+      // 极简：图片 + 标题 + 价格（无 RRP / 折扣 / 履约 / 加购）
+      html += '<div class="vcard__content-02"><div class="vcard__content-02-main">';
+      html += '<div class="vcard__content-02-top"><div class="vcard__prices">';
+      html += '<span class="vcard__sale-price">'+p.salePrice+'</span>';
+      html += '</div></div></div></div>';
+    } else {
       html += '<div class="vcard__content-02"><div class="vcard__content-02-main">';
       html += '<div class="vcard__content-02-top">';
       if (show('promotion')) html += '<span class="vcard__promotion">Lightning offers</span>';
@@ -2329,9 +2434,11 @@
       html += '</div></div>';
       html += '<div class="vcard__content-02-bottom">';
       if (oos) html += '<span class="vcard__stock">Out of stock</span>';
-      if (show('fulfillment') && t.fulfillment) html += '<span class="vcard__fulfillment">'+t.fulfillment+'</span>';
+      if (show('fulfillment') && t.fulfillment) {
+        html += '<span class="vcard__fulfillment' + (p.fulfillmentType === 'POP' ? ' is-pop' : '') + '">'+t.fulfillment+'</span>';
+      }
       if (show('seller') && p.selfOperated) {
-        html += '<span class="vcard__seller-wrap"><img class="vcard__seller-mark" src="../assets/figma-atoms/sold-by-joybuy/joybuy-mark.svg" alt="" width="16" height="16"><span class="vcard__seller">Sold by Joybuy</span></span>';
+        html += '<span class="vcard__seller-wrap is-joybuy"><img class="vcard__seller-mark" src="../assets/figma-atoms/sold-by-joybuy/joybuy-mark.svg" alt="" width="16" height="16"><span class="vcard__seller">Sold by Joybuy</span></span>';
       }
       html += '</div></div>';
       if (oos) {
@@ -2584,17 +2691,6 @@
     }
   });
 
-  // Image click cycles preset
-  const clickTarget = document.getElementById('vcard-image-click');
-  if (clickTarget) {
-    clickTarget.addEventListener('click', () => {
-      const list = D.catalog[currentCat];
-      lockedHighlight = '';   // same as picking a preset by hand
-      currentPreset = (currentPreset + 1) % list.length;
-      renderPresetStrip(); renderProduct();
-    });
-  }
-
   /* ================ Anchor tabs scroll-spy ================ */
   const tabLinks = document.querySelectorAll('.doc-tabs__link[data-tab]');
   const tabSections = Array.from(tabLinks).map(a => document.getElementById(a.dataset.tab)).filter(Boolean);
@@ -2621,5 +2717,6 @@
 })();
 </script>
 <script src="../assets/card-preview-controls.js"></script>
+<script src="../assets/atom-map-preview.js"></script>
 </body>
 </html>

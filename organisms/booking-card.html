@@ -208,11 +208,16 @@
   .booking__price-wrap { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1 0 auto; }
   .booking__price-line { display: flex; align-items: center; gap: 3px; }
   .booking__arrow { width: 13px; height: 13px; flex-shrink: 0; display: none; }
+  /* Price — Figma Pricing atom 5577:19658 · System/16px-Bold (16/700/22). */
   .booking__price-current {
-    font-size: 18px; font-weight: 800; color: var(--joybuy-red);
-    line-height: 22px; font-variant-numeric: tabular-nums;
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 16px; font-weight: 700; color: var(--joybuy-red);
+    line-height: 22px; letter-spacing: 0; font-variant-numeric: tabular-nums;
   }
-  .booking__rrp { font-size: 11px; color: var(--ink-3); line-height: 15px; font-variant-numeric: tabular-nums; }
+  .booking__rrp {
+    font-size: 12px; font-weight: 500; color: var(--ink);
+    line-height: 16px; font-variant-numeric: tabular-nums;
+  }
   .booking__rrp b { font-weight: 400; }
 
   /* Type-driven price color + auction down-arrow */
@@ -442,10 +447,13 @@
   .mini-state-chip--live    { background: var(--joybuy-red); color: #fff; }
   .mini-state-chip--auction { background: #7c3aed; color: #fff; }
   .mini-state-chip--ended   { background: var(--surface-3); color: var(--ink-4); }
-  .mini-countdown { display: inline-flex; gap: 2px; font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+  .mini-countdown { display: inline-flex; gap: 2px; font-family: "Barlow Fix 50", "Barlow", var(--f-sans); font-variant-numeric: tabular-nums; }
   .mini-countdown span { background: var(--ink); color: #fff; padding: 1px 3px; border-radius: 2px; font-size: 10px; font-weight: 700; }
   .mini-price-block { display: flex; flex-direction: column; gap: 1px; align-items: flex-start; font-variant-numeric: tabular-nums; }
-  .mini-price-block b { font-size: 14px; color: var(--ink); font-weight: 900; }
+  .mini-price-block b {
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 16px; color: var(--ink); font-weight: 700; line-height: 22px;
+  }
   .mini-price-block small { font-size: 9px; color: var(--ink-4); }
   .mini-deposit { background: var(--joybuy-red-50); color: var(--joybuy-red); padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; }
   .mini-reserved { font-size: 10px; color: var(--ink-4); }
@@ -587,6 +595,7 @@
 </style>
 <link rel="stylesheet" href="../assets/card-detail-template.css">
   <link rel="stylesheet" href="../assets/card-preview-alignment.css">
+  <link rel="stylesheet" href="../assets/atom-map-preview.css">
 <style>
   /* ===================================================================
      Live-config panel v2 · shared with the vertical-card detail page.
@@ -787,7 +796,7 @@
           业务类型决定信息结构，售卖状态只驱动时间、价格与 CTA，不额外发明重复状态标签。
         </p>
 
-        <div class="anatomy-wrap" style="margin-top: 24px;" hidden>
+        <div class="anatomy-wrap" style="margin-top: 24px;">
           <div class="schematic-frame">
             <div class="schematic-booking">
               <div class="schematic-booking__image">
@@ -817,7 +826,7 @@
                   <span style="position: absolute; top: 3px; left: 3px; padding: 1px 4px; background: var(--joybuy-red); color: #fff; font-size: 8px; font-weight: 800; border-radius: 2px;">LIVE</span>
                 </div>
               </div>
-              <div class="anatomy-cell__atom">120×120 图 · 角标 10px 800wt · uppercase</div>
+              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="main-image">Product Image</button> · 120×120 图 · 角标 10px 800wt · uppercase</div>
             </div>
             <div class="anatomy-cell">
               <div class="anatomy-cell__head"><span class="anatomy-cell__idx">2</span><span class="anatomy-cell__slot">state chip</span></div>
@@ -844,17 +853,17 @@
               <div class="anatomy-cell__stage">
                 <div class="mini-price-block"><b>£350.00</b><small>RRP: £500.00</small></div>
               </div>
-              <div class="anatomy-cell__atom">18/900 · 拍卖态色调随 state · 下一档小字</div>
+              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="price">Price</button> + <button class="atom-map-trigger" type="button" data-atom-preview="price-second-line">Second Line</button> · 16/700/22 · 拍卖态色调随 state · 下一档小字</div>
             </div>
             <div class="anatomy-cell">
               <div class="anatomy-cell__head"><span class="anatomy-cell__idx">6</span><span class="anatomy-cell__slot">deposit</span></div>
               <div class="anatomy-cell__stage"><span class="mini-deposit">Excl. deposit £0.15</span></div>
-              <div class="anatomy-cell__atom">红底红字 tint · 11/600 · 仅预售用</div>
+              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="bottle-deposit">Bottle Deposit</button> · 红底红字 tint · 11/600 · 仅预售用</div>
             </div>
             <div class="anatomy-cell">
               <div class="anatomy-cell__head"><span class="anatomy-cell__idx">8</span><span class="anatomy-cell__slot">cta</span></div>
               <div class="anatomy-cell__stage"><span class="mini-cta">Notify</span></div>
-              <div class="anatomy-cell__atom">主 CTA · label 随 state 切换 · 结束态灰化</div>
+              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="button-group">Button Group</button> + <button class="atom-map-trigger" type="button" data-atom-preview="notify-button">Notify Button</button> · 主 CTA · label 随 state 切换 · 结束态灰化</div>
             </div>
           </div>
         </div>
@@ -1062,6 +1071,7 @@
 
 <script src="../assets/card-data.js"></script>
 <script src="../assets/pages-data.js"></script>
+<script src="../assets/atoms-data.js"></script>
 <script src="../assets/nav.js"></script>
 <script>
   /* ================ Data model & config ================ */
@@ -1689,5 +1699,6 @@
 </script>
 <script src="../assets/card-detail-template.js"></script>
 <script src="../assets/card-preview-controls.js"></script>
+<script src="../assets/atom-map-preview.js"></script>
 </body>
 </html>

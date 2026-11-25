@@ -1,8 +1,11 @@
 // Generated from Figma “App Business Components / 基础组件 Product Card Atomic Components”.
 // CARD_DATA.catalog is the single source for organism preview fields. Every visible field
 // string must exactly match a text string inside a Figma atomic component variant.
+// CARD_DATA.atomCopy is the whitelist those strings are checked against; any new preview
+// copy has to be added to the Figma atom library first, then to atomCopy.
 
 (function(){
+  const root = (typeof window !== 'undefined') ? window : (typeof globalThis !== 'undefined' ? globalThis : this);
   const dict = {
   "en": {
     "sidebar.g1": "Vertical",
@@ -174,7 +177,7 @@
       ],
       "extraColors": 0,
       "en": {
-        "highlight": "best-before",
+        "highlight": "new-hot",
         "title": "French Door Refrigerator Freeze Ice & Water",
         "sold": "100k+ sold",
         "discount": "18% off",
@@ -183,7 +186,7 @@
         "fulfillment": "Get it by today"
       },
       "zh": {
-        "highlight": "best-before",
+        "highlight": "new-hot",
         "title": "French Door Refrigerator Freeze Ice & Water",
         "sold": "100k+ sold",
         "discount": "18% off",
@@ -300,7 +303,7 @@
       ],
       "extraColors": 0,
       "en": {
-        "highlight": "new",
+        "highlight": "sponsored",
         "title": "iPhone 16 Pro Max 256GB Black Titanium",
         "sold": "100k+ sold",
         "discount": "18% off",
@@ -309,7 +312,7 @@
         "fulfillment": "Get it by today"
       },
       "zh": {
-        "highlight": "new",
+        "highlight": "sponsored",
         "title": "iPhone 16 Pro Max 256GB Black Titanium",
         "sold": "100k+ sold",
         "discount": "18% off",
@@ -330,7 +333,7 @@
       ],
       "extraColors": 0,
       "en": {
-        "highlight": "too-good-to-waste",
+        "highlight": "new",
         "title": "Seeded Sourdough Bread\nSystem",
         "sold": "100k+ sold",
         "discount": "Save £20.00 on RRP",
@@ -339,7 +342,7 @@
         "fulfillment": "Get it by today"
       },
       "zh": {
-        "highlight": "too-good-to-waste",
+        "highlight": "new",
         "title": "Seeded Sourdough Bread\nSystem",
         "sold": "100k+ sold",
         "discount": "Save £20.00 on RRP",
@@ -398,7 +401,7 @@
       ],
       "extraColors": 2,
       "en": {
-        "highlight": "best-before",
+        "highlight": "private-label",
         "title": "iPhone 16 Pro Max 256GB Black Titanium",
         "sold": "100k+ sold",
         "discount": "Save 18% on RRP",
@@ -407,7 +410,7 @@
         "fulfillment": "Get it by today"
       },
       "zh": {
-        "highlight": "best-before",
+        "highlight": "private-label",
         "title": "iPhone 16 Pro Max 256GB Black Titanium",
         "sold": "100k+ sold",
         "discount": "Save 18% on RRP",
@@ -431,7 +434,7 @@
       ],
       "extraColors": 0,
       "en": {
-        "highlight": "new-hot",
+        "highlight": "best-before",
         "title": "Seeded Sourdough Bread\nSystem",
         "sold": "100k+ sold",
         "discount": "18% off",
@@ -440,7 +443,7 @@
         "fulfillment": "Get it by today"
       },
       "zh": {
-        "highlight": "new-hot",
+        "highlight": "best-before",
         "title": "Seeded Sourdough Bread\nSystem",
         "sold": "100k+ sold",
         "discount": "18% off",
@@ -461,7 +464,7 @@
       ],
       "extraColors": 0,
       "en": {
-        "highlight": "top-deal",
+        "highlight": "too-good-to-waste",
         "title": "French Door Refrigerator Freeze Ice & Water",
         "sold": "100k+ sold",
         "discount": "Save £20.00 on RRP",
@@ -470,7 +473,7 @@
         "fulfillment": "Get it by today"
       },
       "zh": {
-        "highlight": "top-deal",
+        "highlight": "too-good-to-waste",
         "title": "French Door Refrigerator Freeze Ice & Water",
         "sold": "100k+ sold",
         "discount": "Save £20.00 on RRP",
@@ -483,5 +486,119 @@
   ]
 };
 
-  window.CARD_DATA = { dict: dict, productImages: productImages, catalog: catalog };
+  /* ================ Product Highlights business rules ================
+   * Figma Product Highlights contains two expiry-related badges:
+   *   - Best Before        -> 最佳保质期 · "Life 3d+"
+   *   - Too Good To Waste  -> 临期不浪费 · "BBD: 27-12-2025"
+   * Both only ship on fresh / grocery SKUs (category "food"). Any other category
+   * that would receive them falls back to a generic marketing badge, so 3C / beauty /
+   * fashion SKUs can never render an expiry badge. */
+  const PRODUCT_HIGHLIGHT_KEYS = ['sponsored', 'best-before', 'new-hot', 'top-deal', 'private-label', 'new', 'too-good-to-waste'];
+  const GROCERY_ONLY_HIGHLIGHTS = ['best-before', 'too-good-to-waste'];
+  const GROCERY_CATEGORIES = ['food'];
+  const HIGHLIGHT_FALLBACK = 'sponsored';
+
+  Object.keys(catalog).forEach(function (cat) {
+    const isGrocery = GROCERY_CATEGORIES.indexOf(cat) !== -1;
+    catalog[cat].forEach(function (p) {
+      ['en', 'zh'].forEach(function (lang) {
+        const t = p[lang] || {};
+        if (!isGrocery && GROCERY_ONLY_HIGHLIGHTS.indexOf(t.highlight) !== -1) {
+          t.highlight = HIGHLIGHT_FALLBACK;
+        }
+      });
+    });
+  });
+
+  // Exhaustive copy of the Figma atom library (node 28919:271381), one entry per
+  // variant. Preview copy must come from here; seller copy is fixed to "Sold by Joybuy"
+  // and the whole slot is hidden for non-1P SKUs.
+  const atomCopy = {
+    'Tag-discount': ['20% off'],
+    'Tag-number': ['1'],
+    'Tag_like': [],
+    'Dietary badges': ['+6'],
+    'Main image': ['1', '20% off', '20% Off'],
+    'SPU_color': ['+8'],
+    'Color': ['+8', '+99'],
+    'Product Highlights': ['Sponsored', 'Life 3d+', 'New&Hot', 'Top Deal', 'Private Label', 'New', 'Too Good To Waste', 'BBD: 27-12-2025'],
+    'Brand-Default': ['Apple'],
+    'title': ['Seeded Sourdough Bread\nSystem', 'French Door Refrigerator Freeze Ice & Water', 'iPhone 16 Pro Max 256GB Black Titanium'],
+    'Rating&Sold': ['4.5', '100k+ sold', '189 Reviews', '200 viewed in 48 hours', 'Only 50 items available'],
+    'Individual Promotion': ['Price match Amazon', 'Lightning offers', 'Everyday low price', 'Happy hour', 'Welcome offer', 'Outlet', 'Pre-sale', 'Ends in 23:10:20', 'Early access', 'Coming soon', 'Starts at Aug 26, 00:00', 'Contract'],
+    'Price': ['Up front from', '£350.00', 'From £39.99 / month', 'Starting price', 'RRP:', '£500.00', 'Save £20.00 on RRP', 'WAS:', 'Save £20', 'Points extra save £11', 'Save 18% on RRP', 'Bought separately', '18% off'],
+    'Price (first line)/Sale': ['£350.00', 'RRP:', '£500.00'],
+    'Price (second line)': ['RRP:', '£500.00', 'WAS:', 'Save 18% on RRP', '18% off', 'Save £20.00 on RRP', 'Save £20', 'Bought separately'],
+    'Plus price': ['Plus price', '£330.00', 'Pay £339.99 after promotion'],
+    'Points extra save': ['Points extra save £11'],
+    'Bottle Deposit': ['Excl. deposit £0.15'],
+    'AI Recommendation Reasons': ['More buying choices', 'More options inside', '‘Beautifully packaged’', '‘Ultimate Silence’', 'Bestseller#1 in Refrigeration', 'Lowest price in last 30 days', 'Previously purchased', 'Previously added to cart', 'Bought from this store before', 'Added from this store before'],
+    'Stock': ['Out of stock', 'Only 10 left'],
+    'Total Promotion': ['Pay £339.99 after promotion', 'Buy 2 Get 30% Off', '£15.00 Off over £100.00   ', 'Buy 1 get 1 free', '3 for 2', '£3.00 in gifts', 'Gift up to £3.00', 'Pick 3 gifts', '3 gifts', '+500 pts = £5 off', 'Repeat & Save up to 7%', 'Limited-time discount £5', 'Free gift', 'Buy £100, £50 gift', 'Buy £100, £50 gifts', 'Buy £100, pick £50 gift', 'Buy £100, pick 3 gifts', 'Buy £100, 3 gifts', 'Buy £100, free gift'],
+    'Fulfillment Time': ['Get it by today'],
+    'Leading icon': [],
+    'Sold by Joybuy': ['Sold by Joybuy'],
+    'Service': ['Install & Recyle', 'Gift wrapping'],
+    'Energy': ['• Set of monitors for producer', '• Active speakers', 'A', 'Life 5d+', 'Product sheet', 'Product fiche', 'Productinformatieblad'],
+    'Country of origin (small)': [],
+    'Country of origin': ['From Wales', 'From United Kingdom', 'From Scotland', 'From England', 'From Ireland'],
+    'Component 71': ['125g ', 'Red'],
+    'Btn_Cart': ['1', '2', '99+'],
+    'Button Group': ['Subscribed'],
+    'Notify Button': ['Notify']
+  };
+
+  root.CARD_DATA = {
+    dict: dict,
+    productImages: productImages,
+    catalog: catalog,
+    atomCopy: atomCopy,
+    highlightPolicy: {
+      keys: PRODUCT_HIGHLIGHT_KEYS,
+      groceryOnly: GROCERY_ONLY_HIGHLIGHTS,
+      groceryCategories: GROCERY_CATEGORIES,
+      fallback: HIGHLIGHT_FALLBACK
+    }
+  };
+
+  /* ================ Preview copy guard ================
+   * Every visible field in a card preview must resolve to a string that exists in the
+   * Figma atom library (CARD_DATA.atomCopy). This runs in the browser (console warning
+   * + window.CARD_DATA.copyAudit) and in Node (scripts/check-preview-copy.js) so a
+   * hand-written string can never slip back into a preview unnoticed. */
+  const ATOM_COPY_SET = new Set();
+  Object.keys(atomCopy).forEach(k => atomCopy[k].forEach(v => ATOM_COPY_SET.add(v)));
+
+  function copyAudit() {
+    const issues = [];
+    const check = (where, value) => {
+      if (value == null || value === '') return;
+      if (!ATOM_COPY_SET.has(String(value))) issues.push(where + ': "' + String(value).replace(/\n/g, '\\n') + '"');
+    };
+    Object.keys(catalog).forEach(cat => {
+      catalog[cat].forEach((p, i) => {
+        const where = cat + '[' + i + ']';
+        check(where + '.brand', p.brand);
+        check(where + '.rating', p.rating);
+        check(where + '.salePrice', p.salePrice);
+        check(where + '.originalPrice', p.originalPrice);
+        ['en', 'zh'].forEach(lang => {
+          const t = p[lang] || {};
+          ['title', 'sold', 'discount', 'deposit', 'promotion', 'fulfillment'].forEach(k => check(where + '.' + lang + '.' + k, t[k]));
+          if (t.highlight) {
+            if (PRODUCT_HIGHLIGHT_KEYS.indexOf(t.highlight) === -1) {
+              issues.push(where + '.' + lang + '.highlight: unknown key "' + t.highlight + '"');
+            } else if (GROCERY_ONLY_HIGHLIGHTS.indexOf(t.highlight) !== -1 && GROCERY_CATEGORIES.indexOf(cat) === -1) {
+              issues.push(where + '.' + lang + '.highlight: "' + t.highlight + '" is grocery-only');
+            }
+          }
+        });
+        if (p.selfOperated) check(where + '.seller', 'Sold by Joybuy');
+      });
+    });
+    return issues;
+  }
+
+  root.CARD_DATA.copyAudit = copyAudit;
+  if (typeof module !== 'undefined' && module.exports) module.exports = root.CARD_DATA;
 })();
