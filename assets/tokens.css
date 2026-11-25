@@ -1096,6 +1096,42 @@ body .site--card-detail #s-overview .demo__stage {
   .site-toc { display: none; }
   .dodont { grid-template-columns: 1fr; }
 }
+/* ============================================================
+   Back to top — floating control, same skin as the header trigger
+   ============================================================ */
+.to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 900;
+  width: 36px; height: 36px; padding: 0;
+  display: grid; place-items: center;
+  border: 1px solid var(--outline); border-radius: 9px;
+  color: var(--ink-3); background: var(--surface);
+  box-shadow: var(--shadow-1);
+  cursor: pointer;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity .22s ease, transform .3s cubic-bezier(.22,1,.36,1), visibility 0s linear .3s,
+              color .16s ease, background-color .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+.to-top.is-visible {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transform: translateY(0);
+  transition: opacity .22s ease, transform .3s cubic-bezier(.22,1,.36,1), visibility 0s,
+              color .16s ease, background-color .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+.to-top:hover {
+  color: var(--ink); background: var(--surface-2); border-color: var(--outline-strong);
+  box-shadow: var(--shadow-2);
+}
+.to-top:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+.to-top svg { width: 18px; height: 18px; display: block; }
+/* pages with the sticky right rail keep the button clear of it
+   (--to-top-rail is measured from the live rail, so pages that resize
+   the rail themselves still get the right offset) */
+.to-top--rail { right: calc(var(--to-top-rail, var(--toc-w)) + 24px); }
+
 @media (max-width: 900px) {
   body .site--card-detail #s-overview .demo__stage {
     position: static;
@@ -1108,6 +1144,17 @@ body .site--card-detail #s-overview .demo__stage {
   .global-header__actions { gap: 6px; }
   .global-theme__trigger { width: 34px; height: 34px; }
   .global-theme__menu { right: -46px; width: min(224px, calc(100vw - 28px)); }
+}
+@media (max-width: 640px) {
+  .to-top { right: 16px; bottom: 16px; width: 34px; height: 34px; }
+  .to-top--rail { right: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .to-top, .to-top.is-visible {
+    transform: none;
+    transition: opacity .2s linear, visibility 0s linear,
+                color .16s ease, background-color .16s ease, border-color .16s ease;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .global-header, .site-nav, .site-toc, .doc-tabs, .global-theme__menu { transition: none; }

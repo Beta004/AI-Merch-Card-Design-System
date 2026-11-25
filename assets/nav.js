@@ -628,6 +628,66 @@
    * the aside; the batch removal from HTML happens in a follow-up pass. */
   function renderNavigation() { /* deprecated · sidebar removed in favor of top-nav */ }
 
+  /* ================ Back to top (global) ================
+     A floating control that fades in once the page is scrolled and returns
+     to the top. Skin matches the header trigger (36×36, r9, surface + hairline). */
+  var TO_TOP_ICON = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+    '<path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" stroke-width="1.6" ' +
+    'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var toTopButton = null;
+
+  function toTopLabel() {
+    return language === 'en' ? 'Back to top' : '回到顶部';
+  }
+
+  function syncToTopLabel() {
+    if (!toTopButton) return;
+    var label = toTopLabel();
+    toTopButton.setAttribute('aria-label', label);
+    toTopButton.setAttribute('title', label);
+  }
+
+  function initToTop() {
+    if (toTopButton || document.querySelector('.to-top')) return;
+    var rail = document.querySelector('.site-toc');
+    var hasRail = !!(rail && rail.offsetParent !== null);
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'to-top' + (hasRail ? ' to-top--rail' : '');
+    var syncRailOffset = function () {
+      if (!hasRail || !rail) return;
+      var width = Math.round(rail.getBoundingClientRect().width);
+      if (width) btn.style.setProperty('--to-top-rail', width + 'px');
+    };
+    btn.innerHTML = TO_TOP_ICON;
+    toTopButton = btn;
+    syncToTopLabel();
+    btn.addEventListener('click', function () {
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, left: 0, behavior: reduce ? 'auto' : 'smooth' });
+    });
+    document.body.appendChild(btn);
+
+    var ticking = false;
+    var update = function () {
+      var visible = (window.pageYOffset || document.documentElement.scrollTop || 0) > Math.max(320, Math.round(window.innerHeight * 0.6));
+      btn.classList.toggle('is-visible', visible);
+      btn.setAttribute('aria-hidden', visible ? 'false' : 'true');
+      btn.tabIndex = visible ? 0 : -1;
+      ticking = false;
+    };
+    var onScroll = function () {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(update);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', function () { syncRailOffset(); onScroll(); });
+    window.addEventListener('joybuy:languagechange', syncToTopLabel);
+    syncRailOffset();
+    update();
+  }
+
   function loadI18n() {
     if (window.JoybuyI18n) return window.JoybuyI18n.apply(language);
     var src = navScriptSrc ? navScriptSrc.replace(/nav\.js(?:\?.*)?$/, 'i18n.js') : 'i18n.js';
@@ -641,6 +701,7 @@
     document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en';
     applyTheme();
     renderHeader();
+    initToTop();
     loadI18n();
   }
 
