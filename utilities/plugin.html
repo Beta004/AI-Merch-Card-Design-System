@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>商卡速改 CardSnap · 商卡设计系统</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="商卡速改 CardSnap：在 Figma 内快速 demo 商卡字段更新。读 PRD、校验字段与文案，一键生成多语言设计稿。">
+<link rel="stylesheet" href="../assets/tokens.css">
+<style>
+  /* Figma Plugin 工具页 — 与选型指南同一套 Utilities 版式（dg-* 类名复用，
+     data-global-i18n="off"，内容由本页 JS 双语渲染）。 */
+  .dg-crumb { font-size: 12px; color: var(--ink-5); margin-bottom: 16px; }
+  .dg-crumb a { color: var(--ink-4); }
+  .dg-crumb a:hover { color: var(--accent); }
+  .dg-crumb .sep { margin: 0 6px; color: var(--ink-5); }
+  .dg-head { padding: 8px 0 24px; border-bottom: 1px solid var(--outline); margin-bottom: 26px; }
+  .dg-head__title { margin: 0 0 14px; font-size: 40px; font-weight: 700; letter-spacing: -.015em; color: var(--ink); line-height: 1.15; }
+  .dg-head__subtitle { margin: 0; max-width: 780px; font-size: 14px; color: var(--ink-4); line-height: 1.75; }
+  .dg-head__meta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-top: 20px; }
+  .dg-stat { display: inline-flex; align-items: baseline; gap: 7px; font-size: 12px; color: var(--ink-4); background: var(--surface-2); border: 1px solid var(--outline); padding: 5px 12px; border-radius: var(--r-pill); }
+  .dg-stat b { font-size: 14px; font-weight: 800; color: var(--ink); font-family: var(--f-mono); }
+  .dg-jump { display: inline-flex; gap: 4px; padding: 4px; background: var(--surface-2); border: 1px solid var(--outline); border-radius: var(--r-pill); margin-bottom: 34px; flex-wrap: wrap; }
+  .dg-jump__link { display: inline-flex; align-items: center; gap: 7px; padding: 7px 15px; border-radius: var(--r-pill); font-size: 13px; font-weight: 600; color: var(--ink-3); text-decoration: none; transition: color .13s ease, background-color .13s ease; }
+  .dg-jump__link:hover { color: var(--ink); background: var(--surface); }
+  .dg-jump__num { font-family: var(--f-mono); font-size: 11px; opacity: .6; }
+  .dg-sec { margin-bottom: 52px; scroll-margin-top: 96px; }
+  .dg-sec__eyebrow { font-size: 11.5px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--accent); font-family: var(--f-mono); margin-bottom: 8px; }
+  .dg-sec__title { margin: 0 0 8px; font-size: 24px; font-weight: 700; letter-spacing: -.01em; color: var(--ink); }
+  .dg-sec__lede { margin: 0 0 22px; max-width: 720px; font-size: 13.5px; color: var(--ink-4); line-height: 1.7; }
+  .dg-flow { border: 1px solid var(--outline); border-radius: var(--r-lg); background: var(--surface); overflow: hidden; box-shadow: var(--shadow-1); }
+  .dg-flow__body { padding: 26px 26px 28px; }
+  .dg-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  .dg-opt { display: flex; flex-direction: column; gap: 5px; padding: 16px 17px; border: 1px solid var(--outline); border-radius: var(--r-md); background: var(--surface); transition: border-color .13s ease, box-shadow .13s ease; }
+  .dg-opt__label { font-size: 14.5px; font-weight: 700; display: flex; align-items: center; gap: 9px; }
+  .dg-opt__tag { flex: 0 0 auto; width: 22px; height: 22px; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--outline); display: inline-flex; align-items: center; justify-content: center; font-family: var(--f-mono); font-size: 11px; font-weight: 700; color: var(--ink-4); }
+  .dg-opt__desc { font-size: 12px; color: var(--ink-4); line-height: 1.55; padding-left: 31px; }
+  .dg-rules { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+  .dg-rule { display: flex; align-items: center; gap: 14px; padding: 15px 18px; border: 1px solid var(--outline); border-radius: var(--r-md); background: var(--surface); transition: border-color .13s ease, box-shadow .13s ease; }
+  .dg-rule:hover { border-color: var(--accent); box-shadow: var(--shadow-1); }
+  .dg-rule__if { flex: 1 1 auto; font-size: 13.5px; color: var(--ink-2); line-height: 1.5; }
+  .dg-rule__then { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--accent); white-space: nowrap; }
+  .dg-setup { border: 1px solid var(--outline); border-radius: var(--r-lg); background: var(--surface); overflow: hidden; box-shadow: var(--shadow-1); }
+  .dg-setup__row { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 16px; padding: 16px 20px; border-bottom: 1px solid var(--outline); align-items: start; }
+  .dg-setup__row:last-child { border-bottom: 0; }
+  .dg-setup__num { font-family: var(--f-mono); font-size: 13px; font-weight: 800; color: var(--accent); padding-top: 1px; }
+  .dg-setup__title { font-size: 14px; font-weight: 700; color: var(--ink); }
+  .dg-setup__desc { margin-top: 4px; font-size: 12.5px; color: var(--ink-4); line-height: 1.6; }
+  .dg-setup__desc code { font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-2); background: var(--surface-2); border: 1px solid var(--outline); border-radius: 5px; padding: 1px 6px; white-space: nowrap; }
+  .dg-setup__desc a { color: var(--accent); }
+  .dg-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: var(--r-pill); font-size: 13px; font-weight: 700; cursor: pointer; border: 1px solid transparent; text-decoration: none; transition: background-color .13s ease, border-color .13s ease, color .13s ease; }
+  .dg-btn--primary { background: var(--accent); color: var(--bg); }
+  .dg-btn--primary:hover { background: var(--accent-600); }
+  .dg-btn--ghost { background: var(--surface); color: var(--ink-2); border-color: var(--outline-strong); }
+  .dg-btn--ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .dg-btn svg { width: 15px; height: 15px; }
+  .dg-setup__dl { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--outline); background: var(--accent-50); }
+  .dg-setup__dlhint { flex: 1 1 260px; font-size: 12px; color: var(--ink-4); line-height: 1.55; }
+  .cap-grid { display: grid; gap: 26px; }
+  .cap-step { margin: 0; }
+  .cap-shot { display: flex; justify-content: center; background: var(--surface-2); border: 1px solid var(--outline); border-radius: var(--r-lg); padding: 22px; box-shadow: var(--shadow-1); }
+  .cap-frame { position: relative; display: block; font-size: 0; line-height: 0; }
+  .cap-frame img { display: block; width: 100%; max-width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--outline); }
+  .cap-shot--fit .cap-frame img { width: auto; max-height: 520px; max-width: 100%; }
+  .cap-step figcaption { display: flex; gap: 10px; align-items: baseline; margin-top: 12px; }
+  .cap-step__head { margin: 0 0 10px; font-size: 14.5px; font-weight: 800; color: var(--ink); letter-spacing: -.01em; }
+  .cap-step__head .num { font-family: var(--f-mono); color: var(--accent); margin-right: 6px; }
+  .cap-step__desc { margin: 10px 0 0; font-size: 12.5px; color: var(--ink-4); line-height: 1.65; }
+  .dg-foot { margin-top: 8px; padding: 22px 0; border-top: 1px solid var(--outline); display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--ink-5); }
+  @media (max-width: 900px) { .dg-head__title { font-size: 30px; } }
+</style>
+</head>
+<body>
+<div class="site">
+  <aside id="site-nav" class="site-nav" data-active="plugin"></aside>
+  <main class="site-main">
+    <div class="site-main__inner">
+      <div id="plugin-root" data-global-i18n="off"></div>
+    </div>
+  </main>
+</div>
+<script src="../assets/nav.js"></script>
+<script>
+(function () {
+  var root = document.getElementById('plugin-root');
+  if (!root) return;
+  function lang() {
+    if (window.JoybuySite && typeof window.JoybuySite.getLanguage === 'function') return window.JoybuySite.getLanguage();
+    return document.documentElement.lang === 'en' ? 'en' : 'zh';
+  }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function t(k) { return COPY[k][lang()]; }
+
+  var COPY = {
+    crumbHome:  { zh: '概览', en: 'Overview' },
+    title:      { zh: '商卡速改 CardSnap', en: 'CardSnap' },
+    seriesBadge:{ zh: '字段 Demo 系列', en: 'Field-demo series' },
+    subtitle:   { zh: '在 Figma 内快速 demo 商卡字段更新：读 PRD 或手动输入，校验字段与文案，一键生成多语言设计稿。只写画布副本，不动源设计。', en: 'Demo product-card field updates inside Figma: read a PRD or type the change, review fields and copy, then generate multilingual drafts in one click. Writes to canvas copies only.' },
+    statSteps:  { zh: '步生成', en: 'steps' },
+    statFields: { zh: '个字段坑位', en: 'field slots' },
+    statLangs:  { zh: '种语言', en: 'languages' },
+    jump1:      { zh: '能做什么', en: 'What it does' },
+    jump2:      { zh: '使用流程', en: 'How it works' },
+    jump3:      { zh: '效果示例', en: 'The result' },
+    jump4:      { zh: '安装与准备', en: 'Get started' },
+    jump5:      { zh: '版本说明', en: 'Release status' },
+    sec1Eyebrow:{ zh: 'What it does', en: 'What it does' },
+    sec1Title:  { zh: '能做什么', en: 'What it does' },
+    sec1Lede:   { zh: '为商卡字段更新做快速 demo。典型场景：在「17 服务」坑位新增一条服务条例，更换图标与文案。', en: 'Fast demos for card field updates. Typical case: add a new service clause in slot 17 and swap its icon and copy.' },
+    f1Title:    { zh: '字段级更新', en: 'Field-level updates' },
+    f1Desc:     { zh: '定位 1–19 任意坑位，替换文案与图标，开关字段显隐；组件 Boolean 属性同步开启。', en: 'Target any of the 19 slots, replace copy and icon, toggle visibility; component booleans stay in sync.' },
+    f2Title:    { zh: '多语言并排', en: 'Multilingual by default' },
+    f2Desc:     { zh: 'ZH/EN/DE/FR/NL/IT 一次生成；目标字段之外的页面文案同步本地化。', en: 'ZH/EN/DE/FR/NL/IT in one run; surrounding page copy is localized too.' },
+    f3Title:    { zh: '安全可评审', en: 'Safe to review' },
+    f3Desc:     { zh: '只写画布副本并自动标注改动位置；PRD、配置与凭证仅存本机。', en: 'Writes only to canvas copies and marks every change; PRD, settings and keys stay local.' },
+    sec2Eyebrow:{ zh: 'How it works', en: 'How it works' },
+    sec2Title:  { zh: '使用流程', en: 'How it works' },
+    sec2Lede:   { zh: '三步闭环：导入 → 校验 → 生成。截图即真实插件界面。', en: 'Three steps: import → review → generate. Screenshots are from the real plugin.' },
+    cap1Title:  { zh: '01 导入需求', en: '01 Import' },
+    cap1Desc:   { zh: '粘贴 JoySpace PRD 链接自动提取，或切「手动描述」直接写。', en: 'Paste a JoySpace PRD link to auto-extract, or switch to “Describe it”.' },
+    cap2Title:  { zh: '02 校验内容', en: '02 Review' },
+    cap2Desc:   { zh: '目标字段（1–19）、页面范围与 6 语文案均可手改。', en: 'Target field (1–19), page scope and every translation are editable.' },
+    cap3Title:  { zh: '03 选择目标页面', en: '03 Pick pages' },
+    cap3Desc:   { zh: '在 Figma 多选业务页面，插件实时识别卡型与字段。', en: 'Multi-select business pages in Figma; the plugin reads card type and fields live.' },
+    sec3Eyebrow:{ zh: 'The result', en: 'The result' },
+    sec3Title:  { zh: '效果示例', en: 'The result' },
+    sec3Lede:   { zh: '一次生成：Joybuy 需求标题头、多语言商卡并排、改动处黄色标注，直接可评审。', en: 'One run: Joybuy brief header, multilingual cards side by side, yellow change annotations — ready for review.' },
+    hlHeader:   { zh: '需求标题头自动写入', en: 'Brief header written automatically' },
+    hlCards:    { zh: 'DE / FR 等语言并排，整页文案同步本地化', en: 'DE / FR cards side by side, whole page localized' },
+    hlMarks:    { zh: '黄色虚线标出本次改动的字段', en: 'Yellow marks on every changed field' },
+    sec4Eyebrow:{ zh: 'Get started', en: 'Get started' },
+    sec4Title:  { zh: '安装与准备', en: 'Get started' },
+    sec4Lede:   { zh: '零构建插件，导入即用；模型可选，不配置也能用内置规则。', en: 'Zero-build plugin — import and go. Model optional; built-in rules work without one.' },
+    dlTitle:    { zh: '下载插件包 v1.3', en: 'Download plugin v1.3' },
+    dlManifest: { zh: '仅 manifest.json', en: 'manifest.json only' },
+    dlHint:     { zh: '包含 manifest.json / code.js / ui.html，解压后在 Figma 中 Import plugin from manifest… 即可。', en: 'Contains manifest.json / code.js / ui.html. Unzip, then use “Import plugin from manifest…” in Figma.' },
+    sec5Eyebrow:{ zh: 'Release status', en: 'Release status' },
+    sec5Title:  { zh: '版本说明', en: 'Release status' },
+    sec5Lede:   { zh: '当前为 MVP（v1.3），先跑通单需求字段 demo 的完整闭环。', en: 'Current release is an MVP (v1.3) — a complete loop for single-request field demos.' },
+    mvpNowTitle:{ zh: '已覆盖', en: 'Covered today' },
+    mvpNowDesc: { zh: '双列、横向、横滑、活动、预约等常见卡型的字段 demo；六语生成、改动标注、页面范围校验与站点规范深链。', en: 'Field demos for the common card types (2-column, horizontal, scroll, campaign, booking); 6-language output, change marks, page-scope review and deep links to this site.' },
+    mvpNextTitle:{ zh: '迭代中', en: 'In progress' },
+    mvpNextDesc:{ zh: '更多业务场景的兼容性、批量需求与复杂卡型仍在升级；遇到未覆盖的场景欢迎反馈。', en: 'Compatibility for more scenarios, batch requests and complex card types is on the way — feedback welcome.' },
+    g1Title:    { zh: '导入插件', en: 'Import the plugin' },
+    g1Desc:     { zh: '解压上方下载的插件包，在 Figma Desktop 中 Plugins → Development → Import plugin from manifest…，选择其中的 <code>manifest.json</code>。', en: 'Unzip the package above, then in Figma Desktop: Plugins → Development → Import plugin from manifest…, pick its <code>manifest.json</code>.' },
+    g2Title:    { zh: '选中商卡', en: 'Select a card' },
+    g2Desc:     { zh: '选中商卡母组件或业务页面（可多选）；不选则自动生成搜索页母版。', en: 'Select the card master or business pages (multi-select ok); with nothing selected it builds a search-page demo.' },
+    g3Title:    { zh: '接模型（可选）', en: 'Connect a model (optional)' },
+    g3Desc:     { zh: '设置里粘贴模型广场 curl，支持 GPT / Claude / Gemini；内网地址先运行 <code>plugin/启动本地桥接.command</code>。', en: 'Paste your model-hub curl in settings — GPT / Claude / Gemini supported. For intranet endpoints run <code>plugin/启动本地桥接.command</code> first.' },
+    g4Title:    { zh: '查规范', en: 'Check guidelines' },
+    g4Desc:     { zh: '校验阶段可从插件直接跳转本站 <a href="../atoms/index.html">原子组件</a> 与 <a href="../pages/index.html">页面场景</a> 规范。', en: 'During review the plugin deep-links to these <a href="../atoms/index.html">atomic components</a> and <a href="../pages/index.html">page scenarios</a>.' },
+    footNote:   { zh: 'MVP · 只写画布副本 · PRD 与凭证不出本机', en: 'MVP · canvas copies only · PRD & keys never leave your machine' }
+  };
+
+  function render() {
+    root.innerHTML =
+      '<nav class="dg-crumb"><a href="../index.html">' + esc(t('crumbHome')) + '</a><span class="sep">/</span><span>' + esc(t('title')) + '</span></nav>' +
+      '<header class="dg-head">' +
+        '<h1 class="dg-head__title">' + esc(t('title')) + '</h1>' +
+        '<p class="dg-head__subtitle">' + esc(t('subtitle')) + '</p>' +
+        '<div class="dg-head__meta">' +
+          '<span class="dg-stat"><b>01</b><span>' + esc(t('seriesBadge')) + '</span></span>' +
+          '<span class="dg-stat"><b>3</b><span>' + esc(t('statSteps')) + '</span></span>' +
+          '<span class="dg-stat"><b>19</b><span>' + esc(t('statFields')) + '</span></span>' +
+          '<span class="dg-stat"><b>6</b><span>' + esc(t('statLangs')) + '</span></span>' +
+        '</div>' +
+      '</header>' +
+      '<div class="dg-jump">' +
+        '<a class="dg-jump__link" href="#plugin-what"><span class="dg-jump__num">01</span>' + esc(t('jump1')) + '</a>' +
+        '<a class="dg-jump__link" href="#plugin-flow"><span class="dg-jump__num">02</span>' + esc(t('jump2')) + '</a>' +
+        '<a class="dg-jump__link" href="#plugin-result"><span class="dg-jump__num">03</span>' + esc(t('jump3')) + '</a>' +
+        '<a class="dg-jump__link" href="#plugin-setup"><span class="dg-jump__num">04</span>' + esc(t('jump4')) + '</a>' +
+        '<a class="dg-jump__link" href="#plugin-release"><span class="dg-jump__num">05</span>' + esc(t('jump5')) + '</a>' +
+      '</div>' +
+      '<section class="dg-sec" id="plugin-what">' +
+        '<div class="dg-sec__eyebrow">' + esc(t('sec1Eyebrow')) + '</div>' +
+        '<h2 class="dg-sec__title">' + esc(t('sec1Title')) + '</h2>' +
+        '<p class="dg-sec__lede">' + esc(t('sec1Lede')) + '</p>' +
+        '<div class="dg-flow"><div class="dg-flow__body"><div class="dg-opts">' +
+          [1,2,3].map(function (n) {
+            return '<div class="dg-opt"><span class="dg-opt__label"><span class="dg-opt__tag">' + n + '</span>' + esc(t('f' + n + 'Title')) + '</span><span class="dg-opt__desc">' + esc(t('f' + n + 'Desc')) + '</span></div>';
+          }).join('') +
+        '</div></div></div>' +
+      '</section>' +
+      '<section class="dg-sec" id="plugin-flow">' +
+        '<div class="dg-sec__eyebrow">' + esc(t('sec2Eyebrow')) + '</div>' +
+        '<h2 class="dg-sec__title">' + esc(t('sec2Title')) + '</h2>' +
+        '<p class="dg-sec__lede">' + esc(t('sec2Lede')) + '</p>' +
+        '<div class="cap-grid">' +
+          ['step1-import', 'step2-review', 'step3-select'].map(function (item, i) {
+            var n = i + 1;
+            return '<figure class="cap-step">' +
+              '<div class="cap-step__head"><span class="num">' + (n < 10 ? '0' + n : n) + '</span>' + esc(t('cap' + n + 'Title')).replace(/^0\d\s*/, '') + '</div>' +
+              '<div class="cap-shot' + (i === 1 ? ' cap-shot--fit' : '') + '"><span class="cap-frame"><img src="../assets/tool-captures/' + item + '.png" alt=""></span></div>' +
+              '<p class="cap-step__desc">' + esc(t('cap' + n + 'Desc')) + '</p>' +
+            '</figure>';
+          }).join('') +
+        '</div>' +
+      '</section>' +
+      '<section class="dg-sec" id="plugin-result">' +
+        '<div class="dg-sec__eyebrow">' + esc(t('sec3Eyebrow')) + '</div>' +
+        '<h2 class="dg-sec__title">' + esc(t('sec3Title')) + '</h2>' +
+        '<p class="dg-sec__lede">' + esc(t('sec3Lede')) + '</p>' +
+        '<figure class="cap-step cap-step--wide">' +
+          '<div class="cap-shot"><span class="cap-frame">' +
+            '<img src="../assets/tool-captures/step4-generate.png" alt="">' +
+          '</span></div>' +
+        '</figure>' +
+      '</section>' +
+      '<section class="dg-sec" id="plugin-setup">' +
+        '<div class="dg-sec__eyebrow">' + esc(t('sec4Eyebrow')) + '</div>' +
+        '<h2 class="dg-sec__title">' + esc(t('sec4Title')) + '</h2>' +
+        '<p class="dg-sec__lede">' + esc(t('sec4Lede')) + '</p>' +
+        '<div class="dg-setup">' +
+          '<div class="dg-setup__dl">' +
+            '<a class="dg-btn dg-btn--primary" href="../dist/cardsnap-plugin-v1.3.zip" download>' + esc(t('dlTitle')) + '</a>' +
+            '<a class="dg-btn dg-btn--ghost" href="../dist/manifest.json" download>' + esc(t('dlManifest')) + '</a>' +
+            '<span class="dg-setup__dlhint">' + esc(t('dlHint')) + '</span>' +
+          '</div>' +
+          [1,2,3,4].map(function (n) {
+            return '<div class="dg-setup__row"><span class="dg-setup__num">0' + n + '</span><div><div class="dg-setup__title">' + esc(t('g' + n + 'Title')) + '</div><p class="dg-setup__desc">' + t('g' + n + 'Desc') + '</p></div></div>';
+          }).join('') +
+        '</div>' +
+      '</section>' +
+      '<section class="dg-sec" id="plugin-release">' +
+        '<div class="dg-sec__eyebrow">' + esc(t('sec5Eyebrow')) + '</div>' +
+        '<h2 class="dg-sec__title">' + esc(t('sec5Title')) + '</h2>' +
+        '<p class="dg-sec__lede">' + esc(t('sec5Lede')) + '</p>' +
+        '<div class="dg-opts">' +
+          '<div class="dg-opt"><span class="dg-opt__label"><span class="dg-opt__tag">✓</span>' + esc(t('mvpNowTitle')) + '</span><span class="dg-opt__desc">' + esc(t('mvpNowDesc')) + '</span></div>' +
+          '<div class="dg-opt"><span class="dg-opt__label"><span class="dg-opt__tag">…</span>' + esc(t('mvpNextTitle')) + '</span><span class="dg-opt__desc">' + esc(t('mvpNextDesc')) + '</span></div>' +
+        '</div>' +
+      '</section>' +
+      '<div class="dg-foot"><span>' + esc(t('footNote')) + '</span><span>Last updated 2026-11-25</span></div>';
+  }
+
+  document.addEventListener('click', function (e) {
+    var jump = e.target.closest('[href^="#plugin-"]');
+    if (jump && root.contains(jump)) {
+      var target = document.querySelector(jump.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    }
+  });
+  window.addEventListener('joybuy:languagechange', render);
+  render();
+})();
+</script>
+</body>
+</html>

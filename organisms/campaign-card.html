@@ -350,7 +350,7 @@
   /* ============ 03 Types (variant showcase) ============ */
   .types-stack {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 20px;
   }
   .type-block {
@@ -765,7 +765,7 @@
             <tr><th>#</th><th>字段</th><th>必填</th><th>规则</th></tr>
           </thead>
           <tbody>
-            <tr><td>1</td><td><code>rank</code>, <code>discount</code></td><td>否</td><td>图片区左上角的排行与折扣标签</td></tr>
+            <tr><td>1</td><td><code>rank</code>, <code>discount</code></td><td>否</td><td>图片区左上角的排行或折扣标签，二选一</td></tr>
             <tr><td>2</td><td><code>image</code></td><td>是</td><td>商品主图，保持完整可见</td></tr>
             <tr><td>3</td><td><code>brand</code></td><td>是</td><td>品牌名称</td></tr>
             <tr><td>4</td><td><code>title</code></td><td>是</td><td>商品名称，最多两行</td></tr>
@@ -784,9 +784,10 @@
               <div class="anatomy-cell__head"><span class="anatomy-cell__idx">1</span><span class="anatomy-cell__slot">rank · discount</span></div>
               <div class="anatomy-cell__stage" style="gap: 6px;">
                 <img src="../assets/figma-atoms/tag-number/tag-number.svg" alt="Rank number">
+                <span style="font-size: 10px; color: var(--ink-5);">/</span>
                 <img src="../assets/figma-atoms/tag-discount/default.svg" alt="Discount tag">
               </div>
-              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="tag-number">Tag Number</button> + <button class="atom-map-trigger" type="button" data-atom-preview="tag-discount">Tag Discount</button></div>
+              <div class="anatomy-cell__atom"><button class="atom-map-trigger" type="button" data-atom-preview="tag-number">Tag Number</button> / <button class="atom-map-trigger" type="button" data-atom-preview="tag-discount">Tag Discount</button></div>
             </div>
 
             <div class="anatomy-cell">
@@ -1114,11 +1115,11 @@
 
   // kind: data (from product) | context (scenario-introduced)
   const C_FIELDS = [
-    { name:'rank',           group:'merch',   kind:'context', label:{en:'Ranking badge', zh:'排行序号'} },
+    { name:'rank',           group:'merch',   kind:'context', label:{en:'Ranking badge · replaces discount', zh:'排行序号 · 与折扣互斥'} },
     { name:'highlight',      group:'merch',   kind:'data',    label:{en:'Highlight chip', zh:'商品亮点'} },
     { name:'favorite',       group:'merch',   kind:'context', label:{en:'Wishlist heart', zh:'收藏心标'} },
     { name:'ratingSold',     group:'merch',   kind:'data',    label:{en:'Rating · sold', zh:'评分 · 销量'} },
-    { name:'discount',       group:'price',   kind:'data',    label:{en:'Discount tag', zh:'折扣标签'} },
+    { name:'discount',       group:'price',   kind:'data',    label:{en:'Discount tag · replaces ranking', zh:'折扣标签 · 与序号互斥'} },
     { name:'referencePrice', group:'price',   kind:'data',    label:{en:'Reference price', zh:'参考价'} },
     { name:'promotion',      group:'price',   kind:'context', label:{en:'Promotion line', zh:'促销文案'} },
     { name:'fulfillment',    group:'fulfill', kind:'data',    label:{en:'Fulfillment', zh:'履约时效'} },
@@ -1171,6 +1172,8 @@
       else if (isData) def[f.name] = !!avail[f.name];
       else def[f.name] = false;
     });
+    // Ranking badge and discount occupy the same image slot; ranking wins.
+    if (def.rank) def.discount = false;
     return def;
   }
 
@@ -1197,31 +1200,42 @@
     else if (opts.stock) stockTxt = opts.stock[cardLang] || opts.stock.en;
 
     let html = '<article class="campaign campaign--product' + (notify ? ' campaign--out' : '') + '">';
-    // image column: rank + discount tags, product image, wishlist heart
+    // image column: rank and discount are mutually exclusive.
     html += '<div class="campaign-product__image">';
-    if (show.rank) html += '<span class="campaign-product__rank"' + fld('rank') + '>' + (opts.rank || '1') + '</span>';
-    if (show.discount && pct != null) html += '<span class="campaign-product__discount"' + fld('discount') + '>' + '20% off' + '</span>';
+    if (show.rank) {
+      html += '<span class="campaign-product__rank"' + fld('rank') + '>' + (opts.rank || '1') + '</span>';
+    } else if (show.discount && pct != null) {
+      html += '<span class="campaign-product__discount"' + fld('discount') + '>' + pct + '% off</span>';
+    }
     html += image ? '<img src="' + image + '" alt="' + p.brand + '">' : '';
     if (show.favorite) html += '<button class="campaign-product__favorite" type="button" aria-label="Add to wishlist"' + fld('favorite') + '><img src="../assets/figma-atoms/tag-like/tag-like.svg" alt=""></button>';
     html += '</div>';
-    // body column
+
     html += '<div class="campaign-product__body">';
     if (showHi) {
       html += '<span class="campaign-product__highlight"' + fld('highlight') + '>' + highlightHTML(hiKey) + '</span>';
     }
+
+    html += '<div class="campaign-product__title-stack">';
     html += '<div class="campaign-product__brand">' + p.brand + '</div>';
+    html += '<div class="campaign-product__title-info">';
     html += '<p class="campaign-product__title">' + t.title + '</p>';
-    // Rating & Sold atom (Figma 6311:16045 · Property 1=rate&sold): exported SVG,
-    // never a hand-built "★ 4.5 · 100k+ sold" string.
     if (show.ratingSold) html += '<div class="campaign-product__rating"' + fld('ratingSold') + '><img src="../assets/figma-atoms/rating-sold/rate-sold.svg" alt="4.5 · 100k+ sold"></div>';
-    if (show.promotion && t.promotion) html += '<div class="campaign-product__promotion"' + fld('promotion') + '>' + t.promotion + '</div>';
-    if (show.fulfillment && t.fulfillment) html += '<div class="campaign-product__fulfillment"' + fld('fulfillment') + '>' + t.fulfillment + '</div>';
-    html += '<div class="campaign-product__price"><b>' + p.salePrice + '</b>';
-    if (show.referencePrice && p.originalPrice) html += '<span' + fld('referencePrice') + '>' + p.originalPrice + '</span>';
-    html += '</div>';
     if (stockTxt) html += '<span class="campaign-product__stock">' + stockTxt + '</span>';
-    if (notify) html += '<button class="campaign-product__notify" type="button"' + fld('notify') + '>' + 'Notify' + '</button>';
+    html += '</div></div>';
+
+    html += '<div class="campaign-product__left-right">';
+    html += '<div class="campaign-product__left">';
+    if (show.promotion && t.promotion) html += '<div class="campaign-product__promotion"' + fld('promotion') + '>' + t.promotion + '</div>';
+    html += '<div class="campaign-product__price"><b>' + p.salePrice + '</b>';
+    if (show.referencePrice && p.originalPrice) html += '<span' + fld('referencePrice') + '>RRP: ' + p.originalPrice + '</span>';
+    html += '</div>';
+    if (show.fulfillment && t.fulfillment) html += '<div class="campaign-product__fulfillment"' + fld('fulfillment') + '>' + t.fulfillment + '</div>';
+    html += '</div>';
+    if (notify) html += '<button class="campaign-product__notify" type="button"' + fld('notify') + '>Notify</button>';
     else html += '<button class="campaign-product__cart" type="button" aria-label="Add to cart"' + fld('notify') + '><img src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt=""></button>';
+    html += '</div>';
+
     html += '</div></article>';
     return html;
   }
@@ -1310,6 +1324,15 @@
         const next = !cVis(key, def[key], fieldOv);
         if (next === !!def[key]) delete fieldOv[key];   // back to scene default → clear override
         else fieldOv[key] = next;
+        // Ranking badge and discount tag replace each other in the image slot.
+        if (next && key === 'rank') {
+          if (!def.discount) delete fieldOv.discount;
+          else fieldOv.discount = false;
+        }
+        if (next && key === 'discount') {
+          if (!def.rank) delete fieldOv.rank;
+          else fieldOv.rank = false;
+        }
         applyFields();
         return;
       }
@@ -1329,7 +1352,7 @@
   function typeShow(over) { return Object.assign({}, FULL_SHOW, over || {}); }
   const VARIANT_STAGES = [
     ['type-default',    typeShow({}),                                                              { stock:{en:'Only 10 left', zh:'Only 10 left'} }],
-    ['type-bestseller', typeShow({ rank:true, highlight:true }),                                    { rank:'1', stock:{en:'Only 10 left', zh:'Only 10 left'} }],
+    ['type-bestseller', typeShow({ rank:true, highlight:true, discount:false }),                                    { rank:'1', stock:{en:'Only 10 left', zh:'Only 10 left'} }],
     ['type-outofstock', typeShow({ notify:true, discount:false, promotion:false, fulfillment:false }), { notify:true }]
   ];
 

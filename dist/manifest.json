@@ -1,0 +1,16 @@
+{
+  "name": "商卡速改 CardSnap",
+  "id": "1533648705218749001",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["*"],
+    "reasoning": "设计师需要连接各自公司内部部署的 OpenAI、Anthropic 或 Gemini 兼容代理服务，代理域名由用户在插件中自行配置。",
+    "devAllowedDomains": [
+      "http://localhost:3210"
+    ]
+  }
+}

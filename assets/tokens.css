@@ -513,6 +513,115 @@ code, kbd, samp { font-family: var(--f-mono); font-size: 12.5px; }
   line-height: 1.35;
 }
 
+/* Utilities / Figma plugin directory — a lighter grouped menu. */
+.mega--tools {
+  width: 380px;
+  min-width: 380px;
+  max-width: calc(100vw - 24px);
+  padding: 10px;
+}
+.mega--tools .mega__list { gap: 2px; }
+.mega__group {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 10px 6px;
+  color: var(--ink-5);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+.mega__group-icon {
+  display: inline-flex;
+  color: var(--ink-4);
+}
+.mega__divider {
+  height: 1px;
+  margin: 6px 10px;
+  background: var(--outline);
+}
+.mega--tools .mega__item--feature {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 58px;
+  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  transform: translateX(0);
+  transition: background .14s ease, border-color .14s ease, transform .14s ease;
+}
+.mega--tools .mega__item--feature:hover,
+.mega--tools .mega__item--feature:focus-visible {
+  background: var(--accent-50);
+  border-color: var(--accent-100);
+  transform: translateX(2px);
+}
+.mega--tools .mega__item--feature:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.mega--tools .mega__item--feature.is-disabled:hover {
+  background: var(--surface-2);
+  border-color: transparent;
+  transform: none;
+}
+.mega__item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  color: var(--ink-4);
+  background: var(--surface-2);
+  transition: color .14s ease, background .14s ease;
+}
+.mega__item--feature:hover .mega__item-icon,
+.mega__item--feature:focus-visible .mega__item-icon {
+  color: var(--accent);
+  background: var(--accent-50);
+}
+.mega__item-copy { display: flex; min-width: 0; flex-direction: column; gap: 2px; }
+.mega--tools .mega__item-title { font-size: 13px; font-weight: 650; line-height: 18px; }
+.mega__item-desc {
+  color: var(--ink-4);
+  font-size: 11px;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.mega__item-tail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: start;
+  min-height: 20px;
+}
+.mega--tools .mega__item-flag { position: static; flex: none; margin: 0; }
+.mega__item-arrow {
+  display: inline-flex;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateX(-3px);
+  transition: opacity .14s ease, transform .14s ease;
+}
+.mega__item--feature:hover .mega__item-arrow,
+.mega__item--feature:focus-visible .mega__item-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+.mega--tools .mega__item.is-disabled { opacity: .72; }
+@media (prefers-reduced-motion: reduce) {
+  .mega--tools .mega__item--feature,
+  .mega__item-arrow { transition: none; }
+}
+
 /* Responsive: below 900px, hide top-nav tabs (subsequent phases: hamburger) */
 @media (max-width: 900px) {
   .top-nav { display: none; }

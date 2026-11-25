@@ -200,7 +200,6 @@
   /* All seven Product Highlights variants are native HTML atoms (Barlow Fix 50). */
   .hs-tile__hi { align-self: flex-start; line-height: 0; }
   .hs-tile__hi[data-empty] { display: none; }
-  .hs-tile__hi .ph-highlight { height: 16px; }
   .hs-tile__hi .ph-sponsored { line-height: 16px; }
   .hs-tile__title { margin: 0; font-size: 11px; font-weight: 500; color: var(--ink-2); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 30px; }
   .hs-tile__prices { display: flex; align-items: baseline; gap: 4px; margin-top: 2px; }
@@ -212,8 +211,10 @@
   }
   .hs-tile__oprice {
     font-size: 12px; font-weight: 500; line-height: 16px;
-    color: var(--ink); text-decoration: none; font-variant-numeric: tabular-nums;
+    color: #1a1a1a; text-decoration: none; font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
+  .hs-tile__original-price { font-size: inherit; color: inherit; font-weight: inherit; }
   .hs-tile [data-field][data-empty] { display: none; }
 
   /* ============ Demo area ============ */
@@ -701,7 +702,7 @@
 
           <div class="type-block">
             <div class="type-block__label">Out of stock · 缺货</div>
-            <div class="type-block__hint">仅保留商品名称、价格与 Notify 按钮，字段保持精简。</div>
+            <div class="type-block__hint">价格下方补 Out of stock 提示行（12/500/16），操作切换为 Notify 按钮。</div>
             <div class="type-block__stage" id="type-oos"></div>
           </div>
         </div>
@@ -1013,9 +1014,12 @@
     html += '<p class="hs-tile__title"' + fld('title') + '>' + titleText + '</p>';
     html += '<div class="hs-tile__prices">';
     html += '<span class="hs-tile__price"' + fld('salePrice') + '>' + p.salePrice + '</span>';
-    if (show.referencePrice && p.originalPrice) html += '<span class="hs-tile__oprice"' + fld('originalPrice') + '>' + p.originalPrice + '</span>';
+    // Price (second line) — Figma atom 28919:271383, RRP variant:
+    // "RRP: £500.00" 12/500/16 #1a1a1a (label + amount, no strikethrough).
+    if (show.referencePrice && p.originalPrice) html += '<span class="hs-tile__oprice"' + fld('originalPrice') + '>RRP: <span class="hs-tile__original-price">' + p.originalPrice + '</span></span>';
     else if (wf) html += '<span class="hs-tile__oprice"' + fld('originalPrice') + empty + '></span>';
     html += '</div>';
+    if (show.notify) html += '<div class="hs-tile__oos"' + fld('notify') + '>Out of stock</div>';
     if (show.discount && t.discount) html += '<div class="hs-tile__discount"' + fld('discount') + '>' + t.discount + '</div>';
     else if (wf) html += '<div class="hs-tile__discount"' + fld('discount') + empty + '></div>';
     if (show.promotion) html += '<div class="hs-tile__promo"' + fld('promotion') + '><img src="../assets/figma-atoms/total-promotion/' + (opts.promoAtom || 'buy-1-get-1-free') + '.svg" alt=""></div>';

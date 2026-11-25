@@ -150,11 +150,14 @@
      Price color by type: Reservation = red · Happy Hour = purple · Dutch = orange (↘). */
   .booking {
     display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 12px;
-    align-items: stretch; box-sizing: border-box;
-    background: var(--surface); border: 1px solid var(--outline);
+    align-items: start; box-sizing: border-box;
+    background: var(--surface); border: 0;
     border-radius: 8px; padding: 8px;
-    position: relative; width: 375px; max-width: 100%; min-height: 196px;
+    position: relative; width: 375px; max-width: 100%; min-height: 172px;
   }
+  /* The card owns its own 8px inset on every side — the overview stage must not
+     add a second one. */
+  #s-overview .demo__stage .booking.booking { padding: 8px; border: 0; }
   .booking [data-field][data-empty] { display: none; }
 
   /* Image (left) + discount tag */
@@ -163,80 +166,141 @@
     border-radius: 8px; overflow: hidden; background: var(--surface-2);
     display: flex; align-items: center; justify-content: center;
   }
+  .booking__image::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: rgba(0, 0, 0, .04);
+  }
   .booking__image img { width: 104px; height: 104px; object-fit: contain; display: block; }
+  /* Figma Tag-discount 5532:14407 — 10/12 SemiBold, 6×4 padding, r4. */
   .booking__disc {
-    position: absolute; top: 6px; left: 6px;
-    padding: 1px 6px; border-radius: 4px;
-    background: #fff; color: var(--ink);
-    font-size: 11px; font-weight: 700; line-height: 16px;
-    font-variant-numeric: tabular-nums;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, .12);
+    position: absolute; z-index: 1; top: 6px; left: 6px;
+    display: inline-flex; align-items: center;
+    box-sizing: border-box; padding: 4px 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, .7);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    color: #1a1a1a;
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 10px; font-weight: 600; line-height: 12px;
+    white-space: nowrap; font-variant-numeric: tabular-nums;
   }
 
-  /* Body (right) */
-  .booking__body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-  .booking__brand { font-size: 14px; font-weight: 700; color: var(--ink); line-height: 18px; }
+  /* Right body: Title group + Left/Right group, 8px apart. */
+  .booking__body {
+    display: flex; flex-direction: column; gap: 8px;
+    min-width: 0; align-self: stretch;
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+  }
+  .booking__title-stack { display: flex; flex-direction: column; gap: 4px; min-width: 0; min-height: 84px; }
+  .booking__title-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .booking__brand {
+    color: #1a1a1a; font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 14px; font-weight: 700; line-height: 20px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
   .booking__title {
-    margin: 0; font-size: 14px; font-weight: 400; color: var(--ink-2); line-height: 18px;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    margin: 0; color: #1a1a1a;
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 14px; font-weight: 500; line-height: 20px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
   }
-
-  /* Meta rows (icon-leading, gray) */
-  .booking__rating,
-  .booking__stock,
-  .booking__reserved,
-  .booking__time {
+  .booking__rating {
     display: flex; align-items: center; gap: 4px;
-    font-size: 11px; line-height: 16px; color: var(--ink-4);
-    font-variant-numeric: tabular-nums; min-width: 0;
+    min-width: 0; font-variant-numeric: tabular-nums;
   }
-  .booking__rating img,
-  .booking__stock img,
-  .booking__time img,
-  .booking__promo img { height: 16px; width: auto; display: block; }
-  .booking__disc img { height: 20px; width: auto; display: block; }
-  .booking__cta img { height: 32px; width: auto; display: block; }
+  .booking__rating img { display: block; width: auto; height: 16px; }
+  /* Figma Stock · 月黑 variant 21944:197383 — icon/lightning 12×12 + purple copy. */
+  .booking__stock {
+    color: #4843b8;
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 12px; font-weight: 500; line-height: 16px;
+    font-variant-numeric: tabular-nums;
+    display: inline-flex; align-items: center; gap: 2px;
+  }
+  .booking__stock img { display: block; width: 12px; height: 12px; }
+  /* Figma Reservation · 999+ reservations 2316:326826 — 12/16 Medium #6E7078. */
+  .booking__reservations {
+    color: #6e7078;
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 12px; font-weight: 500; line-height: 16px;
+    white-space: nowrap;
+  }
+  .booking__promo {
+    color: var(--joybuy-red);
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 12px; font-weight: 600; line-height: 16px;
+    white-space: nowrap;
+  }
 
-  /* Foot: price block (left) + CTA (right), bottom-pinned.
-     Wrap-robust: if a long price + button can't share a line, the button drops
-     to its own right-aligned line instead of overlapping the price. */
-  .booking__foot {
-    margin-top: auto; display: flex; flex-wrap: wrap;
-    align-items: flex-end; justify-content: flex-end;
-    column-gap: 8px; row-gap: 6px; padding-top: 4px;
+  /* Figma Individual Promotion · new launch-limit time 5551:25570. */
+  .booking__time {
+    display: flex; flex-direction: column; gap: 2px; align-items: flex-start;
+    min-width: 0;
   }
-  .booking__price-wrap { display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1 0 auto; }
-  .booking__price-line { display: flex; align-items: center; gap: 3px; }
-  .booking__arrow { width: 13px; height: 13px; flex-shrink: 0; display: none; }
-  /* Price — Figma Pricing atom 5577:19658 · System/16px-Bold (16/700/22). */
+  .booking__time-row {
+    display: flex; align-items: center; gap: 2px; min-width: 0;
+    color: #6e7078;
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 12px; font-weight: 500; line-height: 16px;
+    white-space: nowrap;
+  }
+  /* Figma icon/prof_in_progress 38254:315551 — the real 14×14 atom. */
+  .booking__clock {
+    display: block; flex: 0 0 14px;
+    width: 14px; height: 14px;
+  }
+
+  /* Left/Right container: left content may wrap; CTA is bottom-aligned. */
+  .booking__left-right {
+    display: flex; align-items: flex-end; gap: 4px;
+    width: 100%; min-width: 0;
+  }
+  .booking__left {
+    display: flex; flex: 1 1 0; flex-direction: column; gap: 4px;
+    min-width: 0;
+  }
+  .booking__price-wrap {
+    display: flex; flex-direction: column; gap: 4px;
+    min-width: 0;
+  }
+  .booking__price-line { display: flex; align-items: center; gap: 4px; min-width: 0; }
+  /* Figma icon/price_drop 28919:268534 — 16×16 arrow shown next to the auction price. */
+  .booking__arrow { display: none; width: 16px; height: 16px; flex: 0 0 16px; }
   .booking__price-current {
     font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
     font-size: 16px; font-weight: 700; color: var(--joybuy-red);
     line-height: 22px; letter-spacing: 0; font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
   }
   .booking__rrp {
-    font-size: 12px; font-weight: 500; color: var(--ink);
-    line-height: 16px; font-variant-numeric: tabular-nums;
+    color: #1a1a1a;
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 12px; font-weight: 500; line-height: 16px;
+    font-variant-numeric: tabular-nums; overflow-wrap: anywhere;
   }
-  .booking__rrp b { font-weight: 400; }
+  .booking__rrp b { font-weight: inherit; }
 
   /* Type-driven price color + auction down-arrow */
   .booking--happyhour .booking__price-current { color: #4843B8; }
-  .booking--auction   .booking__price-current { color: #ee7700; }
-  .booking--auction   .booking__arrow { display: inline-block; }
+  .booking--auction   .booking__price-current { color: #e70; }
+  .booking--auction   .booking__arrow { display: block; }
 
-  /* CTA (secondary) */
+  /* Figma Button 21944:198313 · 74×32 · Barlow Fix 50 14/20 SemiBold. */
   .booking__cta {
-    flex: none; display: inline-flex; align-items: center; justify-content: center;
-    min-width: 88px; min-height: 40px; padding: 8px 14px;
-    border-radius: 8px; border: 1px solid transparent;
-    background: var(--surface-2); color: var(--ink);
-    font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;
-    transition: background .12s ease, border-color .12s ease, color .12s ease;
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+    box-sizing: border-box; min-width: 74px; height: 32px; padding: 0 12px;
+    border: 0; border-radius: 4px;
+    background: #f5f6fa; color: #1a1a1a;
+    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+    font-size: 14px; font-weight: 600; line-height: 20px;
+    cursor: pointer; white-space: nowrap;
+    transition: background .12s ease, color .12s ease;
   }
-  .booking__cta:hover { background: var(--surface-3); }
-  /* CTA uses the exported Figma Notify Button atom. */
-  .booking__cta--bid { background: #FFF5E6; color: #EE7700; }
+  .booking__cta:hover { background: #eceef2; }
+  .booking__cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .booking__cta--bid { background: #fff5e6; color: #e70; }
   .booking__cta--bid:hover { background: #FFECD1; }
   .booking__cta:disabled { color: var(--ink-4); background: var(--surface-2); cursor: default; }
 
@@ -260,6 +324,21 @@
   }
   .demo__controls-hint { font-size: 12px; color: var(--ink-4); line-height: 1.6; }
   .chip-strip { display: flex; gap: 6px; flex-wrap: wrap; }
+  /* Preset thumbs — the 3C presets share the brand name, so the picture is the
+     only way to tell them apart (same pattern as the other card pages). */
+  .preset-strip { display: grid; grid-template-columns: repeat(4, 42px); gap: 8px; }
+  .preset-thumb {
+    all: unset; cursor: pointer; box-sizing: border-box;
+    width: 42px; height: 42px; border-radius: 6px;
+    background: var(--surface);
+    border: 1px solid var(--outline);
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color .12s ease, transform .12s ease;
+  }
+  .preset-thumb img { max-width: 90%; max-height: 90%; }
+  .preset-thumb:hover { border-color: var(--outline-strong); }
+  .preset-thumb.is-active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
   .chip-btn {
     all: unset; cursor: pointer;
     padding: 6px 12px; border-radius: var(--r-pill);
@@ -284,6 +363,22 @@
   .scene-tab:hover { border-color: var(--outline-strong); }
   .scene-tab.is-active { color: #fff; background: var(--ink); border-color: var(--ink); }
   .scene-tab__sub { font-size: 10px; font-weight: 500; opacity: .7; margin-left: 5px; }
+
+  /* Sale state — a subordinate segmented control under the business-type chips. */
+  .seg {
+    display: inline-flex; gap: 2px; padding: 3px;
+    border: 1px solid var(--outline); border-radius: 9px;
+    background: var(--surface);
+  }
+  .seg__btn {
+    all: unset; cursor: pointer; box-sizing: border-box;
+    padding: 6px 12px; border-radius: 6px;
+    font-size: 12px; font-weight: 600; line-height: 1.25;
+    color: var(--ink-3);
+    transition: background .12s ease, color .12s ease;
+  }
+  .seg__btn:hover { color: var(--ink-2); }
+  .seg__btn.is-active { color: #fff; background: var(--ink); }
 
   /* ---- Field simulator (switches + copilot) — shared visual with vertical card ---- */
   .field-sim { border-top: 1px dashed var(--outline); padding-top: 18px; }
@@ -752,12 +847,16 @@
               <div class="scene-tabs" id="scene-tabs"></div>
             </div>
             <div class="demo__controls-block">
+              <div class="demo__controls-title" data-control-title="state">售卖状态</div>
+              <div class="seg" id="state-tabs" role="group"></div>
+            </div>
+            <div class="demo__controls-block">
               <div class="demo__controls-title" data-control-title="category">品类</div>
               <div class="chip-strip" id="cat-strip"></div>
             </div>
             <div class="demo__controls-block">
               <div class="demo__controls-title" data-control-title="preset">商品预设</div>
-              <div class="chip-strip" id="preset-strip"></div>
+              <div class="preset-strip" id="preset-strip"></div>
             </div>
             <div class="demo__controls-block field-sim" data-global-i18n="off">
               <div id="bk-sim"></div>
@@ -876,10 +975,10 @@
             <tr><td>3</td><td><code>brand</code></td><td>是</td><td>品牌名称单独一行</td></tr>
             <tr><td>4</td><td><code>title</code></td><td>是</td><td>商品名称，最多两行</td></tr>
             <tr><td>5</td><td><code>rating</code>, <code>sold</code></td><td>否</td><td>评分、销量或浏览量</td></tr>
-            <tr><td>6</td><td><code>stock</code></td><td>否</td><td>库存紧张时显示 <code>Only 10 left</code></td></tr>
+            <tr><td>6</td><td><code>stock</code></td><td>否</td><td>月黑显示 Figma Stock 原子 <code>Only 12 items left</code>（⚡ 12px + 紫色 #4843B8）</td></tr>
             <tr><td>7</td><td><code>launchTime</code></td><td>否</td><td>新发布限时 / 开始或结束时间</td></tr>
             <tr><td>8</td><td><code>price</code></td><td>是</td><td>当前价；荷兰拍与结束态补充价格语义</td></tr>
-                        <tr><td>9</td><td><code>button</code></td><td>是</td><td>固定使用 Figma Notify Button 文案 <code>Notify</code></td></tr>
+                        <tr><td>9</td><td><code>button</code></td><td>是</td><td>CTA 文案随状态：<code>Notify / Remind me / Bid now / Recap</code></td></tr>
           </tbody>
         </table>
       </section>
@@ -937,16 +1036,16 @@
             <tr><td><code>title</code></td><td>string · Figma 3 个变体文案</td><td>SKU · name</td><td>不渲染</td><td>预览仅使用 Figma 源文案</td></tr>
             <tr><td><code>priceCurrent</code></td><td>string · Figma 示例 <code>£350.00</code></td><td>定价 / 拍卖服务</td><td>必填</td><td>货币符号 i18n</td></tr>
             <tr><td><code>deposit</code></td><td>enum · Figma 示例 <code>Excl. deposit £0.15</code></td><td>定价服务</td><td>空则不显示 deposit 行</td><td>预览仅使用 Figma 源文案</td></tr>
-            <tr><td><code>ctaLabel</code>, <code>ctaHref</code></td><td>enum · 固定 <code>Notify</code></td><td>Notify Button atom</td><td>必填</td><td>预览仅使用 Figma 源文案</td></tr>
+            <tr><td><code>ctaLabel</code>, <code>ctaHref</code></td><td>enum · <code>Notify / Remind me / Bid now / Recap</code></td><td>Notify Button atom</td><td>必填</td><td>预览仅使用 Figma 源文案</td></tr>
           </tbody>
         </table>
 
         <table class="table" style="margin-top: 24px;">
           <thead><tr><th>state</th><th>业务标签</th><th>时间信息</th><th>价格信息</th><th>CTA 默认</th></tr></thead>
           <tbody>
-            <tr><td><code>unreserved</code></td><td>保留业务类型</td><td>开始时间 / 下次拍卖</td><td>当前价 + 参考价</td><td>Notify</td></tr>
-            <tr><td><code>purchasing</code></td><td>保留业务类型</td><td>距结束倒计时</td><td>当前价；荷兰拍显示下一档</td><td>Notify</td></tr>
-            <tr><td><code>ended</code></td><td>保留业务类型</td><td>隐藏倒计时</td><td>最终价格</td><td>Notify</td></tr>
+            <tr><td><code>unreserved</code></td><td>保留业务类型</td><td>开始时间 / 下次拍卖</td><td>当前价 + 参考价</td><td>Notify / Remind me</td></tr>
+            <tr><td><code>purchasing</code></td><td>保留业务类型</td><td>距结束倒计时</td><td>当前价；荷兰拍显示下一档</td><td>Bid now</td></tr>
+            <tr><td><code>ended</code></td><td>保留业务类型</td><td>隐藏倒计时</td><td>最终价格</td><td>Recap</td></tr>
           </tbody>
         </table>
       </section>
@@ -1005,7 +1104,7 @@
             <ul class="compare__list">
               <li>业务标签只由 <code>type</code> 决定，不能被售卖状态覆盖</li>
               <li>未预约显示开始时间，抢购中显示倒计时，结束态隐藏时间</li>
-              <li>库存文案仅使用 Figma Stock 的 <code>Only 10 left / Out of stock</code>，不要发明预约量文案</li>
+              <li>库存文案使用 Figma Stock 原子的 <code>Only 12 items left / Out of stock</code>；预约量使用 <code>999+ reservations</code>，不自行改写</li>
               <li>倒计时精度到秒 · JS 层做客户端滚动 · 不要 fetch 更新</li>
               <li>荷兰拍必配"下一档 £YYY"提示 · 让用户知道降价节奏</li>
             </ul>
@@ -1100,15 +1199,20 @@
   const STATE_STRIP_LABEL = { unreserved:'Unreserved', purchasing:'Purchasing', ended:'Ended' };
 
   /* ---- Field explorer · scenarios + field registry (fields per Figma node 22303-189590) ----
-   * BK_SCENES collapse the meaningful business-type × state combos into 5 named real scenarios
-   * (the raw 4×3 matrix has nonsensical cells). Clicking a scenario tab drives the live card AND
-   * resets field overrides to that scenario's canonical field set. */
-  const BK_SCENES = [
-    { key:'reservation', cfg:{ type:'regular',      state:'unreserved' }, label:{ en:'Reservation', zh:'预约' },   sub:{ en:'Regular',  zh:'常规' } },
-    { key:'happy',       cfg:{ type:'happyHour',     state:'unreserved' }, label:{ en:'Happy Hour',  zh:'月黑' },   sub:{ en:'Flash',    zh:'秒杀' } },
-    { key:'dutchSoon',   cfg:{ type:'dutchReserved', state:'unreserved' }, label:{ en:'Dutch',       zh:'荷兰拍' }, sub:{ en:'Upcoming', zh:'预告' } },
-    { key:'dutchLive',   cfg:{ type:'dutch',         state:'purchasing' }, label:{ en:'Dutch',       zh:'荷兰拍' }, sub:{ en:'Bidding',  zh:'抢购' } },
-    { key:'dutchEnded',  cfg:{ type:'dutch',         state:'ended' },      label:{ en:'Dutch',       zh:'荷兰拍' }, sub:{ en:'Ended',    zh:'结束' } }
+   * The card is driven by TWO dimensions (Figma 22303:189590):
+   *   业务类型 business type → 常规预约 / 月黑秒杀 / 荷兰拍
+   *   售卖状态 sale state    → 未开始 / 抢购中 / 已结束
+   * One scene button therefore carries one business type; the three states live in a
+   * second, subordinate control (the segmented row under the type chips). */
+  const BK_TYPES = [
+    { key:'regular',   label:{ en:'Reservation', zh:'预约' },   sub:{ en:'Regular', zh:'常规' } },
+    { key:'happyHour', label:{ en:'Happy Hour', zh:'月黑' },   sub:{ en:'Flash',   zh:'秒杀' } },
+    { key:'dutch',     label:{ en:'Dutch',      zh:'荷兰拍' }, sub:{ en:'Auction',  zh:'拍卖' } }
+  ];
+  const BK_STATES = [
+    { key:'unreserved', label:{ en:'Not started', zh:'未开始' } },
+    { key:'purchasing', label:{ en:'Bidding',     zh:'抢购中' } },
+    { key:'ended',      label:{ en:'Ended',       zh:'已结束' } }
   ];
 
   // Each toggleable field + the scenarios it appears in by default + whether it needs price data.
@@ -1120,6 +1224,7 @@
     { key:'stock',    label:{ en:'Stock left',      zh:'库存紧张' }, scene:{ en:'Happy Hour',           zh:'月黑' },          gated:false },
     { key:'promo',    label:{ en:'Pre-sale tag',    zh:'预售标' },   scene:{ en:'Reservation',          zh:'预约' },          gated:false },
     { key:'time',     label:{ en:'Schedule time',   zh:'时间行' },   scene:{ en:'Happy Hour · Dutch',   zh:'月黑 · 荷兰拍' },  gated:false },
+    { key:'reservations', label:{ en:'Reservations · views', zh:'预约量 · 观看量' }, scene:{ en:'Happy Hour · Dutch', zh:'月黑 · 荷兰拍' }, gated:false },
     { key:'rrp',      label:{ en:'Reference price', zh:'划线价' },   scene:{ en:'All · relabeled Dutch',zh:'全部 · 荷兰拍改标' }, gated:true  }
   ];
 
@@ -1150,9 +1255,15 @@
     // Price atom only defines RRP / WAS; booking previews stay on RRP.
     const refLabel = { en:'RRP', zh:'RRP' };
 
-    // CTA uses the Figma Notify Button atom in every state.
-    const cta = { en:'Notify', zh:'Notify' };
-    const ctaClass = 'booking__cta';
+    // CTA copy per state (Figma booking cards):
+    //   预约 → Notify · 预告/未开拍 → Remind me · 抢购中 → Bid now · 已结束 → Recap
+    const cta = isDutch
+      ? (purchasing ? { en:'Bid now', zh:'Bid now' }
+        : ended      ? { en:'Recap',   zh:'Recap'   }
+        :              { en:'Remind me', zh:'Remind me' })
+      : isHappy ? { en:'Remind me', zh:'Remind me' }
+                : { en:'Notify', zh:'Notify' };
+    const ctaClass = 'booking__cta' + (isDutch && purchasing ? ' booking__cta--bid' : '');
     const ctaDisabled = false;
 
     // Scheduled time uses the Figma new-launch-limit-time atom copy.
@@ -1161,9 +1272,10 @@
     return {
       modifier,
       showRating: isReg && !ended,          // ★ 4.5 | 100k+ sold — Reservation only
-      showStock:  isHappy,                   // Figma Stock: Only 10 left
-      stockLabel: { en:'Only 10 left', zh:'Only 10 left' },
-      showReserved: false,                   // Reservation count is outside the Figma atomic library
+      showStock:  isHappy,                   // Figma Stock · 月黑: Only 12 items left
+      stockLabel: { en:'Only 12 items left', zh:'Only 12 items left' },
+      showReservations: isHappy || isDutch, // Figma Reservation: 999+ reservations
+      reservationLabel: { en:'999+ reservations', zh:'999+ reservations' },
       showPromo: isReg && !ended,            // Pre-sale — Reservation only
       promoLabel: { en:'Pre-sale', zh:'Pre-sale' },
       showTime: isHappy || isDutch,          // 🕐 time line — Happy Hour + Dutch only (Reservation has none)
@@ -1179,8 +1291,8 @@
 
   /* Live-config panel copy follows the global documentation language. */
   const UI_COPY = {
-    en: { scene:'Scenario', category:'Category', preset:'Product preset', fields:'Field controls', reset:'Reset', na:'N/A' },
-    zh: { scene:'业务场景', category:'品类', preset:'商品预设', fields:'字段控制', reset:'重置', na:'无数据' }
+    en: { scene:'Scenario', state:'Sale state', category:'Category', preset:'Product preset', fields:'Field controls', reset:'Reset', na:'N/A' },
+    zh: { scene:'业务场景', state:'售卖状态', category:'品类', preset:'商品预设', fields:'字段控制', reset:'重置', na:'无数据' }
   };
   function updateControlCopy() {
     document.querySelectorAll('[data-control-title]').forEach(el => {
@@ -1190,13 +1302,19 @@
   }
   let currentCat   = '3c';
   let currentPreset= 0;
-  let currentType  = 'regular';
-  let currentState = 'unreserved';
-  let sceneKey     = 'reservation';       // active scenario tab
+  let currentType  = 'regular';           // business type  (BK_TYPES)
+  let currentState = 'unreserved';        // sale state     (BK_STATES)
   let fieldOv      = {};                   // field key -> true/false; absent = follow scenario default
 
   /* ================ Helpers ================ */
   function pad2(n){ return n < 10 ? '0'+n : ''+n; }
+
+  function discountPercent(p) {
+    const num = v => parseFloat(String(v == null ? '' : v).replace(/[^0-9.]/g, ''));
+    const sale = num(p && p.salePrice);
+    const original = num(p && p.originalPrice);
+    return sale > 0 && original > sale ? Math.round((1 - sale / original) * 100) : null;
+  }
 
   function formatCD(secs) {
     if (secs < 0) secs = 0;
@@ -1249,10 +1367,11 @@
     const L = cardLang;
     const OVR = cfg.ov || {};   // field explorer overrides (empty for static type/rail blocks)
 
-    // Discount tag (computed from sale vs RRP) — gated by data AND override
+    // Figma Tag-discount 5532:14407 — native text, no image asset.
     let discHTML = '';
-    if (bkVis('disc', true, OVR)) {
-      discHTML = '<span class="booking__disc" data-field="disc"><img src="../assets/figma-atoms/tag-discount/tag-discount.svg" alt="20% off"></span>';
+    const discountPct = discountPercent(p);
+    if (discountPct != null && bkVis('disc', true, OVR)) {
+      discHTML = '<span class="booking__disc" data-field="disc">' + discountPct + '% off</span>';
     }
 
     let html = '<div class="booking' + (s.modifier ? ' ' + s.modifier : '') + '" data-cd-state="' + cfg.state + '">';
@@ -1263,41 +1382,58 @@
     html += discHTML;
     html += '</div>';
 
-    // Body (right)
+    // Body (right): Figma Title container + Left/Right container.
     html += '<div class="booking__body">';
-    html += '<div class="booking__brand" data-field="brand">' + p.brand + '</div>';
-    html += '<h3 class="booking__title" data-field="title">' + t.title + '</h3>';
 
-    // rating (Reservation) — exported Rating & Sold atom
+    html += '<div class="booking__title-stack">';
+    html += '<div class="booking__brand" data-field="brand">' + p.brand + '</div>';
+    html += '<div class="booking__title-info">';
+    html += '<h3 class="booking__title" data-field="title">' + t.title + '</h3>';
     if (bkVis('rating', s.showRating, OVR)) {
       html += '<div class="booking__rating" data-field="rating"><img src="../assets/figma-atoms/rating-sold/rate-sold.svg" alt="4.5 · 100k+ sold"></div>';
     }
-    // stock (Happy Hour) — Figma Stock copy
     if (bkVis('stock', s.showStock, OVR)) {
-      html += '<div class="booking__stock" data-field="stock">' + s.stockLabel[L] + '</div>';
+      html += '<div class="booking__stock" data-field="stock">'
+        + '<img src="../assets/figma-atoms/leading-icon/flash-purple.svg" alt="">'
+        + '<span>' + s.stockLabel[L] + '</span></div>';
     }
-    // promo (Reservation) — exported Figma Individual Promotion atom
+    if (bkVis('reservations', s.showReservations, OVR)) {
+      html += '<div class="booking__reservations" data-field="reservations">' + s.reservationLabel[L] + '</div>';
+    }
+    html += '</div>'; // /.booking__title-info
+    html += '</div>'; // /.booking__title-stack
+
+    html += '<div class="booking__left-right">';
+    html += '<div class="booking__left">';
+
+    // Individual Promotion text variants.
     if (bkVis('promo', s.showPromo, OVR)) {
-      html += '<div class="booking__promo" data-field="promo"><img src="../assets/figma-atoms/individual-promotion/type-pre-sale.svg" alt="Pre-sale"></div>';
+      html += '<div class="booking__promo" data-field="promo">' + s.promoLabel[L] + '</div>';
     }
-    // time line — exported Figma new-launch-limit-time atom
+    // Figma new-launch-limit-time atom, rendered as HTML/CSS.
     if (bkVis('time', s.showTime, OVR)) {
-      html += '<div class="booking__time" data-field="time"><img src="../assets/figma-atoms/individual-promotion/new-launch-limit-time.svg" alt="' + s.timeLabel[L] + '"></div>';
+      // Figma Countdown row: icon/prof_in_progress + start time only — no "Coming soon".
+      html += '<div class="booking__time" data-field="time">'
+        + '<span class="booking__time-row"><img class="booking__clock" src="../assets/figma-atoms/leading-icon/clock.svg" alt="" width="14" height="14"><span>' + s.timeLabel[L] + '</span></span>'
+        + '</div>';
     }
 
-    // Foot: price block (left) + CTA (right)
-    html += '<div class="booking__foot">';
     html += '<div class="booking__price-wrap">';
     html += '<div class="booking__price-line">';
+    if (s.isDutch) {
+      html += '<img class="booking__arrow" src="../assets/figma-atoms/leading-icon/arrow-down-orange.svg" alt="" width="16" height="16">';
+    }
     html += '<span class="booking__price-current" data-field="priceCurrent">' + p.salePrice + '</span>';
     html += '</div>';
     if (p.originalPrice && bkVis('rrp', true, OVR)) {
       html += '<div class="booking__rrp" data-field="rrp"><b>' + s.refLabel[L] + ':</b> ' + p.originalPrice + '</div>';
     }
     html += '</div>'; // /.booking__price-wrap
+    html += '</div>'; // /.booking__left
+
     html += '<button type="button" class="' + s.ctaClass + '" data-field="ctaLabel"'
-      + (s.ctaDisabled ? ' disabled aria-disabled="true"' : '') + '><img src="../assets/figma-atoms/notify-button/notify-button.svg" alt="' + s.cta[L] + '"></button>';
-    html += '</div>'; // /.booking__foot
+      + (s.ctaDisabled ? ' disabled aria-disabled="true"' : '') + '>' + s.cta[L] + '</button>';
+    html += '</div>'; // /.booking__left-right
 
     html += '</div>'; // /.booking__body
     html += '</div>'; // /.booking
@@ -1365,33 +1501,59 @@
     const a = bkAvail();
     return {
       disc: a.disc, rating: s.showRating, stock: s.showStock,
-      promo: s.showPromo, time: s.showTime, rrp: a.rrp
+      promo: s.showPromo, time: s.showTime, rrp: a.rrp,
+      reservations: s.showReservations
     };
   }
 
+  // Business type chips.
   function renderSceneTabs() {
     const host = document.getElementById('scene-tabs');
     if (!host) return;
     host.innerHTML = '';
-    BK_SCENES.forEach(sc => {
+    BK_TYPES.forEach(t => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'scene-tab' + (sc.key === sceneKey ? ' is-active' : '');
-      btn.innerHTML = sc.label[cardLang] + '<span class="scene-tab__sub">' + sc.sub[cardLang] + '</span>';
-      btn.addEventListener('click', () => applyScene(sc.key));
+      btn.className = 'scene-tab' + (t.key === currentType ? ' is-active' : '');
+      btn.innerHTML = t.label[cardLang] + '<span class="scene-tab__sub">' + t.sub[cardLang] + '</span>';
+      btn.addEventListener('click', () => applyType(t.key));
       host.appendChild(btn);
     });
   }
 
-  // Scenario switch drives the live card AND resets overrides to that type's default field set.
-  function applyScene(key) {
-    const sc = BK_SCENES.find(s => s.key === key);
-    if (!sc) return;
-    sceneKey = key;
-    currentType = sc.cfg.type;
-    currentState = sc.cfg.state;
+  // Sale state — the second dimension of the same scenario (segmented row).
+  function renderStateTabs() {
+    const host = document.getElementById('state-tabs');
+    if (!host) return;
+    host.innerHTML = '';
+    BK_STATES.forEach(st => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'seg__btn' + (st.key === currentState ? ' is-active' : '');
+      btn.textContent = st.label[cardLang];
+      btn.setAttribute('aria-pressed', String(st.key === currentState));
+      btn.addEventListener('click', () => applyState(st.key));
+      host.appendChild(btn);
+    });
+  }
+
+  // Type switch drives the live card AND resets overrides to that type's default field set.
+  function applyType(key) {
+    if (!BK_TYPES.some(t => t.key === key)) return;
+    currentType = key;
     fieldOv = {};
     renderSceneTabs();
+    renderStateTabs();
+    renderPreview();
+    renderFieldSim();
+  }
+
+  // State switch keeps the business type and only changes the sale state.
+  function applyState(key) {
+    if (!BK_STATES.some(s => s.key === key)) return;
+    currentState = key;
+    fieldOv = {};
+    renderStateTabs();
     renderPreview();
     renderFieldSim();
   }
@@ -1488,8 +1650,11 @@
     const list = D.catalog[currentCat] || [];
     list.forEach((p, idx) => {
       const btn = document.createElement('button');
-      btn.className = 'chip-btn' + (idx === currentPreset ? ' is-active' : '');
-      btn.textContent = p.brand;
+      btn.type = 'button';
+      btn.className = 'preset-thumb' + (idx === currentPreset ? ' is-active' : '');
+      btn.title = p.brand;
+      const src = D.productImages[p.img] || '';
+      btn.innerHTML = src ? '<img src="' + src + '" alt="' + p.brand + '">' : '';
       btn.addEventListener('click', () => { currentPreset = idx; renderPresetStrip(); renderPreview(); renderFieldSim(); });
       strip.appendChild(btn);
     });
@@ -1688,6 +1853,7 @@
   /* ================ Init ================ */
   updateControlCopy();
   renderSceneTabs();
+  renderStateTabs();
   renderCatStrip();
   renderPresetStrip();
   renderFieldSim();

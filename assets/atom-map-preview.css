@@ -69,7 +69,8 @@
     overscroll-behavior: contain;
     scrollbar-width: thin;
   }
-  .anatomy-cell__atom a.atom-map-option {
+  .anatomy-cell__atom a.atom-map-option,
+  button.atom-map-option {
     display: flex;
     min-width: 0;
     flex-direction: column;
@@ -89,14 +90,26 @@
     overflow-wrap: anywhere;
     transition: border-color .12s ease, background .12s ease, color .12s ease;
   }
-  .anatomy-cell__atom a.atom-map-option:hover {
+  .anatomy-cell__atom a.atom-map-option:hover,
+  button.atom-map-option:hover {
     border-color: var(--accent);
     background: var(--accent-50);
     color: var(--accent);
   }
-  .anatomy-cell__atom a.atom-map-option:focus-visible {
+  .anatomy-cell__atom a.atom-map-option:focus-visible,
+  button.atom-map-option:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
+  }
+  button.atom-map-option {
+    font-family: inherit;
+    cursor: pointer;
+  }
+  button.atom-map-option.is-selected {
+    border-color: var(--joybuy-red);
+    background: #FEF0EF;
+    color: var(--joybuy-red);
+    font-weight: 600;
   }
   .atom-map-option__preview {
     display: flex;

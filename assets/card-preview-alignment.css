@@ -425,7 +425,6 @@
 
 /* Product-highlights chip is the native 68×24 Figma svg (bg #F5F6FA, r4). */
 :is(#s-overview, #s-types, .side-preview) .hcard__highlight { align-self: flex-start; line-height: 0; }
-:is(#s-overview, #s-types, .side-preview) .hcard__highlight .ph-highlight { height: 24px; }
 
 /* Brand "TCL" — 14/20 weight 700 #1a1a1a. */
 :is(#s-overview, #s-types, .side-preview) .hcard__brand { font-size: 14px; line-height: 20px; font-weight: 700; color: var(--ink); }
@@ -602,10 +601,10 @@
 /* Universal horizontal mini master — Figma 6000:33289.
    Card 375 wide · image 130×130 (16px inset from the left, flush vertically)
    → 12px gap → content column 201 · action 32×32 bottom-right.
-   The card carries its own Figma insets, so the preview chrome adds no padding. */
+   The card carries its own 8px padding, so the preview chrome adds none. */
 #s-overview .demo__stage .hmini {
   width: 375px;
-  padding: 0 16px;
+  padding: 8px;
   border: 0;
 }
 
@@ -725,6 +724,16 @@
 }
 
 /* Price (second line) — 12/500/16 #1a1a1a, no strikethrough. */
+/* Out of stock — Figma tile 31497:143454 · 12/16 Medium #6E7078 */
+.hs-tile__oos {
+  margin-top: 4px;
+  color: #6E7078;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
 .hs-tile__oprice,
 .hs-tile__discount {
   color: #1a1a1a;
@@ -804,32 +813,22 @@
   pointer-events: none;
 }
 
-/* Campaign master: 375 × 358 with an intentionally clipped third tile. */
-#s-overview .campaign {
-  box-sizing: border-box;
-  width: 375px;
-  max-width: 100%;
-  height: 358px;
-  border: 0;
-  border-radius: 20px;
-  box-shadow: none;
-  background: #ffd8be;
-  padding: 0 16px 16px;
-}
-
+/* Campaign product card: Figma 6442:14169 / 5593:17862.
+   Image and body use a 12px gap; the card is content-driven with an 8px inset. */
 .campaign.campaign--product,
 #s-overview .campaign.campaign--product {
   display: grid;
-  grid-template-columns: 144px minmax(0, 1fr);
+  grid-template-columns: 130px minmax(0, 1fr);
   gap: 12px;
+  align-items: start;
   box-sizing: border-box;
   width: 375px;
   max-width: 100%;
-  height: auto;                    /* override the obsolete #s-overview .campaign banner height:358px */
-  min-height: 240px;               /* content-driven: grows for field-heavy variants, never squashes the title */
-  padding: 8px;                    /* uniform 8px preview chrome */
+  height: auto;
+  min-height: 0;
+  padding: 8px;
   border: 1px solid rgba(17, 17, 17, .05);
-  border-radius: 8px;              /* every card corner = 8px */
+  border-radius: 8px;
   background: #fff;
   box-shadow:
     0 1px 2px rgba(0, 0, 0, .04),
@@ -837,38 +836,224 @@
     0 20px 40px -20px rgba(0, 0, 0, .08);
   color: #1a1a1a;
   overflow: hidden;
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
 }
-.campaign-product__image { position: relative; width: 144px; height: 144px; border-radius: 10px; background: #f5f5f6; overflow: hidden; }
-.campaign-product__image > img { width: 100%; height: 100%; padding: 12px; object-fit: contain; }
-.campaign-product__rank,
-.campaign-product__discount { position: absolute; z-index: 2; top: 0; min-height: 24px; display: inline-flex; align-items: center; padding: 4px 6px; font-size: 11px; font-weight: 700; }
-.campaign-product__rank { left: 0; border-radius: 8px 0; background: #e4e6eb; }
-.campaign-product__discount { left: 0; border-radius: 8px 0; background: #fff; }
-.campaign-product__rank + .campaign-product__discount { left: 28px; border-radius: 0 0 8px 0; }
-.campaign-product__favorite { position: absolute; top: 0; right: 0; width: 40px; height: 40px; padding: 0; border: 0; background: transparent; }
-.campaign-product__favorite img { width: 40px; height: 40px; }
-.campaign-product__body { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 144px; gap: 4px; padding-bottom: 36px; }
-/* All seven Product Highlights variants are native HTML atoms (Barlow Fix 50). */
+.campaign-product__image {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  border-radius: 8px;
+  background: #f5f5f6;
+  overflow: hidden;
+}
+.campaign-product__image > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 13px;
+  object-fit: contain;
+}
+.campaign-product__image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .04);
+  pointer-events: none;
+}
+.campaign-product__rank {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  padding: 4px 6px;
+  border-radius: 8px 0;
+  background: #e4e6eb;
+  color: #1a1a1a;
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+}
+.campaign-product__discount {
+  position: absolute;
+  z-index: 2;
+  top: 6px;
+  left: 6px;
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 4px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, .7);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  color: #1a1a1a;
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 12px;
+  white-space: nowrap;
+}
+.campaign-product__favorite {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.campaign-product__favorite img { display: block; width: 40px; height: 40px; }
+.campaign-product__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  min-height: 0;
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+}
+.campaign-product__title-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.campaign-product__title-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
 .campaign-product__highlight { align-self: flex-start; line-height: 0; }
-.campaign-product__highlight .ph-highlight { height: 16px; }
+.campaign-product__highlight .ph-highlight { height: auto; padding: 4px 6px; }
 .campaign-product__highlight .ph-sponsored { line-height: 16px; }
-.campaign-product__brand { font-size: 13px; font-weight: 700; line-height: 18px; }
-.campaign-product__title { flex: none; margin: 0; font-size: 13px; line-height: 18px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
-.campaign-product__rating,
+.campaign-product__brand {
+  color: #1a1a1a;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.campaign-product__title {
+  margin: 0;
+  color: #1a1a1a;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.campaign-product__rating { display: flex; align-items: center; min-width: 0; line-height: 0; }
+.campaign-product__rating img { display: block; width: auto; height: 16px; }
+.campaign-product__stock,
+.campaign-product__fulfillment {
+  color: #6e7078;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+.campaign-product__promotion {
+  color: #e1251b;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+}
+.campaign-product__left-right {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+}
+.campaign-product__left {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.campaign-product__price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+}
+.campaign-product__price b {
+  color: #e1251b;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 22px;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.campaign-product__price span {
+  color: #1a1a1a;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.campaign-product__price,
 .campaign-product__promotion,
 .campaign-product__fulfillment,
-.campaign-product__stock { color: #555861; font-size: 11px; line-height: 15px; }
-.campaign-product__rating { display: flex; align-items: center; line-height: 0; }
-.campaign-product__rating img { display: block; height: 16px; width: auto; }
-.campaign-product__promotion { color: #e1251b; }
-.campaign-product__price { display: flex; align-items: baseline; gap: 6px; }
-.campaign-product__price b { color: #e1251b; font-size: 16px; line-height: 22px; font-weight: 700; letter-spacing: 0; }
-.campaign-product__price span { color: #73757d; font-size: 10px; text-decoration: line-through; }
-.campaign-product__cart,
-.campaign-product__notify { position: absolute; right: 0; bottom: 0; }
-.campaign-product__cart { width: 36px; height: 36px; padding: 0; border: 0; background: transparent; }
-.campaign-product__cart img { width: 100%; height: 100%; }
-.campaign-product__notify { height: 32px; padding: 0 12px; border: 1px solid #d2d4da; border-radius: 16px; background: #fff; color: #303137; font: 600 12px/1 system-ui, sans-serif; }
+.campaign-product__stock { overflow-wrap: anywhere; }
+.campaign-product__cart { flex: 0 0 auto; }
+.campaign-product__notify { flex: 0 1 auto; }
+.campaign-product__cart {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.campaign-product__cart img { display: block; width: 100%; height: 100%; }
+/* Figma Notify Button 5551:25998. Width follows localized copy; long labels
+   wrap within half of the body while the price stays on one line. */
+.campaign-product__notify {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  flex: 0 1 auto;
+  width: auto;
+  min-width: 74px;
+  max-width: 50%;
+  min-height: 32px;
+  height: auto;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 4px;
+  background: #f5f7fa;
+  color: #1a1a1a;
+  font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.campaign-product__notify:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 .campaign--out .campaign-product__image > img { opacity: .52; }
 
 @media (max-width: 430px) {

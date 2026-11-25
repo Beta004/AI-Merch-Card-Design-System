@@ -31,11 +31,18 @@
         desc: { zh: '入口曝光位 · 楼层小图流',                  en: 'entry-point exposure · small-tile stream' } }
     ]},
     { top: 'atoms', zh: '原子组件', en: 'Atomic Components', kind: 'link', target: 'atoms' },
-    { top: 'utilities', zh: '工具', en: 'Utilities', kind: 'menu', target: 'decision-guide', wip: true, children: [
-      { key: 'decision-guide', zh: '选型指南', en: 'Decision Guide',
-        desc: { zh: '选卡助手 · 对比矩阵 · 选型口诀',           en: 'wizard · matrix · rules' } },
-      { key: 'changelog',      zh: '变更记录', en: 'Changelog',
-        desc: { zh: '版本时间线 v0.1 → v1.0 · 每版 highlights', en: 'version timeline v0.1 → v1.0' } }
+    { top: 'utilities', zh: '工具', en: 'Utilities', kind: 'menu', target: 'plugin', variant: 'tools', children: [
+      { group: true, icon: 'figma', zh: 'Figma 插件', en: 'Figma Plugin' },
+      { key: 'plugin', icon: 'cardsnap', feature: true, zh: '商卡速改', en: 'CardSnap',
+        desc: { zh: '在 Figma 内快速修改字段、校验文案并生成多语言设计稿', en: 'Update fields, review copy, and generate multilingual designs in Figma' } },
+      { icon: 'plus', feature: true, soon: true, zh: '更多场景', en: 'More scenarios',
+        desc: { zh: '选型、批量更新等能力，后续迭代开放', en: 'Selection, batch updates, and more in future releases' } },
+      { divider: true },
+      { group: true, icon: 'tools', zh: '辅助工具', en: 'Utilities' },
+      { key: 'decision-guide', icon: 'compass', feature: true, zh: '选型指南', en: 'Decision Guide', wip: true,
+        desc: { zh: '根据业务场景快速找到合适商卡', en: 'Find the right product card for each scenario' } },
+      { key: 'changelog', icon: 'history', feature: true, zh: '变更记录', en: 'Changelog', wip: true,
+        desc: { zh: '查看商卡与平台能力的最新变化', en: 'Review the latest product-card and platform changes' } }
     ]}
   ];
 
@@ -155,6 +162,7 @@
     home: 'index.html', atoms: 'atoms/index.html', organisms: 'organisms/index.html',
     pages: 'pages/index.html',
     'decision-guide': 'utilities/decision-guide.html',
+    'plugin': 'utilities/plugin.html',
     changelog: 'utilities/changelog.html',
     'organisms/vertical-card': 'organisms/vertical-card.html',
     'organisms/horizontal-card': 'organisms/horizontal-card.html',
@@ -258,7 +266,7 @@
     if (activeKey === 'organisms' || activeKey.indexOf('organisms/') === 0) return 'organisms';
     if (activeKey === 'pages' || activeKey.indexOf('pages/') === 0) return 'pages';
     if (activeKey === 'sections/home-feed' || activeKey.indexOf('sections/') === 0) return 'pages';
-    if (activeKey === 'decision-guide' || activeKey === 'changelog' || activeKey.indexOf('utilities/') === 0) return 'utilities';
+    if (activeKey === 'decision-guide' || activeKey === 'changelog' || activeKey === 'plugin' || activeKey.indexOf('utilities/') === 0) return 'utilities';
     return 'home';
   }
 
@@ -437,7 +445,7 @@
   }
 
   function renderMega(li, tab, activeKey) {
-    var mega = el('div', 'mega' + (tab.showPreview ? ' mega--with-preview' : ''), { role: 'menu', 'aria-hidden': 'true' });
+    var mega = el('div', 'mega' + (tab.showPreview ? ' mega--with-preview' : '') + (tab.variant === 'tools' ? ' mega--tools' : ''), { role: 'menu', 'aria-hidden': 'true' });
     var previewHTML = tab.showPreview
       ? '<div class="mega__preview" aria-hidden="true">' +
           '<div class="mega__preview-frame" data-mega-preview-frame></div>' +
@@ -448,6 +456,7 @@
         '</div>'
       : '';
     var listHTML = '<ul class="mega__list" role="none">' + tab.children.map(function (child) {
+      if (tab.variant === 'tools') return renderToolMenuItem(child, activeKey);
       var href = urlFor(activeKey, child.key);
       var live = !!href;
       var isActive = child.key === activeKey;
@@ -459,12 +468,13 @@
             ' data-mega-title="' + esc(child[language]) + '"' +
             ' data-mega-desc="' + esc(child.desc[language]) + '">' +
               '<span class="mega__item-title">' + esc(child[language]) + '</span>' +
-              (tab.wip
+              (child.wip
                 ? '<span class="mega__item-flag mega__item-flag--wip">WIP</span>'
                 : (isActive ? '<span class="mega__item-flag">' + (language === 'zh' ? '当前' : 'Now') + '</span>' : '')) +
             '</a>'
           : '<span class="mega__item is-disabled" role="menuitem" aria-disabled="true">' +
               '<span class="mega__item-title">' + esc(child[language]) + '</span>' +
+              (child.soon ? '<span class="mega__item-flag mega__item-flag--wip">' + (language === 'zh' ? '陆续上线' : 'Soon') + '</span>' : '') +
             '</span>') +
       '</li>';
     }).join('') + '</ul>';
@@ -494,6 +504,50 @@
         });
       });
     }
+  }
+
+  function toolIcon(name) {
+    var icons = {
+      figma: '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="2.2" y="2.2" width="11.6" height="11.6" rx="3.2" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="6" cy="6" r="1.15" fill="currentColor"/><circle cx="10" cy="6" r="1.15" fill="currentColor"/><circle cx="6" cy="10" r="1.15" fill="currentColor"/><path d="M9 10h1.3M10.3 10v1.3" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>',
+      cardsnap: '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><rect x="2" y="3" width="8" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M5 6h3M5 8.5h3M12 4v4M10 6h4" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>',
+      plus: '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M8 3v10M3 8h10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+      tools: '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="m9.8 2.8 3.4 3.4-2 2-3.4-3.4 2-2ZM7.2 6.5l2.3 2.3-5 5H2.2v-2.3l5-5Z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>',
+      compass: '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="5.6" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="m10.5 5.5-1.4 3.6-3.6 1.4 1.4-3.6 3.6-1.4Z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>',
+      history: '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.1 6A5.6 5.6 0 1 1 2.6 9M3.1 6V2.8M3.1 6h3.2" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M8 5.1V8l2.1 1.3" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>'
+    };
+    return icons[name] || icons.tools;
+  }
+
+  function renderToolMenuItem(child, activeKey) {
+    if (child.group) {
+      return '<li class="mega__group" role="presentation">' +
+        '<span class="mega__group-icon">' + toolIcon(child.icon) + '</span>' +
+        '<span>' + esc(child[language]) + '</span></li>';
+    }
+    if (child.divider) return '<li class="mega__divider" role="separator"></li>';
+
+    var href = urlFor(activeKey, child.key);
+    var live = !!href;
+    var isActive = child.key === activeKey;
+    var flag = child.wip
+      ? '<span class="mega__item-flag mega__item-flag--wip">WIP</span>'
+      : (child.soon
+        ? '<span class="mega__item-flag mega__item-flag--wip">' + (language === 'zh' ? '后续上线' : 'Soon') + '</span>'
+        : (isActive ? '<span class="mega__item-flag">' + (language === 'zh' ? '当前' : 'Now') + '</span>' : ''));
+    var inner = '<span class="mega__item-icon">' + toolIcon(child.icon) + '</span>' +
+      '<span class="mega__item-copy">' +
+        '<span class="mega__item-title">' + esc(child[language]) + '</span>' +
+        '<span class="mega__item-desc">' + esc(child.desc ? child.desc[language] : '') + '</span>' +
+      '</span>' +
+      '<span class="mega__item-tail">' + flag +
+        (live ? '<span class="mega__item-arrow" aria-hidden="true"><svg viewBox="0 0 12 12" width="11" height="11"><path d="M3 6h6M6.5 3.5 9 6 6.5 8.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' : '') +
+      '</span>';
+    var classes = 'mega__item mega__item--feature' + (isActive ? ' is-active' : '') + (live ? '' : ' is-disabled');
+    return '<li role="none">' +
+      (live
+        ? '<a class="' + classes + '" role="menuitem" href="' + esc(href) + '" aria-label="' + esc(child[language]) + '">' + inner + '</a>'
+        : '<span class="' + classes + '" role="menuitem" aria-disabled="true">' + inner + '</span>') +
+      '</li>';
   }
 
   function writePreview(mega, item) {

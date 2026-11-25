@@ -143,7 +143,7 @@
 
   /* ============ Horizontal Mini card component ============
      Figma 6000:33289 — the card is 375 wide.
-       image 130×130, inset 16px from the left, flush to the top/bottom
+       card padding 8px on all sides · image 130×130 · 12px gap
        → 12px gap → content column 201
        content: brand 14/700/20 → 4 → title 14/500/20 (2 lines) → 4 → rating 12/500/16
        bottom row (bottom-aligned): sale 16/700/22 → 4 → RRP 12/500/16 · action 32×32
@@ -156,7 +156,7 @@
     width: 375px;
     max-width: 100%;
     min-height: 130px;
-    padding: 0 16px;
+    padding: 8px;
     background: var(--surface);
     border-radius: 8px;
     position: relative;
@@ -203,14 +203,15 @@
   .hmini__favorite img { width: 32px; height: 32px; display: block; }
 
   /* Discount — Figma Tag-discount atom, pinned to the image top-left */
+  /* Figma Tag-discount 5532:14407: 10/12 SemiBold, 6×4 padding, r4. */
   .hmini__discount-tag {
-    position: absolute; top: 8px; left: 8px; z-index: 2;
+    position: absolute; top: 6px; left: 6px; z-index: 2;
     display: inline-flex; align-items: center;
-    height: 20px; padding: 0 8px;
+    box-sizing: border-box; padding: 4px 6px;
     border-radius: 4px;
     background: rgba(255,255,255,.7);
     backdrop-filter: blur(4px);
-    font-size: 12px; font-weight: 600; line-height: 20px;
+    font-size: 10px; font-weight: 600; line-height: 12px;
     color: var(--ink);
     white-space: nowrap;
   }
@@ -303,10 +304,10 @@
   }
   .hmini__cart img { width: 100%; height: 100%; display: block; }
   .hmini__cart--quantity { width: 100px; height: 32px; }
-  /* The 100px quantity pill would squeeze the price block, so it drops to its
-     own row and stays pinned to the card's bottom-right corner. */
+  /* Quantity selector stays in the same bottom row as the price. The body
+     grows naturally when content needs more height; the card has no fixed height. */
   .hmini__body.has-quantity-selector .hmini__bottom {
-    flex-direction: column; align-items: stretch; gap: 8px;
+    flex-direction: row; align-items: flex-end; gap: 8px;
   }
   .hmini__body.has-quantity-selector .hmini__cart--quantity { align-self: flex-end; }
 
@@ -848,12 +849,8 @@
           <h2 class="section__title">Overview · 概览</h2>
         </div>
         <p class="section__lede">
-          130 px 主图 + 精简价格信息的迷你横向卡，骨架严格对齐 Figma 母组件
-          <a href="https://www.figma.com/design/eInnhKDnBhPIyPprZADdnO/App-Business-Components?node-id=6000-33289" target="_blank" rel="noopener">6000:33289</a>：
-          375 宽卡体 · 130×130 主图（左侧内缩 16px，垂直顶格）· 12px 间距 · 201px 内容列
-          （品牌 · 标题 · 评分销量 / 售价 · 划线价 · 履约），操作按钮固定在商卡右下角。
-          定位介于横向卡和纯文本联想之间——只保留决策关键字段，其他辅助信息按需开关。
-          用在补充推荐、下单确认、直播侧边推荐这些"注意力已经在别处"的场景。
+          小图横向商卡以精简主图和价格信息为主，适合推荐、下单确认和直播侧边等空间有限、注意力分散的场景。
+          相比完整横向卡，它只保留决策关键信息，浏览更轻、更紧凑。
         </p>
 
         <div class="demo" style="margin-top: 8px;">
@@ -1366,7 +1363,7 @@
     setField('highlight', vis('highlight') ? t.highlight : '');
     setField('originalPrice', vis('rrp') ? p.originalPrice : '');
     // Discount rides the Figma Tag-discount atom on the image, not a text line.
-    setField('discount', vis('discount') ? discountBadge(t.discount) : '');
+    setField('discount', vis('discount') ? discountBadge(t.discount, p) : '');
     setField('fulfillment', vis('fulfillment') ? t.fulfillment : '');
     document.querySelectorAll('#hmini-preview [data-field="fulfillment"]').forEach(el => {
       el.classList.toggle('is-pop', p.fulfillmentType === 'POP');
@@ -1693,10 +1690,16 @@
   /* ================ Static "Types" showcase ================
      Same anatomy as the live preview (Figma 6000:33289): image + tag-discount
      on the left, content column on the right, action flush to the bottom-right. */
-  // Discount copy for the Figma Tag-discount atom: "Save 18% on RRP" → "18% off".
-  function discountBadge(text) {
-    const m = String(text || '').match(/(\d+)\s*%/);
-    return m ? (m[1] + '% off') : String(text || '');
+  // Tag-discount only supports "xx% off". Prefer a percentage from data;
+  // for amount-based discount copy, derive it from sale price and RRP.
+  function discountBadge(text, product) {
+    const pct = String(text || '').match(/(\d+)\s*%/);
+    if (pct) return pct[1] + '% off';
+    const num = v => parseFloat(String(v == null ? '' : v).replace(/[^0-9.]/g, ''));
+    const sale = num(product && product.salePrice);
+    const original = num(product && product.originalPrice);
+    if (sale > 0 && original > sale) return Math.round((1 - sale / original) * 100) + '% off';
+    return '';
   }
 
   function hminiHTML(cfg) {
@@ -1710,7 +1713,7 @@
     // Image — 130×130, product photo centred at 80%
     html += '<div class="hmini__image">';
     html += '<div class="hmini__image-inner">' + (img ? '<img src="'+img+'" alt="'+p.brand+'">' : '') + '</div>';
-    if (t.discount) html += '<span class="hmini__discount-tag">'+discountBadge(t.discount)+'</span>';
+    if (t.discount) html += '<span class="hmini__discount-tag">'+discountBadge(t.discount, p)+'</span>';
     html += '<button class="hmini__favorite" type="button" aria-label="Add to wishlist"><img src="../assets/figma-atoms/tag-like/tag-like.svg" alt=""></button>';
     html += '</div>';
 
@@ -1737,9 +1740,11 @@
     }
     if (t.fulfillment) html += '<span class="hmini__fulfillment' + (p.fulfillmentType === 'POP' ? ' is-pop' : '') + '">'+t.fulfillment+'</span>';
     html += '</div>';
+    html += '<span class="hmini__action">';
     html += cfg.quantity
       ? '<button class="hmini__cart hmini__cart--quantity" aria-label="Change quantity"><img src="../assets/figma-atoms/btn-cart/add-success-1.svg" alt="Quantity 1"></button>'
       : '<button class="hmini__cart" aria-label="Add to cart"><img src="../assets/figma-atoms/btn-cart/btn-add-to-cart.svg" alt="Add to cart"></button>';
+    html += '</span>';
     html += '</div>';
 
     html += '</div>'; // /.hmini__body

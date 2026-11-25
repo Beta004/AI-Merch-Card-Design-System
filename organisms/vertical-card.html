@@ -214,7 +214,6 @@
     display: inline-block; line-height: 0;
   }
   .vcard__highlight[data-empty] { display: none; }
-  .vcard__highlight .ph-highlight { height: 24px; }
   .vcard__highlight .ph-sponsored { line-height: 16px; }
   .vcard__brand {
     font-size: 14px; font-weight: 700; color: var(--ink);
@@ -754,7 +753,6 @@
   .type-cell__stage > .types-stack__stage > .vcard .vcard__content-02-main { gap: 8px; }
   .type-cell__stage > .types-stack__stage > .vcard .vcard__content-02-top,
   .type-cell__stage > .types-stack__stage > .vcard .vcard__content-02-bottom { gap: 4px; }
-  .type-cell__stage > .types-stack__stage > .vcard .vcard__highlight .ph-highlight { height: 24px; }
   .type-cell__stage > .types-stack__stage > .vcard .vcard__prices { gap: 4px; }
   .type-cell__stage > .types-stack__stage > .vcard .vcard__sale-price {
     font-size: 16px; line-height: 22px; font-weight: 700; letter-spacing: 0;
@@ -1091,24 +1089,40 @@
   .sim-row.is-disabled { background: var(--surface-2); }
   .sim-row.is-disabled .sim-row__name { color: var(--ink-5); }
   .sim-row__na { font-size: 10.5px; color: var(--ink-5); white-space: nowrap; }
-  /* Variant dropdown (单促 / 总促) — lists every Figma variant of the atom. */
-  .sim-row__select { flex: 0 1 auto; min-width: 0; max-width: 210px; }
-  .sim-select {
-    font-family: "Barlow Fix 50", "Barlow", var(--f-sans);
-    font-size: 11px; line-height: 16px; font-weight: 500;
-    color: var(--ink-2);
-    background: var(--surface);
-    border: 1px solid var(--outline);
-    border-radius: 6px;
-    padding: 5px 8px;
-    width: 100%; max-width: 100%;
+  /* Variant picker (单促 / 总促): the caret sits next to the field name and opens
+     the same popover panel the anatomy atom map uses (preview + variant name). */
+  .sim-row__label { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .sim-row__name { white-space: nowrap; }
+  .sim-variant { display: inline-flex; align-items: center; min-width: 0; }
+  .sim-variant__trigger {
+    all: unset;
+    display: inline-flex; align-items: center; gap: 5px;
+    max-width: 190px; min-width: 0;
+    padding: 2px 6px; border-radius: 5px;
+    color: var(--ink-3);
+    font-size: 12px; line-height: 18px;
     cursor: pointer;
-    text-overflow: ellipsis;
+    transition: color .12s ease, background .12s ease;
   }
-  .sim-select:hover:not(:disabled) { border-color: var(--outline-strong); }
-  .sim-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-  .sim-select:disabled { color: var(--ink-5); background: var(--surface-2); cursor: not-allowed; }
-  .sim-row.is-disabled .sim-select { opacity: .7; }
+  .sim-variant__trigger:hover:not(:disabled),
+  .sim-variant.is-open .sim-variant__trigger { color: var(--joybuy-red); background: #FEF0EF; }
+  .sim-variant__trigger:disabled { color: var(--ink-5); cursor: not-allowed; }
+  .sim-variant__trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .sim-variant__value { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sim-variant__value.is-default { color: var(--ink-5); }
+  .sim-variant__caret {
+    width: 0; height: 0; flex: none;
+    border-left: 4px solid transparent; border-right: 4px solid transparent;
+    border-top: 5px solid currentColor; opacity: .55;
+  }
+  .sim-variant.is-open .sim-variant__caret { transform: rotate(180deg); }
+  #sim-variant-pop .atom-map-popover { position: fixed; }
+  #sim-variant-pop .atom-map-popover__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #sim-variant-pop .atom-map-option__preview { align-items: flex-start; padding-top: 6px; }
+  #sim-variant-pop .ph-promo { font-size: 11px; line-height: 15px; }
+  #sim-variant-pop .ph-promo__main { font-size: 11px; line-height: 15px; }
+  #sim-variant-pop .ph-promo__sub { font-size: 11px; line-height: 15px; }
+  #sim-variant-pop .atom-map-option__preview img { max-height: 28px; }
   /* switch */
   .sim-sw {
     all: unset; cursor: pointer; box-sizing: border-box; flex: none;
@@ -1950,16 +1964,146 @@
     });
   }
 
-  // Dropdown markup for one atom family.
-  function variantSelectHTML(variants, selectedKey, fieldKey, enabled, ariaLabel) {
-    const options = variants.map(v => {
-      const selected = (selectedKey && v.key === selectedKey) ? ' selected' : '';
-      const label = Array.isArray(v.copy) ? v.copy.join(' · ') : v.copy;
-      return '<option value="' + v.key + '"' + selected + ' title="' + v.node + '">' + label + '</option>';
-    }).join('');
-    return '<label class="sim-row__select"><select class="sim-select" data-select-key="' + fieldKey + '"'
-      + (enabled ? '' : ' disabled') + ' aria-label="' + ariaLabel + '">'
-      + '<option value="">默认</option>' + options + '</select></label>';
+  // ---- Variant picker (单促 / 总促) --------------------------------------------
+  // The trigger sits right after the field name; clicking it opens the same
+  // popover language as the anatomy atom map (preview + variant name) and
+  // picking an option switches the card.
+  let variantPop = null;
+  let variantPopKey = '';
+  let variantPopTrigger = null;
+
+  function variantLabel(variants, key) {
+    if (!key) return '默认';
+    const v = variants.find(x => x.key === key);
+    if (!v) return '默认';
+    return Array.isArray(v.copy) ? v.copy.join(' · ') : v.copy;
+  }
+
+  function variantTriggerHTML(variants, selectedKey, fieldKey, enabled, ariaLabel) {
+    const label = variantLabel(variants, selectedKey);
+    const isDefault = !selectedKey;
+    return '<span class="sim-variant" data-variant-key="' + fieldKey + '">'
+      + '<button class="sim-variant__trigger" type="button" aria-expanded="false" aria-haspopup="true"'
+      + ' data-variant-key="' + fieldKey + '" aria-label="' + ariaLabel + '"'
+      + (enabled ? '' : ' disabled') + '>'
+      + '<span class="sim-variant__value' + (isDefault ? ' is-default' : '') + '">' + label + '</span>'
+      + '<span class="sim-variant__caret" aria-hidden="true"></span>'
+      + '</button></span>';
+  }
+
+  function variantPreviewHTML(variant, isPromo) {
+    if (isPromo) {
+      const main = '<span class="ph-promo__main">' + variant.copy[0] + '</span>';
+      const rest = variant.copy.slice(1).map(t => '<span class="ph-promo__sub">' + t + '</span>').join('');
+      return '<span class="ph-promo">' + main + rest + '</span>';
+    }
+    return '<img src="' + variant.svg + '" alt="">';
+  }
+
+  function ensureVariantPop() {
+    if (variantPop) return variantPop;
+    variantPop = document.createElement('div');
+    variantPop.id = 'sim-variant-pop';
+    variantPop.hidden = true;
+    variantPop.innerHTML = '<div class="atom-map-popover atom-map-popover--many">'
+      + '<div class="atom-map-popover__head"><span class="sim-variant-pop__title"></span>'
+      + '<span class="atom-map-popover__count"></span></div>'
+      + '<div class="atom-map-popover__grid"></div></div>';
+    document.body.appendChild(variantPop);
+    variantPop.addEventListener('click', e => {
+      const opt = e.target.closest('.atom-map-option[data-variant-value]');
+      if (!opt) return;
+      const key = variantPopKey;
+      const value = opt.dataset.variantValue;
+      if (key === 'promotion') { promoVariantKey = value; if (value) fieldOv.promotion = true; }
+      else if (key === 'totalPromo') { totalPromoVariantKey = value; if (value) fieldOv.totalPromo = true; }
+      closeVariantPop();
+      applyFields();
+    });
+    return variantPop;
+  }
+
+  function closeVariantPop() {
+    if (!variantPop) return;
+    variantPop.hidden = true;
+    variantPopTrigger = null;
+    document.querySelectorAll('.sim-variant.is-open').forEach(el => el.classList.remove('is-open'));
+    document.querySelectorAll('.sim-variant__trigger[aria-expanded="true"]').forEach(el => el.setAttribute('aria-expanded', 'false'));
+    variantPopKey = '';
+  }
+
+  function openVariantPop(trigger) {
+    const key = trigger.dataset.variantKey;
+    const isPromo = key === 'promotion';
+    const variants = isPromo ? PROMO_VARIANTS : TOTAL_PROMO_VARIANTS;
+    const picked = isPromo ? promoVariantKey : totalPromoVariantKey;
+    const pop = ensureVariantPop();
+    const panel = pop.querySelector('.atom-map-popover');
+    const grid = pop.querySelector('.atom-map-popover__grid');
+    pop.querySelector('.sim-variant-pop__title').textContent = isPromo
+      ? 'Individual Promotion / Type · 单促'
+      : 'Total Promotion · 总促';
+    pop.querySelector('.atom-map-popover__count').textContent = variants.length + ' 种类型';
+    grid.innerHTML = '';
+
+    const defaultVariant = variants.find(v => v.key === (isPromo ? DEFAULT_PROMO_KEY : DEFAULT_TOTAL_PROMO_KEY));
+    const def = document.createElement('button');
+    def.type = 'button';
+    def.className = 'atom-map-option' + (picked ? '' : ' is-selected');
+    def.dataset.variantValue = '';
+    def.title = defaultVariant ? defaultVariant.node : '';
+    def.innerHTML = '<span class="atom-map-option__preview">'
+      + (defaultVariant ? variantPreviewHTML(defaultVariant, isPromo) : '<span class="ph-sponsored">默认</span>')
+      + '</span><span>默认</span>';
+    grid.appendChild(def);
+
+    variants.forEach(v => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'atom-map-option' + (picked === v.key ? ' is-selected' : '');
+      b.dataset.variantValue = v.key;
+      b.title = v.node;
+      const name = Array.isArray(v.copy) ? v.copy[0] : v.copy;
+      b.innerHTML = '<span class="atom-map-option__preview">' + variantPreviewHTML(v, isPromo) + '</span>'
+        + '<span>' + name + '</span>';
+      grid.appendChild(b);
+    });
+
+    pop.hidden = false;
+    variantPopKey = key;
+    variantPopTrigger = trigger;
+    trigger.setAttribute('aria-expanded', 'true');
+    const host = trigger.closest('.sim-variant');
+    if (host) host.classList.add('is-open');
+    positionVariantPop();
+  }
+
+  // Anchor the panel under the trigger (fixed positioning, flips above when tight).
+  function positionVariantPop() {
+    if (!variantPop || variantPop.hidden || !variantPopTrigger) return;
+    const panel = variantPop.querySelector('.atom-map-popover');
+    const grid = variantPop.querySelector('.atom-map-popover__grid');
+    panel.style.position = 'fixed';
+    panel.style.left = '0px';
+    panel.style.top = '0px';
+    panel.style.bottom = 'auto';
+    panel.style.maxHeight = '';
+    panel.style.overflowY = '';
+    grid.style.maxHeight = '';
+    grid.style.overflowY = '';
+    const rect = variantPopTrigger.getBoundingClientRect();
+    const height = panel.getBoundingClientRect().height;
+    const below = window.innerHeight - rect.bottom - 20;
+    const above = rect.top - 20;
+    let top = rect.bottom + 10;
+    let maxHeight = '';
+    if (height > below && above > below) top = rect.top - 10 - height;
+    else if (height > below) maxHeight = Math.max(140, below) + 'px';
+    panel.style.maxHeight = maxHeight;
+    panel.style.overflowY = maxHeight ? 'auto' : '';
+    const left = Math.max(16, Math.min(rect.left, window.innerWidth - panel.offsetWidth - 16));
+    panel.style.left = left + 'px';
+    panel.style.top = Math.max(16, top) + 'px';
   }
 
   function highlightHTML(key) {
@@ -2309,9 +2453,9 @@
         // 单促 / 总促 get a variant dropdown listing every Figma variant of the atom.
         let variantControl = '';
         if (f.key === 'promotion') {
-          variantControl = variantSelectHTML(PROMO_VARIANTS, promoVariantKey, 'promotion', on && !gatedOff, f.label[cardLang]);
+          variantControl = variantTriggerHTML(PROMO_VARIANTS, promoVariantKey, 'promotion', !gatedOff, f.label[cardLang]);
         } else if (f.key === 'totalPromo') {
-          variantControl = variantSelectHTML(TOTAL_PROMO_VARIANTS, totalPromoVariantKey, 'totalPromo', on && !gatedOff, f.label[cardLang]);
+          variantControl = variantTriggerHTML(TOTAL_PROMO_VARIANTS, totalPromoVariantKey, 'totalPromo', !gatedOff, f.label[cardLang]);
         }
         const variantPicked = (f.key === 'promotion' && promoVariantKey) || (f.key === 'totalPromo' && totalPromoVariantKey);
         let cls = 'sim-row';
@@ -2323,8 +2467,8 @@
           : '<button class="sim-sw" type="button" role="switch" aria-checked="'+(on?'true':'false')+'" '
             + 'aria-label="'+f.label[cardLang]+'" data-field-key="'+f.key+'"></button>';
         html += '<div class="'+cls+'">'
-          + '<span class="sim-row__label"><span class="sim-row__name">'+f.label[cardLang]+'</span></span>'
-          + variantControl
+          + '<span class="sim-row__label"><span class="sim-row__name">'+f.label[cardLang]+'</span>'
+          + variantControl + '</span>'
           + right + '</div>';
       });
       html += '</div>';
@@ -2337,16 +2481,14 @@
   (function wireVFieldSim() {
     const host = document.getElementById('vcard-sim');
     if (!host) return;
-    host.addEventListener('change', e => {
-      const sel = e.target.closest('.sim-select');
-      if (!sel) return;
-      const key = sel.dataset.selectKey;
-      if (key === 'promotion') promoVariantKey = sel.value;
-      else if (key === 'totalPromo') totalPromoVariantKey = sel.value;
-      else return;
-      applyFields();
-    });
     host.addEventListener('click', e => {
+      const trigger = e.target.closest('.sim-variant__trigger');
+      if (trigger) {
+        e.preventDefault();
+        if (trigger.getAttribute('aria-expanded') === 'true') closeVariantPop();
+        else openVariantPop(trigger);
+        return;
+      }
       const sw = e.target.closest('.sim-sw');
       if (sw) {
         const key = sw.dataset.fieldKey;
@@ -2368,6 +2510,22 @@
       }
     });
   })();
+
+  // Close the variant popover on outside click or Esc.
+  document.addEventListener('pointerdown', e => {
+    if (!variantPop || variantPop.hidden) return;
+    if (variantPop.contains(e.target)) return;
+    if (e.target.closest('.sim-variant__trigger')) return;
+    closeVariantPop();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape' || !variantPop || variantPop.hidden) return;
+    const open = document.querySelector('.sim-variant__trigger[aria-expanded="true"]');
+    closeVariantPop();
+    if (open) open.focus();
+  });
+  window.addEventListener('resize', () => positionVariantPop(), { passive: true });
+  window.addEventListener('scroll', () => positionVariantPop(), { passive: true, capture: true });
 
   /* ================ Common Variants (05) ================ */
 
